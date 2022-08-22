@@ -4,11 +4,11 @@ import {
   SimpleGrid,
   Stack,
   Divider,
-  useColorModeValue,
   GridItem,
 } from "@chakra-ui/react";
 
-import Logo from "../../../components/logo/Logo";
+import Logo from "lib/components/logo/Logo";
+import { theme } from "lib/styles/customTheme";
 
 import Copyright from "./copyright/Copyright";
 import Sitemap from "./sitemap/Sitemap";
@@ -18,8 +18,9 @@ import TermsAndConditions from "./termsandconditions/TermsAndConditions";
 export default function Footer() {
   return (
     <Box
-      bg={useColorModeValue("gray.50", "gray.900")}
-      color={useColorModeValue("gray.700", "gray.200")}
+      as="footer"
+      bg={theme.colors.brown}
+      color={theme.colors.cream}
       alignContent="center"
       w="100%"
     >

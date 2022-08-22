@@ -23,6 +23,7 @@ export default function Footer() {
       color={theme.colors.cream}
       alignContent="center"
       w="100%"
+      height={{ sm: "600px", md: "400px" }}
     >
       <Container as={Stack} maxW="full" py={10}>
         <SimpleGrid

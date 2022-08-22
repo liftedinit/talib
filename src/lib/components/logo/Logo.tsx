@@ -11,13 +11,13 @@ const LOGOSVG = () => {
         src="/assets/lifted.svg"
         title="The Lifted initiative"
       />
-      <Text color={theme.colors.cream} fontSize="sm">
+      <Text color={theme.colors.cream} fontSize="1.168rem" fontWeight={300}>
         THE
       </Text>
-      <Text color={theme.colors.cream} fontSize="sm" fontWeight="bold">
+      <Text color={theme.colors.cream} fontSize="1.168rem" fontWeight={700}>
         LIFTED
       </Text>
-      <Text color={theme.colors.cream} fontSize="sm">
+      <Text color={theme.colors.cream} fontSize="1.168rem" fontWeight={300}>
         INITIATIVE
       </Text>
     </Box>

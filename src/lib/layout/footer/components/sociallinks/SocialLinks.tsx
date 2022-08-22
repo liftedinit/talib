@@ -8,7 +8,7 @@ import {
   chakra,
 } from "@chakra-ui/react";
 import type { ReactNode } from "react";
-import { FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
+import { FaTwitter, FaGithub, FaLinkedin } from "react-icons/fa";
 
 import { theme } from "lib/styles/customTheme";
 
@@ -70,14 +70,17 @@ export default function SocialLinks() {
           align={{ md: "center" }}
         >
           <Stack direction="row" spacing={6}>
-            <SocialButton label="Twitter" href="#">
+            <SocialButton label="Github" href="https://github.com/liftedinit">
+              <FaGithub />
+            </SocialButton>
+            <SocialButton
+              label="Linkedin"
+              href="https://www.linkedin.com/company/liftedinit"
+            >
+              <FaLinkedin />
+            </SocialButton>
+            <SocialButton label="Twitter" href="https://twitter.com/liftedinit">
               <FaTwitter />
-            </SocialButton>
-            <SocialButton label="YouTube" href="#">
-              <FaYoutube />
-            </SocialButton>
-            <SocialButton label="Instagram" href="#">
-              <FaInstagram />
             </SocialButton>
           </Stack>
         </Container>

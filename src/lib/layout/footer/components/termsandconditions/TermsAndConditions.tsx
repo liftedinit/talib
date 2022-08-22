@@ -5,7 +5,7 @@ import { theme } from "lib/styles/customTheme";
 export default function TermsAndConditions() {
   return (
     <Stack align={{ md: "flex-end", sm: "center" }} spacing={6}>
-      <Box fontSize="sm">
+      <Box fontSize="sm" fontWeight={500}>
         <Link
           color={theme.colors.cream}
           href="https://theliftedinit.org/terms"

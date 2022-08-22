@@ -14,7 +14,7 @@ import { theme } from "lib/styles/customTheme";
 
 const ListHeader = ({ children }: { children: ReactNode }) => {
   return (
-    <Text fontWeight="500" fontSize="lg" mb={2}>
+    <Text fontSize="1rem" fontWeight={400} mb={2}>
       {children}
     </Text>
   );

@@ -10,6 +10,8 @@ import {
 import type { ReactNode } from "react";
 import { FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
 
+import { theme } from "lib/styles/customTheme";
+
 const ListHeader = ({ children }: { children: ReactNode }) => {
   return (
     <Text fontWeight="500" fontSize="lg" mb={2}>
@@ -28,7 +30,7 @@ const SocialButton = ({
 }) => {
   return (
     <chakra.button
-      bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
+      bg={theme.colors.green}
       rounded="full"
       w={8}
       h={8}

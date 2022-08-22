@@ -4,7 +4,7 @@ import { theme } from "lib/styles/customTheme";
 
 export default function Sitemap() {
   return (
-    <Stack mr={6} ml={6} align="flex-start">
+    <Stack mr={6} ml={6} align="flex-start" fontWeight={400}>
       <Link color={theme.colors.white} href="https://theliftedinit.org/aboutus">
         About Lifted Initiative
       </Link>

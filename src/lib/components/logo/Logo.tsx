@@ -1,13 +1,12 @@
 import { Image, Box, Text } from "@chakra-ui/react";
 
-import { theme } from "lib/styles/customTheme";
-
 interface Props {
   boxSize: string;
   fontSize: string;
+  fontColor: string;
 }
 
-const Logo = ({ boxSize, fontSize }: Props) => {
+const Logo = ({ boxSize, fontSize, fontColor }: Props) => {
   return (
     <Box display="flex" alignItems="center">
       <Image
@@ -16,13 +15,13 @@ const Logo = ({ boxSize, fontSize }: Props) => {
         src="/assets/lifted.svg"
         title="The Lifted initiative"
       />
-      <Text color={theme.colors.cream} fontSize={fontSize} fontWeight={300}>
+      <Text color={fontColor} fontSize={fontSize} fontWeight={300}>
         THE
       </Text>
-      <Text color={theme.colors.cream} fontSize={fontSize} fontWeight={700}>
+      <Text color={fontColor} fontSize={fontSize} fontWeight={700}>
         LIFTED
       </Text>
-      <Text color={theme.colors.cream} fontSize={fontSize} fontWeight={300}>
+      <Text color={fontColor} fontSize={fontSize} fontWeight={300}>
         INITIATIVE
       </Text>
     </Box>

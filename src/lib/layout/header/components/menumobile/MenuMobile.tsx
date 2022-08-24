@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { RiAlignJustify, RiCloseFill } from "react-icons/ri";
 
-import Logo from "../../../../components/logo/Logo";
+import Logo from "lib/components/logo/Logo";
 import { theme } from "lib/styles/customTheme";
 
 export default function MenuMobile() {

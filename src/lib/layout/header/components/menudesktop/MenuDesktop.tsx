@@ -1,6 +1,6 @@
 import { Box, Flex, Spacer, Link, Stack, Button } from "@chakra-ui/react";
 
-import Logo from "../../../../components/logo/Logo";
+import Logo from "lib/components/logo/Logo";
 import { theme } from "lib/styles/customTheme";
 
 export default function MenuDesktop() {

@@ -32,7 +32,11 @@ export default function Footer() {
           spacing={8}
         >
           <GridItem colSpan={{ sm: 1, md: 2 }}>
-            <Logo boxSize="85px" fontSize="1.168rem" />
+            <Logo
+              boxSize="85px"
+              fontSize="1.168rem"
+              fontColor={theme.colors.cream}
+            />
           </GridItem>
           <GridItem colSpan={1}>
             <Sitemap />

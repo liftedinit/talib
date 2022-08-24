@@ -21,7 +21,7 @@ export default function MenuMobile() {
   const { isOpen, onToggle } = useDisclosure();
   return (
     <Flex>
-      <Logo boxSize="20px" fontSize="20px" fontColor={theme.colors.black} />
+      <Logo boxSize="25px" fontSize="1.168rem" fontColor={theme.colors.black} />
       <Spacer />
       <Box display="flex" alignItems="center">
         <Menu>

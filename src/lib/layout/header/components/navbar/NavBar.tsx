@@ -1,32 +1,10 @@
-import { Box } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { Box, useMediaQuery } from "@chakra-ui/react";
 
 import MenuDesktop from "../menudesktop/MenuDesktop";
 import MenuMobile from "../menumobile/MenuMobile";
 
 const Navbar = () => {
-  const [state, setState] = useState({
-    mobileView: false,
-    drawerOpen: false,
-  });
-
-  const { mobileView } = state;
-
-  useEffect(() => {
-    const setResponsiveness = () => {
-      return window.innerWidth < 481
-        ? setState((prevState) => ({ ...prevState, mobileView: true }))
-        : setState((prevState) => ({ ...prevState, mobileView: false }));
-    };
-
-    setResponsiveness();
-
-    window.addEventListener("resize", () => setResponsiveness());
-
-    return () => {
-      window.removeEventListener("resize", () => setResponsiveness());
-    };
-  }, []);
+  const [isMobile] = useMediaQuery("(max-width: 480px)");
 
   const displayDesktop = () => {
     return <MenuDesktop />;
@@ -38,7 +16,7 @@ const Navbar = () => {
 
   return (
     <header>
-      <Box>{mobileView ? displayMobile() : displayDesktop()}</Box>
+      <Box>{isMobile ? displayMobile() : displayDesktop()}</Box>
     </header>
   );
 };

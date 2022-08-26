@@ -15,7 +15,10 @@
     "up-latest": "yarn up --latest",
     "release": "standard-version",
     "push-release": "git push --follow-tags origin main",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@ajna/pagination": "^1.4.19",
@@ -40,15 +43,21 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/react-helmet": "^6.1.5",
+    "@types/react-test-renderer": "^18.0.0",
     "@vitejs/plugin-react": "^2.0.0",
+    "@vitest/ui": "^0.22.1",
     "commitlint": "^17.0.3",
     "eslint": "^8.20.0",
     "eslint-config-sznm": "^1.0.0",
+    "happy-dom": "^6.0.4",
     "husky": "^8.0.1",
+    "jsdom": "^20.0.0",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
+    "react-test-renderer": "^18.2.0",
     "standard-version": "^9.5.0",
     "typescript": "^4.7.4",
-    "vite": "^3.0.4"
+    "vite": "^3.0.4",
+    "vitest": "^0.22.1"
   }
 }

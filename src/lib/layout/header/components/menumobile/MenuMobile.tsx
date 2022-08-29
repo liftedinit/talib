@@ -3,13 +3,11 @@ import {
   Flex,
   Spacer,
   Link,
-  Button,
   MenuItem,
   MenuList,
   MenuButton,
   Menu,
   IconButton,
-  MenuDivider,
   useDisclosure,
 } from "@chakra-ui/react";
 import { RiAlignJustify, RiCloseFill } from "react-icons/ri";
@@ -69,15 +67,6 @@ export default function MenuMobile() {
                 Nodes
               </Link>
             </MenuItem>
-            <MenuDivider />
-            <Box display="flex" flexDirection="column" px="10%">
-              <Button mt={5} colorScheme="teal" variant="solid">
-                Sign Up
-              </Button>
-              <Button mt={5} mb={5} colorScheme="teal" variant="outline">
-                Sign In
-              </Button>
-            </Box>
           </MenuList>
         </Menu>
       </Box>

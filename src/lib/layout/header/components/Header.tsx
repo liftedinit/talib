@@ -11,7 +11,7 @@ const Header = () => {
       padding="8"
       bg={theme.colors.cream}
       color={theme.colors.black}
-      maxHeight="100px"
+      maxHeight="90px"
     >
       <Navbar />
     </Box>

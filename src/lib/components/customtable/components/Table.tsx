@@ -89,7 +89,9 @@ export function Table({
                 {row.cells.map((cell, index) => (
                   // eslint-disable-next-line react/no-array-index-key
                   <React.Fragment key={cell.column.id + index}>
-                    <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                    <Td {...cell.getCellProps()} whiteSpace="nowrap">
+                      {cell.render("Cell")}
+                    </Td>
                   </React.Fragment>
                 ))}
               </Tr>

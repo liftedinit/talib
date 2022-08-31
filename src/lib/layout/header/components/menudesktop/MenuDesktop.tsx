@@ -1,4 +1,4 @@
-import { Box, Flex, Spacer, Link, Stack, Button } from "@chakra-ui/react";
+import { Box, Flex, Spacer, Link, Stack } from "@chakra-ui/react";
 
 import Logo from "lib/components/logo/Logo";
 import { theme } from "lib/styles/customTheme";
@@ -25,25 +25,6 @@ export default function MenuDesktop() {
           >
             Nodes
           </Link>
-        </Stack>
-      </Box>
-      <Spacer />
-      <Box>
-        <Stack direction="row" spacing={6}>
-          <Button
-            size={{ sm: "sm", md: "md" }}
-            colorScheme="teal"
-            variant="solid"
-          >
-            Sign Up
-          </Button>
-          <Button
-            size={{ sm: "sm", md: "md" }}
-            colorScheme="teal"
-            variant="outline"
-          >
-            Sign In
-          </Button>
         </Stack>
       </Box>
     </Flex>

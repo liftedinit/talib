@@ -13,6 +13,7 @@ import { useTable } from "react-table";
 import type { Column } from "react-table";
 
 import { usePagination } from "../hooks/usePagination";
+import { theme } from "lib/styles/customTheme";
 
 import { NoContent } from "./NoContent";
 import type { NoContentProps } from "./NoContent";
@@ -65,46 +66,49 @@ export function Table({
   }
 
   return (
-    <Box py="6" px="8" borderRadius="8" w="full" h="100%">
-      <ChakraTable {...getTableProps()}>
-        <Thead>
-          {headerGroups.map((headerGroup) => (
-            <Tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-              {headerGroup.headers.map((column) => (
-                <React.Fragment key={column.id}>
-                  <Th {...column.getHeaderProps()}>
-                    {column.render("Header")}
-                  </Th>
-                </React.Fragment>
-              ))}
-            </Tr>
-          ))}
-        </Thead>
-
-        <Tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <Tr {...row.getRowProps()} key={row.id}>
-                {row.cells.map((cell, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <React.Fragment key={cell.column.id + index}>
-                    <Td {...cell.getCellProps()} whiteSpace="nowrap">
-                      {cell.render("Cell")}
-                    </Td>
+    <Box>
+      <Box px="8" borderRadius="8" w="full" h="300px">
+        <ChakraTable {...getTableProps()}>
+          <Thead>
+            {headerGroups.map((headerGroup) => (
+              <Tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+                {headerGroup.headers.map((column) => (
+                  <React.Fragment key={column.id}>
+                    <Th {...column.getHeaderProps()}>
+                      {column.render("Header")}
+                    </Th>
                   </React.Fragment>
                 ))}
               </Tr>
-            );
-          })}
-        </Tbody>
-      </ChakraTable>
+            ))}
+          </Thead>
 
-      <Pagination
-        {...pagination}
-        colorScheme={colorScheme}
-        onPageChange={onPageChange}
-      />
+          <Tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <Tr {...row.getRowProps()} key={row.id}>
+                  {row.cells.map((cell, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <React.Fragment key={cell.column.id + index}>
+                      <Td {...cell.getCellProps()} whiteSpace="nowrap">
+                        {cell.render("Cell")}
+                      </Td>
+                    </React.Fragment>
+                  ))}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </ChakraTable>
+      </Box>
+      <Box width="full" pt={0.5} backgroundColor={theme.colors.cream}>
+        <Pagination
+          {...pagination}
+          colorScheme={colorScheme}
+          onPageChange={onPageChange}
+        />
+      </Box>
     </Box>
   );
 }

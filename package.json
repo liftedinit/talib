@@ -22,13 +22,15 @@
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@fontsource/plus-jakarta-sans": "^4.5.8",
+    "@types/react-table": "^7.7.12",
     "framer-motion": "^6.5.1",
     "many-js": "github:liftedinit/many-js#main",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-icons": "^4.4.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "react-table": "^7.8.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.3",

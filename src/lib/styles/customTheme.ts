@@ -35,6 +35,19 @@ export const theme = extendTheme({
           color: "#8ddfd4",
         },
       },
+      button: {
+        color: "white",
+        backgroundColor: "#654D43",
+        _disabled: {
+          backgroundColor: "#654D43",
+          borderColor: "gray.300",
+          color: "#FAF0EA",
+        },
+        _hover: {
+          color: "#FAF0EA",
+          backgroundColor: "#654D43",
+        },
+      },
     },
   },
   components: {
@@ -60,6 +73,29 @@ export const theme = extendTheme({
     TermsAndConditions: {
       a: {
         color: "#faf0ea",
+      },
+    },
+    PaginationItem: {
+      button: {
+        with: "1.625rem",
+        height: "1.625rem",
+        backgroundColor: "white",
+        color: "black",
+      },
+    },
+    BlockList: {
+      button: {
+        color: "#654D43",
+        backgroundColor: "white",
+        _disabled: {
+          backgroundColor: "gray.300",
+          borderColor: "gray.300",
+          color: "#654D43",
+        },
+        _hover: {
+          color: "#FAF0EA",
+          backgroundColor: "#654D43",
+        },
       },
     },
   },

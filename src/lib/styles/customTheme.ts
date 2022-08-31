@@ -75,6 +75,14 @@ export const theme = extendTheme({
         color: "#faf0ea",
       },
     },
+    PaginationItem: {
+      button: {
+        with: "1.625rem",
+        height: "1.625rem",
+        backgroundColor: "white",
+        color: "black",
+      },
+    },
     BlockList: {
       button: {
         color: "#654D43",

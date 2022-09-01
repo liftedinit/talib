@@ -45,7 +45,8 @@ const BlockNetworkInformation = () => {
               display="flex"
               flexDirection="column"
               justifyContent="center"
-              alignItems={{ sm: "center", md: "start" }}
+              paddingLeft={{ sm: "25px", md: "0px" }}
+              alignItems={{ sm: "start", md: "start" }}
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
@@ -74,7 +75,8 @@ const BlockNetworkInformation = () => {
               display="flex"
               flexDirection="column"
               justifyContent="center"
-              alignItems={{ sm: "center", md: "start" }}
+              paddingLeft={{ sm: "25px", md: "0px" }}
+              alignItems={{ sm: "start", md: "start" }}
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
@@ -101,14 +103,15 @@ const BlockNetworkInformation = () => {
             spacing={0}
             height={{ sm: "175", md: "88px" }}
             columns={{ sm: 1, md: 2 }}
-            paddingLeft="25px"
+            paddingLeft={{ sm: "0px", md: "25px" }}
           >
             <Box
               height="88px"
               display="flex"
               flexDirection="column"
               justifyContent="center"
-              alignItems={{ sm: "center", md: "start" }}
+              paddingLeft={{ sm: "25px", md: "0px" }}
+              alignItems={{ sm: "start", md: "start" }}
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
@@ -135,7 +138,8 @@ const BlockNetworkInformation = () => {
               display="flex"
               flexDirection="column"
               justifyContent="center"
-              alignItems={{ sm: "center", md: "start" }}
+              paddingLeft={{ sm: "25px", md: "0px" }}
+              alignItems={{ sm: "start", md: "start" }}
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
@@ -179,7 +183,8 @@ const BlockNetworkInformation = () => {
               display="flex"
               flexDirection="column"
               justifyContent="center"
-              alignItems={{ sm: "center", md: "start" }}
+              paddingLeft={{ sm: "25px", md: "0px" }}
+              alignItems={{ sm: "start", md: "start" }}
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">

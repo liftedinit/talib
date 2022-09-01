@@ -3,6 +3,7 @@ import {
   Center,
   Grid,
   GridItem,
+  Image,
   SimpleGrid,
   Stack,
   Text,
@@ -12,11 +13,11 @@ import { theme } from "lib/styles/customTheme";
 
 const BlockNetworkInformation = () => {
   return (
-    <Center h={{ sm: "731px", md: "200px" }}>
+    <Center h={{ sm: "681px", md: "200px" }}>
       <Grid
         pos="absolute"
         top="300px"
-        h={{ sm: "701px", md: "177px" }}
+        h={{ sm: "650px", md: "177px" }}
         w={{ sm: "23em", md: "48em", lg: "62em" }}
         maxW="full"
         templateColumns={{ sm: "repeat(1, 1fr)", md: "repeat(3, 1fr)" }}
@@ -27,7 +28,7 @@ const BlockNetworkInformation = () => {
       >
         <GridItem
           colSpan={2}
-          h={{ sm: "350", md: "177px" }}
+          h={{ sm: "325px", md: "177px" }}
           alignItems="center"
         >
           <SimpleGrid
@@ -161,16 +162,61 @@ const BlockNetworkInformation = () => {
         </GridItem>
         <GridItem
           colSpan={1}
+          rowSpan={2}
           borderLeft={{ sm: "none", md: "1px" }}
           borderColor={{ md: "gray.300" }}
-          h={{ sm: "350", md: "177px" }}
+          h={{ sm: "325px", md: "177px" }}
         >
-          <Stack spacing={6}>
-            <Box fontSize="0.875rem" fontWeight={400}>
-              <Text>123/124</Text>
-              <Text>Active nodes</Text>
+          <SimpleGrid
+            columns={{ sm: 1, md: 1 }}
+            spacing={0}
+            height={{ sm: "80px", md: "80px" }}
+            paddingLeft={{ sm: "0px", md: "25px" }}
+          >
+            <Box
+              height="88px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems={{ sm: "center", md: "start" }}
+            >
+              <Stack display="flex" flexDirection="row" alignItems="center">
+                <Text fontSize="24px" fontWeight="400" lineHeight="28px">
+                  123/124
+                </Text>
+                <Text
+                  color={theme.colors.green}
+                  fontWeight="400"
+                  lineHeight="20px"
+                  fontSize="14px"
+                />
+              </Stack>
+              <Text
+                color={theme.colors.brown}
+                fontWeight="400"
+                lineHeight="20px"
+                fontSize="14px"
+              >
+                ACTIVE NODES
+              </Text>
             </Box>
-          </Stack>
+          </SimpleGrid>
+          <SimpleGrid
+            spacing={0}
+            height={{ sm: "175", md: "88px" }}
+            columns={{ sm: 1, md: 1 }}
+            paddingLeft="25px"
+          >
+            <Box
+              height="88px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems={{ sm: "center", md: "start" }}
+            >
+              <Image objectFit="cover" src="/assets/map.png" alt="map" />
+            </Box>
+          </SimpleGrid>
         </GridItem>
       </Grid>
     </Center>

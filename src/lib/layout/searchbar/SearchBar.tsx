@@ -6,9 +6,10 @@ const SeachBar = () => {
       h="273px"
       p="0px"
       w="100vw"
-      bg="url('/assets/background-search.jpg')"
+      bg="url('/assets/background-search-brown.jpg')"
       bgPosition="center"
       bgRepeat="repeat"
+      bgSize="contain"
     />
   );
 };

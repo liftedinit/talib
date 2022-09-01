@@ -6,7 +6,7 @@ const SeachBar = () => {
       h="273px"
       p="0px"
       w="100vw"
-      bgImage="url('/assets/background-search.jpg')"
+      bg="url('/assets/background-search.jpg')"
       bgPosition="center"
       bgRepeat="repeat"
     />

@@ -15,6 +15,7 @@ export default function MenuDesktop() {
             fontSize={{ sm: "0.875rem", md: "1.168rem" }}
             ml={5}
             _hover={{ textDecoration: "none" }}
+            href="/"
           >
             Blocks
           </Link>
@@ -22,6 +23,7 @@ export default function MenuDesktop() {
             ml={5}
             fontSize={{ sm: "0.875rem", md: "1.168rem" }}
             _hover={{ textDecoration: "none" }}
+            href="/nodes"
           >
             Nodes
           </Link>

@@ -25,6 +25,7 @@ const BlockNetworkInformation = () => {
         bg={theme.colors.white}
         borderRadius="md"
         alignItems={{ sm: "start", md: "center" }}
+        paddingTop={{ sm: "30px", md: "0px" }}
       >
         <GridItem
           colSpan={2}
@@ -170,7 +171,7 @@ const BlockNetworkInformation = () => {
           <SimpleGrid
             columns={{ sm: 1, md: 1 }}
             spacing={0}
-            height={{ sm: "80px", md: "80px" }}
+            height={{ sm: "88px", md: "80px" }}
             paddingLeft={{ sm: "0px", md: "25px" }}
           >
             <Box
@@ -208,7 +209,7 @@ const BlockNetworkInformation = () => {
             paddingLeft="25px"
           >
             <Box
-              height="88px"
+              height={{ sm: "175", md: "88px" }}
               display="flex"
               flexDirection="column"
               justifyContent="center"

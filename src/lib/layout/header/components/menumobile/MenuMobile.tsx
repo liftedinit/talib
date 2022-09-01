@@ -52,6 +52,7 @@ export default function MenuMobile() {
                 mb={2}
                 textAlign="center"
                 _hover={{ textDecoration: "none" }}
+                href="/"
               >
                 Blocks
               </Link>
@@ -63,6 +64,7 @@ export default function MenuMobile() {
                 mb={2}
                 textAlign="center"
                 _hover={{ textDecoration: "none" }}
+                href="/nodes"
               >
                 Nodes
               </Link>

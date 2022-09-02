@@ -66,8 +66,8 @@ export function Table({
   }
 
   return (
-    <Box>
-      <Box px="8" borderRadius="8" w="full" h="300px">
+    <Box w={{ sm: "23em", md: "54em", lg: "82em" }} maxW="full">
+      <Box px="0" borderRadius="8" w="full" h="auto">
         <ChakraTable {...getTableProps()}>
           <Thead>
             {headerGroups.map((headerGroup) => (
@@ -102,7 +102,13 @@ export function Table({
           </Tbody>
         </ChakraTable>
       </Box>
-      <Box width="full" pt={0.5} backgroundColor={theme.colors.cream}>
+      <Box
+        width="full"
+        w={{ sm: "23em", md: "54em", lg: "82em" }}
+        maxW="full"
+        pt={0.5}
+        backgroundColor={theme.colors.cream}
+      >
         <Pagination
           {...pagination}
           colorScheme={colorScheme}

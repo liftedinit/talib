@@ -18,7 +18,7 @@ const BlockNetworkInformation = () => {
         pos="absolute"
         top="300px"
         h={{ sm: "650px", md: "177px" }}
-        w={{ sm: "23em", md: "48em", lg: "62em" }}
+        w={{ sm: "23em", md: "48em", lg: "72em" }}
         maxW="full"
         templateColumns={{ sm: "repeat(1, 1fr)", md: "repeat(3, 1fr)" }}
         gap={2}

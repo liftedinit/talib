@@ -1,9 +1,9 @@
 // Use Chakra Ui for create a custom component for display field data in table
-import { Container, Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Center } from "@chakra-ui/react";
 // Recommended for icons
 import React from "react";
 
-import { Table } from "lib/components/customtable/Customtable";
+import { Table } from "lib/components/customtable/CustomTable";
 import { theme } from "lib/styles/customTheme";
 
 type Block = {
@@ -57,22 +57,6 @@ const blocks: Block[] = [
     data_size: 5435364646666,
     nodes: 943807171714,
   },
-  {
-    id: 6,
-    block_hash: "756465466",
-    time: "4hs 54mins ago",
-    num_of_txs: 9588655095533,
-    data_size: 4356664646666,
-    nodes: 9438048344,
-  },
-  {
-    id: 7,
-    block_hash: "5465757566",
-    time: "6hs 46mins ago",
-    num_of_txs: 9582305095533,
-    data_size: 54353649877886,
-    nodes: 8439000008349,
-  },
 ];
 
 const BlockList = () => {
@@ -113,13 +97,17 @@ const BlockList = () => {
   ];
 
   return (
-    <Container maxW="2xl" fontSize="14px" centerContent>
-      <Box maxW="1280px" p="12">
+    <Center maxW="full" fontSize="14px">
+      <Box w={{ sm: "23em", md: "54em", lg: "82em" }} py="1">
         <Heading fontSize="24px" fontWeight={400} as="h3">
           Block List
         </Heading>
 
-        <Box backgroundColor="white" mt="6" fontSize="14px" fontWeight={400}>
+        <Box
+          backgroundColor="white"
+          w={{ sm: "23em", md: "54em", lg: "82em" }}
+          mt="2"
+        >
           <Table
             colorScheme={theme.colors.brown}
             // Fallback component when list is empty
@@ -136,7 +124,7 @@ const BlockList = () => {
           />
         </Box>
       </Box>
-    </Container>
+    </Center>
   );
 };
 

@@ -1,5 +1,7 @@
+import BlockDetail from "lib/layout/blockdetail/BlockDetail";
+
 const Block = () => {
-  return <>block component</>;
+  return <BlockDetail />;
 };
 
 export default Block;

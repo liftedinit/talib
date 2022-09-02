@@ -1,12 +1,14 @@
-import { Grid } from "@chakra-ui/react";
-
 import BlockList from "lib/components/blocklist/BlockList";
+import BlockNetworkInformation from "lib/layout/blocknetwork/BlockNetworkInformation";
+import SearchBar from "lib/layout/searchbar/SearchBar";
 
 const Home = () => {
   return (
-    <Grid gap={4}>
+    <>
+      <SearchBar />
+      <BlockNetworkInformation />
       <BlockList />
-    </Grid>
+    </>
   );
 };
 

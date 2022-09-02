@@ -1,9 +1,9 @@
 // Use Chakra Ui for create a custom component for display field data in table
-import { Container, Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Center } from "@chakra-ui/react";
 // Recommended for icons
 import React from "react";
 
-import { Table } from "lib/components/customtable/Customtable";
+import { Table } from "lib/components/customtable/CustomTable";
 import { theme } from "lib/styles/customTheme";
 
 type Node = {
@@ -163,14 +163,20 @@ const NodesList = () => {
   ];
 
   return (
-    <Container maxW="2xl" fontSize="14px" centerContent>
-      <Box maxW="1280px" p="12">
+    <Center maxW="full" fontSize="14px">
+      <Box w={{ sm: "23em", md: "54em", lg: "82em" }} py="1">
         <Box>
-          <Heading fontSize="32px" fontWeight={400} as="h3" pl="2rem">
+          <Heading fontSize="32px" fontWeight={400} as="h3">
             NODES
           </Heading>
         </Box>
-        <Box backgroundColor="white" mt="6" fontSize="14px" fontWeight={400}>
+        <Box
+          backgroundColor="white"
+          mt="6"
+          fontSize="14px"
+          w={{ sm: "23em", md: "54em", lg: "82em" }}
+          fontWeight={400}
+        >
           <Table
             colorScheme={theme.colors.brown}
             // Fallback component when list is empty
@@ -187,7 +193,7 @@ const NodesList = () => {
           />
         </Box>
       </Box>
-    </Container>
+    </Center>
   );
 };
 

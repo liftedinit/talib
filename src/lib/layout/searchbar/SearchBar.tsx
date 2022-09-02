@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 
-const SeachBar = () => {
+const SearchBar = () => {
   return (
     <Box
       h="273px"
@@ -14,4 +14,4 @@ const SeachBar = () => {
   );
 };
 
-export default SeachBar;
+export default SearchBar;

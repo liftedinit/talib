@@ -10,9 +10,9 @@ type Block = {
   id: number;
   block_hash: string;
   time: string;
-  num_of_txs: number;
-  data_size: number;
-  nodes: number;
+  num_of_txs: string;
+  data_size: string;
+  nodes: string;
 };
 
 // Example list of blocks, to replace it with many.js block list get method
@@ -21,41 +21,65 @@ const blocks: Block[] = [
     id: 1,
     block_hash: "457676765",
     time: "2hs 36min ago",
-    num_of_txs: 9582305095533,
-    data_size: 5435364646666,
-    nodes: 94380454644,
+    num_of_txs: "9582305095533",
+    data_size: "5435364646666",
+    nodes: "94380454644",
   },
   {
     id: 2,
     block_hash: "832785237",
-    time: "4hs 16mins ago",
-    num_of_txs: 9588675095533,
-    data_size: 5435364646666,
-    nodes: 943807171714,
+    time: "4hs 17mins ago",
+    num_of_txs: "9588675095533",
+    data_size: "5435364646666",
+    nodes: "943807171714",
   },
   {
     id: 3,
     block_hash: "756465466",
     time: "4hs 54mins ago",
-    num_of_txs: 9588655095533,
-    data_size: 4356664646666,
-    nodes: 9438048344,
+    num_of_txs: "9588655095533",
+    data_size: "4356664646666",
+    nodes: "9438048344",
   },
   {
     id: 4,
     block_hash: "5465757566",
     time: "6hs 46mins ago",
-    num_of_txs: 9582305095533,
-    data_size: 54353649877886,
-    nodes: 8439000008349,
+    num_of_txs: "9582305095533",
+    data_size: "54353649877886",
+    nodes: "8439000008349",
   },
   {
     id: 5,
     block_hash: "832785237",
     time: "4hs 16mins ago",
-    num_of_txs: 9588675095533,
-    data_size: 5435364646666,
-    nodes: 943807171714,
+    num_of_txs: "9588675095533",
+    data_size: "5435364646666",
+    nodes: "943807171714",
+  },
+  {
+    id: 6,
+    block_hash: "756465466",
+    time: "4hs 54mins ago",
+    num_of_txs: "9588655095533",
+    data_size: "4356664646666",
+    nodes: "9438048344",
+  },
+  {
+    id: 7,
+    block_hash: "5465757566",
+    time: "6hs 46mins ago",
+    num_of_txs: "9582305095533",
+    data_size: "54353649877886",
+    nodes: "8439000008349",
+  },
+  {
+    id: 8,
+    block_hash: "832785237",
+    time: "4hs 16mins ago",
+    num_of_txs: "9588675095533",
+    data_size: "5435364646666",
+    nodes: "943807171714",
   },
 ];
 

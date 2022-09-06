@@ -71,7 +71,7 @@ export function Table({
         <ChakraTable {...getTableProps()}>
           <Thead>
             {headerGroups.map((headerGroup) => (
-              <Tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+              <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <React.Fragment key={column.id}>
                     <Th {...column.getHeaderProps()}>

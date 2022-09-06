@@ -66,7 +66,7 @@ export function Table({
   }
 
   return (
-    <Box w={{ sm: "23em", md: "54em", lg: "82em" }} maxW="full">
+    <Box w={{ sm: "23em", md: "54em", lg: "82em" }} overflow="hidden">
       <Box px="0" borderRadius="8" w="full" h="auto">
         <ChakraTable {...getTableProps()}>
           <Thead>

@@ -11,12 +11,21 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { RiAlignJustify, RiCloseFill } from "react-icons/ri";
+import { useLocation } from "react-router-dom";
 
 import Logo from "lib/components/logo/Logo";
 import { theme } from "lib/styles/customTheme";
 
 export default function MenuMobile() {
   const { isOpen, onToggle } = useDisclosure();
+  const location = useLocation();
+
+  // destructuring pathname from location
+  const { pathname } = location;
+
+  // Javascript split method to get the name of the path in array
+  const splitLocation = pathname.split("/");
+
   return (
     <Flex>
       <Logo boxSize="25px" fontSize="1.168rem" fontColor={theme.colors.black} />
@@ -47,12 +56,12 @@ export default function MenuMobile() {
               <Link
                 w="100%"
                 h="100%"
-                fontWeight="bold"
                 mt={2}
                 mb={2}
                 textAlign="center"
                 _hover={{ textDecoration: "none" }}
                 href="/"
+                fontWeight={splitLocation[1] === "" ? "bold" : "normal"}
               >
                 Blocks
               </Link>
@@ -65,6 +74,7 @@ export default function MenuMobile() {
                 textAlign="center"
                 _hover={{ textDecoration: "none" }}
                 href="/nodes"
+                fontWeight={splitLocation[1] === "nodes" ? "bold" : "normal"}
               >
                 Nodes
               </Link>

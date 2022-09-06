@@ -1,10 +1,10 @@
 // Use Chakra Ui for create a custom component for display field data in table
 import { Box, Heading, Center, useMediaQuery } from "@chakra-ui/react";
 
+import BlocksData from "../../../demodata/BlocksData";
+
 import BlockListDesktop from "./blocklistdesktop/BlockListDesktop";
 import BlockListMobile from "./blocklistmobile/BlockListMobile";
-
-import BlocksData from "../../../demodata/BlocksData";
 
 type Block = {
   id: number;
@@ -16,7 +16,7 @@ type Block = {
 };
 
 // todo: replace with real method to get information and remove the demodata import
-let blocks = BlocksData;
+const blocks: Block = BlocksData;
 
 const BlockList = () => {
   const [isMobile] = useMediaQuery("(max-width: 480px)");

@@ -40,6 +40,11 @@ export default function MenuMobile() {
             aria-label="Options"
             icon={isOpen ? <RiCloseFill /> : <RiAlignJustify />}
             variant="outline"
+            backgroundColor={theme.colors.cream}
+            _active={{ backgroundColor: theme.colors.cream }}
+            _hover={{ backgroundColor: theme.colors.cream }}
+            _focus={{ backgroundColor: theme.colors.cream }}
+            _expanded={{ backgroundColor: theme.colors.cream }}
           />
           <MenuList
             w="100vw"
@@ -52,6 +57,45 @@ export default function MenuMobile() {
               display="flex"
               alignContent="center"
               alignItems="center"
+              backgroundColor={theme.colors.cream}
+              _active={{ backgroundColor: theme.colors.cream }}
+              _hover={{ backgroundColor: theme.colors.cream }}
+              _focusVisible={{ backgroundColor: theme.colors.cream }}
+              _focus={{ backgroundColor: theme.colors.cream }}
+              _expanded={{ backgroundColor: theme.colors.cream }}
+            >
+              <Link
+                w="100%"
+                h="100%"
+                mt={2}
+                mb={2}
+                textAlign="center"
+                href="/"
+                fontWeight={splitLocation[1] === "" ? "bold" : "normal"}
+                backgroundColor={theme.colors.cream}
+                _active={{ backgroundColor: theme.colors.cream }}
+                _hover={{
+                  backgroundColor: theme.colors.cream,
+                  textDecoration: "none",
+                }}
+                _focus={{ backgroundColor: theme.colors.cream }}
+                _expanded={{ backgroundColor: theme.colors.cream }}
+              >
+                Blocks
+              </Link>
+            </MenuItem>
+            <MenuItem
+              w="100%"
+              h="100%"
+              display="flex"
+              alignContent="center"
+              alignItems="center"
+              backgroundColor={theme.colors.cream}
+              _active={{ backgroundColor: theme.colors.cream }}
+              _hover={{ backgroundColor: theme.colors.cream }}
+              _focusVisible={{ backgroundColor: theme.colors.cream }}
+              _focus={{ backgroundColor: theme.colors.cream }}
+              _expanded={{ backgroundColor: theme.colors.cream }}
             >
               <Link
                 w="100%"
@@ -60,21 +104,9 @@ export default function MenuMobile() {
                 mb={2}
                 textAlign="center"
                 _hover={{ textDecoration: "none" }}
-                href="/"
-                fontWeight={splitLocation[1] === "" ? "bold" : "normal"}
-              >
-                Blocks
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <Link
-                w="100%"
-                mt={2}
-                mb={2}
-                textAlign="center"
-                _hover={{ textDecoration: "none" }}
                 href="/nodes"
                 fontWeight={splitLocation[1] === "nodes" ? "bold" : "normal"}
+                backgroundColor={theme.colors.cream}
               >
                 Nodes
               </Link>

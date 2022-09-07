@@ -66,9 +66,12 @@ export function Table({
   }
 
   return (
-    <Box w={{ sm: "23em", md: "54em", lg: "82em" }} overflow="hidden">
-      <Box px="0" borderRadius="8" w="full" h="auto">
-        <ChakraTable {...getTableProps()}>
+    <Box w={{ sm: "23em", md: "54em", lg: "82em" }} overflowX="hidden">
+      <Box px="0" borderRadius="8" w="full" h="auto" overflowX="hidden">
+        <ChakraTable
+          {...getTableProps()}
+          w={{ sm: "23em", md: "54em", lg: "82em" }}
+        >
           <Thead>
             {headerGroups.map((headerGroup) => (
               <Tr {...headerGroup.getHeaderGroupProps()}>

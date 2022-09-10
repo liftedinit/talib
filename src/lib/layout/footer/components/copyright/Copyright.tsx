@@ -4,9 +4,7 @@ export default function Copyright() {
   return (
     <Stack align={{ md: "flex-start", sm: "center" }} spacing={6}>
       <Box fontSize="0.875rem" fontWeight={400}>
-        <Text color="Cream">
-          © 2022 THE LIFTED INITIATIVE. All rights reserved
-        </Text>
+        <Text color="Cream">Copyright © 2022 • The Lifted Initiative</Text>
       </Box>
     </Stack>
   );

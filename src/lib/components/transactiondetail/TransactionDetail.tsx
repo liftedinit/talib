@@ -22,9 +22,21 @@ import {
 import { FaCheckCircle, FaChevronDown } from "react-icons/fa";
 import { RiPlayLine } from "react-icons/ri";
 
+import TransactionData from "../../../demodata/TransactionData";
 import { theme } from "lib/styles/customTheme";
 
-const TransactionDetail = () => {
+type Transaction = {
+  transaction_hash: string;
+};
+
+interface Props {
+  transaction_hash: Transaction[];
+}
+// eslint-disable-next-line
+const TransactionDetail = ({ transaction_hash }: Props) => {
+  // demo data remove after create the real method
+  const transactionData = TransactionData;
+
   return (
     <Box my={5}>
       <Center h={{ sm: "681px", md: "auto" }}>
@@ -90,7 +102,7 @@ const TransactionDetail = () => {
                     noOfLines={1}
                     fontSize={{ sm: ".9rem", md: "1.1rem" }}
                   >
-                    0xB8c77482e45F1F44dE1745F52C74426C631bDD52
+                    {transactionData[0].transaction_hash}
                   </Link>
                 </GridItem>
                 <GridItem
@@ -105,7 +117,7 @@ const TransactionDetail = () => {
                   h="10"
                   fontSize={{ sm: ".9rem", md: "1.1rem" }}
                 >
-                  <Text>7 days 16 hrs ago (May-26-2022 02:42:50 AM +UTC)</Text>
+                  <Text>{transactionData[0].time}</Text>
                 </GridItem>
                 <GridItem
                   colSpan={{ sm: 2, md: 1 }}
@@ -129,7 +141,7 @@ const TransactionDetail = () => {
                       color={theme.colors.white}
                     >
                       <TagLeftIcon boxSize="12px" as={FaCheckCircle} />
-                      <TagLabel>Success</TagLabel>
+                      <TagLabel>{transactionData[0].status}</TagLabel>
                     </Tag>
                   </HStack>
                 </GridItem>
@@ -156,7 +168,7 @@ const TransactionDetail = () => {
                     noOfLines={1}
                     fontSize={{ sm: ".9rem", md: "1.1rem" }}
                   >
-                    0xB8c77482e45F1F44dE1745F52C74426C631bDD52
+                    {transactionData[0].from_address}
                   </Link>
                 </GridItem>
                 <GridItem
@@ -173,7 +185,7 @@ const TransactionDetail = () => {
                     noOfLines={1}
                     fontSize={{ sm: ".9rem", md: "1.1rem" }}
                   >
-                    0xB8c77482e45F1F44dE1745F52C74426C631bDD52
+                    {transactionData[0].to_address}
                   </Link>
                 </GridItem>
               </Grid>
@@ -197,7 +209,7 @@ const TransactionDetail = () => {
                   h="auto"
                   fontSize={{ sm: ".9rem", md: "1.1rem" }}
                 >
-                  <Text>$3.73</Text>
+                  <Text>{transactionData[0].transaction_fee}</Text>
                 </GridItem>
               </Grid>
               <Divider orientation="horizontal" />
@@ -213,7 +225,7 @@ const TransactionDetail = () => {
                 </GridItem>
                 <GridItem colSpan={{ sm: 6, md: 3 }} h="auto">
                   <Textarea
-                    value="Function: setApprovalForAll(address operator, bool approved)"
+                    value={transactionData[0].input_data}
                     isReadOnly
                     fontWeight={400}
                     fontSize="14px"

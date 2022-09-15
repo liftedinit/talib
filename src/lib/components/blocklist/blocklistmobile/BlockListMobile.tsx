@@ -1,11 +1,23 @@
 // Recommended for icons
-import { Box, Stack, Text, Table, Tr, Td } from "@chakra-ui/react";
-import React from "react";
+import {
+  Pagination,
+  usePagination,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationContainer,
+  PaginationPageGroup,
+} from "@ajna/pagination";
+import {
+  Box,
+  Stack,
+  Text,
+  Table,
+  Tr,
+  Td,
+  ChakraProvider,
+} from "@chakra-ui/react";
 
-import { NoContent } from "lib/components/customtable/components/NoContent";
-import { Pagination } from "lib/components/customtable/components/Pagination";
-import { usePagination } from "lib/components/customtable/hooks/usePagination";
-import { theme } from "lib/styles/customTheme";
+import { NoContent } from "../../customtable/components/NoContent";
 
 type Block = {
   id: number;
@@ -22,13 +34,9 @@ interface Props {
 
 const BlockListMobile = ({ blocks }: Props) => {
   // Control current Page
-  const [page, setPage] = React.useState(1);
-  const totalRegisters = blocks.length;
-
-  const pagination = usePagination({
-    totalRegisters,
-    page,
-    items: blocks,
+  const { currentPage, setCurrentPage, pagesCount } = usePagination({
+    pagesCount: 1,
+    initialState: { currentPage: 1 },
   });
 
   if (blocks.length === 0) {
@@ -37,7 +45,7 @@ const BlockListMobile = ({ blocks }: Props) => {
 
   return (
     <Box>
-      {blocks.map((block, index) => (
+      {blocks.map((block) => (
         <Stack>
           <Table
             key={block.id}
@@ -92,15 +100,29 @@ const BlockListMobile = ({ blocks }: Props) => {
           </Table>
         </Stack>
       ))}
-      <Box
-        width="full"
-        w={{ sm: "23em", md: "54em", lg: "82em" }}
-        maxW="full"
-        pt={0.5}
-        backgroundColor={theme.colors.cream}
-      />
-      <Pagination {...pagination} />
+
+      <ChakraProvider>
+        <Pagination
+          pagesCount={pagesCount}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        >
+          <PaginationContainer>
+            <PaginationPrevious>Previous</PaginationPrevious>
+            <PaginationPageGroup />
+            <PaginationNext
+              _hover={{
+                bg: "yellow.400",
+              }}
+              bg="yellow.300"
+            >
+              <Text>Next</Text>
+            </PaginationNext>
+          </PaginationContainer>
+        </Pagination>
+      </ChakraProvider>
     </Box>
   );
 };
+
 export default BlockListMobile;

@@ -3,25 +3,12 @@ import { Box, Heading, Center } from "@chakra-ui/react";
 // Recommended for icons
 import React from "react";
 
+import NodesData from "../../../demodata/NodesData";
 import { Table } from "lib/components/customtable/CustomTable";
 import { theme } from "lib/styles/customTheme";
 
-import NodesData from "../../../demodata/NodesData";
-
-type Node = {
-  id: number;
-  node_name: string;
-  node_ip: string;
-  address: string;
-  time: string;
-  total_staked: number;
-  total_rewards: string;
-  total_computing_power: string;
-  latency: string;
-};
-
 // todo: replace with real method to get information and remove the demodata import
-let nodes = NodesData;
+const nodes = NodesData;
 
 const NodesList = () => {
   // Control current Page

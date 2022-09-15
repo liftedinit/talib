@@ -12,7 +12,7 @@ const BlocksData = () => {
     {
       id: 2,
       block_hash: "832785237",
-      time: "4hs 16mins ago",
+      time: "4hs 19mins ago",
       num_of_txs: 9588675095533,
       data_size: 5435364646666,
       nodes: 943807171714,
@@ -20,7 +20,7 @@ const BlocksData = () => {
     {
       id: 3,
       block_hash: "756465466",
-      time: "4hs 54mins ago",
+      time: "1hs 54mins ago",
       num_of_txs: 9588655095533,
       data_size: 4356664646666,
       nodes: 9438048344,
@@ -28,7 +28,7 @@ const BlocksData = () => {
     {
       id: 4,
       block_hash: "5465757566",
-      time: "6hs 46mins ago",
+      time: "6hs 56mins ago",
       num_of_txs: 9582305095533,
       data_size: 54353649877886,
       nodes: 8439000008349,
@@ -36,7 +36,7 @@ const BlocksData = () => {
     {
       id: 5,
       block_hash: "832785237",
-      time: "4hs 16mins ago",
+      time: "9hs 16mins ago",
       num_of_txs: 9588675095533,
       data_size: 5435364646666,
       nodes: 943807171714,
@@ -44,7 +44,7 @@ const BlocksData = () => {
     {
       id: 6,
       block_hash: "756465466",
-      time: "4hs 54mins ago",
+      time: "8hs 54mins ago",
       num_of_txs: 9588655095533,
       data_size: 4356664646666,
       nodes: 9438048344,
@@ -52,7 +52,7 @@ const BlocksData = () => {
     {
       id: 7,
       block_hash: "5465757566",
-      time: "6hs 46mins ago",
+      time: "2hs 46mins ago",
       num_of_txs: 9582305095533,
       data_size: 54353649877886,
       nodes: 8439000008349,
@@ -60,7 +60,7 @@ const BlocksData = () => {
     {
       id: 8,
       block_hash: "832785237",
-      time: "4hs 16mins ago",
+      time: "2hs 06mins ago",
       num_of_txs: 9588675095533,
       data_size: 5435364646666,
       nodes: 943807171714,
@@ -68,7 +68,7 @@ const BlocksData = () => {
     {
       id: 9,
       block_hash: "756465466",
-      time: "4hs 54mins ago",
+      time: "1hs 11mins ago",
       num_of_txs: 9588655095533,
       data_size: 4356664646666,
       nodes: 9438048344,
@@ -76,7 +76,7 @@ const BlocksData = () => {
     {
       id: 10,
       block_hash: "5465757566",
-      time: "6hs 46mins ago",
+      time: "2hs 12mins ago",
       num_of_txs: 9582305095533,
       data_size: 54353649877886,
       nodes: 8439000008349,
@@ -84,7 +84,7 @@ const BlocksData = () => {
     {
       id: 11,
       block_hash: "832785237",
-      time: "4hs 16mins ago",
+      time: "1hs 13mins ago",
       num_of_txs: 9588675095533,
       data_size: 5435364646666,
       nodes: 943807171714,
@@ -92,7 +92,7 @@ const BlocksData = () => {
     {
       id: 12,
       block_hash: "756465466",
-      time: "4hs 54mins ago",
+      time: "1hs 59mins ago",
       num_of_txs: 9588655095533,
       data_size: 4356664646666,
       nodes: 9438048344,
@@ -100,7 +100,7 @@ const BlocksData = () => {
     {
       id: 13,
       block_hash: "5465757566",
-      time: "6hs 46mins ago",
+      time: "6hs 53mins ago",
       num_of_txs: 9582305095533,
       data_size: 54353649877886,
       nodes: 8439000008349,
@@ -108,7 +108,7 @@ const BlocksData = () => {
     {
       id: 14,
       block_hash: "832785237",
-      time: "4hs 16mins ago",
+      time: "4hs 52mins ago",
       num_of_txs: 9588675095533,
       data_size: 5435364646666,
       nodes: 943807171714,
@@ -116,7 +116,7 @@ const BlocksData = () => {
     {
       id: 15,
       block_hash: "756465466",
-      time: "4hs 54mins ago",
+      time: "4hs 57mins ago",
       num_of_txs: 9588655095533,
       data_size: 4356664646666,
       nodes: 9438048344,
@@ -124,7 +124,7 @@ const BlocksData = () => {
     {
       id: 16,
       block_hash: "5465757566",
-      time: "6hs 46mins ago",
+      time: "6hs 48mins ago",
       num_of_txs: 9582305095533,
       data_size: 54353649877886,
       nodes: 8439000008349,
@@ -132,7 +132,7 @@ const BlocksData = () => {
     {
       id: 17,
       block_hash: "832785237",
-      time: "4hs 16mins ago",
+      time: "4hs 49mins ago",
       num_of_txs: 9588675095533,
       data_size: 5435364646666,
       nodes: 943807171714,
@@ -140,7 +140,7 @@ const BlocksData = () => {
     {
       id: 18,
       block_hash: "756465466",
-      time: "4hs 54mins ago",
+      time: "4hs 58mins ago",
       num_of_txs: 9588655095533,
       data_size: 4356664646666,
       nodes: 9438048344,
@@ -148,7 +148,7 @@ const BlocksData = () => {
     {
       id: 19,
       block_hash: "5465757566",
-      time: "6hs 46mins ago",
+      time: "2hs 37mins ago",
       num_of_txs: 9582305095533,
       data_size: 54353649877886,
       nodes: 8439000008349,

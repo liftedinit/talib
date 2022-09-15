@@ -11,8 +11,6 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { MdBrokenImage } from "react-icons/md";
-import { useTable } from "react-table";
-import type { Column } from "react-table";
 
 import { usePagination } from "../hooks/usePagination";
 import { theme } from "lib/styles/customTheme";
@@ -27,18 +25,6 @@ type DataType = {
 
 type EmptyMessage = Partial<NoContentProps>;
 
-type Block = {
-  id: number;
-  block_hash: string;
-  time: string;
-  num_of_txs: number;
-  data_size: number;
-  nodes: number;
-};
-
-interface Props {
-  blocks: Block[];
-}
 interface CardTableProps {
   data: DataType[];
   page: number;
@@ -151,6 +137,7 @@ export function CardTable({
         <Pagination
           {...pagination}
           colorScheme={colorScheme}
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           onPageChange={onPageChange}
         />
       </Box>

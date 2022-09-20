@@ -1,7 +1,7 @@
 import renderer from "react-test-renderer";
 import { expect, test } from "vitest";
 
-import Footer from "../layout/footer/components/Footer";
+import Copyright from "../../../layout/footer/components/copyright/Copyright";
 
 const toJson = (component: renderer.ReactTestRenderer) => {
   const result = component.toJSON();
@@ -10,8 +10,8 @@ const toJson = (component: renderer.ReactTestRenderer) => {
   return result as renderer.ReactTestRendererJSON;
 };
 
-test("Footer", () => {
-  const component = renderer.create(<Footer />);
+test("Copyright", () => {
+  const component = renderer.create(<Copyright />);
   const tree = toJson(component);
   expect(tree).toMatchSnapshot();
 });

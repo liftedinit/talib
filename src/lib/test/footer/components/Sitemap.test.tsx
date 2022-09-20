@@ -1,7 +1,7 @@
 import renderer from "react-test-renderer";
 import { expect, test } from "vitest";
 
-import Sitemap from "../../../layout/footer/components/sitemap/Sitemap";
+import Sitemap from "lib/layout/footer/components/sitemap/Sitemap";
 
 const toJson = (component: renderer.ReactTestRenderer) => {
   const result = component.toJSON();

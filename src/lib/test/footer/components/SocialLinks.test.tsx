@@ -1,7 +1,7 @@
 import renderer from "react-test-renderer";
 import { expect, test } from "vitest";
 
-import SocialLinks from "../../../layout/footer/components/sociallinks/SocialLinks";
+import SocialLinks from "lib/layout/footer/components/sociallinks/SocialLinks";
 
 const toJson = (component: renderer.ReactTestRenderer) => {
   const result = component.toJSON();

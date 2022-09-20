@@ -1,7 +1,7 @@
 import renderer from "react-test-renderer";
 import { expect, test } from "vitest";
 
-import Footer from "../layout/footer/components/Footer";
+import Footer from "lib/layout/footer/components/Footer";
 
 const toJson = (component: renderer.ReactTestRenderer) => {
   const result = component.toJSON();

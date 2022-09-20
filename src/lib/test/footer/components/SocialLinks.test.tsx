@@ -1,7 +1,7 @@
 import renderer from "react-test-renderer";
 import { expect, test } from "vitest";
 
-import Copyright from "../layout/footer/components/copyright/Copyright";
+import SocialLinks from "lib/layout/footer/components/sociallinks/SocialLinks";
 
 const toJson = (component: renderer.ReactTestRenderer) => {
   const result = component.toJSON();
@@ -10,8 +10,8 @@ const toJson = (component: renderer.ReactTestRenderer) => {
   return result as renderer.ReactTestRendererJSON;
 };
 
-test("Copyright", () => {
-  const component = renderer.create(<Copyright />);
+test("SocialLinks", () => {
+  const component = renderer.create(<SocialLinks />);
   const tree = toJson(component);
   expect(tree).toMatchSnapshot();
 });

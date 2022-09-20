@@ -1,7 +1,7 @@
 import renderer from "react-test-renderer";
 import { expect, test } from "vitest";
 
-import Copyright from "../../../layout/footer/components/copyright/Copyright";
+import Copyright from "lib/layout/footer/components/copyright/Copyright";
 
 const toJson = (component: renderer.ReactTestRenderer) => {
   const result = component.toJSON();

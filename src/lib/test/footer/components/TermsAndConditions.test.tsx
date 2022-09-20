@@ -1,7 +1,7 @@
 import renderer from "react-test-renderer";
 import { expect, test } from "vitest";
 
-import TermsAndConditions from "../../../layout/footer/components/termsandconditions/TermsAndConditions";
+import TermsAndConditions from "lib/layout/footer/components/termsandconditions/TermsAndConditions";
 
 const toJson = (component: renderer.ReactTestRenderer) => {
   const result = component.toJSON();

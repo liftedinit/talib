@@ -1,5 +1,5 @@
+import BlockDetail from "lib/components/blockdetail/BlockDetail";
 import BlockDetailList from "lib/components/blockdetailist/BlockDetailList";
-import BlockDetail from "lib/layout/blockdetail/BlockDetail";
 
 const Block = () => {
   return (

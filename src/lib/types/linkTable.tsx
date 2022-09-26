@@ -1,6 +1,6 @@
 type LinkTable = {
   value: string;
-  src: string;
+  link: string;
 };
 
 export default LinkTable;

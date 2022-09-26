@@ -18,15 +18,7 @@ import {
 } from "@chakra-ui/react";
 
 import { NoContent } from "../../customtable/components/NoContent";
-
-type Block = {
-  id: number;
-  block_hash: string;
-  time: string;
-  num_of_txs: number;
-  data_size: number;
-  nodes: number;
-};
+import type Block from "lib/types/block";
 
 interface Props {
   blocks: Block[];
@@ -61,7 +53,7 @@ const BlockListMobile = ({ blocks }: Props) => {
                     BLOCK
                   </Text>
                 </Td>
-                <Td isNumeric>{block.block_hash}</Td>
+                <Td isNumeric>{block.block_hash.value}</Td>
               </Tr>
               <Tr p="1rem">
                 <Td>
@@ -82,19 +74,11 @@ const BlockListMobile = ({ blocks }: Props) => {
               <Tr p="1rem">
                 <Td>
                   <Text color="#654D43" fontSize="12px" fontWeight={400}>
-                    SIZE DATA
+                    MINED BY
                   </Text>
                 </Td>
-                <Td isNumeric>{block.data_size}</Td>
+                <Td isNumeric>{block.mined_by.value}</Td>
               </Tr>
-              <tr>
-                <Td>
-                  <Text color="#654D43" fontSize="12px" fontWeight={400}>
-                    NODES
-                  </Text>
-                </Td>
-                <Td isNumeric>{block.nodes}</Td>
-              </tr>
             </tbody>
             <tfoot />
           </Table>

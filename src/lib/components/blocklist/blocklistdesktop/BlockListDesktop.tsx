@@ -3,15 +3,7 @@ import React from "react";
 
 import { Table } from "lib/components/customtable/CustomTable";
 import { theme } from "lib/styles/customTheme";
-
-type Block = {
-  id: number;
-  block_hash: string;
-  time: string;
-  num_of_txs: number;
-  data_size: number;
-  nodes: number;
-};
+import type Block from "lib/types/block";
 
 interface Props {
   blocks: Block[];
@@ -26,8 +18,7 @@ const BlockListDesktop = ({ blocks }: Props) => {
     block_hash: block.block_hash,
     time: block.time,
     num_of_txs: block.num_of_txs,
-    data_size: block.data_size,
-    nodes: block.nodes,
+    mined_by: block.mined_by,
   }));
   // Accessor to get a data in block object
   const tableColumns = [
@@ -44,12 +35,8 @@ const BlockListDesktop = ({ blocks }: Props) => {
       accessor: "num_of_txs" as const,
     },
     {
-      Header: "SIZE DATA",
-      accessor: "data_size" as const,
-    },
-    {
-      Header: "NODES",
-      accessor: "nodes" as const,
+      Header: "MINED BY",
+      accessor: "mined_by" as const,
     },
   ];
   return (

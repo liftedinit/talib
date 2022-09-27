@@ -6,6 +6,7 @@ import React from "react";
 import NodesData from "../../../demodata/NodesData";
 import { Table } from "lib/components/customtable/CustomTable";
 import { theme } from "lib/styles/customTheme";
+import type Node from "lib/types/node";
 
 // todo: replace with real method to get information and remove the demodata import
 const nodes = NodesData;
@@ -15,7 +16,7 @@ const NodesList = () => {
   const [page, setPage] = React.useState(1);
 
   // Formatter for each user
-  const tableData = nodes.map((node) => ({
+  const tableData: Node[] = nodes.map((node) => ({
     node_name: node.node_name,
     node_ip: node.node_ip,
     address: node.address,

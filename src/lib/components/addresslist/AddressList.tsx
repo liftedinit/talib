@@ -6,15 +6,7 @@ import React from "react";
 import AddressListData from "../../../demodata/AddressData";
 import { Table } from "lib/components/customtable/CustomTable";
 import { theme } from "lib/styles/customTheme";
-
-type AddressDetail = {
-  id: number;
-  block_hash: string;
-  time: string;
-  from: string;
-  to: string;
-  type: string;
-};
+import type AddressDetail from "lib/types/addressDetail";
 
 // Example list of blocks, to replace it with many.js block list get method
 const Address: AddressDetail[] = AddressListData;

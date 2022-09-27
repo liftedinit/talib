@@ -6,15 +6,7 @@ import React from "react";
 import BlockDetailData from "../../../demodata/BlockDetailData";
 import { Table } from "lib/components/customtable/CustomTable";
 import { theme } from "lib/styles/customTheme";
-
-type BlockDetail = {
-  id: number;
-  block_hash: string;
-  time: string;
-  from: string;
-  to: string;
-  type: string;
-};
+import type BlockDetail from "lib/types/blockDetail";
 
 // Example list of blocks, to replace it with many.js block list get method
 const blocks: BlockDetail[] = BlockDetailData;

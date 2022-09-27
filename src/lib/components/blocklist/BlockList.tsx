@@ -2,21 +2,13 @@
 import { Box, Heading, Center, useMediaQuery } from "@chakra-ui/react";
 
 import BlocksData from "../../../demodata/BlocksData";
+import type Block from "lib/types/block";
 
 import BlockListDesktop from "./blocklistdesktop/BlockListDesktop";
 import BlockListMobile from "./blocklistmobile/BlockListMobile";
 
-type Block = {
-  id: number;
-  block_hash: string;
-  time: string;
-  num_of_txs: string;
-  data_size: string;
-  nodes: string;
-};
-
 // todo: replace with real method to get information and remove the demodata import
-const blocks: Block = BlocksData;
+const blocks: Block[] = BlocksData;
 
 const BlockList = () => {
   const [isMobile] = useMediaQuery("(max-width: 480px)");

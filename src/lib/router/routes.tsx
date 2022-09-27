@@ -16,7 +16,7 @@ export const routes: Array<PathRouteProps> = [
     element: <Nodes />,
   },
   {
-    path: "/block",
+    path: "/block/:blockHash",
     element: <Block />,
   },
   {
@@ -24,7 +24,7 @@ export const routes: Array<PathRouteProps> = [
     element: <Transaction />,
   },
   {
-    path: "/address",
+    path: "/address/:address",
     element: <Address />,
   },
 ];

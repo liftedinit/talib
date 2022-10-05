@@ -44,6 +44,11 @@ We add Linter to validate the code quickly.
 Also we can fix the code running the same command with a --fix parameter.
 - Linter fix command: `yarn lint --fix`
 
+## Integrating a little bit of CI/CD with Github Actions
+The nexts actions are included to validate our code in any PR (branch) before merge it.
+- We add Lint action to validate the code quickly.
+- We add Test action to run all tests wroted in the code quickly.
+
 ## References
 
 - [vite](https://vitejs.dev)

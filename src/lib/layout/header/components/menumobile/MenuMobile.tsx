@@ -84,33 +84,6 @@ export default function MenuMobile() {
                 Blocks
               </Link>
             </MenuItem>
-            <MenuItem
-              w="100%"
-              h="100%"
-              display="flex"
-              alignContent="center"
-              alignItems="center"
-              backgroundColor={theme.colors.cream}
-              _active={{ backgroundColor: theme.colors.cream }}
-              _hover={{ backgroundColor: theme.colors.cream }}
-              _focusVisible={{ backgroundColor: theme.colors.cream }}
-              _focus={{ backgroundColor: theme.colors.cream }}
-              _expanded={{ backgroundColor: theme.colors.cream }}
-            >
-              <Link
-                w="100%"
-                h="100%"
-                mt={2}
-                mb={2}
-                textAlign="center"
-                _hover={{ textDecoration: "none" }}
-                href="/nodes"
-                fontWeight={splitLocation[1] === "nodes" ? "bold" : "normal"}
-                backgroundColor={theme.colors.cream}
-              >
-                Nodes
-              </Link>
-            </MenuItem>
           </MenuList>
         </Menu>
       </Box>

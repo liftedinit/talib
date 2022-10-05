@@ -28,15 +28,6 @@ export default function MenuDesktop() {
           >
             Blocks
           </Link>
-          <Link
-            ml={5}
-            fontSize={{ sm: "0.875rem", md: "1.168rem" }}
-            _hover={{ textDecoration: "none", color: theme.colors.black }}
-            href="/nodes"
-            fontWeight={splitLocation[1] === "nodes" ? "bold" : "normal"}
-          >
-            Nodes
-          </Link>
         </Stack>
       </Box>
     </Flex>

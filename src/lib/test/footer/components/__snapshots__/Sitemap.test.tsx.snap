@@ -1,0 +1,32 @@
+// Vitest Snapshot v1
+
+exports[`Sitemap 1`] = `
+<div
+  className="chakra-stack css-6hobjc"
+>
+  <a
+    className="chakra-link css-1smue61"
+    href="https://theliftedinit.org/aboutus"
+  >
+    About Lifted Initiative
+  </a>
+  <a
+    className="chakra-link css-1smue61"
+    href="https://theliftedinit.org/aboutprotocol"
+  >
+    About the protocol
+  </a>
+  <a
+    className="chakra-link css-1smue61"
+    href="https://theliftedinit.org/documentationfordevs"
+  >
+    Documentation for developers
+  </a>
+  <a
+    className="chakra-link css-1smue61"
+    href="https://theliftedinit.org/codeofconduct"
+  >
+    Code of Conduct
+  </a>
+</div>
+`;

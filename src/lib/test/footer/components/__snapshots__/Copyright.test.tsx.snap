@@ -1,0 +1,17 @@
+// Vitest Snapshot v1
+
+exports[`Copyright 1`] = `
+<div
+  className="chakra-stack css-1utmndy"
+>
+  <div
+    className="css-jpoq7p"
+  >
+    <p
+      className="chakra-text css-mi6tax"
+    >
+      Copyright © 2022 • The Lifted Initiative
+    </p>
+  </div>
+</div>
+`;

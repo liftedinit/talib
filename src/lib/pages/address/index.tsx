@@ -20,13 +20,13 @@ import { theme } from "lib/styles/customTheme";
 const Address = () => {
   return (
     <Box mt={{ sm: 2, md: 5 }}>
-      <Center h={{ sm: "350px", md: "auto" }}>
+      <Center h={{ sm: "280px", md: "auto" }}>
         <Box>
           <Box
             display="flex"
             flexDirection="row"
             alignItems="baseline"
-            px={{ sm: "20px", md: "20px" }}
+            px={{ sm: "20px", md: "0px" }}
           >
             <Heading fontSize="1.5rem" fontWeight={400} as="h3">
               ADDRESS
@@ -43,7 +43,7 @@ const Address = () => {
             </Link>
           </Box>
           <Grid
-            h={{ sm: "340px", md: "123px" }}
+            h={{ sm: "250px", md: "123px" }}
             w={{ sm: "23em", md: "48em", lg: "72em" }}
             maxW="full"
             // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -57,20 +57,20 @@ const Address = () => {
           >
             <GridItem
               w="100%"
-              h={{ sm: "150px", md: "100px" }}
+              h={{ sm: "100px", md: "100px" }}
               bg={theme.colors.white}
               borderRadius="md"
             >
               <Grid
-                templateColumns={{ sm: "repeat(1, 1fr)", md: "repeat(5, 1fr)" }}
+                templateColumns={{ sm: "repeat(1, 1fr)", md: "repeat(3, 1fr)" }}
                 gap={0}
                 height="100%"
               >
                 <GridItem
                   colSpan={{ sm: 2, md: 2 }}
                   h="auto"
-                  p={2}
-                  borderRight="1px solid #E2E8F0"
+                  py={2}
+                  px={{ sm: 2, md: 5 }}
                 >
                   <Stack display="flex" flexDirection="row" alignItems="center">
                     <Text fontSize="22px" fontWeight="400" lineHeight="28.44px">
@@ -93,24 +93,6 @@ const Address = () => {
                       color={theme.colors.brown}
                     >
                       BALANCE
-                    </Text>
-                  </Stack>
-                </GridItem>
-
-                <GridItem colSpan={{ sm: 1, md: 3 }} h="100%" p={2}>
-                  <Stack display="flex" flexDirection="row" alignItems="center">
-                    <Text fontSize="22px" fontWeight="400" lineHeight="28.44px">
-                      545,774,135,429.02 USD
-                    </Text>
-                  </Stack>
-                  <Stack display="flex" flexDirection="row" alignItems="center">
-                    <Text
-                      fontSize="16px"
-                      fontWeight="400"
-                      lineHeight="28.44px"
-                      color={theme.colors.brown}
-                    >
-                      COIN BALANCE
                     </Text>
                   </Stack>
                 </GridItem>

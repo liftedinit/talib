@@ -39,7 +39,7 @@ const TransactionDetail = ({ transaction_hash }: Props) => {
 
   return (
     <Box my={5}>
-      <Center h={{ sm: "681px", md: "auto" }}>
+      <Center h={{ sm: "651px", md: "auto" }}>
         <Box>
           <Box display="flex" flexFlow="row" alignItems="baseline">
             <Heading fontSize="32px" fontWeight={400} as="h3">
@@ -47,7 +47,7 @@ const TransactionDetail = ({ transaction_hash }: Props) => {
             </Heading>
           </Box>
           <Grid
-            h={{ sm: "650px", md: "503px" }}
+            h={{ sm: "610px", md: "473px" }}
             w={{ sm: "23em", md: "48em", lg: "72em" }}
             maxW="full"
             templateColumns="repeat(1, 1fr)"
@@ -187,29 +187,6 @@ const TransactionDetail = ({ transaction_hash }: Props) => {
                   >
                     {transactionData[0].to_address}
                   </Link>
-                </GridItem>
-              </Grid>
-              <Divider orientation="horizontal" />
-            </GridItem>
-            <GridItem w="100%" h="auto" gap={0}>
-              <Grid
-                templateColumns={{ sm: "repeat(6, 1fr)", md: "repeat(4, 1fr)" }}
-                my={3}
-                gap={0}
-              >
-                <GridItem
-                  h="auto"
-                  colSpan={{ sm: 2, md: 1 }}
-                  fontSize={{ sm: ".9rem", md: "1.1rem" }}
-                >
-                  <Text>TRANSACTION FEE</Text>
-                </GridItem>
-                <GridItem
-                  colSpan={{ sm: 4, md: 3 }}
-                  h="auto"
-                  fontSize={{ sm: ".9rem", md: "1.1rem" }}
-                >
-                  <Text>{transactionData[0].transaction_fee}</Text>
                 </GridItem>
               </Grid>
               <Divider orientation="horizontal" />

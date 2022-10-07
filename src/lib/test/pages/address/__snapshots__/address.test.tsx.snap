@@ -1,0 +1,666 @@
+// Vitest Snapshot v1
+
+exports[`Home 1`] = `
+<div
+  className="css-1s93pt1"
+>
+  <div
+    className="css-139ywtw"
+  >
+    <div
+      className="css-0"
+    >
+      <div
+        className="css-ea0677"
+      >
+        <h3
+          className="chakra-heading css-sr8atr"
+        >
+          ADDRESS
+        </h3>
+        <a
+          className="chakra-link css-1i0v4ii"
+        >
+          0xB8c77482e45F1F44dE1745F52C74426C631bDD52
+        </a>
+      </div>
+      <div
+        className="css-11npgj2"
+      >
+        <div
+          className="css-jviyb8"
+        >
+          <div
+            className="css-1964n2c"
+          >
+            <div
+              className="css-4rcz6e"
+            >
+              <div
+                className="chakra-stack css-12t3lkn"
+              >
+                <p
+                  className="chakra-text css-15wnhow"
+                >
+                  $442.86
+                </p>
+                <p
+                  className="chakra-text css-dww7r"
+                >
+                  (+1.87%)
+                </p>
+              </div>
+              <div
+                className="chakra-stack css-12t3lkn"
+              >
+                <p
+                  className="chakra-text css-fdq5qq"
+                >
+                  BALANCE
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="css-5v2quy"
+        >
+          <div
+            className="css-1hm2ei0"
+          >
+            <div
+              className="css-nnyvaj"
+            >
+              <div
+                className="chakra-stack css-qipvkw"
+              >
+                <p
+                  className="chakra-text css-fdq5qq"
+                >
+                  NAME
+                </p>
+              </div>
+            </div>
+            <div
+              className="css-na8wer"
+            >
+              <div
+                className="chakra-stack css-1h4ws66"
+              >
+                <p
+                  className="chakra-text css-15wnhow"
+                >
+                  Matt Rivers
+                </p>
+                <div
+                  className="chakra-stack css-1bxxyz"
+                >
+                  <span
+                    className="css-d0mauc"
+                  >
+                    <svg
+                      className="chakra-icon css-1azbes1"
+                      fill="currentColor"
+                      focusable={false}
+                      height="1em"
+                      stroke="currentColor"
+                      strokeWidth="0"
+                      style={
+                        {
+                          "color": undefined,
+                        }
+                      }
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                      />
+                    </svg>
+                    <span
+                      className="css-zvlevn"
+                    >
+                      tag 1
+                    </span>
+                    <svg
+                      className="chakra-icon css-y5erb9"
+                      fill="currentColor"
+                      focusable={false}
+                      height="1em"
+                      stroke="currentColor"
+                      strokeWidth="0"
+                      style={
+                        {
+                          "color": undefined,
+                        }
+                      }
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    className="css-1cg7e4v"
+                  >
+                    <svg
+                      className="chakra-icon css-1azbes1"
+                      fill="currentColor"
+                      focusable={false}
+                      height="1em"
+                      stroke="currentColor"
+                      strokeWidth="0"
+                      style={
+                        {
+                          "color": undefined,
+                        }
+                      }
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                      />
+                    </svg>
+                    <span
+                      className="css-zvlevn"
+                    >
+                      tag 2
+                    </span>
+                    <svg
+                      className="chakra-icon css-y5erb9"
+                      fill="currentColor"
+                      focusable={false}
+                      height="1em"
+                      stroke="currentColor"
+                      strokeWidth="0"
+                      style={
+                        {
+                          "color": undefined,
+                        }
+                      }
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    className="css-1cg7e4v"
+                  >
+                    <svg
+                      className="chakra-icon css-1azbes1"
+                      fill="currentColor"
+                      focusable={false}
+                      height="1em"
+                      stroke="currentColor"
+                      strokeWidth="0"
+                      style={
+                        {
+                          "color": undefined,
+                        }
+                      }
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                      />
+                    </svg>
+                    <span
+                      className="css-zvlevn"
+                    >
+                      tag 3
+                    </span>
+                    <svg
+                      className="chakra-icon css-y5erb9"
+                      fill="currentColor"
+                      focusable={false}
+                      height="1em"
+                      stroke="currentColor"
+                      strokeWidth="0"
+                      style={
+                        {
+                          "color": undefined,
+                        }
+                      }
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="css-za6arg"
+  >
+    <div
+      className="css-imrbmu"
+    >
+      <h3
+        className="chakra-heading css-1i80fgp"
+      >
+        History
+      </h3>
+      <div
+        className="css-1j3ysxt"
+      >
+        <div
+          className="css-5pj2v0"
+        >
+          <div
+            className="css-u35zva"
+          >
+            <table
+              className="chakra-table css-qegi10"
+              role="table"
+            >
+              <thead
+                className="css-0"
+              >
+                <tr
+                  className="css-0"
+                  role="row"
+                >
+                  <th
+                    className="css-0"
+                    colSpan={1}
+                    role="columnheader"
+                  >
+                    TSX / HASH
+                  </th>
+                  <th
+                    className="css-0"
+                    colSpan={1}
+                    role="columnheader"
+                  >
+                    TIME
+                  </th>
+                  <th
+                    className="css-0"
+                    colSpan={1}
+                    role="columnheader"
+                  >
+                    FROM
+                  </th>
+                  <th
+                    className="css-0"
+                    colSpan={1}
+                    role="columnheader"
+                  >
+                    TO
+                  </th>
+                  <th
+                    className="css-0"
+                    colSpan={1}
+                    role="columnheader"
+                  >
+                    TYPE
+                  </th>
+                </tr>
+              </thead>
+              <tbody
+                className="css-0"
+                role="rowgroup"
+              >
+                <tr
+                  className="css-0"
+                  role="row"
+                >
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/block/0x1231232342342342"
+                    >
+                      0x1231232342342342
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      2hs 36min ago
+                    </span>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x1231232342343645"
+                    >
+                      0x1231232342343645
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x31232342342342"
+                    >
+                      0x3231232342342342
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      Buy
+                    </span>
+                  </td>
+                </tr>
+                <tr
+                  className="css-0"
+                  role="row"
+                >
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/block/0x1231232342342343"
+                    >
+                      0x1231232342342343
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      4hs 15mins ago
+                    </span>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x31232342342343"
+                    >
+                      0x3231232342342343
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x1231232342343646"
+                    >
+                      0x1231232342343646
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      Sell
+                    </span>
+                  </td>
+                </tr>
+                <tr
+                  className="css-0"
+                  role="row"
+                >
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/block/0x1231232342342344"
+                    >
+                      0x1231232342342344
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      4hs 54mins ago
+                    </span>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x1231232342343647"
+                    >
+                      0x1231232342343647
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x31232342342344"
+                    >
+                      0x3231232342342344
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      Sign
+                    </span>
+                  </td>
+                </tr>
+                <tr
+                  className="css-0"
+                  role="row"
+                >
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/block/0x1231232342342345"
+                    >
+                      0x1231232342342345
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      6hs 46mins ago
+                    </span>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x1231232342343648"
+                    >
+                      0x1231232342343648
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x31232342342345"
+                    >
+                      0x3231232342342345
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      Execute
+                    </span>
+                  </td>
+                </tr>
+                <tr
+                  className="css-0"
+                  role="row"
+                >
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/block/0x1231232342342346"
+                    >
+                      0x1231232342342346
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      4hs 16mins ago
+                    </span>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x31232342342346"
+                    >
+                      0x3231232342342346
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <a
+                      className="chakra-link css-zamdaj"
+                      href="/address/0x1231232342343649"
+                    >
+                      0x1231232342343649
+                    </a>
+                  </td>
+                  <td
+                    className="css-0"
+                    role="cell"
+                  >
+                    <span>
+                      Buy
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            className="css-37qczb"
+          >
+            <div
+              className="chakra-stack css-rlwq96"
+            >
+              <div
+                className="chakra-stack css-1ss2m3q"
+              >
+                <button
+                  className="chakra-button css-dsj5zd"
+                  type="button"
+                >
+                  &lt;&lt;
+                </button>
+                <button
+                  className="chakra-button css-gi0s1o"
+                  disabled={true}
+                  type="button"
+                >
+                  1
+                </button>
+                <button
+                  className="chakra-button css-59095b"
+                  onClick={[Function]}
+                  type="button"
+                >
+                  2
+                </button>
+                <button
+                  className="chakra-button css-59095b"
+                  onClick={[Function]}
+                  type="button"
+                >
+                  &gt;&gt;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

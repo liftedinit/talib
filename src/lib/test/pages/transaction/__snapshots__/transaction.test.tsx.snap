@@ -1,0 +1,360 @@
+// Vitest Snapshot v1
+
+exports[`Home 1`] = `
+<div
+  className="css-s98few"
+>
+  <div
+    className="css-w9ravv"
+  >
+    <div
+      className="css-0"
+    >
+      <div
+        className="css-i7slzv"
+      >
+        <h3
+          className="chakra-heading css-13jwqxv"
+        >
+          TRANSACTION DETAIL
+        </h3>
+      </div>
+      <div
+        className="css-1254jqi"
+      >
+        <div
+          className="css-2k7hx0"
+        >
+          <div
+            className="css-30e2ns"
+          >
+            <div
+              className="chakra-stack css-12t3lkn"
+            >
+              <p
+                className="chakra-text css-8hz0d0"
+              >
+                OVERVIEW
+              </p>
+            </div>
+            <hr
+              aria-orientation="horizontal"
+              className="chakra-divider css-1upb9tn"
+            />
+          </div>
+        </div>
+        <div
+          className="css-2k7hx0"
+        >
+          <div
+            className="css-13shxux"
+          >
+            <div
+              className="css-17dehky"
+            >
+              <p
+                className="chakra-text css-0"
+              >
+                TSX HASH
+              </p>
+            </div>
+            <div
+              className="css-1nymjet"
+            >
+              <a
+                className="chakra-link css-f9qqo7"
+              >
+                0xB8c77482e45F1F44dE1745F52C74426C631bDD52
+              </a>
+            </div>
+            <div
+              className="css-17dehky"
+            >
+              <p
+                className="chakra-text css-0"
+              >
+                TIME
+              </p>
+            </div>
+            <div
+              className="css-kw0pz0"
+            >
+              <p
+                className="chakra-text css-0"
+              >
+                7 days 16 hrs ago (May-26-2022 02:42:50 AM +UTC)
+              </p>
+            </div>
+            <div
+              className="css-szhpyl"
+            >
+              <p
+                className="chakra-text css-0"
+              >
+                STATUS
+              </p>
+            </div>
+            <div
+              className="css-1eiefwq"
+            >
+              <div
+                className="chakra-stack css-1qwdsol"
+              >
+                <span
+                  className="css-dt5ptx"
+                >
+                  <svg
+                    className="chakra-icon css-1azbes1"
+                    fill="currentColor"
+                    focusable={false}
+                    height="1em"
+                    stroke="currentColor"
+                    strokeWidth="0"
+                    style={
+                      {
+                        "color": undefined,
+                      }
+                    }
+                    viewBox="0 0 512 512"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"
+                    />
+                  </svg>
+                  <span
+                    className="css-zvlevn"
+                  >
+                    Success
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <hr
+            aria-orientation="horizontal"
+            className="chakra-divider css-1upb9tn"
+          />
+        </div>
+        <div
+          className="css-2k7hx0"
+        >
+          <div
+            className="css-13shxux"
+          >
+            <div
+              className="css-17dehky"
+            >
+              <p
+                className="chakra-text css-0"
+              >
+                TO
+              </p>
+            </div>
+            <div
+              className="css-1nymjet"
+            >
+              <a
+                className="chakra-link css-f9qqo7"
+              >
+                0xB8c77482e45F1F44dE1745F52C74426C631bDD54
+              </a>
+            </div>
+            <div
+              className="css-17dehky"
+            >
+              <p
+                className="chakra-text css-0"
+              >
+                FROM
+              </p>
+            </div>
+            <div
+              className="css-1nymjet"
+            >
+              <a
+                className="chakra-link css-f9qqo7"
+              >
+                0xB8c77482e45F1F44dE1745F52C74426C631bDD53
+              </a>
+            </div>
+          </div>
+          <hr
+            aria-orientation="horizontal"
+            className="chakra-divider css-1upb9tn"
+          />
+        </div>
+        <div
+          className="css-1c9m811"
+        >
+          <div
+            className="css-13shxux"
+          >
+            <div
+              className="css-1fqyw5y"
+            >
+              <p
+                className="chakra-text css-0"
+              >
+                INPUT DATA
+              </p>
+            </div>
+            <div
+              className="css-lnx352"
+            >
+              <textarea
+                aria-readonly={true}
+                className="chakra-textarea css-1ggbwjw"
+                onBlur={[Function]}
+                onFocus={[Function]}
+                placeholder="Here is a sample placeholder"
+                readOnly={true}
+                value="Function: setApprovalForAll(address operator, bool approved)"
+              />
+            </div>
+            <div
+              className="css-1p4c8rd"
+            />
+            <div
+              className="css-rm35rc"
+            >
+              <button
+                aria-controls="menu-list-:r1:"
+                aria-expanded={false}
+                aria-haspopup="menu"
+                className="chakra-button chakra-menu__menu-button css-1caz3u8"
+                id="menu-button-:r1:"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                type="button"
+              >
+                <span
+                  className="css-xl71ch"
+                >
+                  View Input As
+                </span>
+                <span
+                  className="chakra-button__icon css-1hzyiq5"
+                >
+                  <svg
+                    aria-hidden={true}
+                    fill="currentColor"
+                    focusable={false}
+                    height="1em"
+                    stroke="currentColor"
+                    strokeWidth="0"
+                    style={
+                      {
+                        "color": undefined,
+                      }
+                    }
+                    viewBox="0 0 448 512"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+              <div
+                className="css-0"
+                style={
+                  {
+                    "inset": "0 auto auto 0",
+                    "minWidth": "max-content",
+                    "position": "absolute",
+                    "visibility": "hidden",
+                  }
+                }
+              >
+                <div
+                  aria-orientation="vertical"
+                  className="chakra-menu__menu-list css-f4ql14"
+                  id="menu-list-:r1:"
+                  onKeyDown={[Function]}
+                  role="menu"
+                  style={
+                    {
+                      "opacity": 0,
+                      "transform": "scale(0.8) translateZ(0)",
+                      "transformOrigin": "var(--popper-transform-origin)",
+                      "visibility": "hidden",
+                    }
+                  }
+                  tabIndex={-1}
+                >
+                  <button
+                    className="chakra-menu__menuitem css-1p3nnvb"
+                    id="menu-list-:r1:-menuitem-:r2:"
+                    onClick={[Function]}
+                    onMouseEnter={[Function]}
+                    onMouseLeave={[Function]}
+                    onMouseMove={[Function]}
+                    role="menuitem"
+                    tabIndex={0}
+                    type="button"
+                  >
+                    Option One
+                  </button>
+                  <button
+                    className="chakra-menu__menuitem css-1p3nnvb"
+                    id="menu-list-:r1:-menuitem-:r3:"
+                    onClick={[Function]}
+                    onMouseEnter={[Function]}
+                    onMouseLeave={[Function]}
+                    onMouseMove={[Function]}
+                    role="menuitem"
+                    tabIndex={0}
+                    type="button"
+                  >
+                    Option Two
+                  </button>
+                </div>
+              </div>
+              <button
+                className="chakra-button css-18rkprm"
+                type="button"
+              >
+                <span
+                  className="chakra-button__icon css-1wh2kri"
+                >
+                  <svg
+                    aria-hidden={true}
+                    fill="currentColor"
+                    focusable={false}
+                    height="29px"
+                    stroke="currentColor"
+                    strokeWidth="0"
+                    style={
+                      {
+                        "color": undefined,
+                      }
+                    }
+                    viewBox="0 0 24 24"
+                    width="29px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M16.394 12L10 7.737v8.526L16.394 12zm2.982.416L8.777 19.482A.5.5 0 0 1 8 19.066V4.934a.5.5 0 0 1 .777-.416l10.599 7.066a.5.5 0 0 1 0 .832z"
+                      />
+                    </g>
+                  </svg>
+                </span>
+                Decode Input Data
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

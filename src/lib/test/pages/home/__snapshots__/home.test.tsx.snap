@@ -1,0 +1,499 @@
+// Vitest Snapshot v1
+
+exports[`Home 1`] = `
+[
+  <div
+    className="css-1z0t2y2"
+  />,
+  <div
+    className="css-19bewft"
+  >
+    <div
+      className="css-10qbm2z"
+    >
+      <div
+        className="css-1molr2b"
+      >
+        <div
+          className="css-945zx8"
+        >
+          <div
+            className="css-ipfnbh"
+          >
+            <div
+              className="chakra-stack css-12t3lkn"
+            >
+              <p
+                className="chakra-text css-1kf9ore"
+              >
+                1,585.83 M
+              </p>
+              <p
+                className="chakra-text css-1yl1k0u"
+              >
+                (12.7 tps)
+              </p>
+            </div>
+            <p
+              className="chakra-text css-jf0soh"
+            >
+              TRANSACTIONS PER SECOND
+            </p>
+          </div>
+          <div
+            className="css-ipfnbh"
+          >
+            <div
+              className="chakra-stack css-12t3lkn"
+            >
+              <p
+                className="chakra-text css-1kf9ore"
+              >
+                312345678
+              </p>
+              <p
+                className="chakra-text css-1yl1k0u"
+              />
+            </div>
+            <p
+              className="chakra-text css-jf0soh"
+            >
+              BLOCK HEIGHT
+            </p>
+          </div>
+        </div>
+        <div
+          className="css-a2u0o1"
+        >
+          <div
+            className="css-ipfnbh"
+          >
+            <div
+              className="chakra-stack css-12t3lkn"
+            >
+              <p
+                className="chakra-text css-1kf9ore"
+              >
+                312345678 GH/s
+              </p>
+              <p
+                className="chakra-text css-1yl1k0u"
+              />
+            </div>
+            <p
+              className="chakra-text css-jf0soh"
+            >
+              HASH RATE
+            </p>
+          </div>
+          <div
+            className="css-ipfnbh"
+          >
+            <div
+              className="chakra-stack css-12t3lkn"
+            >
+              <p
+                className="chakra-text css-1kf9ore"
+              >
+                34243654
+              </p>
+              <p
+                className="chakra-text css-1yl1k0u"
+              >
+                132242143
+              </p>
+            </div>
+            <p
+              className="chakra-text css-jf0soh"
+            >
+              COMPUTER POWER USED / AVAILABLE
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        className="css-11nh8xu"
+      >
+        <div
+          className="css-w3nq7d"
+        >
+          <div
+            className="css-ipfnbh"
+          >
+            <div
+              className="chakra-stack css-12t3lkn"
+            >
+              <p
+                className="chakra-text css-1kf9ore"
+              >
+                123/124
+              </p>
+              <p
+                className="chakra-text css-1yl1k0u"
+              />
+            </div>
+            <p
+              className="chakra-text css-jf0soh"
+            >
+              ACTIVE NODES
+            </p>
+          </div>
+        </div>
+        <div
+          className="css-115z842"
+        >
+          <div
+            className="css-xbl5nf"
+          >
+            <img
+              alt="map"
+              className="chakra-image css-1phd9a0"
+              src="/assets/map.png"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+  <div
+    className="css-za6arg"
+  >
+    <div
+      className="css-imrbmu"
+    >
+      <h3
+        className="chakra-heading css-1i80fgp"
+      >
+        Block List
+      </h3>
+      <div
+        className="css-1j3ysxt"
+      >
+        <div>
+          <div
+            className="css-5pj2v0"
+          >
+            <div
+              className="css-u35zva"
+            >
+              <table
+                className="chakra-table css-qegi10"
+                role="table"
+              >
+                <thead
+                  className="css-0"
+                >
+                  <tr
+                    className="css-0"
+                    role="row"
+                  >
+                    <th
+                      className="css-0"
+                      colSpan={1}
+                      role="columnheader"
+                    >
+                      BLOCK
+                    </th>
+                    <th
+                      className="css-0"
+                      colSpan={1}
+                      role="columnheader"
+                    >
+                      TIME
+                    </th>
+                    <th
+                      className="css-0"
+                      colSpan={1}
+                      role="columnheader"
+                    >
+                      NUMBER OF TXS
+                    </th>
+                    <th
+                      className="css-0"
+                      colSpan={1}
+                      role="columnheader"
+                    >
+                      MINED BY
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  className="css-0"
+                  role="rowgroup"
+                >
+                  <tr
+                    className="css-0"
+                    role="row"
+                  >
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/block/457676765"
+                      >
+                        #457676765
+                      </a>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        2hs 36min ago
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        9582305095533
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/address/5435364646667"
+                      >
+                        0x457676765
+                      </a>
+                    </td>
+                  </tr>
+                  <tr
+                    className="css-0"
+                    role="row"
+                  >
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/block/457676766"
+                      >
+                        #457676766
+                      </a>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        4hs 19mins ago
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        9588675095533
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/address/5435364646668"
+                      >
+                        0x457676766
+                      </a>
+                    </td>
+                  </tr>
+                  <tr
+                    className="css-0"
+                    role="row"
+                  >
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/block/457676767"
+                      >
+                        #457676767
+                      </a>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        1hs 54mins ago
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        9588655095533
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/address/5435364646669"
+                      >
+                        0x457676767
+                      </a>
+                    </td>
+                  </tr>
+                  <tr
+                    className="css-0"
+                    role="row"
+                  >
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/block/457676768"
+                      >
+                        #457676768
+                      </a>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        6hs 56mins ago
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        9582305095533
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/address/5435364646670"
+                      >
+                        0x457676768
+                      </a>
+                    </td>
+                  </tr>
+                  <tr
+                    className="css-0"
+                    role="row"
+                  >
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/block/457676769"
+                      >
+                        #457676769
+                      </a>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        9hs 16mins ago
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <span>
+                        9588676095533
+                      </span>
+                    </td>
+                    <td
+                      className="css-0"
+                      role="cell"
+                    >
+                      <a
+                        className="chakra-link css-zamdaj"
+                        href="/address/5435364646671"
+                      >
+                        0x457676769
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              className="css-37qczb"
+            >
+              <div
+                className="chakra-stack css-rlwq96"
+              >
+                <div
+                  className="chakra-stack css-1ss2m3q"
+                >
+                  <button
+                    className="chakra-button css-dsj5zd"
+                    type="button"
+                  >
+                    &lt;&lt;
+                  </button>
+                  <button
+                    className="chakra-button css-gi0s1o"
+                    disabled={true}
+                    type="button"
+                  >
+                    1
+                  </button>
+                  <button
+                    className="chakra-button css-59095b"
+                    onClick={[Function]}
+                    type="button"
+                  >
+                    2
+                  </button>
+                  <p
+                    className="chakra-text css-8t3u5b"
+                  >
+                    ...
+                  </p>
+                  <button
+                    className="chakra-button css-59095b"
+                    onClick={[Function]}
+                    type="button"
+                  >
+                    5
+                  </button>
+                  <button
+                    className="chakra-button css-59095b"
+                    onClick={[Function]}
+                    type="button"
+                  >
+                    &gt;&gt;
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+]
+`;

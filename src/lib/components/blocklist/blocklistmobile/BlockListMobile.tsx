@@ -71,14 +71,6 @@ const BlockListMobile = ({ blocks }: Props) => {
                 </Td>
                 <Td isNumeric>{block.num_of_txs}</Td>
               </Tr>
-              <Tr p="1rem">
-                <Td>
-                  <Text color="#654D43" fontSize="12px" fontWeight={400}>
-                    MINED BY
-                  </Text>
-                </Td>
-                <Td isNumeric>{block.mined_by.value}</Td>
-              </Tr>
             </tbody>
             <tfoot />
           </Table>

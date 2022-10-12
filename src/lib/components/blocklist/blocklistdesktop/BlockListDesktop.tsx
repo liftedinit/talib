@@ -18,7 +18,6 @@ const BlockListDesktop = ({ blocks }: Props) => {
     block_hash: block.block_hash,
     time: block.time,
     num_of_txs: block.num_of_txs,
-    mined_by: block.mined_by,
   }));
   // Accessor to get a data in block object
   const tableColumns = [
@@ -33,10 +32,6 @@ const BlockListDesktop = ({ blocks }: Props) => {
     {
       Header: "NUMBER OF TXS",
       accessor: "num_of_txs" as const,
-    },
-    {
-      Header: "MINED BY",
-      accessor: "mined_by" as const,
     },
   ];
   return (

@@ -10,10 +10,6 @@ const BlocksData = () => {
       },
       time: "2hs 36min ago",
       num_of_txs: "9582305095533",
-      mined_by: {
-        value: "0x457676765",
-        link: "/address/5435364646667",
-      },
     },
     {
       id: 2,
@@ -23,10 +19,6 @@ const BlocksData = () => {
       },
       time: "4hs 19mins ago",
       num_of_txs: "9588675095533",
-      mined_by: {
-        value: "0x457676766",
-        link: "/address/5435364646668",
-      },
     },
     {
       id: 3,
@@ -36,10 +28,6 @@ const BlocksData = () => {
       },
       time: "1hs 54mins ago",
       num_of_txs: "9588655095533",
-      mined_by: {
-        value: "0x457676767",
-        link: "/address/5435364646669",
-      },
     },
     {
       id: 4,
@@ -49,10 +37,6 @@ const BlocksData = () => {
       },
       time: "6hs 56mins ago",
       num_of_txs: "9582305095533",
-      mined_by: {
-        value: "0x457676768",
-        link: "/address/5435364646670",
-      },
     },
     {
       id: 5,
@@ -62,10 +46,6 @@ const BlocksData = () => {
       },
       time: "9hs 16mins ago",
       num_of_txs: "9588676095533",
-      mined_by: {
-        value: "0x457676769",
-        link: "/address/5435364646671",
-      },
     },
     {
       id: 6,
@@ -75,10 +55,6 @@ const BlocksData = () => {
       },
       time: "8hs 54mins ago",
       num_of_txs: "9588655095533",
-      mined_by: {
-        value: "0x457676770",
-        link: "/address/54353646466672",
-      },
     },
     {
       id: 7,
@@ -88,10 +64,6 @@ const BlocksData = () => {
       },
       time: "2hs 46mins ago",
       num_of_txs: "9582305095533",
-      mined_by: {
-        value: "0x457676771",
-        link: "/address/5435364646673",
-      },
     },
     {
       id: 8,
@@ -101,10 +73,6 @@ const BlocksData = () => {
       },
       time: "2hs 06mins ago",
       num_of_txs: "9588675095533",
-      mined_by: {
-        value: "0x457676772",
-        link: "/address/5435364646674",
-      },
     },
     {
       id: 9,
@@ -114,10 +82,6 @@ const BlocksData = () => {
       },
       time: "1hs 11mins ago",
       num_of_txs: "9588655095533",
-      mined_by: {
-        value: "0x457676773",
-        link: "/address/5435364646675",
-      },
     },
     {
       id: 10,
@@ -127,10 +91,6 @@ const BlocksData = () => {
       },
       time: "2hs 12mins ago",
       num_of_txs: "9582305095533",
-      mined_by: {
-        value: "0x457676774",
-        link: "/address/5435364646676",
-      },
     },
     {
       id: 11,
@@ -140,10 +100,6 @@ const BlocksData = () => {
       },
       time: "1hs 13mins ago",
       num_of_txs: "9588675095533",
-      mined_by: {
-        value: "0x457676775",
-        link: "/address/5435364646677",
-      },
     },
     {
       id: 12,
@@ -153,10 +109,6 @@ const BlocksData = () => {
       },
       time: "1hs 59mins ago",
       num_of_txs: "9588655095533",
-      mined_by: {
-        value: "0x457676776",
-        link: "/address/5435364646678",
-      },
     },
     {
       id: 13,
@@ -166,10 +118,6 @@ const BlocksData = () => {
       },
       time: "6hs 53mins ago",
       num_of_txs: "9582305095533",
-      mined_by: {
-        value: "0x457676777",
-        link: "/address/5435364646679",
-      },
     },
     {
       id: 14,
@@ -179,10 +127,6 @@ const BlocksData = () => {
       },
       time: "4hs 52mins ago",
       num_of_txs: "9588675095533",
-      mined_by: {
-        value: "0x457676778",
-        link: "/address/5435364646680",
-      },
     },
     {
       id: 15,
@@ -192,10 +136,6 @@ const BlocksData = () => {
       },
       time: "4hs 57mins ago",
       num_of_txs: "9588655095533",
-      mined_by: {
-        value: "0x457676779",
-        link: "/address/5435364646681",
-      },
     },
     {
       id: 16,
@@ -205,10 +145,6 @@ const BlocksData = () => {
       },
       time: "6hs 48mins ago",
       num_of_txs: "9582305095533",
-      mined_by: {
-        value: "0x457676780",
-        link: "/address/5435364646682",
-      },
     },
     {
       id: 17,
@@ -218,10 +154,6 @@ const BlocksData = () => {
       },
       time: "4hs 49mins ago",
       num_of_txs: "9588675095533",
-      mined_by: {
-        value: "0x457676781",
-        link: "/address/5435364646683",
-      },
     },
     {
       id: 18,
@@ -231,10 +163,6 @@ const BlocksData = () => {
       },
       time: "4hs 58mins ago",
       num_of_txs: "9588655095533",
-      mined_by: {
-        value: "0x457676782",
-        link: "/address/5435364646684",
-      },
     },
     {
       id: 19,
@@ -244,10 +172,6 @@ const BlocksData = () => {
       },
       time: "2hs 37mins ago",
       num_of_txs: "9582305095533",
-      mined_by: {
-        value: "0x457676783",
-        link: "/address/5435364646685",
-      },
     },
     {
       id: 20,
@@ -257,10 +181,6 @@ const BlocksData = () => {
       },
       time: "4hs 16mins ago",
       num_of_txs: "9588675095533",
-      mined_by: {
-        value: "0x457676784",
-        link: "/address/5435364646686",
-      },
     },
     {
       id: 21,
@@ -270,10 +190,6 @@ const BlocksData = () => {
       },
       time: "4hs 54mins ago",
       num_of_txs: "9588655095533",
-      mined_by: {
-        value: "0x457676785",
-        link: "/address/5435364646687",
-      },
     },
     {
       id: 22,
@@ -283,10 +199,6 @@ const BlocksData = () => {
       },
       time: "6hs 46mins ago",
       num_of_txs: "9582305095533",
-      mined_by: {
-        value: "0x457676786",
-        link: "/address/5435364646688",
-      },
     },
     {
       id: 23,
@@ -296,10 +208,6 @@ const BlocksData = () => {
       },
       time: "4hs 16mins ago",
       num_of_txs: "9588675095533",
-      mined_by: {
-        value: "0x457676787",
-        link: "/address/5435364646689",
-      },
     },
   ];
 };

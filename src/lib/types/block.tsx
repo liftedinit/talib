@@ -5,7 +5,6 @@ type Block = {
   block_hash: LinkTable;
   time: string;
   num_of_txs: string;
-  mined_by: LinkTable;
 };
 
 export default Block;

@@ -208,13 +208,6 @@ exports[`Home 1`] = `
                     >
                       NUMBER OF TXS
                     </th>
-                    <th
-                      className="css-0"
-                      colSpan={1}
-                      role="columnheader"
-                    >
-                      MINED BY
-                    </th>
                   </tr>
                 </thead>
                 <tbody
@@ -252,17 +245,6 @@ exports[`Home 1`] = `
                         9582305095533
                       </span>
                     </td>
-                    <td
-                      className="css-0"
-                      role="cell"
-                    >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/address/5435364646667"
-                      >
-                        0x457676765
-                      </a>
-                    </td>
                   </tr>
                   <tr
                     className="css-0"
@@ -294,17 +276,6 @@ exports[`Home 1`] = `
                       <span>
                         9588675095533
                       </span>
-                    </td>
-                    <td
-                      className="css-0"
-                      role="cell"
-                    >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/address/5435364646668"
-                      >
-                        0x457676766
-                      </a>
                     </td>
                   </tr>
                   <tr
@@ -338,17 +309,6 @@ exports[`Home 1`] = `
                         9588655095533
                       </span>
                     </td>
-                    <td
-                      className="css-0"
-                      role="cell"
-                    >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/address/5435364646669"
-                      >
-                        0x457676767
-                      </a>
-                    </td>
                   </tr>
                   <tr
                     className="css-0"
@@ -381,17 +341,6 @@ exports[`Home 1`] = `
                         9582305095533
                       </span>
                     </td>
-                    <td
-                      className="css-0"
-                      role="cell"
-                    >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/address/5435364646670"
-                      >
-                        0x457676768
-                      </a>
-                    </td>
                   </tr>
                   <tr
                     className="css-0"
@@ -423,17 +372,6 @@ exports[`Home 1`] = `
                       <span>
                         9588676095533
                       </span>
-                    </td>
-                    <td
-                      className="css-0"
-                      role="cell"
-                    >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/address/5435364646671"
-                      >
-                        0x457676769
-                      </a>
                     </td>
                   </tr>
                 </tbody>

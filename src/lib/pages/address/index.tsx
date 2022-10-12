@@ -7,12 +7,7 @@ import {
   Link,
   Text,
   Stack,
-  Tag,
-  TagLeftIcon,
-  TagLabel,
-  TagRightIcon,
 } from "@chakra-ui/react";
-import { MdClose } from "react-icons/md";
 
 import AddressList from "lib/components/addresslist/AddressList";
 import { theme } from "lib/styles/customTheme";
@@ -94,92 +89,6 @@ const Address = () => {
                     >
                       BALANCE
                     </Text>
-                  </Stack>
-                </GridItem>
-              </Grid>
-            </GridItem>
-            <GridItem
-              w="100%"
-              h={{ sm: "auto", md: "100px" }}
-              bg={theme.colors.white}
-              borderRadius="md"
-              pb={2}
-            >
-              <Grid
-                templateColumns={{ sm: "repeat(1, 1fr)", md: "repeat(4, 1fr)" }}
-                gap={0}
-                height="100%"
-              >
-                <GridItem
-                  colSpan={{ sm: 1, md: 1 }}
-                  h="auto"
-                  p={{ sm: 1, md: 2 }}
-                >
-                  <Stack
-                    display="flex"
-                    flexDirection={{ sm: "row", md: "row" }}
-                    alignItems="center"
-                    justifyContent={{ sm: "start", md: "center" }}
-                  >
-                    <Text
-                      fontSize="16px"
-                      fontWeight="400"
-                      lineHeight="28.44px"
-                      color={theme.colors.brown}
-                    >
-                      NAME
-                    </Text>
-                  </Stack>
-                </GridItem>
-                <GridItem colSpan={{ sm: 1, md: 3 }} h="100%" p={2}>
-                  <Stack
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="flex-start"
-                  >
-                    <Text fontSize="22px" fontWeight="400" lineHeight="28.44px">
-                      Matt Rivers
-                    </Text>
-                    <Stack
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="end"
-                      w="100%"
-                      gap={2}
-                    >
-                      <Tag
-                        size="md"
-                        variant="subtle"
-                        bgColor={theme.colors.green}
-                        color={theme.colors.black}
-                      >
-                        <TagLeftIcon boxSize="12px" as={MdClose} />
-                        <TagLabel>tag 1</TagLabel>
-                        <TagRightIcon boxSize="12px" as={MdClose} />
-                      </Tag>
-                      <Tag
-                        size="md"
-                        variant="subtle"
-                        bgColor={theme.colors.green}
-                        color={theme.colors.black}
-                        mt="0px"
-                      >
-                        <TagLeftIcon boxSize="12px" as={MdClose} />
-                        <TagLabel>tag 2</TagLabel>
-                        <TagRightIcon boxSize="12px" as={MdClose} />
-                      </Tag>
-                      <Tag
-                        size="md"
-                        variant="subtle"
-                        bgColor={theme.colors.green}
-                        color={theme.colors.black}
-                        mt="0px"
-                      >
-                        <TagLeftIcon boxSize="12px" as={MdClose} />
-                        <TagLabel>tag 3</TagLabel>
-                        <TagRightIcon boxSize="12px" as={MdClose} />
-                      </Tag>
-                    </Stack>
                   </Stack>
                 </GridItem>
               </Grid>

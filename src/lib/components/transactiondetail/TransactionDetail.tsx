@@ -20,7 +20,6 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FaCheckCircle, FaChevronDown } from "react-icons/fa";
-import { RiPlayLine } from "react-icons/ri";
 
 import TransactionData from "../../../demodata/TransactionData";
 import { theme } from "lib/styles/customTheme";

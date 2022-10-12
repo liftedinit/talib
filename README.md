@@ -1,4 +1,5 @@
-# Lifted Initiative Project Starter 
+# Lifted Initiative Project Starter
+
 ## Block Explorer
 
 This is a project bootstrapped with [`@vitejs/app`](https://vitejs.dev/guide/#scaffolding-your-first-vite-project) (`react-ts`), added with [Chakra UI](https://chakra-ui.com) and [TypeScript](https://www.typescriptlang.org) setup.
@@ -28,7 +29,7 @@ yarn dev
 
 ## Fast deploy with Vercel and Netlify
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/git?s=https://github.com/liftedinit/talib) 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/git?s=https://github.com/liftedinit/talib)
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/liftedinit/talib)
 
@@ -39,15 +40,20 @@ A specification for adding human and machine readable meaning to commit messages
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ## Development with Linter
-We add Linter to validate the code quickly. 
+
+We add Linter to validate the code quickly.
+
 - Linter command: `yarn lint`
-Also we can fix the code running the same command with a --fix parameter.
+  Also we can fix the code running the same command with a --fix parameter.
 - Linter fix command: `yarn lint --fix`
 
 ## Integrating a little bit of CI/CD with Github Actions
+
 The nexts actions are included to validate our code in any PR (branch) before merge it.
+
 - We add Lint action to validate the code quickly.
 - We add Test action to run all tests wroted in the code quickly.
+- We add Dependabot to keep updated the libraries in the platform.Dependabot will generate pr's automatically and these ones will be ready to merge it into develop branch.
 
 ## References
 

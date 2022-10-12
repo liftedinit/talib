@@ -20,7 +20,6 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FaCheckCircle, FaChevronDown } from "react-icons/fa";
-import { RiPlayLine } from "react-icons/ri";
 
 import TransactionData from "../../../demodata/TransactionData";
 import { theme } from "lib/styles/customTheme";
@@ -254,7 +253,7 @@ const TransactionDetail = ({ transaction_hash }: Props) => {
                           borderColor: "none",
                         }}
                       >
-                        Option One
+                        JSON
                       </MenuItem>
                       <MenuItem
                         bg={theme.colors.aquamarine}
@@ -272,25 +271,10 @@ const TransactionDetail = ({ transaction_hash }: Props) => {
                           borderColor: "none",
                         }}
                       >
-                        Option Two
+                        CBOR
                       </MenuItem>
                     </MenuList>
                   </Menu>
-                  <Button
-                    leftIcon={<RiPlayLine size="29px" />}
-                    color={theme.colors.white}
-                    bg={theme.colors.aquamarine}
-                    _hover={{
-                      bg: theme.colors.aquamarine,
-                      borderColor: "none",
-                    }}
-                    w={{ sm: "100%", md: "auto" }}
-                    size="md"
-                    ml={{ sm: 0, md: 4 }}
-                    mt={{ sm: 4, md: 0 }}
-                  >
-                    Decode Input Data
-                  </Button>
                 </GridItem>
               </Grid>
             </GridItem>

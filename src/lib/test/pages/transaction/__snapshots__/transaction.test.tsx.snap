@@ -297,7 +297,7 @@ exports[`Home 1`] = `
                     tabIndex={0}
                     type="button"
                   >
-                    Option One
+                    JSON
                   </button>
                   <button
                     className="chakra-menu__menuitem css-1p3nnvb"
@@ -310,46 +310,10 @@ exports[`Home 1`] = `
                     tabIndex={0}
                     type="button"
                   >
-                    Option Two
+                    CBOR
                   </button>
                 </div>
               </div>
-              <button
-                className="chakra-button css-18rkprm"
-                type="button"
-              >
-                <span
-                  className="chakra-button__icon css-1wh2kri"
-                >
-                  <svg
-                    aria-hidden={true}
-                    fill="currentColor"
-                    focusable={false}
-                    height="29px"
-                    stroke="currentColor"
-                    strokeWidth="0"
-                    style={
-                      {
-                        "color": undefined,
-                      }
-                    }
-                    viewBox="0 0 24 24"
-                    width="29px"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g>
-                      <path
-                        d="M0 0h24v24H0z"
-                        fill="none"
-                      />
-                      <path
-                        d="M16.394 12L10 7.737v8.526L16.394 12zm2.982.416L8.777 19.482A.5.5 0 0 1 8 19.066V4.934a.5.5 0 0 1 .777-.416l10.599 7.066a.5.5 0 0 1 0 .832z"
-                      />
-                    </g>
-                  </svg>
-                </span>
-                Decode Input Data
-              </button>
             </div>
           </div>
         </div>

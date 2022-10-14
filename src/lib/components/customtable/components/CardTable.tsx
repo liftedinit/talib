@@ -105,22 +105,6 @@ export function CardTable({
                   </Td>
                   <Td isNumeric>{block.num_of_txs}</Td>
                 </Tr>
-                <Tr p="1rem">
-                  <Td>
-                    <Text color="#654D43" fontSize="12px" fontWeight={400}>
-                      SIZE DATA
-                    </Text>
-                  </Td>
-                  <Td isNumeric>{block.data_size}</Td>
-                </Tr>
-                <tr>
-                  <Td>
-                    <Text color="#654D43" fontSize="12px" fontWeight={400}>
-                      NODES
-                    </Text>
-                  </Td>
-                  <Td isNumeric>{block.nodes}</Td>
-                </tr>
               </Tbody>
               <Tfoot />
             </ChakraTable>

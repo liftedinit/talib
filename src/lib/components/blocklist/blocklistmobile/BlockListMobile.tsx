@@ -1,23 +1,10 @@
 // Recommended for icons
-import {
-  Pagination,
-  usePagination,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationContainer,
-  PaginationPageGroup,
-} from "@ajna/pagination";
-import {
-  Box,
-  Stack,
-  Text,
-  Table,
-  Tr,
-  Td,
-  ChakraProvider,
-} from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import React from "react";
 
 import { NoContent } from "../../customtable/components/NoContent";
+import { CardTable } from "lib/components/blocklist/blocklistmobile/components/CustomCardTable";
+import { theme } from "lib/styles/customTheme";
 import type Block from "lib/types/block";
 
 interface Props {
@@ -26,77 +13,33 @@ interface Props {
 
 const BlockListMobile = ({ blocks }: Props) => {
   // Control current Page
-  const { currentPage, setCurrentPage, pagesCount } = usePagination({
-    pagesCount: 1,
-    initialState: { currentPage: 1 },
-  });
+  const [page, setPage] = React.useState(1);
 
   if (blocks.length === 0) {
     return <NoContent text="No information to show." />;
   }
+  // Formatter for each block
+  const tableData = blocks.map((block) => ({
+    block_hash: block.block_hash,
+    time: block.time,
+    num_of_txs: block.num_of_txs,
+  }));
 
   return (
     <Box>
-      {blocks.map((block) => (
-        <Stack>
-          <Table
-            key={block.id}
-            variant="unstyled"
-            borderBottom="1px"
-            borderBottomColor="gray.200"
-          >
-            <thead />
-            <tbody>
-              <Tr p="1rem">
-                <Td>
-                  <Text color="#654D43" fontSize="12px" fontWeight={400}>
-                    BLOCK
-                  </Text>
-                </Td>
-                <Td isNumeric>{block.block_hash.value}</Td>
-              </Tr>
-              <Tr p="1rem">
-                <Td>
-                  <Text color="#654D43" fontSize="12px" fontWeight={400}>
-                    TIME
-                  </Text>
-                </Td>
-                <Td>{block.time}</Td>
-              </Tr>
-              <Tr p="1rem">
-                <Td>
-                  <Text color="#654D43" fontSize="12px" fontWeight={400}>
-                    NUMBER OF TXS
-                  </Text>
-                </Td>
-                <Td isNumeric>{block.num_of_txs}</Td>
-              </Tr>
-            </tbody>
-            <tfoot />
-          </Table>
-        </Stack>
-      ))}
-
-      <ChakraProvider>
-        <Pagination
-          pagesCount={pagesCount}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        >
-          <PaginationContainer>
-            <PaginationPrevious>Previous</PaginationPrevious>
-            <PaginationPageGroup />
-            <PaginationNext
-              _hover={{
-                bg: "yellow.400",
-              }}
-              bg="yellow.300"
-            >
-              <Text>Next</Text>
-            </PaginationNext>
-          </PaginationContainer>
-        </Pagination>
-      </ChakraProvider>
+      <CardTable
+        colorScheme={theme.colors.brown}
+        // Fallback component when list is empty
+        emptyData={{
+          text: "Any transaction registered here.",
+        }}
+        totalRegisters={blocks.length}
+        page={page}
+        // Listen change page event and control the current page using state
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        onPageChange={(page) => setPage(page)}
+        data={tableData}
+      />
     </Box>
   );
 };

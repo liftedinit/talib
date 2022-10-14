@@ -12,12 +12,11 @@ import {
 import React from "react";
 import { MdBrokenImage } from "react-icons/md";
 
-import { usePagination } from "../hooks/usePagination";
+import { NoContent } from "lib/components/customtable/components/NoContent";
+import type { NoContentProps } from "lib/components/customtable/components/NoContent";
+import { Pagination } from "lib/components/customtable/components/Pagination";
+import { usePagination } from "lib/components/customtable/hooks/usePagination";
 import { theme } from "lib/styles/customTheme";
-
-import { NoContent } from "./NoContent";
-import type { NoContentProps } from "./NoContent";
-import { Pagination } from "./Pagination";
 
 type DataType = {
   [key: string]: JSX.Element | string;

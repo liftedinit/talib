@@ -38,9 +38,8 @@ const BlockListMobile = ({ blocks }: Props) => {
   return (
     <Box>
       {blocks.map((block) => (
-        <Stack>
+        <Stack key={block.id}>
           <Table
-            key={block.id}
             variant="unstyled"
             borderBottom="1px"
             borderBottomColor="gray.200"

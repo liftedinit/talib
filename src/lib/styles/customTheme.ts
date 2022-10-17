@@ -39,7 +39,7 @@ export const theme = extendTheme({
       },
       button: {
         color: "white",
-        backgroundColor: "#654D43",
+        // backgroundColor: "#654D43",
         _disabled: {
           backgroundColor: "#654D43",
           borderColor: "gray.300",

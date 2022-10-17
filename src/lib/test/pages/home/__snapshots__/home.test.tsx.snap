@@ -222,12 +222,49 @@ exports[`Home 1`] = `
                       className="css-0"
                       role="cell"
                     >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/block/457676765"
+                      <div
+                        className="css-u4p24i"
                       >
-                        #457676765
-                      </a>
+                        <a
+                          className="chakra-link css-zamdaj"
+                          href="/block/457676765"
+                        >
+                          #457676765
+                        </a>
+                        <button
+                          aria-label="copy to clipboard"
+                          className="chakra-button css-1j1x3vb"
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden={true}
+                            fill="currentColor"
+                            focusable={false}
+                            height="1em"
+                            stroke="currentColor"
+                            strokeWidth="0"
+                            style={
+                              {
+                                "color": undefined,
+                              }
+                            }
+                            viewBox="0 0 24 24"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g>
+                              <path
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                              />
+                              <path
+                                d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.007-1H7zM5.003 8L5 20h10V8H5.003zM9 6h8v10h2V4H9v2z"
+                              />
+                            </g>
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td
                       className="css-0"
@@ -254,12 +291,49 @@ exports[`Home 1`] = `
                       className="css-0"
                       role="cell"
                     >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/block/457676766"
+                      <div
+                        className="css-u4p24i"
                       >
-                        #457676766
-                      </a>
+                        <a
+                          className="chakra-link css-zamdaj"
+                          href="/block/457676766"
+                        >
+                          #457676766
+                        </a>
+                        <button
+                          aria-label="copy to clipboard"
+                          className="chakra-button css-1j1x3vb"
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden={true}
+                            fill="currentColor"
+                            focusable={false}
+                            height="1em"
+                            stroke="currentColor"
+                            strokeWidth="0"
+                            style={
+                              {
+                                "color": undefined,
+                              }
+                            }
+                            viewBox="0 0 24 24"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g>
+                              <path
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                              />
+                              <path
+                                d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.007-1H7zM5.003 8L5 20h10V8H5.003zM9 6h8v10h2V4H9v2z"
+                              />
+                            </g>
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td
                       className="css-0"
@@ -286,12 +360,49 @@ exports[`Home 1`] = `
                       className="css-0"
                       role="cell"
                     >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/block/457676767"
+                      <div
+                        className="css-u4p24i"
                       >
-                        #457676767
-                      </a>
+                        <a
+                          className="chakra-link css-zamdaj"
+                          href="/block/457676767"
+                        >
+                          #457676767
+                        </a>
+                        <button
+                          aria-label="copy to clipboard"
+                          className="chakra-button css-1j1x3vb"
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden={true}
+                            fill="currentColor"
+                            focusable={false}
+                            height="1em"
+                            stroke="currentColor"
+                            strokeWidth="0"
+                            style={
+                              {
+                                "color": undefined,
+                              }
+                            }
+                            viewBox="0 0 24 24"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g>
+                              <path
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                              />
+                              <path
+                                d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.007-1H7zM5.003 8L5 20h10V8H5.003zM9 6h8v10h2V4H9v2z"
+                              />
+                            </g>
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td
                       className="css-0"
@@ -318,12 +429,49 @@ exports[`Home 1`] = `
                       className="css-0"
                       role="cell"
                     >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/block/457676768"
+                      <div
+                        className="css-u4p24i"
                       >
-                        #457676768
-                      </a>
+                        <a
+                          className="chakra-link css-zamdaj"
+                          href="/block/457676768"
+                        >
+                          #457676768
+                        </a>
+                        <button
+                          aria-label="copy to clipboard"
+                          className="chakra-button css-1j1x3vb"
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden={true}
+                            fill="currentColor"
+                            focusable={false}
+                            height="1em"
+                            stroke="currentColor"
+                            strokeWidth="0"
+                            style={
+                              {
+                                "color": undefined,
+                              }
+                            }
+                            viewBox="0 0 24 24"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g>
+                              <path
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                              />
+                              <path
+                                d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.007-1H7zM5.003 8L5 20h10V8H5.003zM9 6h8v10h2V4H9v2z"
+                              />
+                            </g>
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td
                       className="css-0"
@@ -350,12 +498,49 @@ exports[`Home 1`] = `
                       className="css-0"
                       role="cell"
                     >
-                      <a
-                        className="chakra-link css-zamdaj"
-                        href="/block/457676769"
+                      <div
+                        className="css-u4p24i"
                       >
-                        #457676769
-                      </a>
+                        <a
+                          className="chakra-link css-zamdaj"
+                          href="/block/457676769"
+                        >
+                          #457676769
+                        </a>
+                        <button
+                          aria-label="copy to clipboard"
+                          className="chakra-button css-1j1x3vb"
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden={true}
+                            fill="currentColor"
+                            focusable={false}
+                            height="1em"
+                            stroke="currentColor"
+                            strokeWidth="0"
+                            style={
+                              {
+                                "color": undefined,
+                              }
+                            }
+                            viewBox="0 0 24 24"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g>
+                              <path
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                              />
+                              <path
+                                d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.007-1H7zM5.003 8L5 20h10V8H5.003zM9 6h8v10h2V4H9v2z"
+                              />
+                            </g>
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td
                       className="css-0"

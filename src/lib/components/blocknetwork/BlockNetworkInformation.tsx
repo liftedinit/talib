@@ -26,7 +26,7 @@ const BlockNetworkInformation = () => {
   const [ActiveNodes, setActiveNodes] = useState(0);
   const [TotalNodes, setTotalNodes] = useState(0);
 
-  const getBlockInfo = async () => {
+  const getBlockchainInfo = async () => {
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -35,23 +35,23 @@ const BlockNetworkInformation = () => {
           "Access-Control-Allow-Origin": "*",
         },
       });
-      const dato = await response.json();
-      setTsxPerSec(dato.tsx_per_sec);
-      setTsxTps(dato.tsx_tps);
-      setBlockHeight(dato.block_height);
-      setHashRate(dato.hash_rate);
-      setComputerPowerUsed(dato.computer_power_used);
-      setComputerPowerAvailable(dato.computer_power_available);
-      setActiveNodes(dato.active_nodes);
-      setTotalNodes(dato.total_nodes);
+      const data = await response.json();
+      setTsxPerSec(data.tsx_per_sec);
+      setTsxTps(data.tsx_tps);
+      setBlockHeight(data.block_height);
+      setHashRate(data.hash_rate);
+      setComputerPowerUsed(data.computer_power_used);
+      setComputerPowerAvailable(data.computer_power_available);
+      setActiveNodes(data.active_nodes);
+      setTotalNodes(data.total_nodes);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
     }
   };
   useEffect(() => {
-    getBlockInfo();
-  }, []);
+    getBlockchainInfo();
+  });
 
   return (
     <Center h={{ sm: "681px", md: "200px" }}>

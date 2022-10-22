@@ -7,10 +7,10 @@ import type Block from "lib/types/block";
 import BlockListDesktop from "./blocklistdesktop/BlockListDesktop";
 import BlockListMobile from "./blocklistmobile/BlockListMobile";
 
-// todo: replace with real method to get information and remove the demodata import
-const blocks: Block[] = BlocksData;
-
 const BlockList = () => {
+  // todo: replace with real method to get information and remove the demodata import
+  const blocks: Block[] = BlocksData;
+
   const [isMobile] = useMediaQuery("(max-width: 480px)");
 
   const displayDesktop = () => {

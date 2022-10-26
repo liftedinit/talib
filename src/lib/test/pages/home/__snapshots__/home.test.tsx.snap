@@ -26,12 +26,15 @@ exports[`Home 1`] = `
               <p
                 className="chakra-text css-1kf9ore"
               >
-                1,585.83 M
+                0
+                M
               </p>
               <p
                 className="chakra-text css-1yl1k0u"
               >
-                (12.7 tps)
+                (
+                0
+                 tps)
               </p>
             </div>
             <p
@@ -49,7 +52,7 @@ exports[`Home 1`] = `
               <p
                 className="chakra-text css-1kf9ore"
               >
-                312345678
+                0
               </p>
               <p
                 className="chakra-text css-1yl1k0u"
@@ -74,7 +77,8 @@ exports[`Home 1`] = `
               <p
                 className="chakra-text css-1kf9ore"
               >
-                312345678 GH/s
+                0
+                 GH/s
               </p>
               <p
                 className="chakra-text css-1yl1k0u"
@@ -95,12 +99,12 @@ exports[`Home 1`] = `
               <p
                 className="chakra-text css-1kf9ore"
               >
-                34243654
+                0
               </p>
               <p
                 className="chakra-text css-1yl1k0u"
               >
-                132242143
+                0
               </p>
             </div>
             <p
@@ -126,7 +130,9 @@ exports[`Home 1`] = `
               <p
                 className="chakra-text css-1kf9ore"
               >
-                123/124
+                0
+                /
+                0
               </p>
               <p
                 className="chakra-text css-1yl1k0u"

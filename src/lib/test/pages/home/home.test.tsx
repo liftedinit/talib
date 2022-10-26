@@ -9,7 +9,7 @@ const toJson = (component: renderer.ReactTestRenderer) => {
   return result as renderer.ReactTestRendererJSON;
 };
 
-test("Home", () => {
+test("Home", async () => {
   const component = renderer.create(<Home />);
   const tree = toJson(component);
   expect(tree).toMatchSnapshot();

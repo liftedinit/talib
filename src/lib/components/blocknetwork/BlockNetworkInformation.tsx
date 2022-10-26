@@ -8,10 +8,44 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
+// import type BlockInformation from "lib/types/blockInformation";
+import Api from "lib/config/api";
 import { theme } from "lib/styles/customTheme";
 
 const BlockNetworkInformation = () => {
+  // GET with fetch API
+  const [TsxPerSec, setTsxPerSec] = useState(0);
+  const [TsxTps, setTsxTps] = useState(0);
+  const [BlockHeight, setBlockHeight] = useState(0);
+  const [HashRate, setHashRate] = useState(0);
+  const [ComputerPowerUsed, setComputerPowerUsed] = useState(0);
+  const [ComputerPowerAvailable, setComputerPowerAvailable] = useState(0);
+  const [ActiveNodes, setActiveNodes] = useState(0);
+  const [TotalNodes, setTotalNodes] = useState(0);
+
+  const getBlockchainInfo = async () => {
+    try {
+      const response = await fetch(Api.endpoint.blockinformation, Api.options);
+      const data = await response.json();
+      setTsxPerSec(data.tsx_per_sec);
+      setTsxTps(data.tsx_tps);
+      setBlockHeight(data.block_height);
+      setHashRate(data.hash_rate);
+      setComputerPowerUsed(data.computer_power_used);
+      setComputerPowerAvailable(data.computer_power_available);
+      setActiveNodes(data.active_nodes);
+      setTotalNodes(data.total_nodes);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getBlockchainInfo();
+  });
+
   return (
     <Center h={{ sm: "681px", md: "200px" }}>
       <Grid
@@ -50,7 +84,7 @@ const BlockNetworkInformation = () => {
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
-                  1,585.83 M
+                  {TsxPerSec}M
                 </Text>
                 <Text
                   color={theme.colors.green}
@@ -58,7 +92,7 @@ const BlockNetworkInformation = () => {
                   lineHeight="20px"
                   fontSize="14px"
                 >
-                  (12.7 tps)
+                  ({TsxTps} tps)
                 </Text>
               </Stack>
               <Text
@@ -80,7 +114,7 @@ const BlockNetworkInformation = () => {
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
-                  312345678
+                  {BlockHeight}
                 </Text>
                 <Text
                   color={theme.colors.green}
@@ -115,7 +149,7 @@ const BlockNetworkInformation = () => {
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
-                  312345678 GH/s
+                  {HashRate} GH/s
                 </Text>
                 <Text
                   color={theme.colors.green}
@@ -143,7 +177,7 @@ const BlockNetworkInformation = () => {
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
-                  34243654
+                  {ComputerPowerUsed}
                 </Text>
                 <Text
                   color={theme.colors.green}
@@ -151,7 +185,7 @@ const BlockNetworkInformation = () => {
                   lineHeight="20px"
                   fontSize="14px"
                 >
-                  132242143
+                  {ComputerPowerAvailable}
                 </Text>
               </Stack>
               <Text
@@ -188,7 +222,7 @@ const BlockNetworkInformation = () => {
             >
               <Stack display="flex" flexDirection="row" alignItems="center">
                 <Text fontSize="24px" fontWeight="400" lineHeight="28px">
-                  123/124
+                  {ActiveNodes}/{TotalNodes}
                 </Text>
                 <Text
                   color={theme.colors.green}

@@ -16,7 +16,6 @@ import { theme } from "lib/styles/customTheme";
 
 const BlockNetworkInformation = () => {
   // GET with fetch API
-  const url = Api.blockinformation;
   const [TsxPerSec, setTsxPerSec] = useState(0);
   const [TsxTps, setTsxTps] = useState(0);
   const [BlockHeight, setBlockHeight] = useState(0);
@@ -28,13 +27,7 @@ const BlockNetworkInformation = () => {
 
   const getBlockchainInfo = async () => {
     try {
-      const response = await fetch(url, {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
+      const response = await fetch(Api.endpoint.blockinformation, Api.options);
       const data = await response.json();
       setTsxPerSec(data.tsx_per_sec);
       setTsxTps(data.tsx_tps);

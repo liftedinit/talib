@@ -15,7 +15,7 @@ import Api from "lib/config/api";
 import { theme } from "lib/styles/customTheme";
 
 const BlockNetworkInformation = () => {
-  // GET with fetch API
+  // Defined data states
   const [TsxPerSec, setTsxPerSec] = useState(0);
   const [TsxTps, setTsxTps] = useState(0);
   const [BlockHeight, setBlockHeight] = useState(0);
@@ -24,7 +24,7 @@ const BlockNetworkInformation = () => {
   const [ComputerPowerAvailable, setComputerPowerAvailable] = useState(0);
   const [ActiveNodes, setActiveNodes] = useState(0);
   const [TotalNodes, setTotalNodes] = useState(0);
-
+  // GET Blockchain Networkinformation from API
   const getBlockchainInfo = async () => {
     try {
       const response = await fetch(Api.endpoint.blockinformation, Api.options);

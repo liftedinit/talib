@@ -1,6 +1,7 @@
 // Use Chakra Ui for create a custom component for display field data in table
 import { Box, Heading, Center, useMediaQuery } from "@chakra-ui/react";
 import { useEffect } from "react";
+// import { resourceLimits } from "worker_threads";
 
 import Api from "lib/config/api";
 import type Block from "lib/types/block";
@@ -8,8 +9,8 @@ import type PreprocessBlock from "lib/types/preprocessBlock";
 
 import BlockListDesktop from "./blocklistdesktop/BlockListDesktop";
 import BlockListMobile from "./blocklistmobile/BlockListMobile";
-import { resourceLimits } from "worker_threads";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function processData(data: PreprocessBlock[]) {
   // eslint-disable-next-line no-console
   console.log("es objeto:");
@@ -26,6 +27,7 @@ function processData(data: PreprocessBlock[]) {
     });
   });
   */
+  /*
   let results: any = data.map((dat) => {
     const result: Block[] = {
       id: dat.id,
@@ -39,6 +41,7 @@ function processData(data: PreprocessBlock[]) {
     results.push(result);
     return results;
   });
+  */
 }
 
 const BlockList = () => {

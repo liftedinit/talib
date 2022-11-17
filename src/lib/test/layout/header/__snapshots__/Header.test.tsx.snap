@@ -9,7 +9,7 @@ exports[`Header 1`] = `
       className="css-0"
     >
       <div
-        className="css-k008qs"
+        className="css-gmuwbf"
       >
         <div
           className="css-70qvj9"
@@ -34,23 +34,6 @@ exports[`Header 1`] = `
           >
             INITIATIVE
           </p>
-        </div>
-        <div
-          className="css-17xejub"
-        />
-        <div
-          className="css-70qvj9"
-        >
-          <div
-            className="chakra-stack css-ex90l4"
-          >
-            <a
-              className="chakra-link css-4thald"
-              href="/"
-            >
-              Blocks
-            </a>
-          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { HStack, VStack, Box, Heading, Icon, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-
 // import type BlockInformation from "lib/types/blockInformation";
 import { FaTrophy, FaCube, FaCode } from "react-icons/all";
 
@@ -19,18 +18,9 @@ const CircleIcon = (props) => (
 
 const BlockNetworkInformation = () => {
   // Defined data states
-  const [Id, setId] = useState(0);
   const [Neighborhood, setNeighborhood] = useState(0);
-  const [ServerName, setServerName] = useState(0);
-  const [Address, setAddress] = useState(0);
-  const [Attributes, setAttributes] = useState(0);
   const [ServerVersion, setServerVersion] = useState(0);
   const [ProtocolVersion, setProtocolVersion] = useState(0);
-  const [TimeDeltaInSecs, setTimeDeltaInSecs] = useState(0);
-  const [PublicKey, setPublicKey] = useState(0);
-  const [NetworkData, setNetworkData] = useState(0);
-  const [Created_at, setCreated_at] = useState(0);
-  const [Updated_at, setUpdated_at] = useState(0);
 
   // GET Blockchain Network Information from API
   const getNetworkInformation = async () => {
@@ -40,18 +30,9 @@ const BlockNetworkInformation = () => {
         Api.options
       );
       const data = await response.json();
-      setId(data[0].id);
       setNeighborhood(data[0].neighborhood);
-      setServerName(data[0].serverName);
-      setAddress(data[0].address);
-      setAttributes(data[0].serverVersion);
       setServerVersion(data[0].serverVersion);
       setProtocolVersion(data[0].protocolVersion);
-      setTimeDeltaInSecs(data[0].timeDeltaInSecs);
-      setPublicKey(data[0].publicKey);
-      setNetworkData(data[0].networkData);
-      setCreated_at(data[0].created_at);
-      setUpdated_at(data[0].updated_at);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);

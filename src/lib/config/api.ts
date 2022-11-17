@@ -1,7 +1,8 @@
 const Api = {
   endpoint: {
     blockinformation: "http://localhost:3000/blockinformation",
-    blocklist: "http://localhost:3000/blocklist",
+    blocklist: "http://localhost:3000/block",
+    networkinformation: "http://localhost:3000/networkinfo",
   },
   options: {
     method: "GET",

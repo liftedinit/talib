@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 
 import { theme } from "lib/styles/customTheme";
 
-import Navbar from "./navbar/NavBar";
+import NoMenu from "./nomenu/NoMenu";
 
 const Header = () => {
   return (
@@ -13,7 +13,7 @@ const Header = () => {
       color={theme.colors.black}
       maxHeight="90px"
     >
-      <Navbar />
+      <NoMenu />
     </Box>
   );
 };

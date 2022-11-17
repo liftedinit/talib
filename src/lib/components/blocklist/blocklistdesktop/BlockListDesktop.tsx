@@ -6,7 +6,7 @@ import { theme } from "lib/styles/customTheme";
 import type Block from "lib/types/block";
 
 interface Props {
-  blocks: Block[];
+  blocks: Promise<Block[] | undefined>;
 }
 
 const BlockListDesktop = ({ blocks }: Props) => {

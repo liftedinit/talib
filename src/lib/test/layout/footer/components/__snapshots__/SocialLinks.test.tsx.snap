@@ -23,7 +23,7 @@ exports[`SocialLinks 1`] = `
           href="https://github.com/liftedinit"
         >
           <span
-            className="css-f8n5zr"
+            className="css-idkz9h"
           >
             Github
           </span>
@@ -51,7 +51,7 @@ exports[`SocialLinks 1`] = `
           href="https://www.linkedin.com/company/liftedinit"
         >
           <span
-            className="css-f8n5zr"
+            className="css-idkz9h"
           >
             Linkedin
           </span>
@@ -79,7 +79,7 @@ exports[`SocialLinks 1`] = `
           href="https://twitter.com/liftedinit"
         >
           <span
-            className="css-f8n5zr"
+            className="css-idkz9h"
           >
             Twitter
           </span>

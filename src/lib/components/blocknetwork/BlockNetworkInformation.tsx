@@ -1,11 +1,32 @@
 import { HStack, VStack, Box, Heading, Icon, Text } from "@chakra-ui/react";
+import {
+  Blockchain,
+  Network,
+  AnonymousIdentity,
+  Base,
+} from "@liftedinit/many-js";
+import type { InfoReturns } from "@liftedinit/many-js";
 import { useEffect, useState } from "react";
-// import type BlockInformation from "lib/types/blockInformation";
 import { FaTrophy, FaCube, FaCode } from "react-icons/all";
 
 import Hcard from "../hcard/Hcard";
-import Api from "lib/config/api";
 import { theme } from "lib/styles/customTheme";
+
+const anonymous = new AnonymousIdentity(); // => Anonymous Address
+const network = new Network("http://localhost:8000/", anonymous);
+network.apply([Blockchain, Base]);
+
+// get NetworkInformation
+async function getNetworkInfo() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: any = await network.base.status();
+  return data.status;
+}
+// get Info latestBlock height
+async function getLatestBlockInfo() {
+  const data: InfoReturns = await network.blockchain.info();
+  return data.info?.latestBlock.height;
+}
 
 const CircleIcon = (props) => (
   <Icon viewBox="0 0 200 200" {...props}>
@@ -18,21 +39,19 @@ const CircleIcon = (props) => (
 
 const BlockNetworkInformation = () => {
   // Defined data states
-  const [Neighborhood, setNeighborhood] = useState(0);
   const [ServerVersion, setServerVersion] = useState(0);
   const [ProtocolVersion, setProtocolVersion] = useState(0);
+  const [BlockHeight, setBlockHeight] = useState(0);
 
   // GET Blockchain Network Information from API
   const getNetworkInformation = async () => {
     try {
-      const response = await fetch(
-        Api.endpoint.networkinformation,
-        Api.options
-      );
-      const data = await response.json();
-      setNeighborhood(data[0].neighborhood);
-      setServerVersion(data[0].serverVersion);
-      setProtocolVersion(data[0].protocolVersion);
+      const dataNetwork = await getNetworkInfo();
+      const dataBlockInfo = await getLatestBlockInfo();
+
+      setServerVersion(dataNetwork[0].serverVersion);
+      setProtocolVersion(dataNetwork[0].protocolVersion);
+      setBlockHeight(dataBlockInfo);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
@@ -52,7 +71,7 @@ const BlockNetworkInformation = () => {
             as="h1"
             color={theme.colors.cream}
           >
-            {String(Neighborhood)}
+            Manifest
           </Heading>
         </Box>
         <Box as="span" display="flex">
@@ -64,9 +83,9 @@ const BlockNetworkInformation = () => {
       </VStack>
       <HStack mt="70px" maxW="full">
         <Hcard
-          title="Block Height "
+          title="Block Height"
           icon={FaCube}
-          content={String(ProtocolVersion)}
+          content={String(BlockHeight)}
         />
 
         <Hcard

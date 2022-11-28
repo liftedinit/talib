@@ -13,7 +13,7 @@ import Hcard from "../hcard/Hcard";
 import { theme } from "lib/styles/customTheme";
 
 const anonymous = new AnonymousIdentity(); // => Anonymous Address
-const network = new Network("http://localhost:8000/", anonymous);
+const network = new Network("/api/", anonymous);
 network.apply([Blockchain, Base]);
 
 // get NetworkInformation
@@ -48,9 +48,8 @@ const BlockNetworkInformation = () => {
     try {
       const dataNetwork = await getNetworkInfo();
       const dataBlockInfo = await getLatestBlockInfo();
-
-      setServerVersion(dataNetwork[0].serverVersion);
-      setProtocolVersion(dataNetwork[0].protocolVersion);
+      setServerVersion(dataNetwork.serverVersion);
+      setProtocolVersion(dataNetwork.protocolVersion);
       setBlockHeight(dataBlockInfo);
     } catch (e) {
       // eslint-disable-next-line no-console

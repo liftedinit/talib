@@ -1,18 +1,15 @@
 // Mock Data
 const BlockinformationMock = [
   {
-    id: 1,
-    tsx_per_sec: 112121,
-    tsx_tps: 22.2,
-    block_height: 2134243244,
-    hash_rate: 423424214,
-    computer_power_used: 424443,
-    computer_power_available: 54333,
-    active_nodes: 123,
-    total_nodes: 231,
-    blockinfo_data: {},
-    created_at: "2022-10-21T23:32:51.403Z",
-    updated_at: "2022-10-21T23:32:51.403Z",
+    status: {
+      protocolVersion: 1,
+      serverName: "AbciModule(many-ledger)",
+      publicKey: {},
+      address: "mahpfjaf27syb5ffukce3m3p4mcuwpdjpijf2bbxvizy4trijw",
+      attributes: [0, 1, 2, 4, 5, 6, 8, [9, 0, 1], 1002],
+      serverVersion: "0.1.0",
+      timeDeltaInSecs: 300,
+    },
   },
 ];
 export default BlockinformationMock;

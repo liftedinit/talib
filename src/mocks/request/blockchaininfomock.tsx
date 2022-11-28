@@ -1,5 +1,5 @@
 // Mock Data
-const BlockinformationMock = [
+const BlockchainInfoMock = [
   {
     info: {
       latestBlock: {
@@ -24,4 +24,4 @@ const BlockinformationMock = [
     },
   },
 ];
-export default BlockinformationMock;
+export default BlockchainInfoMock;

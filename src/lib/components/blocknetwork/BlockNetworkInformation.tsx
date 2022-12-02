@@ -1,11 +1,37 @@
 import { HStack, VStack, Box, Heading, Icon, Text } from "@chakra-ui/react";
+import {
+  Blockchain,
+  Network,
+  AnonymousIdentity,
+  Base,
+} from "@liftedinit/many-js";
+import type { InfoReturns, NetworkStatusInfo } from "@liftedinit/many-js";
 import { useEffect, useState } from "react";
-// import type BlockInformation from "lib/types/blockInformation";
 import { FaTrophy, FaCube, FaCode } from "react-icons/all";
 
 import Hcard from "../hcard/Hcard";
-import Api from "lib/config/api";
 import { theme } from "lib/styles/customTheme";
+
+const anonymous = new AnonymousIdentity(); // => Anonymous Address
+const network = new Network("/api/", anonymous);
+network.apply([Blockchain, Base]);
+
+// get NetworkInformation
+async function getNetworkInfo() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: any = await network.base.status();
+  return data.status;
+}
+// get Info latestBlock height
+async function getLatestBlockInfo() {
+  const data: InfoReturns = await network.blockchain.info();
+  return data.info?.latestBlock.height;
+}
+// get Info latestBlock height
+async function getNetworkStatus() {
+  const data: NetworkStatusInfo = await network.base.status();
+  return Object.keys(data).length >= 1;
+}
 
 const CircleIcon = (props) => (
   <Icon viewBox="0 0 200 200" {...props}>
@@ -18,30 +44,51 @@ const CircleIcon = (props) => (
 
 const BlockNetworkInformation = () => {
   // Defined data states
-  const [Neighborhood, setNeighborhood] = useState(0);
   const [ServerVersion, setServerVersion] = useState(0);
   const [ProtocolVersion, setProtocolVersion] = useState(0);
+  const [BlockHeight, setBlockHeight] = useState(0);
+  const [status, setStatus] = useState(false);
 
   // GET Blockchain Network Information from API
   const getNetworkInformation = async () => {
     try {
-      const response = await fetch(
-        Api.endpoint.networkinformation,
-        Api.options
-      );
-      const data = await response.json();
-      setNeighborhood(data[0].neighborhood);
-      setServerVersion(data[0].serverVersion);
-      setProtocolVersion(data[0].protocolVersion);
+      const dataNetwork = await getNetworkInfo();
+      const dataBlockInfo = await getLatestBlockInfo();
+      const networkStatus = await getNetworkStatus();
+      setServerVersion(dataNetwork.serverVersion);
+      setProtocolVersion(dataNetwork.protocolVersion);
+      setBlockHeight(dataBlockInfo);
+      setStatus(networkStatus);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      setStatus(false);
+      throw new Error("Something went wrong.");
     }
   };
   useEffect(() => {
     getNetworkInformation();
   });
 
+  // eslint-disable-next-line react/no-unstable-nested-components
+  const Status = () => {
+    if (status === true) {
+      return (
+        <>
+          <CircleIcon color={theme.colors.green} boxSize={6} />
+          <Text color={theme.colors.cream} fontWeight={900} fontSize="0.75rem">
+            currently available
+          </Text>
+        </>
+      );
+    }
+    return (
+      <>
+        <CircleIcon color={theme.colors.red} boxSize={6} />
+        <Text color={theme.colors.cream} fontWeight={900} fontSize="0.75rem">
+          An error occurred.
+        </Text>
+      </>
+    );
+  };
   return (
     <VStack maxW="full">
       <VStack maxW="full" alignItems="left">
@@ -52,21 +99,18 @@ const BlockNetworkInformation = () => {
             as="h1"
             color={theme.colors.cream}
           >
-            {String(Neighborhood)}
+            Manifest
           </Heading>
         </Box>
         <Box as="span" display="flex">
-          <CircleIcon color={theme.colors.green} boxSize={6} />
-          <Text color={theme.colors.cream} fontWeight={900} fontSize="0.75rem">
-            currently available
-          </Text>
+          <Status />
         </Box>
       </VStack>
       <HStack mt="70px" maxW="full">
         <Hcard
-          title="Block Height "
+          title="Block Height"
           icon={FaCube}
-          content={String(ProtocolVersion)}
+          content={String(BlockHeight)}
         />
 
         <Hcard

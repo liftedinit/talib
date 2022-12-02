@@ -5,7 +5,7 @@ import {
   AnonymousIdentity,
   Base,
 } from "@liftedinit/many-js";
-import type { InfoReturns } from "@liftedinit/many-js";
+import type { InfoReturns, NetworkStatusInfo } from "@liftedinit/many-js";
 import { useEffect, useState } from "react";
 import { FaTrophy, FaCube, FaCode } from "react-icons/all";
 
@@ -27,6 +27,11 @@ async function getLatestBlockInfo() {
   const data: InfoReturns = await network.blockchain.info();
   return data.info?.latestBlock.height;
 }
+// get Info latestBlock height
+async function getNetworkStatus() {
+  const data: NetworkStatusInfo = await network.base.status();
+  return Object.keys(data).length >= 1;
+}
 
 const CircleIcon = (props) => (
   <Icon viewBox="0 0 200 200" {...props}>
@@ -42,24 +47,48 @@ const BlockNetworkInformation = () => {
   const [ServerVersion, setServerVersion] = useState(0);
   const [ProtocolVersion, setProtocolVersion] = useState(0);
   const [BlockHeight, setBlockHeight] = useState(0);
+  const [status, setStatus] = useState(false);
 
   // GET Blockchain Network Information from API
   const getNetworkInformation = async () => {
     try {
       const dataNetwork = await getNetworkInfo();
       const dataBlockInfo = await getLatestBlockInfo();
+      const networkStatus = await getNetworkStatus();
       setServerVersion(dataNetwork.serverVersion);
       setProtocolVersion(dataNetwork.protocolVersion);
       setBlockHeight(dataBlockInfo);
+      setStatus(networkStatus);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      setStatus(false);
+      throw new Error("Something went wrong.");
     }
   };
   useEffect(() => {
     getNetworkInformation();
   });
 
+  // eslint-disable-next-line react/no-unstable-nested-components
+  const Status = () => {
+    if (status === true) {
+      return (
+        <>
+          <CircleIcon color={theme.colors.green} boxSize={6} />
+          <Text color={theme.colors.cream} fontWeight={900} fontSize="0.75rem">
+            currently available
+          </Text>
+        </>
+      );
+    }
+    return (
+      <>
+        <CircleIcon color={theme.colors.red} boxSize={6} />
+        <Text color={theme.colors.cream} fontWeight={900} fontSize="0.75rem">
+          An error occurred.
+        </Text>
+      </>
+    );
+  };
   return (
     <VStack maxW="full">
       <VStack maxW="full" alignItems="left">
@@ -74,10 +103,7 @@ const BlockNetworkInformation = () => {
           </Heading>
         </Box>
         <Box as="span" display="flex">
-          <CircleIcon color={theme.colors.green} boxSize={6} />
-          <Text color={theme.colors.cream} fontWeight={900} fontSize="0.75rem">
-            currently available
-          </Text>
+          <Status />
         </Box>
       </VStack>
       <HStack mt="70px" maxW="full">

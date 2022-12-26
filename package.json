@@ -50,7 +50,7 @@
     "@types/react-helmet": "^6.1.6",
     "@types/react-test-renderer": "^18.0.0",
     "@vitejs/plugin-react": "^2.2.0",
-    "@vitest/ui": "^0.25.2",
+    "@vitest/ui": "^0.26.2",
     "commitlint": "^17.3.0",
     "eslint": "^8.30.0",
     "eslint-config-sznm": "^1.0.1",

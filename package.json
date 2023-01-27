@@ -44,7 +44,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.3",
     "@rollup/plugin-inject": "^5.0.2",
-    "@types/node": "^18.11.13",
+    "@types/node": "^18.11.18",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.9",
     "@types/react-helmet": "^6.1.6",

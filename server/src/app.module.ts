@@ -1,16 +1,29 @@
 import { Module } from '@nestjs/common';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { NeighborhoodModule } from './neighborhoods/neighborhood.module';
+import { Neighborhood } from './neighborhoods/neighborhood.entity';
+
+///
+const databaseDetails: { [env: string]: DataSourceOptions } = {
+  dev: {
+    type: 'sqlite',
+    database: 'talib.sqlite',
+    synchronize: true,
+  },
+};
 
 @Module({
+  controllers: [],
+  providers: [],
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'client/build'),
+    NeighborhoodModule,
+    TypeOrmModule.forRoot({
+      entities: [Neighborhood],
+      ...databaseDetails['dev'],
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}

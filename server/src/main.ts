@@ -3,6 +3,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  const fetch = await import('node-fetch');
+  (global as any).fetch = fetch.default;
+
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()

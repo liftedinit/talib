@@ -1,6 +1,12 @@
 import { Address } from '@liftedinit/many-js';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { CreateNeighborhoodDto } from './neighborhood.dto';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  CreateNeighborhoodDto,
+  NeighborhoodDetailsDto,
+  NeighborhoodDto,
+} from './neighborhood.dto';
+import { Block } from './blocks/block.entity';
+import { bufferToHex } from 'src/utils/convert';
 
 @Entity()
 export class Neighborhood {
@@ -10,7 +16,7 @@ export class Neighborhood {
   @Column({ name: 'address', unique: true })
   protected address_: string;
 
-  @Column()
+  @Column({ unique: true })
   url: string;
 
   @Column()
@@ -18,6 +24,11 @@ export class Neighborhood {
 
   @Column({ nullable: true })
   description: string;
+
+  @OneToMany(() => Block, (block) => block.neighborhood, {
+    onDelete: 'CASCADE',
+  })
+  blocks: Block[];
 
   public get address(): Address {
     return Address.fromString(this.address_);
@@ -27,14 +38,36 @@ export class Neighborhood {
     this.address_ = v.toString();
   }
 
-  public static fromCreateDto(
-    dto: CreateNeighborhoodDto,
-  ): Partial<Neighborhood> {
+  public intoDto(): NeighborhoodDto {
     return {
-      name: dto.name,
-      address: Address.fromString(dto.address),
-      url: new URL(dto.url).toString(),
-      description: dto.description,
+      id: this.id,
+      address: this.address_,
+      url: this.url,
+      name: this.name,
+      description: this.description,
     };
+  }
+
+  public intoDetailsDto(): NeighborhoodDetailsDto {
+    const latestBlock = this.blocks?.[0];
+
+    return {
+      ...this.intoDto(),
+      height: latestBlock ? latestBlock.height : 0,
+      latestBlockHash: latestBlock ? bufferToHex(latestBlock.hash) : '',
+      latestAppHash: latestBlock ? bufferToHex(latestBlock.appHash) : '',
+    };
+  }
+
+  public static createWithDto(
+    address: Address,
+    dto: CreateNeighborhoodDto,
+  ): Neighborhood {
+    const result = new Neighborhood();
+    result.name = dto.name;
+    result.address = address;
+    result.url = new URL(dto.url).toString();
+    result.description = dto.description;
+    return result;
   }
 }

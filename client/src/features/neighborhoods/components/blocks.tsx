@@ -5,7 +5,7 @@ import { getNeighborhoodBlocks } from "../queries";
 
 export function NeighborhoodBlocks({ id }: { id: number }) {
   const query = useQuery(
-    ["neighborhood", id, "blocks"],
+    ["neighborhoods", id, "blocks"],
     getNeighborhoodBlocks(id)
   );
 

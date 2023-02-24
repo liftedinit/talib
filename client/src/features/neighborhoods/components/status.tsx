@@ -4,7 +4,7 @@ import { ErrorAlert, Stat } from "../../../shared";
 import { getNeighborhood } from "../queries";
 
 export function NeighborhoodStatus({ id }: { id: number }) {
-  const query = useQuery(["neighborhood", id], getNeighborhood(id));
+  const query = useQuery(["neighborhoods", id], getNeighborhood(id));
 
   return (
     <>

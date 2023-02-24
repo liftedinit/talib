@@ -5,7 +5,7 @@ import { getNeighborhoodTransactions } from "../queries";
 
 export function NeighborhoodTransactions({ id }: { id: number }) {
   const query = useQuery(
-    ["neighborhood", id, "transactions"],
+    ["neighborhoods", id, "transactions"],
     getNeighborhoodTransactions(id)
   );
 

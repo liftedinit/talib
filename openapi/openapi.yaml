@@ -1,115 +1,83 @@
-openapi: 3.0.3
-info:
-  title: "Talib Backend"
-  version: 0.1.0
-  contact:
-    email: talib@liftedinit.org
-components:
-  parameters:
-    NAddress:
-      name: naddress
-      in: path
-      description: The address of the neighborhood.
-      required: true
-      schema:
-        type: string
-    Height:
-      name: h
-      in: query
-      description: A height or range of block heights.
-      required: false
-      schema:
-        oneOf:
-          - type: integer
-            description: Equal to the value passed.
-          - type: array
-            items:
-              - type: integer
-              - type: integer
-            minItems: 2
-            maxItems: 2
-            description: |-
-              A tuple of \[minimum, maximum[ ranges. The maximum range is always
-              exclusive, while the minimum is always inclusive.
-          - type: array
-            items:
-              - type: integer
-            minItems: 1
-            maxItems: 1
-            description: |-
-              A range that contains all heights greater than or equal to the
-              first item.
-    Order:
-      name: order
-      in: query
-      description: Sorting order of the output.
-      required: false
-      schema:
-        type: string
-        enum: [asc, desc]
-  schemas:
-    Block:
-      type: object
-      properties:
-        height:
-          type: integer
-        hash:
-          type: string
-        app_hash:
-          type: string
-        time:
-          type: integer
-        tx_count:
-          type: integer
-        txs_hash:
-          type: array
-          description: Hashes of the transactions in this block.
-          items:
-            type: string
-    Neighborhood:
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [regular, blockchain]
-        nodes:
-          type: array
-          items:
-            type: object
+openapi: 3.0.0
 paths:
-  /neighborhoods:
+  /api/v1/neighborhoods:
     get:
-      summary: List all the neighborhoods watched by this backend.
+      operationId: NeighborhoodController_findAll
+      parameters: []
       responses:
         '200':
-          description: Successfully found neighborhoods.
+          description: List all neighborhoods watched by this instance.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Neighborhood'
-  /neighborhoods/{naddress}:
-    get:
-      summary: Get information about a neighborhood watched by this backend.
-      parameters:
-        - $ref: '#/components/parameters/NAddress'
+                type: array
+                items:
+                  $ref: '#/components/schemas/NeighborhoodDto'
+    put:
+      operationId: NeighborhoodController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNeighborhoodDto'
       responses:
         '200':
-          description: Neighborhood was found and details were returned.
+          description: ''
+  /api/v1/neighborhoods/{address}:
+    get:
+      operationId: NeighborhoodController_findOne
+      parameters: []
+      responses:
+        '200':
+          description: Show info about one neighborhood watched by this instance.
           content:
             application/json:
               schema:
-                type: object
-  /neighborhoods/{naddress}/blocks:
-    get:
-      summary: Get a list of blocks, either the latest or filtered.
-      parameters:
-        - $ref: '#/components/parameters/NAddress'
-        - $ref: '#/components/parameters/Height'
-        - $ref: '#/components/parameters/Order'
+                $ref: '#/components/schemas/NeighborhoodDto'
+    delete:
+      operationId: NeighborhoodController_remove
+      parameters: []
       responses:
         '200':
-          description: Successfully found a blockchain neighborhood.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Block'
+          description: ''
+info:
+  title: MANY-Explorer
+  description: MANY Protocol Explorer API
+  version: '0.1'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    NeighborhoodDto:
+      type: object
+      properties:
+        id:
+          type: number
+        address:
+          type: string
+        url:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+      required:
+        - id
+        - address
+        - url
+        - name
+    CreateNeighborhoodDto:
+      type: object
+      properties:
+        url:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+      required:
+        - url
+        - name

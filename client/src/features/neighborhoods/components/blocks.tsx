@@ -1,0 +1,24 @@
+import { useQuery } from "react-query";
+import { Spinner, Box } from "@liftedinit/ui";
+import { ErrorAlert } from "../../../shared";
+import { getNeighborhoodBlocks } from "../queries";
+
+export function NeighborhoodBlocks({ id }: { id: number }) {
+  const query = useQuery(
+    ["neighborhood", id, "blocks"],
+    getNeighborhoodBlocks(id)
+  );
+
+  return (
+    <>
+      {query.isError && <ErrorAlert error={query.error as Error} />}
+      {query.isLoading ? (
+        <Spinner />
+      ) : (
+        <Box bg="white" p={6} w="50%">
+          {query.data?.map(<pre>Block</pre>)}
+        </Box>
+      )}
+    </>
+  );
+}

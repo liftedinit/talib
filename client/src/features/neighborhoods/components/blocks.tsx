@@ -16,7 +16,7 @@ import { getNeighborhoodBlocks } from "../queries";
 interface BlockSummary {
   height: number;
   hash: string;
-  numTxns: number;
+  txns: number;
   timestamp: Date;
 }
 
@@ -45,7 +45,7 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
               <Tr>
                 <Td>{block.height}</Td>
                 <Td>{block.hash}</Td>
-                <Td>{block.numTxns}</Td>
+                <Td>{block.txns}</Td>
                 <Td>{block.timestamp.toLocaleString()}</Td>
               </Tr>
             ))}

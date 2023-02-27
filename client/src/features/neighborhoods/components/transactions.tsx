@@ -15,12 +15,12 @@ import { getNeighborhoodTransactions } from "../queries";
 
 interface TransactionSummary {
   hash: string;
-  timestamp: Date;
+  type: string;
   to?: string;
   from?: string;
-  token?: string;
   amount?: string;
-  type: string;
+  symbol?: string;
+  timestamp: Date;
 }
 
 export function NeighborhoodTransactions({ id }: { id: number }) {

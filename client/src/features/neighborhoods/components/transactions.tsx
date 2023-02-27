@@ -1,7 +1,27 @@
 import { useQuery } from "react-query";
-import { Spinner, Box } from "@liftedinit/ui";
+import {
+  Spinner,
+  Box,
+  Table,
+  Tr,
+  Td,
+  Thead,
+  Th,
+  Tbody,
+  Heading,
+} from "@liftedinit/ui";
 import { ErrorAlert } from "../../../shared";
 import { getNeighborhoodTransactions } from "../queries";
+
+interface TransactionSummary {
+  hash: string;
+  timestamp: Date;
+  to?: string;
+  from?: string;
+  token?: string;
+  amount?: string;
+  type: string;
+}
 
 export function NeighborhoodTransactions({ id }: { id: number }) {
   const query = useQuery(
@@ -10,15 +30,34 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
   );
 
   return (
-    <>
+    <Box bg="white" p={6}>
+      <Heading size="sm">Transactions</Heading>
       {query.isError && <ErrorAlert error={query.error as Error} />}
       {query.isLoading ? (
         <Spinner />
       ) : (
-        <Box bg="white" p={6} w="50%">
-          {query.data?.map(<pre>Txn</pre>)}
-        </Box>
+        <Table>
+          <Thead>
+            <Th>Hash</Th>
+            <Th>Type</Th>
+            <Th>Details</Th>
+            <Th>Time</Th>
+          </Thead>
+          <Tbody>
+            {query.data?.map((transaction: TransactionSummary) => (
+              <Tr>
+                <Td>{transaction.hash}</Td>
+                <Td>{transaction.type}</Td>
+                <Td>
+                  {transaction.from}
+                  {transaction.to}
+                </Td>
+                <Td>{transaction.timestamp.toLocaleString()}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
       )}
-    </>
+    </Box>
   );
 }

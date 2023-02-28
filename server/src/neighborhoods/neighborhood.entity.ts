@@ -53,7 +53,7 @@ export class Neighborhood {
 
     return {
       ...this.intoDto(),
-      latestHeight: latestBlock ? latestBlock.height : 0,
+      latestBlockHeight: latestBlock ? latestBlock.height : 0,
       latestBlockHash: latestBlock ? bufferToHex(latestBlock.hash) : '',
       latestAppHash: latestBlock ? bufferToHex(latestBlock.appHash) : '',
     };

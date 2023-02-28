@@ -20,8 +20,8 @@ export class NeighborhoodController {
   private async findByAddressQueryParam(
     address: string,
   ): Promise<Neighborhood> {
-    let a: Address | undefined;
-    let i: number | undefined;
+    let a: Address;
+    let i: number;
     try {
       a = Address.fromString(address);
     } catch (_) {
@@ -53,11 +53,13 @@ export class NeighborhoodController {
   @Get(':address')
   @ApiResponse({
     status: 200,
-    type: NeighborhoodDto,
+    type: NeighborhoodDetailsDto,
     description: 'Show info about one neighborhood watched by this instance.',
   })
-  async findOne(@Param() params): Promise<NeighborhoodDetailsDto> {
-    const n = await this.findByAddressQueryParam(params.address);
+  async findOne(
+    @Param('address') address: string,
+  ): Promise<NeighborhoodDetailsDto> {
+    const n = await this.findByAddressQueryParam(address);
     return n.intoDetailsDto();
   }
 
@@ -67,8 +69,8 @@ export class NeighborhoodController {
   }
 
   @Delete(':address')
-  async remove(@Param() params): Promise<void> {
-    const n = await this.findByAddressQueryParam(params.address);
+  async remove(@Param('address') address: string): Promise<void> {
+    const n = await this.findByAddressQueryParam(address);
     await this.neighborhood.removeById(n.id);
   }
 }

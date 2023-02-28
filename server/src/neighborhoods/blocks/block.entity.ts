@@ -16,7 +16,7 @@ export class Block {
   @ManyToOne(() => Neighborhood, (neighborhood) => neighborhood.blocks)
   neighborhood: Neighborhood;
 
-  @Column({ name: 'integer' })
+  @Column({ name: 'height' })
   height: number;
 
   @Column('blob')

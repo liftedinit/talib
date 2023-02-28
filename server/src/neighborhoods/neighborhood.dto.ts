@@ -19,7 +19,7 @@ export class NeighborhoodDto {
 
 export class NeighborhoodDetailsDto extends NeighborhoodDto {
   @ApiProperty()
-  latestHeight: number;
+  latestBlockHeight: number;
 
   @ApiProperty()
   latestBlockHash: string;

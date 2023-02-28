@@ -30,6 +30,7 @@ const staticRootPath = path.join(__dirname, '../..', 'client/build');
         return {
           entities: [Neighborhood, Block],
           type: db.type,
+          synchronize: true,
           ...db.extras,
         };
       },

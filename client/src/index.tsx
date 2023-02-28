@@ -1,16 +1,12 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "react-query";
+import ReactDOM from "react-dom";
+import { App, AppProvider } from "./views";
 
-import App from "./components/App";
-
-const queryClient = new QueryClient();
-
-const root = document.getElementById("root");
-createRoot(root!).render(
+ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <AppProvider>
       <App />
-    </QueryClientProvider>
-  </React.StrictMode>
+    </AppProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
 );

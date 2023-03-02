@@ -13,7 +13,8 @@ export class DatabaseConfigService {
   get type() {
     return this.configService.get<string>("database.type");
   }
-  get extras(): any {
-    return this.configService.get<Record<string, any>>("database.extra");
+
+  get config(): Record<string, any> {
+    return this.configService.get("database");
   }
 }

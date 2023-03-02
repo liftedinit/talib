@@ -7,6 +7,7 @@ import {
 } from './neighborhood.dto';
 import { Block } from './blocks/block.entity';
 import { bufferToHex } from 'src/utils/convert';
+import { NetworkStatusInfo } from '@liftedinit/many-js/dist/network/modules/base/base';
 
 @Entity()
 export class Neighborhood {
@@ -25,10 +26,21 @@ export class Neighborhood {
   @Column({ nullable: true })
   description: string;
 
+  @Column()
+  serverName: string;
+
+  @Column({ array: true, type: 'integer' })
+  attributes: number[];
+
+  @Column()
+  version: string;
+
   @OneToMany(() => Block, (block) => block.neighborhood, {
     onDelete: 'CASCADE',
   })
   blocks: Block[];
+
+  latestBlock?: Block;
 
   public get address(): Address {
     return Address.fromString(this.address_);
@@ -49,7 +61,7 @@ export class Neighborhood {
   }
 
   public intoDetailsDto(): NeighborhoodDetailsDto {
-    const latestBlock = this.blocks?.[0];
+    const latestBlock = this.latestBlock;
 
     return {
       ...this.intoDto(),
@@ -60,14 +72,19 @@ export class Neighborhood {
   }
 
   public static createWithDto(
-    address: Address,
+    status: NetworkStatusInfo,
     dto: CreateNeighborhoodDto,
   ): Neighborhood {
     const result = new Neighborhood();
     result.name = dto.name;
-    result.address = address;
+    result.address = Address.fromString(status.address);
     result.url = new URL(dto.url).toString();
     result.description = dto.description;
+
+    result.serverName = status.serverName;
+    result.version = status.serverVersion;
+    result.attributes = status.attributes;
+
     return result;
   }
 }

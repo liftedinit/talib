@@ -11,5 +11,6 @@ import { NetworkService } from '../services/network.service';
   imports: [TypeOrmModule.forFeature([Neighborhood, Block])],
   providers: [NeighborhoodService, BlockService, NetworkService],
   controllers: [NeighborhoodController],
+  exports: [NeighborhoodService, BlockService, NetworkService],
 })
 export class NeighborhoodModule {}

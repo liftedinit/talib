@@ -19,6 +19,7 @@ export class NeighborhoodController {
 
   private async findByAddressQueryParam(
     address: string,
+    details = false,
   ): Promise<Neighborhood> {
     let a: Address;
     let i: number;
@@ -29,9 +30,9 @@ export class NeighborhoodController {
     }
 
     if (a) {
-      return await this.neighborhood.findByAddress(a);
-    } else if (i) {
-      return await this.neighborhood.findById(i);
+      return await this.neighborhood.find({ address: a }, details);
+    } else if (i !== undefined) {
+      return await this.neighborhood.find({ id: i }, details);
     } else {
       throw new Error(
         `Parameter (${JSON.stringify(address)}) is neither address nor id.`,
@@ -59,7 +60,7 @@ export class NeighborhoodController {
   async findOne(
     @Param('address') address: string,
   ): Promise<NeighborhoodDetailsDto> {
-    const n = await this.findByAddressQueryParam(address);
+    const n = await this.findByAddressQueryParam(address, true);
     return n.intoDetailsDto();
   }
 

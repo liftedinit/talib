@@ -1,11 +1,11 @@
-import { NetworkService } from './network.service';
 import { Injectable, Logger } from '@nestjs/common';
-import { NeighborhoodService } from '../neighborhoods/neighborhood.service';
-import { BlockService } from '../neighborhoods/blocks/block.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { SchedulerConfigService } from '../config/scheduler/configuration.service';
 import { CronJob } from 'cron';
+import { SchedulerConfigService } from '../config/scheduler/configuration.service';
+import { BlockService } from '../neighborhoods/blocks/block.service';
 import { Neighborhood } from '../neighborhoods/neighborhood.entity';
+import { NeighborhoodService } from '../neighborhoods/neighborhood.service';
+import { NetworkService } from './network.service';
 
 @Injectable()
 export class SchedulerService {

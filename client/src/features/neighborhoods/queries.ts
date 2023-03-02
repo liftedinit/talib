@@ -1,9 +1,9 @@
 // @TODO: Move this to .env or something
-const API_BASE_URL = "http://127.0.0.1:4010/api/v1/";
+const API_BASE_URL = 'http://127.0.0.1:4010/api/v1/';
 
 function get(...path: (string | number)[]) {
   return async function () {
-    const res = await fetch(API_BASE_URL + path.join("/"));
+    const res = await fetch(API_BASE_URL + path.join('/'));
     if (res.ok) {
       return await res.json();
     }
@@ -12,13 +12,13 @@ function get(...path: (string | number)[]) {
 }
 
 export function getNeighborhood(id: number) {
-  return get("neighborhoods", id);
+  return get('neighborhoods', id);
 }
 
 export function getNeighborhoodBlocks(id: number) {
-  return get("neighborhoods", id, "blocks");
+  return get('neighborhoods', id, 'blocks');
 }
 
 export function getNeighborhoodTransactions(id: number) {
-  return get("neighborhoods", id, "transactions");
+  return get('neighborhoods', id, 'transactions');
 }

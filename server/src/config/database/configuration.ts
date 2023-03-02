@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
-import process from 'process';
 import { camelCase } from 'change-case';
+import process from 'process';
 
 export default registerAs('database', () => {
   const extra = {};

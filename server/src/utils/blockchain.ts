@@ -1,5 +1,4 @@
 import { Message, NetworkModule } from '@liftedinit/many-js';
-import { Tagged } from 'cbor';
 
 export interface BlockIdentifier {
   hash: ArrayBuffer;

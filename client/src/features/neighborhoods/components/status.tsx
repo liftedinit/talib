@@ -1,10 +1,10 @@
-import { useQuery } from "react-query";
-import { Spinner, Stack } from "@liftedinit/ui";
-import { ErrorAlert, Stat } from "../../../shared";
-import { getNeighborhood } from "../queries";
+import { Spinner, Stack } from '@liftedinit/ui';
+import { useQuery } from 'react-query';
+import { ErrorAlert, Stat } from '../../../shared';
+import { getNeighborhood } from '../queries';
 
 export function NeighborhoodStatus({ id }: { id: number }) {
-  const query = useQuery(["neighborhoods", id], getNeighborhood(id));
+  const query = useQuery(['neighborhoods', id], getNeighborhood(id));
 
   return (
     <>

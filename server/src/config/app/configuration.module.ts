@@ -1,8 +1,8 @@
-import * as Joi from 'joi';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as Joi from 'joi';
 import configuration from './configuration';
 import { AppConfigService } from './configuration.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 
 const validationSchema = Joi.object({
   APP_NAME: Joi.string().default('Talib'),

@@ -6,8 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Transaction } from '../../database/entities/transaction.entity';
-import { Neighborhood } from '../neighborhood.entity';
+import { Neighborhood } from './neighborhood.entity';
+import { Transaction } from './transaction.entity';
 
 @Entity()
 @Index(['neighborhood', 'height'], { unique: true })

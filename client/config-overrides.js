@@ -16,7 +16,7 @@ module.exports = function override(config) {
     new webpack.ProvidePlugin({
       // process: "process/browser",
       Buffer: ['buffer', 'Buffer'],
-    }),
+    })
   );
   config.module.rules.unshift({
     test: /\.m?js$/,

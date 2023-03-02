@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { SchedulerConfigService } from '../config/scheduler/configuration.service';
+import { Neighborhood } from '../database/entities/neighborhood.entity';
 import { BlockService } from '../neighborhoods/blocks/block.service';
-import { Neighborhood } from '../neighborhoods/neighborhood.entity';
 import { NeighborhoodService } from '../neighborhoods/neighborhood.service';
 import { NetworkService } from './network.service';
 

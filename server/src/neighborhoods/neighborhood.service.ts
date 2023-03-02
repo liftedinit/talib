@@ -2,11 +2,11 @@ import { Address } from '@liftedinit/many-js';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Block } from '../database/entities/block.entity';
+import { Neighborhood } from '../database/entities/neighborhood.entity';
+import { CreateNeighborhoodDto } from '../dto/neighborhood.dto';
 import { NetworkService } from '../services/network.service';
-import { Block } from './blocks/block.entity';
 import { BlockService } from './blocks/block.service';
-import { CreateNeighborhoodDto } from './neighborhood.dto';
-import { Neighborhood } from './neighborhood.entity';
 
 @Injectable()
 export class NeighborhoodService {

@@ -1,13 +1,13 @@
 import { Address } from '@liftedinit/many-js';
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
-import { BlockService } from './blocks/block.service';
+import { Neighborhood } from '../database/entities/neighborhood.entity';
 import {
   CreateNeighborhoodDto,
   NeighborhoodDetailsDto,
   NeighborhoodDto,
-} from './neighborhood.dto';
-import { Neighborhood } from './neighborhood.entity';
+} from '../dto/neighborhood.dto';
+import { BlockService } from './blocks/block.service';
 import { NeighborhoodService } from './neighborhood.service';
 
 @Controller('api/v1/neighborhoods')

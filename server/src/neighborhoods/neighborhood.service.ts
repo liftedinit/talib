@@ -1,12 +1,12 @@
-import { Address } from '@liftedinit/many-js';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { NetworkService } from '../services/network.service';
-import { Block } from './blocks/block.entity';
-import { BlockService } from './blocks/block.service';
-import { CreateNeighborhoodDto } from './neighborhood.dto';
-import { Neighborhood } from './neighborhood.entity';
+import { Address } from "@liftedinit/many-js";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, SelectQueryBuilder } from "typeorm";
+import { NetworkService } from "../services/network.service";
+import { Block } from "./blocks/block.entity";
+import { BlockService } from "./blocks/block.service";
+import { CreateNeighborhoodDto } from "./neighborhood.dto";
+import { Neighborhood } from "./neighborhood.entity";
 
 @Injectable()
 export class NeighborhoodService {
@@ -26,19 +26,19 @@ export class NeighborhoodService {
   private addDetailsToQuery(query: SelectQueryBuilder<Neighborhood>) {
     return query
       .leftJoinAndMapOne(
-        'n.latestBlock',
-        'n.blocks',
-        'block',
-        'n.id = block.neighborhoodId',
+        "n.latestBlock",
+        "n.blocks",
+        "block",
+        "n.id = block.neighborhoodId",
       )
       .where(
         (_qb) =>
-          'block.height = ' +
+          "block.height = " +
           query
             .subQuery()
-            .select('MAX(height)')
-            .from(Block, 'block')
-            .where('n.id = block.neighborhoodId')
+            .select("MAX(height)")
+            .from(Block, "block")
+            .where("n.id = block.neighborhoodId")
             .getQuery(),
       );
   }
@@ -52,7 +52,7 @@ export class NeighborhoodService {
     }
 
     let query = this.neighborhoodRepository
-      .createQueryBuilder('n')
+      .createQueryBuilder("n")
       .where(where);
 
     if (details) {
@@ -67,7 +67,7 @@ export class NeighborhoodService {
     const network = await this.network.forUrl(url);
     const status = (await network.base.status()).status;
     if (!status) {
-      throw new Error('Server returned an invalid status.');
+      throw new Error("Server returned an invalid status.");
     }
 
     const entity = Neighborhood.createWithDto(status, dto);

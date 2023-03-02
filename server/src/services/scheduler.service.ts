@@ -1,11 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { SchedulerRegistry } from '@nestjs/schedule';
-import { CronJob } from 'cron';
-import { SchedulerConfigService } from '../config/scheduler/configuration.service';
-import { BlockService } from '../neighborhoods/blocks/block.service';
-import { Neighborhood } from '../neighborhoods/neighborhood.entity';
-import { NeighborhoodService } from '../neighborhoods/neighborhood.service';
-import { NetworkService } from './network.service';
+import { Injectable, Logger } from "@nestjs/common";
+import { SchedulerRegistry } from "@nestjs/schedule";
+import { CronJob } from "cron";
+import { SchedulerConfigService } from "../config/scheduler/configuration.service";
+import { BlockService } from "../neighborhoods/blocks/block.service";
+import { Neighborhood } from "../neighborhoods/neighborhood.entity";
+import { NeighborhoodService } from "../neighborhoods/neighborhood.service";
+import { NetworkService } from "./network.service";
 
 @Injectable()
 export class SchedulerService {
@@ -30,18 +30,18 @@ export class SchedulerService {
         // On error, hope for the best next time.
         done = true;
       } else {
-        this.logger.debug('Last job was not finished, skipping...');
+        this.logger.debug("Last job was not finished, skipping...");
       }
     };
 
     if (schedulerConfig.cron !== undefined) {
       // Do not rerun the cron job if the previous one was done.
       const job = new CronJob(schedulerConfig.cron, jobFn);
-      this.schedulerRegistry.addCronJob('updateNeighborhood', job);
+      this.schedulerRegistry.addCronJob("updateNeighborhood", job);
       job.start();
     } else if (schedulerConfig.seconds !== undefined) {
       const id = setInterval(jobFn, schedulerConfig.seconds * 1000);
-      this.schedulerRegistry.addInterval('updateNeighborhood', id);
+      this.schedulerRegistry.addInterval("updateNeighborhood", id);
     }
   }
 

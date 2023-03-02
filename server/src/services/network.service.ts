@@ -1,6 +1,6 @@
-import { Base, Network as ManyNetwork } from '@liftedinit/many-js';
-import { Injectable } from '@nestjs/common';
-import { Blockchain } from '../utils/blockchain';
+import { Base, Network as ManyNetwork } from "@liftedinit/many-js";
+import { Injectable } from "@nestjs/common";
+import { Blockchain } from "../utils/blockchain";
 
 type N = ManyNetwork & {
   base: Base;

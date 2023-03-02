@@ -1,20 +1,20 @@
-import { Address } from '@liftedinit/many-js';
-import { NetworkStatusInfo } from '@liftedinit/many-js/dist/network/modules/base/base';
-import { bufferToHex } from 'src/utils/convert';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Block } from './blocks/block.entity';
+import { Address } from "@liftedinit/many-js";
+import { NetworkStatusInfo } from "@liftedinit/many-js/dist/network/modules/base/base";
+import { bufferToHex } from "src/utils/convert";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Block } from "./blocks/block.entity";
 import {
   CreateNeighborhoodDto,
   NeighborhoodDetailsDto,
   NeighborhoodDto,
-} from './neighborhood.dto';
+} from "./neighborhood.dto";
 
 @Entity()
 export class Neighborhood {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'address', unique: true })
+  @Column({ name: "address", unique: true })
   protected address_: string;
 
   @Column({ unique: true })
@@ -29,14 +29,14 @@ export class Neighborhood {
   @Column()
   serverName: string;
 
-  @Column({ array: true, type: 'integer' })
+  @Column({ array: true, type: "integer" })
   attributes: number[];
 
   @Column()
   version: string;
 
   @OneToMany(() => Block, (block) => block.neighborhood, {
-    onDelete: 'CASCADE',
+    onDelete: "CASCADE",
   })
   blocks: Block[];
 
@@ -66,8 +66,8 @@ export class Neighborhood {
     return {
       ...this.intoDto(),
       latestBlockHeight: latestBlock ? latestBlock.height : 0,
-      latestBlockHash: latestBlock ? bufferToHex(latestBlock.hash) : '',
-      latestAppHash: latestBlock ? bufferToHex(latestBlock.appHash) : '',
+      latestBlockHash: latestBlock ? bufferToHex(latestBlock.hash) : "",
+      latestAppHash: latestBlock ? bufferToHex(latestBlock.appHash) : "",
     };
   }
 

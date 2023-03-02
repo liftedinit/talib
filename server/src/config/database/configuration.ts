@@ -1,11 +1,11 @@
-import { registerAs } from '@nestjs/config';
-import { camelCase } from 'change-case';
-import process from 'process';
+import { registerAs } from "@nestjs/config";
+import { camelCase } from "change-case";
+import process from "process";
 
-export default registerAs('database', () => {
+export default registerAs("database", () => {
   const extra = {};
   const allKeys = Object.getOwnPropertyNames(process.env).filter(
-    (x) => x.startsWith('DB_') && x != 'DB_TYPE',
+    (x) => x.startsWith("DB_") && x != "DB_TYPE",
   );
 
   for (const key of allKeys) {

@@ -5,12 +5,12 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Transaction } from '../../database/entities/transaction.entity';
-import { Neighborhood } from '../neighborhood.entity';
+} from "typeorm";
+import { Transaction } from "../../database/entities/transaction.entity";
+import { Neighborhood } from "../neighborhood.entity";
 
 @Entity()
-@Index(['neighborhood', 'height'], { unique: true })
+@Index(["neighborhood", "height"], { unique: true })
 export class Block {
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,17 +18,17 @@ export class Block {
   @ManyToOne(() => Neighborhood, (neighborhood) => neighborhood.blocks)
   neighborhood: Neighborhood;
 
-  @Column({ name: 'height', type: 'integer', nullable: false })
+  @Column({ name: "height", type: "integer", nullable: false })
   height: number;
 
-  @Column({ type: 'blob', nullable: true })
+  @Column({ type: "blob", nullable: true })
   hash: ArrayBuffer;
 
-  @Column({ type: 'blob', nullable: true })
+  @Column({ type: "blob", nullable: true })
   appHash: ArrayBuffer;
 
   @OneToMany(() => Transaction, (tx) => tx.block, {
-    onDelete: 'CASCADE',
+    onDelete: "CASCADE",
   })
   transactions: Transaction[];
 }

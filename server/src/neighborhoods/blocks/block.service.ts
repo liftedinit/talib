@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { NetworkService } from '../../services/network.service';
-import { Block as ManyBlock } from '../../utils/blockchain';
-import { Neighborhood } from '../neighborhood.entity';
-import { Block } from './block.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource, Repository } from "typeorm";
+import { NetworkService } from "../../services/network.service";
+import { Block as ManyBlock } from "../../utils/blockchain";
+import { Neighborhood } from "../neighborhood.entity";
+import { Block } from "./block.entity";
 
 @Injectable()
 export class BlockService {
@@ -35,7 +35,7 @@ export class BlockService {
     const blocks = await this.blockRepository.find({
       where: { neighborhood: { id: neighborhood.id } },
       take: 1,
-      order: { height: 'DESC' },
+      order: { height: "DESC" },
     });
 
     return blocks?.[0];
@@ -71,7 +71,7 @@ export class BlockService {
       FROM Missing
       LEFT OUTER JOIN block tt on tt.height = Missing.missnum
       WHERE tt.height is NULL
-      ${max !== undefined ? 'LIMIT ' + max : ''}
+      ${max !== undefined ? "LIMIT " + max : ""}
     ;`;
 
     const result = await this.dataSource.query(query);

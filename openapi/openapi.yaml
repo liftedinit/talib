@@ -5,14 +5,14 @@ paths:
       operationId: NeighborhoodController_findAll
       parameters: []
       responses:
-        '200':
+        "200":
           description: List all neighborhoods watched by this instance.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/NeighborhoodDto'
+                  $ref: "#/components/schemas/NeighborhoodDto"
     put:
       operationId: NeighborhoodController_create
       parameters: []
@@ -21,31 +21,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateNeighborhoodDto'
+              $ref: "#/components/schemas/CreateNeighborhoodDto"
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
   /api/v1/neighborhoods/{address}:
     get:
       operationId: NeighborhoodController_findOne
       parameters: []
       responses:
-        '200':
+        "200":
           description: Show info about one neighborhood watched by this instance.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NeighborhoodDto'
+                $ref: "#/components/schemas/NeighborhoodDto"
     delete:
       operationId: NeighborhoodController_remove
       parameters: []
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
 info:
   title: MANY-Explorer
   description: MANY Protocol Explorer API
-  version: '0.1'
+  version: "0.1"
   contact: {}
 tags: []
 servers: []

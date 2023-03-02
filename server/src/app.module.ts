@@ -33,11 +33,11 @@ const staticRootPath = path.join(__dirname, "../..", "client/build");
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => {
+        console.log(db.config);
         return {
           entities: [Neighborhood, Block, Transaction],
-          type: db.type,
           synchronize: true,
-          ...db.extras,
+          ...db.config,
         };
       },
     }),

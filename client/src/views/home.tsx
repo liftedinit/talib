@@ -1,9 +1,9 @@
-import { Container, Divider, Heading, Stack, Text } from '@liftedinit/ui';
+import { Container, Divider, Heading, Stack, Text } from "@liftedinit/ui";
 import {
   NeighborhoodBlocks,
   NeighborhoodStatus,
   NeighborhoodTransactions,
-} from '../features/neighborhoods';
+} from "../features/neighborhoods";
 
 export function Home() {
   const neighborhoodId = 1; // @TODO: Get this from context

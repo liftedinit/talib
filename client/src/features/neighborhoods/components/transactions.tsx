@@ -1,11 +1,11 @@
-import { Box, Spinner } from '@liftedinit/ui';
-import { useQuery } from 'react-query';
-import { ErrorAlert } from '../../../shared';
-import { getNeighborhoodTransactions } from '../queries';
+import { Box, Spinner } from "@liftedinit/ui";
+import { useQuery } from "react-query";
+import { ErrorAlert } from "../../../shared";
+import { getNeighborhoodTransactions } from "../queries";
 
 export function NeighborhoodTransactions({ id }: { id: number }) {
   const query = useQuery(
-    ['neighborhoods', id, 'transactions'],
+    ["neighborhoods", id, "transactions"],
     getNeighborhoodTransactions(id),
   );
 

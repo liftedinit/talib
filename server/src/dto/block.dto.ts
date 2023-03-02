@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { NeighborhoodDto } from './neighborhood.dto';
+import { ApiProperty } from "@nestjs/swagger";
+import { NeighborhoodDto } from "./neighborhood.dto";
 
 export class BlockDto {
   @ApiProperty()

@@ -1,2 +1,2 @@
-export * from './error-alert';
-export * from './stat';
+export * from "./error-alert";
+export * from "./stat";

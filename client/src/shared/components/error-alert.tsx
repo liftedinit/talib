@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, AlertTitle } from '@liftedinit/ui';
+import { Alert, AlertIcon, AlertTitle } from "@liftedinit/ui";
 
 export function ErrorAlert({ error }: { error: Error }) {
   return (

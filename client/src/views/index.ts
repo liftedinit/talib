@@ -1,3 +1,3 @@
-export { App } from './app';
-export { AppProvider } from './app.provider';
-export { Home } from './home';
+export { App } from "./app";
+export { AppProvider } from "./app.provider";
+export { Home } from "./home";

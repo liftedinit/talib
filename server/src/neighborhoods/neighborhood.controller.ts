@@ -1,16 +1,16 @@
-import { Address } from '@liftedinit/many-js';
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
-import { Neighborhood } from '../database/entities/neighborhood.entity';
+import { Address } from "@liftedinit/many-js";
+import { Body, Controller, Delete, Get, Param, Put } from "@nestjs/common";
+import { ApiResponse } from "@nestjs/swagger";
+import { Neighborhood } from "../database/entities/neighborhood.entity";
 import {
   CreateNeighborhoodDto,
   NeighborhoodDetailsDto,
   NeighborhoodDto,
-} from '../dto/neighborhood.dto';
-import { BlockService } from './blocks/block.service';
-import { NeighborhoodService } from './neighborhood.service';
+} from "../dto/neighborhood.dto";
+import { BlockService } from "./blocks/block.service";
+import { NeighborhoodService } from "./neighborhood.service";
 
-@Controller('api/v1/neighborhoods')
+@Controller("api/v1/neighborhoods")
 export class NeighborhoodController {
   constructor(
     private neighborhood: NeighborhoodService,
@@ -45,20 +45,20 @@ export class NeighborhoodController {
     status: 200,
     type: NeighborhoodDto,
     isArray: true,
-    description: 'List all neighborhoods watched by this instance.',
+    description: "List all neighborhoods watched by this instance.",
   })
   async findAll(): Promise<NeighborhoodDto[]> {
     return (await this.neighborhood.findAll()).map((x) => x.intoDto());
   }
 
-  @Get(':address')
+  @Get(":address")
   @ApiResponse({
     status: 200,
     type: NeighborhoodDetailsDto,
-    description: 'Show info about one neighborhood watched by this instance.',
+    description: "Show info about one neighborhood watched by this instance.",
   })
   async findOne(
-    @Param('address') address: string,
+    @Param("address") address: string,
   ): Promise<NeighborhoodDetailsDto> {
     const n = await this.findByAddressQueryParam(address, true);
     return n.intoDetailsDto();
@@ -69,8 +69,8 @@ export class NeighborhoodController {
     return (await this.neighborhood.create(body)).intoDto();
   }
 
-  @Delete(':address')
-  async remove(@Param('address') address: string): Promise<void> {
+  @Delete(":address")
+  async remove(@Param("address") address: string): Promise<void> {
     const n = await this.findByAddressQueryParam(address);
     await this.neighborhood.removeById(n.id);
   }

@@ -1,4 +1,4 @@
-import { Message, NetworkModule } from '@liftedinit/many-js';
+import { Message, NetworkModule } from "@liftedinit/many-js";
 
 export interface BlockIdentifier {
   hash: ArrayBuffer;
@@ -25,16 +25,16 @@ export interface Blockchain extends NetworkModule {
 }
 
 export const Blockchain: Blockchain = {
-  _namespace_: 'blockchain',
+  _namespace_: "blockchain",
 
   async info() {
-    const msg = await this.call('blockchain.info');
+    const msg = await this.call("blockchain.info");
     return parseBlockchainInfo(msg);
   },
 
   async blockByHeight(height: number) {
     const param = new Map([[0, new Map([[1, height]])]]);
-    const msg = await this.call('blockchain.block', param);
+    const msg = await this.call("blockchain.block", param);
     return parseBlock(msg);
   },
 };
@@ -57,7 +57,7 @@ function parseDateTime(value: any): Date {
 function parseBlockchainInfo(msg: Message): BlockchainInfo {
   const content = msg.getPayload();
   if (!(content instanceof Map)) {
-    throw new Error('Invalid message');
+    throw new Error("Invalid message");
   }
 
   return {
@@ -70,7 +70,7 @@ function parseBlockchainInfo(msg: Message): BlockchainInfo {
 function parseBlock(msg: Message): Block {
   const payload = msg.getPayload();
   if (!(payload instanceof Map)) {
-    throw new Error('Invalid message');
+    throw new Error("Invalid message");
   }
   const content = payload.get(0);
 

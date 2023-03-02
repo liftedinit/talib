@@ -1,4 +1,4 @@
-import { Stat as BaseStat, StatLabel, StatNumber } from '@liftedinit/ui';
+import { Stat as BaseStat, StatLabel, StatNumber } from "@liftedinit/ui";
 
 interface StatProps {
   label: string;
@@ -9,7 +9,7 @@ export function Stat({ label, value }: StatProps) {
   return (
     <BaseStat bg="white" p={6}>
       <StatLabel>{label}</StatLabel>
-      <StatNumber>{value ?? 'N/A'}</StatNumber>
+      <StatNumber>{value ?? "N/A"}</StatNumber>
     </BaseStat>
   );
 }

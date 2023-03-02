@@ -7,7 +7,7 @@ import {
   NeighborhoodDetailsDto,
   NeighborhoodDto,
 } from "../../dto/neighborhood.dto";
-import { Block } from "./block.entity";
+import { Block } from "./blocks/block.entity";
 
 @Entity()
 export class Neighborhood {

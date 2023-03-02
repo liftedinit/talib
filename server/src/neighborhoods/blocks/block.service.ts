@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { Block } from './block.entity';
-import { Neighborhood } from '../neighborhood.entity';
 import { NetworkService } from '../../services/network.service';
 import { Block as ManyBlock } from '../../utils/blockchain';
+import { Neighborhood } from '../neighborhood.entity';
+import { Block } from './block.entity';
 
 @Injectable()
 export class BlockService {

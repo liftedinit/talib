@@ -1,6 +1,6 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { App, AppProvider } from "./views";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { App, AppProvider } from './views';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -8,5 +8,5 @@ ReactDOM.render(
       <App />
     </AppProvider>
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );

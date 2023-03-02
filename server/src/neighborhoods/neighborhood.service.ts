@@ -1,12 +1,12 @@
+import { Address } from '@liftedinit/many-js';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { Neighborhood } from './neighborhood.entity';
-import { CreateNeighborhoodDto } from './neighborhood.dto';
-import { BlockService } from './blocks/block.service';
-import { Address, Base, Network } from '@liftedinit/many-js';
 import { NetworkService } from '../services/network.service';
 import { Block } from './blocks/block.entity';
+import { BlockService } from './blocks/block.service';
+import { CreateNeighborhoodDto } from './neighborhood.dto';
+import { Neighborhood } from './neighborhood.entity';
 
 @Injectable()
 export class NeighborhoodService {

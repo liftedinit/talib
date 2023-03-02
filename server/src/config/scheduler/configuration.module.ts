@@ -1,9 +1,9 @@
-import * as Joi from 'joi';
 import { Module } from '@nestjs/common';
-import configuration from './configuration';
-import { SchedulerConfigService } from './configuration.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CronTime } from 'cron';
+import * as Joi from 'joi';
+import configuration from './configuration';
+import { SchedulerConfigService } from './configuration.service';
 
 const validationSchema = Joi.object({
   SCHEDULER_CRON: Joi.custom((value, helper) => {

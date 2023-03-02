@@ -1,13 +1,13 @@
 import { Address } from '@liftedinit/many-js';
+import { NetworkStatusInfo } from '@liftedinit/many-js/dist/network/modules/base/base';
+import { bufferToHex } from 'src/utils/convert';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Block } from './blocks/block.entity';
 import {
   CreateNeighborhoodDto,
   NeighborhoodDetailsDto,
   NeighborhoodDto,
 } from './neighborhood.dto';
-import { Block } from './blocks/block.entity';
-import { bufferToHex } from 'src/utils/convert';
-import { NetworkStatusInfo } from '@liftedinit/many-js/dist/network/modules/base/base';
 
 @Entity()
 export class Neighborhood {

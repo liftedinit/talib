@@ -7,7 +7,9 @@ async function bootstrap() {
   const fetch = await import('node-fetch');
   (global as any).fetch = fetch.default;
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'debug', 'warn', 'error'],
+  });
   const appConfig: AppConfigService = app.get(AppConfigService);
   const config = new DocumentBuilder()
     .setTitle(appConfig.name)

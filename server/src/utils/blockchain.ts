@@ -1,13 +1,24 @@
 import { Message, NetworkModule } from '@liftedinit/many-js';
-import cbor from 'cbor';
+import { Tagged } from 'cbor';
+
+export interface BlockIdentifier {
+  hash: ArrayBuffer;
+  height: number;
+}
 
 export interface BlockchainInfo {
-  id: {
-    hash: ArrayBuffer;
-    height: number;
-  };
+  latestBlock: BlockIdentifier;
   appHash: ArrayBuffer;
   retainedHeight: number | undefined;
+}
+
+export interface Block {
+  identifier: BlockIdentifier;
+  parent: BlockIdentifier | null;
+  appHash: ArrayBuffer;
+  time: Date;
+  txCount: number;
+  transactions: ArrayBuffer[];
 }
 
 export interface Blockchain extends NetworkModule {
@@ -21,7 +32,28 @@ export const Blockchain: Blockchain = {
     const msg = await this.call('blockchain.info');
     return parseBlockchainInfo(msg);
   },
+
+  async blockByHeight(height: number) {
+    const param = new Map([[0, new Map([[1, height]])]]);
+    const msg = await this.call('blockchain.block', param);
+    return parseBlock(msg);
+  },
 };
+
+function parseBlockIdentifier(id: Map<number, any>): BlockIdentifier {
+  return {
+    hash: id.get(0),
+    height: id.get(1),
+  };
+}
+
+function parseDateTime(value: any): Date {
+  if (value.tag != 1) {
+    throw new Error(`Value not a date: ${JSON.stringify(value)}`);
+  }
+
+  return new Date(Number(value.value) * 1000);
+}
 
 function parseBlockchainInfo(msg: Message): BlockchainInfo {
   const content = msg.getPayload();
@@ -29,14 +61,30 @@ function parseBlockchainInfo(msg: Message): BlockchainInfo {
     throw new Error('Invalid message');
   }
 
-  const id = content.get(0);
-
   return {
     appHash: content.get(1),
     retainedHeight: content.get(2),
-    id: {
-      hash: id.get(0),
-      height: id.get(1),
-    },
+    latestBlock: parseBlockIdentifier(content.get(0)),
+  };
+}
+
+function parseBlock(msg: Message): Block {
+  const payload = msg.getPayload();
+  if (!(payload instanceof Map)) {
+    throw new Error('Invalid message');
+  }
+  const content = payload.get(0);
+
+  const maybeParent = content.get(1);
+  const appHash = new Uint8Array([...content.get(2)]);
+  const time = parseDateTime(content.get(3));
+
+  return {
+    identifier: parseBlockIdentifier(content.get(0)),
+    parent: maybeParent ? parseBlockIdentifier(maybeParent) : null,
+    appHash,
+    time,
+    txCount: Number(content.get(4)),
+    transactions: [],
   };
 }

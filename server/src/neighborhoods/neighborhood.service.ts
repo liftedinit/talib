@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Neighborhood } from './neighborhood.entity';
 import { CreateNeighborhoodDto } from './neighborhood.dto';
 import { BlockService } from './blocks/block.service';
@@ -12,33 +12,54 @@ import { Block } from './blocks/block.entity';
 export class NeighborhoodService {
   constructor(
     @InjectRepository(Neighborhood)
-    private usersRepository: Repository<Neighborhood>,
+    private neighborhoodRepository: Repository<Neighborhood>,
     @InjectRepository(Block)
-    private blocksRepository: Repository<Block>,
+    private blockRepository: Repository<Block>,
     private block: BlockService,
     private network: NetworkService,
   ) {}
 
   findAll(): Promise<Neighborhood[]> {
-    return this.usersRepository.find();
+    return this.neighborhoodRepository.find();
   }
 
-  findByAddress(address: Address): Promise<Neighborhood> {
-    return this.usersRepository.findOne({
-      where: { address: address.toString() },
-      relations: {
-        blocks: true,
-      },
-    });
+  private addDetailsToQuery(query: SelectQueryBuilder<Neighborhood>) {
+    return query
+      .leftJoinAndMapOne(
+        'n.latestBlock',
+        'n.blocks',
+        'block',
+        'n.id = block.neighborhoodId',
+      )
+      .where(
+        (_qb) =>
+          'block.height = ' +
+          query
+            .subQuery()
+            .select('MAX(height)')
+            .from(Block, 'block')
+            .where('n.id = block.neighborhoodId')
+            .getQuery(),
+      );
   }
 
-  findById(id: number): Promise<Neighborhood> {
-    return this.usersRepository.findOne({
-      where: { id },
-      relations: {
-        blocks: true,
-      },
-    });
+  find(
+    where: { address?: Address | string; id?: number },
+    details = false,
+  ): Promise<Neighborhood | null> {
+    if (where.address !== undefined) {
+      (where as any).address_ = where.address.toString();
+    }
+
+    let query = this.neighborhoodRepository
+      .createQueryBuilder('n')
+      .where(where);
+
+    if (details) {
+      query = this.addDetailsToQuery(query);
+    }
+
+    return query.getOne();
   }
 
   async create(dto: CreateNeighborhoodDto): Promise<Neighborhood> {
@@ -49,24 +70,19 @@ export class NeighborhoodService {
       throw new Error('Server returned an invalid status.');
     }
 
-    const entity = Neighborhood.createWithDto(
-      Address.fromString(status.address),
-      dto,
-    );
+    const entity = Neighborhood.createWithDto(status, dto);
+    await this.neighborhoodRepository.save([entity]);
 
-    const block = await this.block.createLatestOf(entity);
-
-    await this.usersRepository.save([entity]);
-    await this.blocksRepository.save([block]);
+    await this.block.createLatestOf(entity);
     return entity;
   }
 
   async removeById(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+    await this.neighborhoodRepository.delete(id);
   }
 
   async removeByAddress(address: Address): Promise<void> {
-    const entity = await this.usersRepository.findOneBy({
+    const entity = await this.neighborhoodRepository.findOneBy({
       address: address.toString(),
     });
     await this.removeById(entity.id);

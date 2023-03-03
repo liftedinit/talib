@@ -9,4 +9,5 @@ workflows:
             force: true
           filters:
             branches:
-              only: main
+              only:
+                - main

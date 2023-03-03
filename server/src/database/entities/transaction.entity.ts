@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Block } from "../../neighborhoods/blocks/block.entity";
+import { Block } from "./block.entity";
 
 @Entity()
 @Index(["block", "block_index"], { unique: true })

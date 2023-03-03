@@ -2,11 +2,11 @@ import { Address } from "@liftedinit/many-js";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, SelectQueryBuilder } from "typeorm";
+import { Block } from "../database/entities/block.entity";
+import { Neighborhood } from "../database/entities/neighborhood.entity";
+import { CreateNeighborhoodDto } from "../dto/neighborhood.dto";
 import { NetworkService } from "../services/network.service";
-import { Block } from "./blocks/block.entity";
 import { BlockService } from "./blocks/block.service";
-import { CreateNeighborhoodDto } from "./neighborhood.dto";
-import { Neighborhood } from "./neighborhood.entity";
 
 @Injectable()
 export class NeighborhoodService {
@@ -25,6 +25,12 @@ export class NeighborhoodService {
 
   private addDetailsToQuery(query: SelectQueryBuilder<Neighborhood>) {
     return query
+      .leftJoin("n.blocks", "blocks")
+      .leftJoin("blocks.transactions", "transactions")
+      .addSelect("COUNT(transactions.id)", "txCount")
+
+      .loadRelationCountAndMap("n.txCount", "blocks.transactions", "n.txCount")
+
       .leftJoinAndMapOne(
         "n.latestBlock",
         "n.blocks",
@@ -43,7 +49,7 @@ export class NeighborhoodService {
       );
   }
 
-  find(
+  async findOne(
     where: { address?: Address | string; id?: number },
     details = false,
   ): Promise<Neighborhood | null> {
@@ -53,13 +59,17 @@ export class NeighborhoodService {
 
     let query = this.neighborhoodRepository
       .createQueryBuilder("n")
-      .where(where);
+      .where(where)
+      .limit(1);
 
     if (details) {
       query = this.addDetailsToQuery(query);
     }
 
-    return query.getOne();
+    const { raw, entities } = await query.getRawAndEntities();
+    const one = entities[0];
+    one.txCount = raw[0].txCount;
+    return one;
   }
 
   async create(dto: CreateNeighborhoodDto): Promise<Neighborhood> {

@@ -1,13 +1,21 @@
 import { Address } from "@liftedinit/many-js";
-import { Body, Controller, Delete, Get, Param, Put } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Put,
+} from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
-import { BlockService } from "./blocks/block.service";
+import { Neighborhood } from "../database/entities/neighborhood.entity";
 import {
   CreateNeighborhoodDto,
   NeighborhoodDetailsDto,
   NeighborhoodDto,
-} from "./neighborhood.dto";
-import { Neighborhood } from "./neighborhood.entity";
+} from "../dto/neighborhood.dto";
+import { BlockService } from "./blocks/block.service";
 import { NeighborhoodService } from "./neighborhood.service";
 
 @Controller("api/v1/neighborhoods")
@@ -30,9 +38,9 @@ export class NeighborhoodController {
     }
 
     if (a) {
-      return await this.neighborhood.find({ address: a }, details);
+      return await this.neighborhood.findOne({ address: a }, details);
     } else if (i !== undefined) {
-      return await this.neighborhood.find({ id: i }, details);
+      return await this.neighborhood.findOne({ id: i }, details);
     } else {
       throw new Error(
         `Parameter (${JSON.stringify(address)}) is neither address nor id.`,
@@ -61,6 +69,11 @@ export class NeighborhoodController {
     @Param("address") address: string,
   ): Promise<NeighborhoodDetailsDto> {
     const n = await this.findByAddressQueryParam(address, true);
+
+    if (n === null) {
+      throw new NotFoundException();
+    }
+
     return n.intoDetailsDto();
   }
 

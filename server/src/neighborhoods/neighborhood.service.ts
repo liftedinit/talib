@@ -1,5 +1,5 @@
 import { Address } from "@liftedinit/many-js";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, SelectQueryBuilder } from "typeorm";
 import { Block } from "../database/entities/block.entity";
@@ -10,6 +10,8 @@ import { BlockService } from "./blocks/block.service";
 
 @Injectable()
 export class NeighborhoodService {
+  private readonly logger = new Logger(NeighborhoodService.name);
+
   constructor(
     @InjectRepository(Neighborhood)
     private neighborhoodRepository: Repository<Neighborhood>,
@@ -25,8 +27,8 @@ export class NeighborhoodService {
 
   private addDetailsToQuery(query: SelectQueryBuilder<Neighborhood>) {
     return query
-      .leftJoin("n.blocks", "blocks")
-      .leftJoin("blocks.transactions", "transactions")
+      .innerJoin("n.blocks", "blocks")
+      .innerJoin("blocks.transactions", "transactions")
       .addSelect("COUNT(transactions.id)", "txCount")
 
       .loadRelationCountAndMap("n.txCount", "blocks.transactions", "n.txCount")
@@ -67,6 +69,9 @@ export class NeighborhoodService {
     }
 
     query = query.groupBy("n.id, block.id");
+    this.logger.debug(
+      `findOne(${JSON.stringify(where)}, ${details}): \`${query.getQuery()}\``,
+    );
 
     const { raw, entities } = await query.getRawAndEntities();
     const one = entities[0];

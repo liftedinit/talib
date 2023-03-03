@@ -1,5 +1,5 @@
 // @TODO: Move this to .env or something
-const API_BASE_URL = "http://127.0.0.1:4010/api/v1/";
+const API_BASE_URL = "/api/v1/";
 
 function get(...path: (string | number)[]) {
   return async function () {

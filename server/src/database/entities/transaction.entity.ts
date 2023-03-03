@@ -16,11 +16,11 @@ export class Transaction {
   @Column({ type: "integer" })
   block_index: number;
 
-  @Column({ type: "blob", nullable: false })
-  request: ArrayBuffer;
+  @Column({ type: "blob", nullable: true })
+  request?: ArrayBuffer;
 
-  @Column({ type: "blob", nullable: false })
-  response: ArrayBuffer;
+  @Column({ type: "blob", nullable: true })
+  response?: ArrayBuffer;
 
   @ManyToOne(() => Block, (block) => block.transactions)
   block: Block;

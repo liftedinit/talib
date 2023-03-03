@@ -1,4 +1,4 @@
-import { Address } from "@liftedinit/many-js";
+import { Address, NetworkAttributes } from "@liftedinit/many-js";
 import { NetworkStatusInfo } from "@liftedinit/many-js/dist/network/modules/base/base";
 import { bufferToHex } from "src/utils/convert";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -29,8 +29,8 @@ export class Neighborhood {
   @Column()
   serverName: string;
 
-  @Column({ array: true, type: "integer" })
-  attributes: number[];
+  @Column({ type: "simple-json" })
+  attributes: NetworkAttributes;
 
   @Column()
   version: string;
@@ -85,7 +85,7 @@ export class Neighborhood {
 
     result.serverName = status.serverName;
     result.version = status.serverVersion;
-    result.attributes = status.attributes;
+    result.attributes = JSON.parse(JSON.stringify(status.attributes));
 
     return result;
   }

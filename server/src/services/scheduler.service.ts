@@ -31,7 +31,7 @@ export class SchedulerService {
         // On error, hope for the best next time.
         done = true;
       } else {
-        this.logger.debug("Last job was not finished, skipping...");
+        this.logger.warn("Last job not done, skipping this job...");
       }
     };
 

@@ -1,4 +1,4 @@
-import { Container, Divider, Heading, Stack, Text } from "@liftedinit/ui";
+import { Container, Divider, Heading, SimpleGrid, Text } from "@liftedinit/ui";
 import {
   NeighborhoodBlocks,
   NeighborhoodStatus,
@@ -9,16 +9,16 @@ export function Home() {
   const neighborhoodId = 1; // @TODO: Get this from context
 
   return (
-    <Container maxW="container.md">
+    <Container maxW="container.lg">
       <Heading my={6}>Talib</Heading>
       <Text>A Block Explorer for the Many Protocol</Text>
       <Divider my={6} />
       <NeighborhoodStatus id={neighborhoodId} />
       <Divider my={6} />
-      <Stack direction="row">
+      <SimpleGrid columns={2} spacing={6}>
         <NeighborhoodBlocks id={neighborhoodId} />
         <NeighborhoodTransactions id={neighborhoodId} />
-      </Stack>
+      </SimpleGrid>
     </Container>
   );
 }

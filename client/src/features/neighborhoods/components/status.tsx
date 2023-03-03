@@ -1,6 +1,6 @@
 import { Spinner, Stack } from "@liftedinit/ui";
 import { useQuery } from "react-query";
-import { ErrorAlert, Stat } from "../../../shared";
+import { Stat } from "../../../shared";
 import { getNeighborhood } from "../queries";
 
 export function NeighborhoodStatus({ id }: { id: number }) {
@@ -9,7 +9,6 @@ export function NeighborhoodStatus({ id }: { id: number }) {
 
   return (
     <>
-      {query.isError && <ErrorAlert error={query.error as Error} />}
       {query.isLoading ? (
         <Spinner />
       ) : (

@@ -1,11 +1,11 @@
+import {
+  queryClient,
+  QueryClientProvider,
+  theme,
+  ThemeProvider,
+} from "@liftedinit/ui";
 import React from "react";
 import { HashRouter } from "react-router-dom";
-import {
-  QueryClientProvider,
-  ThemeProvider,
-  queryClient,
-  theme,
-} from "@liftedinit/ui";
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   return (

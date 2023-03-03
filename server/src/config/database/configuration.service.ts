@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 /**
  * Service dealing with app config based operations.
@@ -11,9 +11,10 @@ export class DatabaseConfigService {
   constructor(private configService: ConfigService) {}
 
   get type() {
-    return this.configService.get<string>('database.type');
+    return this.configService.get<string>("database.type");
   }
-  get extras(): any {
-    return this.configService.get<Record<string, any>>('database.extra');
+
+  get config(): Record<string, any> {
+    return this.configService.get("database");
   }
 }

@@ -1,21 +1,26 @@
-import { registerAs } from '@nestjs/config';
-import process from 'process';
-import { camelCase } from 'change-case';
+import { registerAs } from "@nestjs/config";
+import { camelCase } from "change-case";
+import process from "process";
 
-export default registerAs('database', () => {
-  const extra = {};
+const kPrefix = "DATABASE_";
+
+export default registerAs("database", () => {
+  const all: Record<string, any> = {};
   const allKeys = Object.getOwnPropertyNames(process.env).filter(
-    (x) => x.startsWith('DB_') && x != 'DB_TYPE',
+    (x) =>
+      x.startsWith(kPrefix) && !["DATABASE_TYPE", "DATABASE_EXTRA"].includes(x),
   );
 
   for (const key of allKeys) {
-    extra[camelCase(key.slice(3))] = process.env[key];
+    all[camelCase(key.slice(kPrefix.length))] = process.env[key];
   }
 
-  const config = {
-    type: process.env.DB_TYPE,
-    extra,
-  };
+  if (process.env.DATABASE_EXTRA !== undefined) {
+    all.extra = JSON.parse(process.env.DATABASE_EXTRA);
+  }
 
-  return config;
+  return {
+    type: process.env.DATABASE_TYPE,
+    ...all,
+  };
 });

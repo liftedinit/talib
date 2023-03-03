@@ -1,29 +1,63 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Block } from './block.entity';
-import { Neighborhood } from '../neighborhood.entity';
-import { NetworkService } from '../../services/network.service';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from "nestjs-typeorm-paginate";
+import { DataSource, Repository } from "typeorm";
+import { Block } from "../../database/entities/block.entity";
+import { Neighborhood } from "../../database/entities/neighborhood.entity";
+import { Transaction } from "../../database/entities/transaction.entity";
+import { NetworkService } from "../../services/network.service";
+import {
+  Block as ManyBlock,
+  Transaction as ManyTransaction,
+} from "../../utils/blockchain";
 
 @Injectable()
 export class BlockService {
   constructor(
     @InjectRepository(Block)
-    private usersRepository: Repository<Block>,
+    private blockRepository: Repository<Block>,
+    @InjectRepository(Transaction)
+    private transactionRepository: Repository<Transaction>,
     private network: NetworkService,
+    private dataSource: DataSource,
   ) {}
 
   findOne(id: number): Promise<Block> {
-    return this.usersRepository.findOneBy({ id });
+    return this.blockRepository.findOneBy({ id });
+  }
+
+  findOneByHeight(
+    neighborhood: Neighborhood,
+    height: number,
+  ): Promise<Block | null> {
+    return this.blockRepository.findOneBy({
+      neighborhood: { id: neighborhood.id },
+      height: height,
+    });
+  }
+
+  public async findMany(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Block>> {
+    const query = this.blockRepository
+      .createQueryBuilder("b")
+      .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
+      .orderBy("height", "DESC");
+
+    return paginate<Block>(query, options);
   }
 
   async latestForNeighborhood(
     neighborhood: Neighborhood,
   ): Promise<Block | null> {
-    const blocks = await this.usersRepository.find({
+    const blocks = await this.blockRepository.find({
       where: { neighborhood: { id: neighborhood.id } },
       take: 1,
-      order: { height: 'DESC' },
+      order: { height: "DESC" },
     });
 
     return blocks?.[0];
@@ -32,28 +66,124 @@ export class BlockService {
   async createLatestOf(neighborhood: Neighborhood): Promise<Block> {
     const n = await this.network.forUrl(neighborhood.url);
     const info = await n.blockchain.info();
-
-    const b = new Block();
-    b.height = info.id.height;
-    b.hash = info.id.hash;
-    b.appHash = info.appHash;
-    b.neighborhood = neighborhood;
-
-    return b;
+    const latest: ManyBlock = await n.blockchain.blockByHeight(
+      info.latestBlock.height,
+    );
+    const maybeLastBlock = await this.findOneByHeight(
+      neighborhood,
+      latest.identifier.height,
+    );
+    return (
+      maybeLastBlock ?? (await this.createFromManyBlock(neighborhood, latest))
+    );
   }
 
-  // async create(neighborhood: Partial<Neighborhood>): Promise<Neighborhood> {
-  //   const entity = await this.usersRepository.create(neighborhood);
-  //   await this.usersRepository.save([entity]);
-  //   return entity;
-  // }
-  //
-  // async remove(id: string): Promise<void> {
-  //   await this.usersRepository.delete(id);
-  // }
-  //
-  // async removeByAddress(address: string): Promise<void> {
-  //   const entity = await this.usersRepository.findOneBy({ address });
-  //   await this.usersRepository.delete(entity.id);
-  // }
+  private missingBlockHeightsQueryForPostgres(
+    neighborhood: Neighborhood,
+    max?: number,
+  ) {
+    return `
+        SELECT all_ids AS missnum
+        FROM generate_series(1, (SELECT MAX(height) FROM block)) all_ids
+        EXCEPT
+        SELECT height FROM block WHERE "neighborhoodId" = ${neighborhood.id}
+        ORDER BY missnum
+        ${max !== undefined ? "LIMIT " + max : ""}
+    `;
+  }
+
+  private missingBlockHeightsQueryForSqlite(
+    neighborhood: Neighborhood,
+    max?: number,
+  ) {
+    return `
+      WITH Missing (missnum, maxid) AS (
+        SELECT 1 AS missnum, (select max(height) from block)
+        UNION ALL
+        SELECT missnum + 1, maxid FROM Missing
+        WHERE missnum < maxid
+      )
+      SELECT missnum
+      FROM Missing
+      LEFT OUTER JOIN block tt on tt.height = Missing.missnum
+      WHERE tt.height is NULL
+      ${max !== undefined ? "LIMIT " + max : ""}
+    ;`;
+  }
+
+  async missingBlockHeightsForNeighborhood(
+    neighborhood: Neighborhood,
+    max = 500,
+  ): Promise<number[]> {
+    const queryFns = {
+      postgres: () =>
+        this.missingBlockHeightsQueryForPostgres(neighborhood, max),
+      sqlite: () => this.missingBlockHeightsQueryForSqlite(neighborhood, max),
+    };
+    const driver = this.blockRepository.manager.connection.options.type;
+    if (queryFns[driver] === undefined) {
+      throw new Error(
+        `We do not support ${driver} for fetching missing heights. File a bug on Talib's repo.`,
+      );
+    }
+    const query = queryFns[driver]();
+
+    const result = await this.dataSource.query(query);
+    return result.map((r) => Number(r.missnum)) as number[];
+  }
+
+  async createFromManyBlock(neighborhood: Neighborhood, block: ManyBlock) {
+    const entity = new Block();
+    entity.appHash = block.appHash;
+    entity.height = block.identifier.height;
+    entity.hash = block.identifier.hash;
+    entity.neighborhood = neighborhood;
+
+    const transactions = await Promise.all(
+      block.transactions.map((tx, i) =>
+        (async () => {
+          const transaction = new Transaction();
+          await this.populateTransaction(neighborhood, entity, tx);
+          transaction.block = entity;
+          transaction.request = tx.request;
+          transaction.response = tx.response;
+          transaction.block_index = i;
+
+          return transaction;
+        })(),
+      ),
+    );
+    entity.transactions = transactions;
+
+    const result = await this.blockRepository.save(entity);
+    await this.transactionRepository.save(transactions);
+    return result;
+  }
+
+  async populateTransaction(
+    neighborhood: Neighborhood,
+    block: Block,
+    tx: ManyTransaction,
+  ): Promise<ManyTransaction> {
+    const n = await this.network.forUrl(neighborhood.url);
+    const [request, response] = await Promise.all([
+      tx.request ?? n.blockchain.request(tx.hash),
+      tx.response ?? n.blockchain.response(tx.hash),
+    ]);
+
+    tx.request = request;
+    tx.response = response;
+    return tx;
+  }
+
+  async removeById(id: number) {
+    await this.blockRepository.delete(id);
+  }
+
+  async removeByHeight(neighborhood: Neighborhood, height: number) {
+    await this.blockRepository.delete({
+      neighborhood: { id: neighborhood.id },
+      height,
+    });
+  }
 }

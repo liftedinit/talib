@@ -26,7 +26,7 @@ interface TransactionSummary {
 export function NeighborhoodTransactions({ id }: { id: number }) {
   const query = useQuery(
     ["neighborhoods", id, "transactions"],
-    getNeighborhoodTransactions(id)
+    getNeighborhoodTransactions(id),
   );
 
   return (
@@ -44,7 +44,7 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
             <Th>Time</Th>
           </Thead>
           <Tbody>
-            {query.data?.map((transaction: TransactionSummary) => (
+            {query.data?.items && query.data.items.map((transaction: TransactionSummary) => (
               <Tr>
                 <Td>{transaction.hash}</Td>
                 <Td>{transaction.type}</Td>

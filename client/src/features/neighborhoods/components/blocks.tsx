@@ -15,15 +15,15 @@ import { getNeighborhoodBlocks } from "../queries";
 
 interface BlockSummary {
   height: number;
-  hash: string;
-  txns: number;
+  blockHash: string;
+  txCount: number;
   timestamp: Date;
 }
 
 export function NeighborhoodBlocks({ id }: { id: number }) {
   const query = useQuery(
     ["neighborhoods", id, "blocks"],
-    getNeighborhoodBlocks(id)
+    getNeighborhoodBlocks(id),
   );
 
   return (
@@ -41,16 +41,17 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
             <Th>Time</Th>
           </Thead>
           <Tbody>
-            {query.data?.map((block: BlockSummary) => (
+            {query.data?.items && query.data.items.map((block: BlockSummary) => (
               <Tr>
                 <Td>{block.height}</Td>
-                <Td>{block.hash}</Td>
-                <Td>{block.txns}</Td>
+                <Td>{block.blockHash}</Td>
+                <Td>{block.txCount}</Td>
                 <Td>{block.timestamp.toLocaleString()}</Td>
               </Tr>
             ))}
           </Tbody>
         </Table>
+
       )}
     </Box>
   );

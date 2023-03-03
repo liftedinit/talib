@@ -66,9 +66,11 @@ export class NeighborhoodService {
       query = this.addDetailsToQuery(query);
     }
 
+    query = query.groupBy("n.id, block.id");
+
     const { raw, entities } = await query.getRawAndEntities();
     const one = entities[0];
-    one.txCount = raw[0].txCount;
+    one.txCount = Number(raw[0].txCount);
     return one;
   }
 

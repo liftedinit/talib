@@ -41,17 +41,17 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
             <Th>Time</Th>
           </Thead>
           <Tbody>
-            {query.data?.items && query.data.items.map((block: BlockSummary) => (
-              <Tr>
-                <Td>{block.height}</Td>
-                <Td>{block.blockHash}</Td>
-                <Td>{block.txCount}</Td>
-                <Td>{block.timestamp.toLocaleString()}</Td>
-              </Tr>
-            ))}
+            {query.data?.items &&
+              query.data.items.map((block: BlockSummary) => (
+                <Tr>
+                  <Td>{block.height}</Td>
+                  <Td>{block.blockHash}</Td>
+                  <Td>{block.txCount}</Td>
+                  <Td>{block.timestamp?.toLocaleString()}</Td>
+                </Tr>
+              ))}
           </Tbody>
         </Table>
-
       )}
     </Box>
   );

@@ -44,17 +44,18 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
             <Th>Time</Th>
           </Thead>
           <Tbody>
-            {query.data?.items && query.data.items.map((transaction: TransactionSummary) => (
-              <Tr>
-                <Td>{transaction.hash}</Td>
-                <Td>{transaction.type}</Td>
-                <Td>
-                  {transaction.from}
-                  {transaction.to}
-                </Td>
-                <Td>{transaction.timestamp.toLocaleString()}</Td>
-              </Tr>
-            ))}
+            {query.data?.items &&
+              query.data.items.map((transaction: TransactionSummary) => (
+                <Tr>
+                  <Td>{transaction.hash}</Td>
+                  <Td>{transaction.type}</Td>
+                  <Td>
+                    {transaction.from}
+                    {transaction.to}
+                  </Td>
+                  <Td>{transaction.timestamp?.toLocaleString()}</Td>
+                </Tr>
+              ))}
           </Tbody>
         </Table>
       )}

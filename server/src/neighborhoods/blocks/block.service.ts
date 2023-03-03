@@ -78,11 +78,25 @@ export class BlockService {
     );
   }
 
-  async missingBlockHeightsForNeighborhood(
+  private missingBlockHeightsQueryForPostgres(
     neighborhood: Neighborhood,
     max?: number,
-  ): Promise<number[]> {
-    let query = `
+  ) {
+    return `
+        SELECT all_ids AS missnum
+        FROM generate_series(1, (SELECT MAX(height) FROM block)) all_ids
+        EXCEPT
+        SELECT height FROM block WHERE "neighborhoodId" = ${neighborhood.id}
+        ORDER BY missnum
+        ${max !== undefined ? "LIMIT " + max : ""}
+    `;
+  }
+
+  private missingBlockHeightsQueryForSqlite(
+    neighborhood: Neighborhood,
+    max?: number,
+  ) {
+    return `
       WITH Missing (missnum, maxid) AS (
         SELECT 1 AS missnum, (select max(height) from block)
         UNION ALL
@@ -95,6 +109,24 @@ export class BlockService {
       WHERE tt.height is NULL
       ${max !== undefined ? "LIMIT " + max : ""}
     ;`;
+  }
+
+  async missingBlockHeightsForNeighborhood(
+    neighborhood: Neighborhood,
+    max = 500,
+  ): Promise<number[]> {
+    const queryFns = {
+      postgres: () =>
+        this.missingBlockHeightsQueryForPostgres(neighborhood, max),
+      sqlite: () => this.missingBlockHeightsQueryForSqlite(neighborhood, max),
+    };
+    const driver = this.blockRepository.manager.connection.options.type;
+    if (queryFns[driver] === undefined) {
+      throw new Error(
+        `We do not support ${driver} for fetching missing heights. File a bug on Talib's repo.`,
+      );
+    }
+    const query = queryFns[driver]();
 
     const result = await this.dataSource.query(query);
     return result.map((r) => Number(r.missnum)) as number[];

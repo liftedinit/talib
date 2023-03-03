@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { BlockDto } from "../../dto/block.dto";
 import { bufferToHex } from "../../utils/convert";
+import { ARRAYBUFFER_FIELD_TYPE } from "../../utils/database";
 import { Neighborhood } from "./neighborhood.entity";
 import { Transaction } from "./transaction.entity";
 
@@ -23,11 +24,11 @@ export class Block {
   @Column({ name: "height", type: "integer", nullable: false })
   height: number;
 
-  @Column({ type: "blob", nullable: true })
+  @Column(ARRAYBUFFER_FIELD_TYPE)
   hash: ArrayBuffer;
 
-  @Column({ type: "blob", nullable: true })
-  appHash: ArrayBuffer;
+  @Column(ARRAYBUFFER_FIELD_TYPE)
+  appHash?: ArrayBuffer;
 
   @OneToMany(() => Transaction, (tx) => tx.block, {
     onDelete: "CASCADE",

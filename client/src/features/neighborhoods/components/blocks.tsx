@@ -16,7 +16,10 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
         <Spinner />
       ) : (
         <Box bg="white" p={6} w="50%">
-          {query.data?.map(<pre>Block</pre>)}
+          {query.data?.items &&
+            query.data.items.map((item: { height: number }) => (
+              <pre>BLOCK[{item.height}]</pre>
+            ))}
         </Box>
       )}
     </>

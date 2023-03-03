@@ -16,6 +16,10 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
         <Spinner />
       ) : (
         <Box bg="white" p={6} w="50%">
+          {query.data?.items &&
+            query.data.items.map((item: { hash: number }) => (
+              <pre>TXN[{item.hash}]</pre>
+            ))}
           {query.data?.map(<pre>Txn</pre>)}
         </Box>
       )}

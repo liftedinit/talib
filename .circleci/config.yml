@@ -5,6 +5,8 @@ workflows:
   heroku_deploy:
     jobs:
       - heroku/deploy-via-git
+        - parameters:
+          force: true
         - filters:
             branches:
               only: main

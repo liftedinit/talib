@@ -2,15 +2,16 @@ import { Injectable, Logger } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from "cron";
 import { SchedulerConfigService } from "../config/scheduler/configuration.service";
+import { Neighborhood } from "../database/entities/neighborhood.entity";
 import { BlockService } from "../neighborhoods/blocks/block.service";
-import { Neighborhood } from "../neighborhoods/neighborhood.entity";
 import { NeighborhoodService } from "../neighborhoods/neighborhood.service";
 import { NetworkService } from "./network.service";
 
 @Injectable()
 export class SchedulerService {
+  private readonly logger = new Logger(SchedulerService.name);
+
   constructor(
-    private logger: Logger,
     private schedulerConfig: SchedulerConfigService,
     private schedulerRegistry: SchedulerRegistry,
     private network: NetworkService,
@@ -23,14 +24,14 @@ export class SchedulerService {
       if (done) {
         done = false;
         try {
-          await this.updateEarliestMissingBlocks();
+          await this.updateNeighborhoods();
         } catch (err) {
           this.logger.error(`Error during update: ${err}`);
         }
         // On error, hope for the best next time.
         done = true;
       } else {
-        this.logger.debug("Last job was not finished, skipping...");
+        this.logger.warn("Last job not done, skipping this job...");
       }
     };
 
@@ -42,10 +43,12 @@ export class SchedulerService {
     } else if (schedulerConfig.seconds !== undefined) {
       const id = setInterval(jobFn, schedulerConfig.seconds * 1000);
       this.schedulerRegistry.addInterval("updateNeighborhood", id);
+    } else {
+      this.logger.log(`Scheduler disabled.`);
     }
   }
 
-  async updateEarliestMissingBlocks() {
+  async updateNeighborhoods() {
     const neighborhoods = await this.neighborhood.findAll();
 
     if (neighborhoods.length > 0) {
@@ -66,8 +69,6 @@ export class SchedulerService {
           })(),
         ),
       );
-
-      this.logger.debug(`Done.`);
     }
   }
 
@@ -92,28 +93,31 @@ export class SchedulerService {
     }
 
     for (const batch of schedule) {
-      this.logger.debug(
-        `Neighborhood ${neighbordhood.id}: getting height ${batch[0]}..=${
-          batch[batch.length - 1]
-        }`,
-      );
-
-      await Promise.all(
-        batch.map((height) =>
-          (async () => {
-            const blockInfo = await network.blockchain.blockByHeight(height);
-            await this.block.createFromManyBlock(neighbordhood, blockInfo);
-          })(),
-        ),
-      );
+      try {
+        await Promise.all(
+          batch.map((height) =>
+            (async () => {
+              const blockInfo = await network.blockchain.blockByHeight(height);
+              await this.block.createFromManyBlock(neighbordhood, blockInfo);
+            })(),
+          ),
+        );
+      } catch (e) {
+        this.logger.error(
+          `Error occured during current batch ${batch[0]}..=${
+            batch[batch.length - 1]
+          }: ${e}. Stopping.`,
+        );
+        return;
+      }
 
       // Sleep a bit.
       await new Promise((res) => setTimeout(res, parallel_sleep * 1000));
     }
-    this.logger.debug(
-      `Neighborhood ${neighbordhood.id}: done ${missingBlocks.length} blocks (${
+    this.logger.log(
+      `Neighborhood ${neighbordhood.id}: done ${missingBlocks.length} blocks ${
         missingBlocks[0]
-      }..=${missingBlocks[missingBlocks.length - 1]})`,
+      }..=${missingBlocks[missingBlocks.length - 1]}`,
     );
   }
 }

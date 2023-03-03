@@ -5,7 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Block } from "../../neighborhoods/blocks/block.entity";
+import { ARRAYBUFFER_FIELD_TYPE } from "../../utils/database";
+import { Block } from "./block.entity";
 
 @Entity()
 @Index(["block", "block_index"], { unique: true })
@@ -16,11 +17,11 @@ export class Transaction {
   @Column({ type: "integer" })
   block_index: number;
 
-  @Column({ type: "blob", nullable: false })
-  request: ArrayBuffer;
+  @Column(ARRAYBUFFER_FIELD_TYPE)
+  request?: ArrayBuffer;
 
-  @Column({ type: "blob", nullable: false })
-  response: ArrayBuffer;
+  @Column(ARRAYBUFFER_FIELD_TYPE)
+  response?: ArrayBuffer;
 
   @ManyToOne(() => Block, (block) => block.transactions)
   block: Block;

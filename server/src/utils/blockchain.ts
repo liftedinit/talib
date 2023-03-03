@@ -17,7 +17,13 @@ export interface Block {
   appHash: ArrayBuffer;
   time: Date;
   txCount: number;
-  transactions: ArrayBuffer[];
+  transactions: Transaction[];
+}
+
+export interface Transaction {
+  hash: ArrayBuffer;
+  request?: ArrayBuffer;
+  response?: ArrayBuffer;
 }
 
 export interface Blockchain extends NetworkModule {
@@ -36,6 +42,26 @@ export const Blockchain: Blockchain = {
     const param = new Map([[0, new Map([[1, height]])]]);
     const msg = await this.call("blockchain.block", param);
     return parseBlock(msg);
+  },
+
+  async request(txHash: ArrayBuffer) {
+    const param = new Map([[0, new Map([[0, txHash]])]]);
+    const msg = await this.call("blockchain.request", param);
+    const payload = msg.getPayload();
+    if (!(payload instanceof Map)) {
+      throw new Error("Invalid message");
+    }
+    return payload.get(0);
+  },
+
+  async response(txHash: ArrayBuffer) {
+    const param = new Map([[0, new Map([[0, txHash]])]]);
+    const msg = await this.call("blockchain.response", param);
+    const payload = msg.getPayload();
+    if (!(payload instanceof Map)) {
+      throw new Error("Invalid message");
+    }
+    return payload.get(0);
   },
 };
 
@@ -67,6 +93,18 @@ function parseBlockchainInfo(msg: Message): BlockchainInfo {
   };
 }
 
+function parseTransactionFromBlock(msg: Map<any, any>): Transaction {
+  // Get identifier
+  const id = msg.get(0);
+  const txHash = id.get(0);
+
+  return {
+    hash: txHash,
+    request: undefined,
+    response: undefined,
+  };
+}
+
 function parseBlock(msg: Message): Block {
   const payload = msg.getPayload();
   if (!(payload instanceof Map)) {
@@ -84,6 +122,6 @@ function parseBlock(msg: Message): Block {
     appHash,
     time,
     txCount: Number(content.get(4)),
-    transactions: [],
+    transactions: content.get(5).map(parseTransactionFromBlock),
   };
 }

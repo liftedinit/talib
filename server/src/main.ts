@@ -1,3 +1,4 @@
+import { LogLevel } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
@@ -8,9 +9,17 @@ async function bootstrap() {
   (global as any).fetch = fetch.default;
 
   const app = await NestFactory.create(AppModule, {
-    logger: ["log", "debug", "warn", "error"],
+    bufferLogs: true,
   });
   const appConfig: AppConfigService = app.get(AppConfigService);
+
+  app.useLogger([
+    ...(appConfig.debug ? ["debug" as LogLevel] : []),
+    "log",
+    "warn",
+    "error",
+  ]);
+
   const config = new DocumentBuilder()
     .setTitle(appConfig.name)
     .setDescription("MANY Protocol Explorer API")

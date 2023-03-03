@@ -22,4 +22,11 @@ export class AppConfigService {
   get port() {
     return Number(this.configService.get<number>("app.port"));
   }
+
+  get is_dev() {
+    return this.env == "development" || this.env == "dev";
+  }
+  get debug() {
+    return this.is_dev || this.configService.get<boolean>("app.debug");
+  }
 }

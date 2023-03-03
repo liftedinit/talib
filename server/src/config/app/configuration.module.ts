@@ -11,6 +11,7 @@ const validationSchema = Joi.object({
     .default("development"),
   APP_URL: Joi.string().uri({ allowRelative: false }),
   APP_PORT: Joi.number().default(3000),
+  APP_DEBUG: Joi.boolean().default(false),
 });
 
 /**

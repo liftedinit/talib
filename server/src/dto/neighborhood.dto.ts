@@ -26,6 +26,12 @@ export class NeighborhoodDetailsDto extends NeighborhoodDto {
 
   @ApiProperty()
   latestAppHash: string;
+
+  @ApiProperty({
+    description:
+      "The total transactions in the database for this neighborhood. In some cases this might not be filled.",
+  })
+  totalTransactionCount?: number;
 }
 
 export class CreateNeighborhoodDto {

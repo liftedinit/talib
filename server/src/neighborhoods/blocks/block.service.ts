@@ -1,16 +1,27 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from "nestjs-typeorm-paginate";
 import { DataSource, Repository } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
+import { Transaction } from "../../database/entities/transaction.entity";
 import { NetworkService } from "../../services/network.service";
-import { Block as ManyBlock } from "../../utils/blockchain";
+import {
+  Block as ManyBlock,
+  Transaction as ManyTransaction,
+} from "../../utils/blockchain";
 
 @Injectable()
 export class BlockService {
   constructor(
     @InjectRepository(Block)
     private blockRepository: Repository<Block>,
+    @InjectRepository(Transaction)
+    private transactionRepository: Repository<Transaction>,
     private network: NetworkService,
     private dataSource: DataSource,
   ) {}
@@ -27,6 +38,17 @@ export class BlockService {
       neighborhood: { id: neighborhood.id },
       height: height,
     });
+  }
+
+  public async findMany(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Block>> {
+    const query = this.blockRepository
+      .createQueryBuilder("b")
+      .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
+      .orderBy("height", "DESC");
+
+    return paginate<Block>(query, options);
   }
 
   async latestForNeighborhood(
@@ -84,8 +106,52 @@ export class BlockService {
     entity.height = block.identifier.height;
     entity.hash = block.identifier.hash;
     entity.neighborhood = neighborhood;
-    entity.transactions = [];
 
-    return await this.blockRepository.save(entity);
+    const transactions = await Promise.all(
+      block.transactions.map((tx, i) =>
+        (async () => {
+          const transaction = new Transaction();
+          await this.populateTransaction(neighborhood, entity, tx);
+          transaction.block = entity;
+          transaction.request = tx.request;
+          transaction.response = tx.response;
+          transaction.block_index = i;
+
+          return transaction;
+        })(),
+      ),
+    );
+    entity.transactions = transactions;
+
+    const result = await this.blockRepository.save(entity);
+    await this.transactionRepository.save(transactions);
+    return result;
+  }
+
+  async populateTransaction(
+    neighborhood: Neighborhood,
+    block: Block,
+    tx: ManyTransaction,
+  ): Promise<ManyTransaction> {
+    const n = await this.network.forUrl(neighborhood.url);
+    const [request, response] = await Promise.all([
+      tx.request ?? n.blockchain.request(tx.hash),
+      tx.response ?? n.blockchain.response(tx.hash),
+    ]);
+
+    tx.request = request;
+    tx.response = response;
+    return tx;
+  }
+
+  async removeById(id: number) {
+    await this.blockRepository.delete(id);
+  }
+
+  async removeByHeight(neighborhood: Neighborhood, height: number) {
+    await this.blockRepository.delete({
+      neighborhood: { id: neighborhood.id },
+      height,
+    });
   }
 }

@@ -25,6 +25,12 @@ export class NeighborhoodService {
 
   private addDetailsToQuery(query: SelectQueryBuilder<Neighborhood>) {
     return query
+      .leftJoin("n.blocks", "blocks")
+      .leftJoin("blocks.transactions", "transactions")
+      .addSelect("COUNT(transactions.id)", "txCount")
+
+      .loadRelationCountAndMap("n.txCount", "blocks.transactions", "n.txCount")
+
       .leftJoinAndMapOne(
         "n.latestBlock",
         "n.blocks",
@@ -43,7 +49,7 @@ export class NeighborhoodService {
       );
   }
 
-  find(
+  async findOne(
     where: { address?: Address | string; id?: number },
     details = false,
   ): Promise<Neighborhood | null> {
@@ -53,13 +59,17 @@ export class NeighborhoodService {
 
     let query = this.neighborhoodRepository
       .createQueryBuilder("n")
-      .where(where);
+      .where(where)
+      .limit(1);
 
     if (details) {
       query = this.addDetailsToQuery(query);
     }
 
-    return query.getOne();
+    const { raw, entities } = await query.getRawAndEntities();
+    const one = entities[0];
+    one.txCount = raw[0].txCount;
+    return one;
   }
 
   async create(dto: CreateNeighborhoodDto): Promise<Neighborhood> {

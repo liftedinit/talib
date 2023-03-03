@@ -6,6 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { BlockDto } from "../../dto/block.dto";
+import { bufferToHex } from "../../utils/convert";
 import { Neighborhood } from "./neighborhood.entity";
 import { Transaction } from "./transaction.entity";
 
@@ -31,4 +33,15 @@ export class Block {
     onDelete: "CASCADE",
   })
   transactions: Transaction[];
+
+  txCount?: number;
+
+  intoDto(): BlockDto {
+    return {
+      height: this.height,
+      appHash: bufferToHex(this.appHash),
+      blockHash: bufferToHex(this.hash),
+      txCount: this.txCount,
+    };
+  }
 }

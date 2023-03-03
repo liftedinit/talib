@@ -7,7 +7,7 @@ import {
   NeighborhoodDetailsDto,
   NeighborhoodDto,
 } from "../../dto/neighborhood.dto";
-import { Block } from "./blocks/block.entity";
+import { Block } from "./block.entity";
 
 @Entity()
 export class Neighborhood {
@@ -41,6 +41,7 @@ export class Neighborhood {
   blocks: Block[];
 
   latestBlock?: Block;
+  txCount?: number;
 
   public get address(): Address {
     return Address.fromString(this.address_);
@@ -68,6 +69,7 @@ export class Neighborhood {
       latestBlockHeight: latestBlock ? latestBlock.height : 0,
       latestBlockHash: latestBlock ? bufferToHex(latestBlock.hash) : "",
       latestAppHash: latestBlock ? bufferToHex(latestBlock.appHash) : "",
+      totalTransactionCount: this.txCount,
     };
   }
 

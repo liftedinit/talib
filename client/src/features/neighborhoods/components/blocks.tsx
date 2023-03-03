@@ -9,6 +9,8 @@ import {
   Tr,
   Td,
   Heading,
+  Flex,
+  Spacer,
 } from "@liftedinit/ui";
 import { ErrorAlert } from "../../../shared";
 import { getNeighborhoodBlocks } from "../queries";
@@ -28,8 +30,11 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
 
   return (
     <Box bg="white" p={6}>
-      <Heading size="sm">Blocks</Heading>
-      {query.isError && <ErrorAlert error={query.error as Error} />}
+      <Flex>
+        <Heading size="sm">Blocks</Heading>
+        <Spacer />
+        {query.isError && <ErrorAlert error={query.error as Error} />}
+      </Flex>
       {query.isLoading ? (
         <Spinner />
       ) : (

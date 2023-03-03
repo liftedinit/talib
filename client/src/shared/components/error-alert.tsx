@@ -1,10 +1,11 @@
-import { Alert, AlertIcon, AlertTitle } from "@liftedinit/ui";
+import { TimesCircleIcon, Tooltip } from "@liftedinit/ui";
 
 export function ErrorAlert({ error }: { error: Error }) {
   return (
-    <Alert status="error">
-      <AlertIcon />
-      <AlertTitle>{error.message}</AlertTitle>
-    </Alert>
+    <Tooltip label={error.message} placement="top" hasArrow>
+      <span>
+        <TimesCircleIcon color="red" boxSize={6} />
+      </span>
+    </Tooltip>
   );
 }

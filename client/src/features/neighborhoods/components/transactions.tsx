@@ -9,6 +9,8 @@ import {
   Th,
   Tbody,
   Heading,
+  Flex,
+  Spacer,
 } from "@liftedinit/ui";
 import { ErrorAlert } from "../../../shared";
 import { getNeighborhoodTransactions } from "../queries";
@@ -31,8 +33,11 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
 
   return (
     <Box bg="white" p={6}>
-      <Heading size="sm">Transactions</Heading>
-      {query.isError && <ErrorAlert error={query.error as Error} />}
+      <Flex>
+        <Heading size="sm">Transactions</Heading>
+        <Spacer />
+        {query.isError && <ErrorAlert error={query.error as Error} />}
+      </Flex>
       {query.isLoading ? (
         <Spinner />
       ) : (

@@ -137,6 +137,7 @@ export class BlockService {
     entity.appHash = block.appHash;
     entity.height = block.identifier.height;
     entity.hash = block.identifier.hash;
+    entity.time = block.time;
     entity.neighborhood = neighborhood;
 
     const transactions = await Promise.all(

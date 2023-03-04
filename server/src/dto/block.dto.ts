@@ -5,6 +5,9 @@ export class BlockDto {
   height: number;
 
   @ApiProperty()
+  dateTime: string;
+
+  @ApiProperty()
   blockHash: string;
 
   @ApiProperty()

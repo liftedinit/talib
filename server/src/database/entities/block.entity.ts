@@ -24,6 +24,9 @@ export class Block {
   @Column({ name: "height", type: "integer", nullable: false })
   height: number;
 
+  @Column()
+  time: Date;
+
   @Column(ARRAYBUFFER_FIELD_TYPE)
   hash: ArrayBuffer;
 
@@ -40,6 +43,7 @@ export class Block {
   intoDto(): BlockDto {
     return {
       height: this.height,
+      dateTime: this.time.toISOString(),
       appHash: bufferToHex(this.appHash),
       blockHash: bufferToHex(this.hash),
       txCount: this.txCount,

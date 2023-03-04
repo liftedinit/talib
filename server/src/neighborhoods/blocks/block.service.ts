@@ -42,13 +42,25 @@ export class BlockService {
 
   public async findMany(
     options: IPaginationOptions,
+    withTransactions?: boolean,
   ): Promise<Pagination<Block>> {
-    const query = this.blockRepository
+    let query = this.blockRepository
       .createQueryBuilder("b")
       .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
+      .addSelect("COUNT(transactions.id) as txCount")
+      .leftJoin("b.transactions", "transactions")
+      .groupBy("transactions.id, b.id")
       .orderBy("height", "DESC");
 
-    return paginate<Block>(query, options);
+    if (withTransactions !== undefined) {
+      if (withTransactions) {
+        query = query.having("COUNT(transactions.id) > 0");
+      } else {
+        query = query.having("COUNT(transactions.id) = 0");
+      }
+    }
+
+    return await paginate<Block>(query, options);
   }
 
   async latestForNeighborhood(

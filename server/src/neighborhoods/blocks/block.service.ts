@@ -26,21 +26,36 @@ export class BlockService {
     private dataSource: DataSource,
   ) {}
 
-  findOne(id: number): Promise<Block> {
-    return this.blockRepository.findOneBy({ id });
-  }
-
   findOneByHeight(
-    neighborhood: Neighborhood,
+    neighborhoodId: number,
     height: number,
   ): Promise<Block | null> {
     return this.blockRepository.findOneBy({
-      neighborhood: { id: neighborhood.id },
+      neighborhood: { id: neighborhoodId },
       height: height,
     });
   }
 
+  async findOneByHash(
+    neighborhoodId: number,
+    hash: ArrayBuffer,
+    details?: boolean,
+  ) {
+    return await this.blockRepository.findOne({
+      where: {
+        neighborhood: { id: neighborhoodId },
+        hash: hash as any,
+      },
+      ...(details && {
+        relations: {
+          transactions: true,
+        },
+      }),
+    });
+  }
+
   public async findMany(
+    neighborhoodId: number,
     options: IPaginationOptions,
     withTransactions?: boolean,
   ): Promise<Pagination<Block>> {
@@ -82,7 +97,7 @@ export class BlockService {
       info.latestBlock.height,
     );
     const maybeLastBlock = await this.findOneByHeight(
-      neighborhood,
+      neighborhood.id,
       latest.identifier.height,
     );
     return (
@@ -158,6 +173,7 @@ export class BlockService {
           const transaction = new Transaction();
           await this.populateTransaction(neighborhood, entity, tx);
           transaction.block = entity;
+          transaction.hash = tx.hash;
           transaction.request = tx.request;
           transaction.response = tx.response;
           transaction.block_index = i;
@@ -187,16 +203,5 @@ export class BlockService {
     tx.request = request;
     tx.response = response;
     return tx;
-  }
-
-  async removeById(id: number) {
-    await this.blockRepository.delete(id);
-  }
-
-  async removeByHeight(neighborhood: Neighborhood, height: number) {
-    await this.blockRepository.delete({
-      neighborhood: { id: neighborhood.id },
-      height,
-    });
   }
 }

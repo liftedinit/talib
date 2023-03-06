@@ -5,7 +5,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { TransactionDto } from "../../dto/transaction.dto";
+import {
+  TransactionDto,
+  TransactionSimpleDto,
+} from "../../dto/transaction.dto";
 import { bufferToHex } from "../../utils/convert";
 import { ARRAYBUFFER_FIELD_TYPE } from "../../utils/database";
 import { Block } from "./block.entity";
@@ -33,6 +36,16 @@ export class Transaction {
   block: Block;
 
   intoDto(): TransactionDto {
+    return {
+      ...this.intoSimpleDto(),
+      blockHash: bufferToHex(this.block.hash),
+      blockHeight: this.block.height,
+      blockIndex: this.block_index,
+      dateTime: this.block.time.toISOString(),
+    };
+  }
+
+  intoSimpleDto(): TransactionSimpleDto {
     return {
       hash: bufferToHex(this.hash),
       request: bufferToHex(this.request),

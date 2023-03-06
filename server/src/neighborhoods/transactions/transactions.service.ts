@@ -45,10 +45,9 @@ export class TransactionsService {
   ): Promise<Pagination<Transaction>> {
     const query = this.transactionRepository
       .createQueryBuilder("t")
-      .leftJoin("t.block", "blocks")
-      .where("blocks.neighborhoodId = :nid")
+      .leftJoinAndSelect("t.block", "block")
+      .where("block.neighborhoodId = :nid")
       .setParameter("nid", neighborhoodId);
-    console.log(query.getQuery());
     return await paginate<Transaction>(query, options);
   }
 }

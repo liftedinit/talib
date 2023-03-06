@@ -53,7 +53,7 @@ export class Block {
   intoDetailsDto(): BlockDetailsDto {
     return {
       ...this.intoDto(),
-      transactions: this.transactions?.map((t) => t.intoDto()),
+      transactions: this.transactions?.map((t) => t.intoSimpleDto()),
     };
   }
 }

@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { BlockDto } from "../../dto/block.dto";
+import { BlockDetailsDto, BlockDto } from "../../dto/block.dto";
 import { bufferToHex } from "../../utils/convert";
 import { ARRAYBUFFER_FIELD_TYPE } from "../../utils/database";
 import { Neighborhood } from "./neighborhood.entity";
@@ -47,6 +47,13 @@ export class Block {
       appHash: bufferToHex(this.appHash),
       blockHash: bufferToHex(this.hash),
       txCount: this.txCount,
+    };
+  }
+
+  intoDetailsDto(): BlockDetailsDto {
+    return {
+      ...this.intoDto(),
+      transactions: this.transactions?.map((t) => t.intoDto()),
     };
   }
 }

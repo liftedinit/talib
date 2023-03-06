@@ -8,11 +8,13 @@ import { BlockModule } from "./blocks/block.module";
 import { BlockService } from "./blocks/block.service";
 import { NeighborhoodController } from "./neighborhood.controller";
 import { NeighborhoodService } from "./neighborhood.service";
+import { TransactionsModule } from "./transactions/transactions.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Neighborhood, Block, Transaction]),
     BlockModule,
+    TransactionsModule,
   ],
   providers: [BlockService, NeighborhoodService, NetworkService],
   controllers: [NeighborhoodController],

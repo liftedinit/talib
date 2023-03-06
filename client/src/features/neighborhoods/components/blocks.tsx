@@ -19,7 +19,11 @@ interface BlockSummary {
   height: number;
   blockHash: string;
   txCount: number;
-  timestamp: Date;
+  dateTime: string;
+}
+
+function abbr(hash: string) {
+  return hash.slice(0, 4) + "..." + hash.slice(-4);
 }
 
 export function NeighborhoodBlocks({ id }: { id: number }) {
@@ -30,7 +34,7 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
 
   return (
     <Box bg="white" p={6}>
-      <Flex>
+      <Flex mb={6}>
         <Heading size="sm">Blocks</Heading>
         <Spacer />
         {query.isError && <ErrorAlert error={query.error as Error} />}
@@ -38,7 +42,7 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
       {query.isLoading ? (
         <Spinner />
       ) : (
-        <Table>
+        <Table variant="simple" size="sm">
           <Thead>
             <Th>Height</Th>
             <Th>Hash</Th>
@@ -49,10 +53,12 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
             {query.data?.items &&
               query.data.items.map((block: BlockSummary) => (
                 <Tr>
-                  <Td>{block.height}</Td>
-                  <Td>{block.blockHash}</Td>
-                  <Td>{block.txCount}</Td>
-                  <Td>{block.timestamp?.toLocaleString()}</Td>
+                  <Td>{block.height.toLocaleString()}</Td>
+                  <Td>
+                    <pre>{abbr(block.blockHash)}</pre>
+                  </Td>
+                  <Td>{block.txCount.toLocaleString()}</Td>
+                  <Td>{new Date(block.dateTime).toLocaleString()}</Td>
                 </Tr>
               ))}
           </Tbody>

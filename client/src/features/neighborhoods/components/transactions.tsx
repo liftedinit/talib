@@ -33,7 +33,7 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
 
   return (
     <Box bg="white" p={6}>
-      <Flex>
+      <Flex mb={6}>
         <Heading size="sm">Transactions</Heading>
         <Spacer />
         {query.isError && <ErrorAlert error={query.error as Error} />}
@@ -41,7 +41,7 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
       {query.isLoading ? (
         <Spinner />
       ) : (
-        <Table>
+        <Table variant="simple" size="sm">
           <Thead>
             <Th>Hash</Th>
             <Th>Type</Th>

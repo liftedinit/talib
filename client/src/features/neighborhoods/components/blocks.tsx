@@ -12,7 +12,7 @@ import {
   Flex,
   Spacer,
 } from "@liftedinit/ui";
-import { ErrorAlert } from "../../../shared";
+import { abbr, ago, ErrorAlert } from "../../../shared";
 import { getNeighborhoodBlocks } from "../queries";
 
 interface BlockSummary {
@@ -22,10 +22,6 @@ interface BlockSummary {
   dateTime: string;
 }
 
-function abbr(hash: string) {
-  return hash.slice(0, 4) + "..." + hash.slice(-4);
-}
-
 export function NeighborhoodBlocks({ id }: { id: number }) {
   const query = useQuery(
     ["neighborhoods", id, "blocks"],
@@ -33,7 +29,7 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
   );
 
   return (
-    <Box bg="white" p={6}>
+    <Box bg="white" my={6} p={6}>
       <Flex mb={6}>
         <Heading size="sm">Blocks</Heading>
         <Spacer />
@@ -42,7 +38,7 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
       {query.isLoading ? (
         <Spinner />
       ) : (
-        <Table variant="simple" size="sm">
+        <Table size="sm">
           <Thead>
             <Th>Height</Th>
             <Th>Hash</Th>
@@ -52,13 +48,13 @@ export function NeighborhoodBlocks({ id }: { id: number }) {
           <Tbody>
             {query.data?.items &&
               query.data.items.map((block: BlockSummary) => (
-                <Tr>
+                <Tr h={12}>
                   <Td>{block.height.toLocaleString()}</Td>
                   <Td>
                     <pre>{abbr(block.blockHash)}</pre>
                   </Td>
                   <Td>{block.txCount.toLocaleString()}</Td>
-                  <Td>{new Date(block.dateTime).toLocaleString()}</Td>
+                  <Td>{ago(new Date(block.dateTime))}</Td>
                 </Tr>
               ))}
           </Tbody>

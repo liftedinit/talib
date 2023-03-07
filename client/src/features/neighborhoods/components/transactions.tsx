@@ -11,18 +11,19 @@ import {
   Heading,
   Flex,
   Spacer,
+  Tag,
 } from "@liftedinit/ui";
-import { ErrorAlert } from "../../../shared";
+import { abbr, ago, by, ErrorAlert } from "../../../shared";
 import { getNeighborhoodTransactions } from "../queries";
 
 interface TransactionSummary {
   hash: string;
-  type: string;
-  to?: string;
-  from?: string;
-  amount?: string;
-  symbol?: string;
-  timestamp: Date;
+  request: string;
+  response: string;
+  blockHash: string;
+  blockHeight: number;
+  blockIndex: number;
+  dateTime: string;
 }
 
 export function NeighborhoodTransactions({ id }: { id: number }) {
@@ -32,7 +33,7 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
   );
 
   return (
-    <Box bg="white" p={6}>
+    <Box bg="white" my={6} p={6}>
       <Flex mb={6}>
         <Heading size="sm">Transactions</Heading>
         <Spacer />
@@ -41,26 +42,31 @@ export function NeighborhoodTransactions({ id }: { id: number }) {
       {query.isLoading ? (
         <Spinner />
       ) : (
-        <Table variant="simple" size="sm">
+        <Table size="sm">
           <Thead>
             <Th>Hash</Th>
             <Th>Type</Th>
-            <Th>Details</Th>
+            <Th>Height</Th>
             <Th>Time</Th>
           </Thead>
           <Tbody>
             {query.data?.items &&
-              query.data.items.map((transaction: TransactionSummary) => (
-                <Tr>
-                  <Td>{transaction.hash}</Td>
-                  <Td>{transaction.type}</Td>
-                  <Td>
-                    {transaction.from}
-                    {transaction.to}
-                  </Td>
-                  <Td>{transaction.timestamp?.toLocaleString()}</Td>
-                </Tr>
-              ))}
+              query.data.items
+                .sort(by("blockHeight"))
+                .map((transaction: TransactionSummary) => (
+                  <Tr h={12}>
+                    <Td>
+                      <pre>{abbr(transaction.hash)}</pre>
+                    </Td>
+                    <Td>
+                      <Tag variant="outline" size="sm">
+                        Unknown
+                      </Tag>
+                    </Td>
+                    <Td>{transaction.blockHeight.toLocaleString()}</Td>
+                    <Td>{ago(new Date(transaction.dateTime))}</Td>
+                  </Tr>
+                ))}
           </Tbody>
         </Table>
       )}

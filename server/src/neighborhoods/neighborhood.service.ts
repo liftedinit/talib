@@ -32,8 +32,6 @@ export class NeighborhoodService {
     const query = this.neighborhoodRepository
       .createQueryBuilder("n")
       .where({ id: nid })
-      .innerJoin("n.blocks", "blocks")
-
       .innerJoinAndMapOne(
         "n.latestBlock",
         "n.blocks",
@@ -61,13 +59,12 @@ export class NeighborhoodService {
     }
 
     // Separately do the transaction count.
-    one.txCount = Number(
-      await this.transactionRepository
-        .createQueryBuilder("t")
-        .leftJoin("t.block", "block")
-        .where("block.neighborhoodId = :nid", { nid })
-        .getCount(),
-    );
+    const txCountQuery = this.transactionRepository
+      .createQueryBuilder("t")
+      .leftJoin("t.block", "block")
+      .where("block.neighborhoodId = :nid", { nid });
+    this.logger.debug(`txCount(${nid}): \`${txCountQuery.getQuery()}\``);
+    one.txCount = Number(await txCountQuery.getCount());
 
     return one;
   }

@@ -4,6 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Block } from "../database/entities/block.entity";
 import { Neighborhood } from "../database/entities/neighborhood.entity";
+import { Transaction } from "../database/entities/transaction.entity";
 import { CreateNeighborhoodDto } from "../dto/neighborhood.dto";
 import { NetworkService } from "../services/network.service";
 import { BlockService } from "./blocks/block.service";
@@ -17,6 +18,8 @@ export class NeighborhoodService {
     private neighborhoodRepository: Repository<Neighborhood>,
     @InjectRepository(Block)
     private blockRepository: Repository<Block>,
+    @InjectRepository(Transaction)
+    private transactionRepository: Repository<Transaction>,
     private block: BlockService,
     private network: NetworkService,
   ) {}
@@ -30,8 +33,6 @@ export class NeighborhoodService {
       .createQueryBuilder("n")
       .where({ id: nid })
       .innerJoin("n.blocks", "blocks")
-      .leftJoin("blocks.transactions", "transactions")
-      .addSelect("COUNT(transactions.id)", "txCount")
 
       .innerJoinAndMapOne(
         "n.latestBlock",
@@ -54,13 +55,20 @@ export class NeighborhoodService {
 
     this.logger.debug(`get(${nid}): \`${query.getQuery()}\``);
 
-    const { raw, entities } = await query.getRawAndEntities();
-    const one = entities[0];
+    const one = await query.getOne();
     if (!one) {
       return null;
     }
 
-    one.txCount = Number(raw[0].txCount);
+    // Separately do the transaction count.
+    one.txCount = Number(
+      await this.transactionRepository
+        .createQueryBuilder("t")
+        .leftJoin("t.block", "block")
+        .where("block.neighborhoodId = :nid", { nid })
+        .getCount(),
+    );
+
     return one;
   }
 

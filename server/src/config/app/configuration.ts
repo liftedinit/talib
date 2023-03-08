@@ -7,4 +7,5 @@ export default registerAs("app", () => ({
   url: process.env.APP_URL,
   port: process.env.APP_PORT,
   debug: process.env.APP_DEBUG == "true" || process.env.APP_DEBUG == "1",
+  staticRoot: process.env.APP_STATIC_ROOT,
 }));

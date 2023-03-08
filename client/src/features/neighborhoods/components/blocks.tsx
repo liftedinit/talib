@@ -22,10 +22,16 @@ interface BlockSummary {
   dateTime: string;
 }
 
-export function NeighborhoodBlocks({ id }: { id: number }) {
+interface NeighborhoodBlocksProps {
+  id: number;
+  page?: number;
+  limit?: number;
+}
+
+export function NeighborhoodBlocks({ id, page = 1 }: NeighborhoodBlocksProps) {
   const query = useQuery(
-    ["neighborhoods", id, "blocks"],
-    getNeighborhoodBlocks(id),
+    ["neighborhoods", id, "blocks", page],
+    getNeighborhoodBlocks(id, { page }),
   );
 
   return (

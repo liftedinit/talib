@@ -26,10 +26,19 @@ interface TransactionSummary {
   dateTime: string;
 }
 
-export function NeighborhoodTransactions({ id }: { id: number }) {
+interface NeighborhoodTransactionsProps {
+  id: number;
+  page?: number;
+  limit?: number;
+}
+
+export function NeighborhoodTransactions({
+  id,
+  page = 1,
+}: NeighborhoodTransactionsProps) {
   const query = useQuery(
-    ["neighborhoods", id, "transactions"],
-    getNeighborhoodTransactions(id),
+    ["neighborhoods", id, "transactions", page],
+    getNeighborhoodTransactions(id, { page }),
   );
 
   return (

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   IPaginationOptions,
@@ -17,6 +17,8 @@ import {
 
 @Injectable()
 export class BlockService {
+  private readonly logger = new Logger(BlockService.name);
+
   constructor(
     @InjectRepository(Block)
     private blockRepository: Repository<Block>,
@@ -74,7 +76,9 @@ export class BlockService {
         query = query.having("COUNT(transactions.id) = 0");
       }
     }
-
+    this.logger.debug(
+      `findMany(${neighborhoodId}, ${withTransactions}): ${query.getQuery()}`,
+    );
     return await paginate<Block>(query, options);
   }
 

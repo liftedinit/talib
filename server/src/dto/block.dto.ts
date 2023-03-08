@@ -19,5 +19,10 @@ export class BlockDto {
 }
 
 export class BlockDetailsDto extends BlockDto {
+  @ApiProperty({
+    type: TransactionSimpleDto,
+    isArray: true,
+    description: `Transactions included in this block.`,
+  })
   transactions: TransactionSimpleDto[];
 }

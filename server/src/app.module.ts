@@ -34,6 +34,7 @@ const staticRootPath = path.join(__dirname, "../..", "client/build");
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
         entities: [Neighborhood, Block, Transaction],
+        migrations: [],
         synchronize: true,
         ...db.config,
       }),

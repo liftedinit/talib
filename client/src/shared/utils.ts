@@ -34,7 +34,6 @@ export function get(path: string, params = {}) {
   return async function () {
     const query = new URLSearchParams(params).toString();
     const url = `${process.env.REACT_APP_API_PATH}/${path}?${query}`;
-    console.log(url);
     const res = await fetch(url);
     if (res.ok) {
       return await res.json();

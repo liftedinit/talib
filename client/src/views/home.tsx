@@ -1,4 +1,5 @@
-import { Container, Divider, Heading, SimpleGrid, Text } from "@liftedinit/ui";
+import { Box, Button, Center, Divider, SimpleGrid } from "@liftedinit/ui";
+import { Link } from "react-router-dom";
 import {
   NeighborhoodBlocks,
   NeighborhoodStatus,
@@ -9,16 +10,27 @@ export function Home() {
   const neighborhoodId = 1; // @TODO: Get this from context
 
   return (
-    <Container maxW="container.lg">
-      <Heading my={6}>Talib</Heading>
-      <Text>A Block Explorer for the Many Protocol</Text>
-      <Divider my={6} />
+    <>
       <NeighborhoodStatus id={neighborhoodId} />
       <Divider my={6} />
       <SimpleGrid columns={2} spacing={6}>
-        <NeighborhoodBlocks id={neighborhoodId} />
-        <NeighborhoodTransactions id={neighborhoodId} />
+        <Box>
+          <NeighborhoodBlocks id={neighborhoodId} />
+          <Center>
+            <Button as={Link} to="blocks">
+              More
+            </Button>
+          </Center>
+        </Box>
+        <Box>
+          <NeighborhoodTransactions id={neighborhoodId} />
+          <Center>
+            <Button as={Link} to="transactions">
+              More
+            </Button>
+          </Center>
+        </Box>
       </SimpleGrid>
-    </Container>
+    </>
   );
 }

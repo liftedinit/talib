@@ -1,25 +1,26 @@
-function get(...path: (string | number)[]) {
-  return async function () {
-    const res = await fetch(process.env.REACT_APP_API_PATH + path.join("/"));
-    if (res.ok) {
-      return await res.json();
-    }
-    throw new Error(`${res.statusText} (${res.status})`);
-  };
-}
+import { get } from "../../shared";
+
+const PAGE = 1;
+const LIMIT = 10;
 
 export function getNeighborhoods() {
   return get("neighborhoods");
 }
 
 export function getNeighborhood(id: number) {
-  return get("neighborhoods", id);
+  return get(`neighborhoods/${id}`);
 }
 
-export function getNeighborhoodBlocks(id: number) {
-  return get("neighborhoods", id, "blocks");
+export function getNeighborhoodBlocks(
+  id: number,
+  { page = PAGE, limit = LIMIT },
+) {
+  return get(`neighborhoods/${id}/blocks`, { page, limit });
 }
 
-export function getNeighborhoodTransactions(id: number) {
-  return get("neighborhoods", id, "transactions");
+export function getNeighborhoodTransactions(
+  id: number,
+  { page = PAGE, limit = LIMIT },
+) {
+  return get(`neighborhoods/${id}/transactions`, { page, limit });
 }

@@ -15,6 +15,7 @@ import {
 } from "@liftedinit/ui";
 import { abbr, ago, by, ErrorAlert } from "../../../shared";
 import { getNeighborhoodTransactions } from "../queries";
+import { useEffect } from "react";
 
 interface TransactionSummary {
   hash: string;
@@ -26,11 +27,26 @@ interface TransactionSummary {
   dateTime: string;
 }
 
-export function NeighborhoodTransactions({ id }: { id: number }) {
+interface NeighborhoodTransactionsProps {
+  id: number;
+  page?: number;
+  setTotalPages?: (p: number) => void;
+}
+
+export function NeighborhoodTransactions({
+  id,
+  page = 1,
+  setTotalPages,
+}: NeighborhoodTransactionsProps) {
   const query = useQuery(
-    ["neighborhoods", id, "transactions"],
-    getNeighborhoodTransactions(id),
+    ["neighborhoods", id, "transactions", page],
+    getNeighborhoodTransactions(id, { page }),
   );
+  useEffect(() => {
+    if (setTotalPages && query.data) {
+      setTotalPages(query.data.meta.totalPages);
+    }
+  }, [setTotalPages, query.data]);
 
   return (
     <Box bg="white" my={6} p={6}>

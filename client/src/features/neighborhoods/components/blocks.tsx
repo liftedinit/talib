@@ -14,6 +14,7 @@ import {
 } from "@liftedinit/ui";
 import { abbr, ago, ErrorAlert } from "../../../shared";
 import { getNeighborhoodBlocks } from "../queries";
+import { useEffect } from "react";
 
 interface BlockSummary {
   height: number;
@@ -22,11 +23,26 @@ interface BlockSummary {
   dateTime: string;
 }
 
-export function NeighborhoodBlocks({ id }: { id: number }) {
+interface NeighborhoodBlocksProps {
+  id: number;
+  page?: number;
+  setTotalPages?: (p: number) => void;
+}
+
+export function NeighborhoodBlocks({
+  id,
+  page = 1,
+  setTotalPages,
+}: NeighborhoodBlocksProps) {
   const query = useQuery(
-    ["neighborhoods", id, "blocks"],
-    getNeighborhoodBlocks(id),
+    ["neighborhoods", id, "blocks", page],
+    getNeighborhoodBlocks(id, { page }),
   );
+  useEffect(() => {
+    if (setTotalPages && query.data) {
+      setTotalPages(query.data.meta.totalPages);
+    }
+  }, [setTotalPages, query.data]);
 
   return (
     <Box bg="white" my={6} p={6}>

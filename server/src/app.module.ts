@@ -1,4 +1,5 @@
 import { Logger, Module } from "@nestjs/common";
+import { RouterModule } from "@nestjs/core";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -24,6 +25,12 @@ const staticRootPath = path.join(__dirname, "../..", "client/build");
   imports: [
     AppConfigModule,
     NeighborhoodModule,
+    RouterModule.register([
+      {
+        path: "api/v1",
+        module: NeighborhoodModule,
+      },
+    ]),
     SchedulerConfigModule,
     ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({

@@ -11,7 +11,7 @@ import { Pagination } from "nestjs-typeorm-paginate";
 import { TransactionDto } from "../../dto/transaction.dto";
 import { TransactionsService } from "./transactions.service";
 
-@Controller("api/v1/neighborhoods/:nid/transactions")
+@Controller("neighborhoods/:nid/transactions")
 export class TransactionsController {
   constructor(private transactions: TransactionsService) {}
 

@@ -17,7 +17,7 @@ import {
 import { BlockService } from "./blocks/block.service";
 import { NeighborhoodService } from "./neighborhood.service";
 
-@Controller("api/v1/neighborhoods")
+@Controller("neighborhoods")
 export class NeighborhoodController {
   constructor(
     private neighborhood: NeighborhoodService,

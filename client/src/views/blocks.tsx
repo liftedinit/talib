@@ -1,6 +1,6 @@
 import { Box } from "@liftedinit/ui";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getNeighborhoodBlocks } from "../features/neighborhoods";
 import { BlockList, Pager } from "../shared";
 

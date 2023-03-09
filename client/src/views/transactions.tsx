@@ -1,32 +1,25 @@
-import { Box, Button, ButtonGroup, Center } from "@liftedinit/ui";
+import { Box } from "@liftedinit/ui";
 import { useState } from "react";
-import { NeighborhoodTransactions } from "../features/neighborhoods";
+import { useQuery } from "react-query";
+import { getNeighborhoodTransactions } from "../features/neighborhoods";
+import { Pager, TransactionList } from "../shared";
 
 export function Transactions() {
+  const id = 1; // @TODO: Get this from context
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const neighborhoodId = 1; // @TODO: Get this from context
+  const { data, error, isLoading } = useQuery(
+    ["neighborhoods", id, "transactions", page],
+    getNeighborhoodTransactions(id, { page }),
+  );
 
   return (
     <Box my={6}>
-      <NeighborhoodTransactions
-        id={neighborhoodId}
-        page={page}
-        setTotalPages={setTotalPages}
+      <TransactionList
+        txns={data?.items}
+        error={error as Error}
+        isLoading={isLoading}
       />
-      <Center my={6}>
-        <ButtonGroup isAttached>
-          <Button onClick={() => setPage(page - 1)} isDisabled={page === 1}>
-            Previous
-          </Button>
-          <Button
-            onClick={() => setPage(page + 1)}
-            isDisabled={page >= totalPages}
-          >
-            Next
-          </Button>
-        </ButtonGroup>
-      </Center>
+      <Pager page={page} setPage={setPage} totalPages={data?.meta.totalPages} />
     </Box>
   );
 }

@@ -9,10 +9,12 @@ import {
   Tag,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
 } from "@liftedinit/ui";
+import { Link } from "react-router-dom";
 import { abbr, ago, by, ErrorAlert } from "..";
 
 interface TxnSummary {
@@ -66,7 +68,13 @@ export function TransactionList({
                     Unknown
                   </Tag>
                 </Td>
-                <Td>{txn.blockHeight.toLocaleString()}</Td>
+                <Td>
+                  <Link to={`/blocks/${txn.blockHash}`}>
+                    <Text color="brand.teal.500">
+                      {txn.blockHeight.toLocaleString()}
+                    </Text>
+                  </Link>
+                </Td>
                 <Td>{ago(new Date(txn.dateTime))}</Td>
               </Tr>
             ))}

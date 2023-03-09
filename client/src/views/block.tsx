@@ -7,11 +7,20 @@ import { Stat, TransactionList } from "../shared";
 export function Block() {
   const id = 1; // @TODO: Get this from context
   const { hash } = useParams();
+  let txns = [];
 
   const { data, error, isLoading } = useQuery(
     ["neighborhoods", id, "blocks", hash],
     getNeighborhoodBlock(id, hash as string),
   );
+  if (data) {
+    txns = data.transactions.map((txn: any) => ({
+      ...txn,
+      blockHash: data.blockHash,
+      blockHeight: data.height,
+      dateTime: data.dateTime,
+    }));
+  }
 
   return (
     <Box my={6}>
@@ -22,7 +31,7 @@ export function Block() {
       </Stack>
       <Divider />
       <TransactionList
-        txns={data?.transactions}
+        txns={txns}
         error={error as Error}
         isLoading={isLoading}
       />

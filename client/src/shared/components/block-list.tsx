@@ -8,6 +8,7 @@ import {
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -57,7 +58,9 @@ export function BlockList({
               <Tr h={12}>
                 <Td>
                   <Link to={`/blocks/${block.blockHash}`}>
-                    {block.height.toLocaleString()}
+                    <Text m={0} color="brand.teal.500">
+                      {block.height.toLocaleString()}
+                    </Text>
                   </Link>
                 </Td>
                 <Td>

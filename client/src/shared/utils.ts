@@ -26,7 +26,7 @@ export function ago(date: Date) {
 
 export function by<T>(attr: keyof T) {
   return function (a: T, b: T) {
-    return a[attr] < b[attr] ? -1 : 1;
+    return a[attr] < b[attr] ? 1 : -1;
   };
 }
 

@@ -13,14 +13,18 @@ export function getNeighborhood(id: number) {
 
 export function getNeighborhoodBlocks(
   id: number,
-  { page = PAGE, limit = LIMIT },
+  { page = PAGE, limit = LIMIT } = {},
 ) {
   return get(`neighborhoods/${id}/blocks`, { page, limit });
 }
 
 export function getNeighborhoodTransactions(
   id: number,
-  { page = PAGE, limit = LIMIT },
+  { page = PAGE, limit = LIMIT } = {},
 ) {
   return get(`neighborhoods/${id}/transactions`, { page, limit });
+}
+
+export function getNeighborhoodBlock(id: number, hash: string) {
+  return get(`neighborhoods/${id}/blocks/${hash}`);
 }

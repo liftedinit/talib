@@ -33,7 +33,7 @@ export function by<T>(attr: keyof T) {
 export function get(path: string, params = {}) {
   return async function () {
     const query = new URLSearchParams(params).toString();
-    const url = `${process.env.REACT_APP_API_PATH}/${path}?${query}`;
+    const url = `${import.meta.env.VITE_API_PATH}/${path}?${query}`;
     const res = await fetch(url);
     if (res.ok) {
       return await res.json();

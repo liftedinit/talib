@@ -1,5 +1,5 @@
 import { Box, Divider, Stack } from "@liftedinit/ui";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getNeighborhoodBlock } from "../features/neighborhoods";
 import { Stat, TransactionList } from "../shared";

@@ -1,5 +1,5 @@
 import { Spinner, Stack } from "@liftedinit/ui";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Stat } from "../../../shared";
 import { getNeighborhood } from "../queries";
 

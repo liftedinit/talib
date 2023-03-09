@@ -16,7 +16,7 @@ import { NetworkService } from "./services/network.service";
 import { SchedulerService } from "./services/scheduler.service";
 
 // The root path for all static files.
-const staticRootPath = path.join(__dirname, "../..", "client/build");
+const staticRootPath = path.join(__dirname, "../..", "client/dist");
 
 @Module({
   controllers: [],

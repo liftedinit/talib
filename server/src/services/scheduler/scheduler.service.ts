@@ -1,11 +1,17 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
+import { InjectRepository } from "@nestjs/typeorm";
 import { CronJob } from "cron";
-import { SchedulerConfigService } from "../config/scheduler/configuration.service";
-import { Neighborhood } from "../database/entities/neighborhood.entity";
-import { BlockService } from "../neighborhoods/blocks/block.service";
-import { NeighborhoodService } from "../neighborhoods/neighborhood.service";
-import { NetworkService } from "./network.service";
+import { Repository } from "typeorm";
+import { SchedulerConfigService } from "../../config/scheduler/configuration.service";
+import { Neighborhood } from "../../database/entities/neighborhood.entity";
+import { TransactionDetails } from "../../database/entities/transaction-details.entity";
+import { Transaction } from "../../database/entities/transaction.entity";
+import { BlockService } from "../../neighborhoods/blocks/block.service";
+import { NeighborhoodService } from "../../neighborhoods/neighborhood.service";
+import { TransactionsService } from "../../neighborhoods/transactions/transactions.service";
+import { NetworkService } from "../network.service";
+import { TxAnalyzerService } from "./tx-analyzer.service";
 
 @Injectable()
 export class SchedulerService {
@@ -17,6 +23,10 @@ export class SchedulerService {
     private network: NetworkService,
     private neighborhood: NeighborhoodService,
     private block: BlockService,
+    private transaction: TransactionsService,
+    private txAnalyzer: TxAnalyzerService,
+    @InjectRepository(TransactionDetails)
+    private txDetailsRepository: Repository<TransactionDetails>,
   ) {
     let done = true;
 
@@ -48,6 +58,14 @@ export class SchedulerService {
     }
   }
 
+  async step(method: () => Promise<void>, name: string) {
+    try {
+      await method();
+    } catch (e) {
+      this.logger.warn(`Error happened while ${name}: ${e}`);
+    }
+  }
+
   async updateNeighborhoods() {
     const neighborhoods = await this.neighborhood.findAll();
 
@@ -58,17 +76,39 @@ export class SchedulerService {
       await Promise.all(
         neighborhoods.map((n) =>
           (async () => {
-            await this.block.createLatestOf(n);
-            try {
-              await this.updateNeighborhoodEarliestMissingBlocks(n);
-            } catch (e) {
-              this.logger.warn(
-                `Error happened during update: ${e}. Will wait for the next job to resume`,
-              );
-            }
+            await this.step(async () => {
+              await this.block.createLatestOf(n);
+            }, "creating latest block");
+            await this.step(
+              () => this.updateNeighborhoodEarliestMissingBlocks(n),
+              "updating missing blocks",
+            );
+            await this.step(
+              () => this.updateNeighborhoodMissingTransactionDetails(n),
+              "updating transaction details",
+            );
           })(),
         ),
       );
+    }
+  }
+
+  async updateNeighborhoodMissingTransactionDetails(
+    neighborhood: Neighborhood,
+  ) {
+    const missingTxDetailsIds =
+      await this.txAnalyzer.missingTransactionDetailsForNeighborhood(
+        neighborhood,
+      );
+
+    const transactions: Transaction[] = await this.transaction.findManyByIds(
+      neighborhood,
+      missingTxDetailsIds,
+    );
+
+    for (const tx of transactions) {
+      const details = await this.txAnalyzer.analyzeTransaction(tx);
+      await this.txDetailsRepository.save(details);
     }
   }
 
@@ -93,23 +133,14 @@ export class SchedulerService {
     }
 
     for (const batch of schedule) {
-      try {
-        await Promise.all(
-          batch.map((height) =>
-            (async () => {
-              const blockInfo = await network.blockchain.blockByHeight(height);
-              await this.block.createFromManyBlock(neighbordhood, blockInfo);
-            })(),
-          ),
-        );
-      } catch (e) {
-        this.logger.error(
-          `Error occured during current batch ${batch[0]}..=${
-            batch[batch.length - 1]
-          }: ${e}. Stopping.`,
-        );
-        return;
-      }
+      await Promise.all(
+        batch.map((height) =>
+          (async () => {
+            const blockInfo = await network.blockchain.blockByHeight(height);
+            await this.block.createFromManyBlock(neighbordhood, blockInfo);
+          })(),
+        ),
+      );
 
       // Sleep a bit.
       await new Promise((res) => setTimeout(res, parallel_sleep * 1000));

@@ -1,5 +1,4 @@
 import { Logger, Module } from "@nestjs/common";
-import { RouterModule } from "@nestjs/core";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -11,25 +10,21 @@ import { DatabaseConfigService } from "./config/database/configuration.service";
 import { SchedulerConfigModule } from "./config/scheduler/configuration.module";
 import { Block } from "./database/entities/block.entity";
 import { Neighborhood } from "./database/entities/neighborhood.entity";
+import { TransactionDetails } from "./database/entities/transaction-details.entity";
 import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
 import { NetworkService } from "./services/network.service";
-import { SchedulerService } from "./services/scheduler.service";
+import { SchedulerModule } from "./services/scheduler/scheduler.module";
 
 @Module({
   controllers: [],
-  providers: [Logger, NetworkService, SchedulerService],
+  providers: [Logger, NetworkService],
   imports: [
     AppConfigModule,
     NeighborhoodModule,
-    RouterModule.register([
-      {
-        path: "api/v1",
-        module: NeighborhoodModule,
-      },
-    ]),
     SchedulerConfigModule,
     ScheduleModule.forRoot(),
+    SchedulerModule,
     ServeStaticModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [AppConfigService],
@@ -52,12 +47,13 @@ import { SchedulerService } from "./services/scheduler.service";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Transaction],
+        entities: [Neighborhood, Block, Transaction, TransactionDetails],
         migrations: [],
         synchronize: true,
         ...db.config,
       }),
     }),
+    TypeOrmModule.forFeature([Transaction, TransactionDetails]),
   ],
 })
 export class AppModule {

@@ -4,12 +4,6 @@ import { oneLine } from "common-tags";
 export class TransactionSimpleDto {
   @ApiProperty({ description: "Transaction Hash" })
   hash: string;
-
-  @ApiProperty({ description: "Request in binary format" })
-  request: string;
-
-  @ApiProperty({ description: "Response in binary format" })
-  response: string;
 }
 
 export class TransactionDto extends TransactionSimpleDto {
@@ -30,4 +24,24 @@ export class TransactionDto extends TransactionSimpleDto {
       depending on a lot of factors.`,
   })
   dateTime: string;
+
+  @ApiProperty()
+  method?: string;
+
+  @ApiProperty()
+  argument?: any;
+
+  @ApiProperty({ required: false })
+  result?: any;
+
+  @ApiProperty({ required: false })
+  error?: any;
+}
+
+export class TransactionDetailsDto extends TransactionDto {
+  @ApiProperty({ description: "Request in binary format" })
+  request: string;
+
+  @ApiProperty({ description: "Response in binary format" })
+  response: string;
 }

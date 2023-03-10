@@ -29,7 +29,11 @@ export class TransactionsController {
   ): Promise<Pagination<TransactionDto>> {
     limit = limit > 100 ? 100 : limit;
 
-    const result = await this.transactions.findMany(nid, { page, limit });
+    const result = await this.transactions.findMany(
+      nid,
+      { page, limit },
+      { details: true },
+    );
     return {
       ...result,
       items: result.items.map((b) => b.intoDto()),

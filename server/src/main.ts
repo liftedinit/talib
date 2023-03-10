@@ -13,6 +13,7 @@ async function bootstrap() {
   });
   const appConfig: AppConfigService = app.get(AppConfigService);
 
+  app.setGlobalPrefix("/api/v1");
   app.useLogger([
     ...(appConfig.debug ? ["debug" as LogLevel] : []),
     "log",

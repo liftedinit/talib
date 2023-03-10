@@ -8,8 +8,10 @@ import {
 import { DataSource, Repository } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
+import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
 import { NetworkService } from "../../services/network.service";
+import { TxAnalyzerService } from "../../services/scheduler/tx-analyzer.service";
 import {
   Block as ManyBlock,
   Transaction as ManyTransaction,
@@ -24,8 +26,11 @@ export class BlockService {
     private blockRepository: Repository<Block>,
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
+    @InjectRepository(TransactionDetails)
+    private txDetailsRepository: Repository<TransactionDetails>,
     private network: NetworkService,
     private dataSource: DataSource,
+    private analyzer: TxAnalyzerService,
   ) {}
 
   findOneByHeight(
@@ -67,6 +72,7 @@ export class BlockService {
       .addSelect("COUNT(transactions.id) as txCount")
       .leftJoin("b.transactions", "transactions")
       .groupBy("transactions.id, b.id")
+      .where({ neighborhood: { id: neighborhoodId } })
       .orderBy("height", "DESC");
 
     if (withTransactions !== undefined) {
@@ -80,18 +86,6 @@ export class BlockService {
       `findMany(${neighborhoodId}, ${withTransactions}): ${query.getQuery()}`,
     );
     return await paginate<Block>(query, options);
-  }
-
-  async latestForNeighborhood(
-    neighborhood: Neighborhood,
-  ): Promise<Block | null> {
-    const blocks = await this.blockRepository.find({
-      where: { neighborhood: { id: neighborhood.id } },
-      take: 1,
-      order: { height: "DESC" },
-    });
-
-    return blocks?.[0];
   }
 
   async createLatestOf(neighborhood: Neighborhood): Promise<Block> {

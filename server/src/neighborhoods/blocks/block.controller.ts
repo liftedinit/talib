@@ -17,7 +17,7 @@ import { BlockService } from "./block.service";
 export class BlockController {
   constructor(private block: BlockService) {}
 
-  @Get()
+  @Get("")
   @ApiResponse({
     status: 200,
     type: BlockDto,

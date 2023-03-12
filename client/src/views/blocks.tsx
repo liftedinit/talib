@@ -1,32 +1,26 @@
-import { Box, Button, ButtonGroup, Center } from "@liftedinit/ui";
+import { Box } from "@liftedinit/ui";
 import { useState } from "react";
-import { NeighborhoodBlocks } from "../features/neighborhoods";
+import { useQuery } from "@tanstack/react-query";
+import { getNeighborhoodBlocks } from "../features/neighborhoods";
+import { BlockList, Pager } from "../shared";
 
 export function Blocks() {
+  const id = 1; // @TODO: Get this from context
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const neighborhoodId = 1; // @TODO: Get this from context
+
+  const { data, error, isLoading } = useQuery(
+    ["neighborhoods", id, "blocks", page],
+    getNeighborhoodBlocks(id, { page }),
+  );
 
   return (
     <Box my={6}>
-      <NeighborhoodBlocks
-        id={neighborhoodId}
-        page={page}
-        setTotalPages={setTotalPages}
+      <BlockList
+        blocks={data?.items}
+        error={error as Error}
+        isLoading={isLoading}
       />
-      <Center my={6}>
-        <ButtonGroup isAttached>
-          <Button onClick={() => setPage(page - 1)} isDisabled={page === 1}>
-            Previous
-          </Button>
-          <Button
-            onClick={() => setPage(page + 1)}
-            isDisabled={page >= totalPages}
-          >
-            Next
-          </Button>
-        </ButtonGroup>
-      </Center>
+      <Pager page={page} setPage={setPage} totalPages={data?.meta.totalPages} />
     </Box>
   );
 }

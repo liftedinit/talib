@@ -16,6 +16,7 @@ import { TxAnalyzerService } from "./tx-analyzer.service";
 @Injectable()
 export class SchedulerService {
   private readonly logger = new Logger(SchedulerService.name);
+  private done = true;
 
   constructor(
     private schedulerConfig: SchedulerConfigService,
@@ -28,22 +29,7 @@ export class SchedulerService {
     @InjectRepository(TransactionDetails)
     private txDetailsRepository: Repository<TransactionDetails>,
   ) {
-    let done = true;
-
-    const jobFn = async () => {
-      if (done) {
-        done = false;
-        try {
-          await this.updateNeighborhoods();
-        } catch (err) {
-          this.logger.error(`Error during update: ${err}`);
-        }
-        // On error, hope for the best next time.
-        done = true;
-      } else {
-        this.logger.warn("Last job not done, skipping this job...");
-      }
-    };
+    const jobFn = () => this.run();
 
     if (schedulerConfig.cron !== undefined) {
       // Do not rerun the cron job if the previous one was done.
@@ -58,7 +44,22 @@ export class SchedulerService {
     }
   }
 
-  async step(method: () => Promise<void>, name: string) {
+  async run() {
+    if (this.done) {
+      this.done = false;
+      try {
+        await this.updateNeighborhoods();
+      } catch (err) {
+        this.logger.error(`Error during update: ${err}`);
+      }
+      // On error, hope for the best next time.
+      this.done = true;
+    } else {
+      this.logger.warn("Last job not done, skipping this job...");
+    }
+  }
+
+  protected async step(method: () => Promise<void>, name: string) {
     try {
       await method();
     } catch (e) {

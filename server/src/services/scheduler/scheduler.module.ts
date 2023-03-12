@@ -11,10 +11,12 @@ import { BlockService } from "../../neighborhoods/blocks/block.service";
 import { NeighborhoodModule } from "../../neighborhoods/neighborhood.module";
 import { TransactionsModule } from "../../neighborhoods/transactions/transactions.module";
 import { NetworkService } from "../network.service";
+import { SchedulerController } from "./scheduler.controller";
 import { SchedulerService } from "./scheduler.service";
 import { TxAnalyzerService } from "./tx-analyzer.service";
 
 @Module({
+  controllers: [SchedulerController],
   imports: [
     TypeOrmModule.forFeature([
       Neighborhood,

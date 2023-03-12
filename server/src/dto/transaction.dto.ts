@@ -21,7 +21,8 @@ export class TransactionDto extends TransactionSimpleDto {
       Datetime this transaction was executed (not submitted). This is likely
       the block time as all transactions are executed simultaneously. It may
       be different from the submitted time in the transaction details,
-      depending on a lot of factors.`,
+      depending on a lot of factors.
+    `,
   })
   dateTime: string;
 

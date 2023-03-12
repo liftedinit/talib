@@ -93,7 +93,7 @@ export class TxAnalyzerService {
         () =>
           `tx.id NOT IN (${this.txDetailsRepository
             .createQueryBuilder("td")
-            .select("transactionId")
+            .select(`"transactionId"`)
             .getQuery()})`,
       )
       .limit(limit);
@@ -154,7 +154,6 @@ export class TxAnalyzerService {
     }
 
     // Dynamically load the method.
-    console.log(details);
     return details;
   }
 }

@@ -47,6 +47,7 @@ export class SchedulerService {
   async run() {
     if (this.done) {
       this.done = false;
+      this.logger.log("Starting new scheduler run...");
       try {
         await this.updateNeighborhoods();
       } catch (err) {
@@ -54,8 +55,6 @@ export class SchedulerService {
       }
       // On error, hope for the best next time.
       this.done = true;
-    } else {
-      this.logger.warn("Last job not done, skipping this job...");
     }
   }
 

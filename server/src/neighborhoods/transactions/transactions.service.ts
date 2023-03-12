@@ -58,7 +58,7 @@ export class TransactionsService {
         "t.details",
         TransactionDetails,
         "details",
-        "details.transactionId = t_id",
+        `"details"."transactionId" = t_id`,
       );
     }
     return await paginate<Transaction>(query, options);

@@ -51,14 +51,15 @@ export class TransactionsService {
     let query = this.transactionRepository
       .createQueryBuilder("t")
       .leftJoinAndSelect("t.block", "block")
-      .where("block.neighborhoodId = :nid", { nid: neighborhoodId });
+      .where("block.neighborhoodId = :nid", { nid: neighborhoodId })
+      .addOrderBy("block.height", "DESC");
 
     if (additional?.details) {
       query = query.innerJoinAndMapOne(
         "t.details",
         TransactionDetails,
         "details",
-        `"details"."transactionId" = t_id`,
+        `"details"."transactionId" = t.id`,
       );
     }
     return await paginate<Transaction>(query, options);

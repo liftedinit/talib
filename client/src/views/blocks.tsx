@@ -1,11 +1,14 @@
 import { Box, Heading } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { getNeighborhoodBlocks } from "../features/neighborhoods";
+import { useContext, useState } from "react";
+import {
+  getNeighborhoodBlocks,
+  NeighborhoodContext,
+} from "../features/neighborhoods";
 import { BlockList, Pager } from "../shared";
 
 export function Blocks() {
-  const id = 1; // @TODO: Get this from context
+  const { id } = useContext(NeighborhoodContext);
   const [page, setPage] = useState(1);
 
   const { data, error, isLoading } = useQuery(

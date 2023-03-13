@@ -28,26 +28,10 @@ export class BlockController {
     @Param("nid", ParseIntPipe) nid: number,
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-    @Query("withTx") withTx?: string,
   ): Promise<Pagination<BlockDto>> {
     limit = limit > 100 ? 100 : limit;
 
-    let withTransactions;
-    if (withTx !== undefined) {
-      if (withTx == "true" || withTx == "1") {
-        withTransactions = true;
-      } else if (withTx == "false" || withTx == "0") {
-        withTransactions = false;
-      } else {
-        withTransactions = undefined;
-      }
-    }
-
-    const result = await this.block.findMany(
-      nid,
-      { page, limit },
-      withTransactions,
-    );
+    const result = await this.block.findMany(nid, { page, limit });
     const items = result.items.map((b) => b.intoDto());
     return {
       ...result,

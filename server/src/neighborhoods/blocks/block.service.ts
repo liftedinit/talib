@@ -72,7 +72,7 @@ export class BlockService {
       .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
       .addSelect("COUNT(transactions.id) as txCount")
       .leftJoin("b.transactions", "transactions")
-      .groupBy("transactions.id, b.id")
+      .groupBy("transactions.id, b.height, b.time, b.hash, b.appHash")
       .where({ neighborhood: { id: neighborhoodId } })
       .orderBy("height", "DESC");
 

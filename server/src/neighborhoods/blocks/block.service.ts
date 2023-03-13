@@ -166,19 +166,17 @@ export class BlockService {
     entity.neighborhood = neighborhood;
 
     const transactions = await Promise.all(
-      block.transactions.map((tx, i) =>
-        (async () => {
-          const transaction = new Transaction();
-          await this.populateTransaction(neighborhood, entity, tx);
-          transaction.block = entity;
-          transaction.hash = tx.hash;
-          transaction.request = tx.request;
-          transaction.response = tx.response;
-          transaction.block_index = i;
+      block.transactions.map(async (tx, i) => {
+        const transaction = new Transaction();
+        await this.populateTransaction(neighborhood, entity, tx);
+        transaction.block = entity;
+        transaction.hash = tx.hash;
+        transaction.request = tx.request;
+        transaction.response = tx.response;
+        transaction.block_index = i;
 
-          return transaction;
-        })(),
-      ),
+        return transaction;
+      }),
     );
     entity.transactions = transactions;
 

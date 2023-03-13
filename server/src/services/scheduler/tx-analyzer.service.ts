@@ -22,10 +22,6 @@ export const tags = {
   10000: (value: Uint8Array) => new Address(Buffer.from(value)),
 };
 
-export function tag(tag: number, content: any) {
-  return new cbor.Tagged(tag, content);
-}
-
 export function parseAddress(
   content: any,
   optional = false,
@@ -66,6 +62,38 @@ function _parseBuffer(content: any, optional = false): Buffer | undefined {
   }
 
   throw new Error(`Invalid content type: ${JSON.stringify(content)}`);
+}
+
+function parseError(maybeResult: any) {
+  if (!(maybeResult instanceof Map)) {
+    throw "Payload is not a map.";
+  }
+
+  const code = maybeResult.get(0);
+  if (typeof code !== "number") {
+    throw "Code is not a number.";
+  }
+
+  const message = maybeResult.get(1);
+  if (typeof message !== "string") {
+    throw "Message is not a string.";
+  }
+
+  const fields: Record<string, string> = {};
+  if (maybeResult.has(2)) {
+    const fs = maybeResult.get(2);
+    if (!(fs instanceof Map)) {
+      throw "Fields is not a map.";
+    }
+
+    for (const [k, v] of maybeResult.entries()) {
+      // Worst case we get "[object Object]" as keys, but a spec following
+      // blockchain should be fine here.
+      fields[k.toString()] = v.toString();
+    }
+  }
+
+  return { code, fields, message };
 }
 
 @Injectable()
@@ -138,18 +166,20 @@ export class TxAnalyzerService {
       const content = payload.value;
 
       // Is it an error or a return value.
-      const maybeResult = content.get(4);
-      if (Buffer.isBuffer(maybeResult)) {
-        const maybeAnalyzer = methodRegistry[method];
-        if (maybeAnalyzer) {
-          details.result = await maybeAnalyzer.analyzeResponse(maybeResult);
-        } else {
-          details.result = {};
+      try {
+        const maybeResult = content.get(4);
+        if (Buffer.isBuffer(maybeResult)) {
+          const maybeAnalyzer = methodRegistry[method];
+          if (maybeAnalyzer) {
+            details.result = await maybeAnalyzer.analyzeResponse(maybeResult);
+          } else {
+            details.result = {};
+          }
+        } else if (typeof maybeResult == "object") {
+          details.error = parseError(maybeResult);
         }
-      } else if (typeof maybeResult == "object") {
-        // TODO: Handle error results.
-        console.log(maybeResult);
-        throw 4;
+      } catch (e) {
+        details.parseError = e.toString();
       }
     }
 

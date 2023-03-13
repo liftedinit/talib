@@ -34,4 +34,7 @@ export class TransactionDetails {
 
   @Column({ type: "simple-json", nullable: true })
   error?: { code: number; message: string; fields: { [name: string]: string } };
+
+  @Column({ nullable: true })
+  parseError?: string;
 }

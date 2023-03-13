@@ -74,22 +74,22 @@ export class SchedulerService {
 
       // Do all neighborhoods in parallel.
       await Promise.all(
-        neighborhoods.map((n) =>
-          (async () => {
-            await this.step(async () => {
-              await this.block.createLatestOf(n);
-            }, "creating latest block");
-            await this.step(
-              () => this.updateNeighborhoodEarliestMissingBlocks(n),
-              "updating missing blocks",
-            );
-            await this.step(
-              () => this.updateNeighborhoodMissingTransactionDetails(n),
-              "updating transaction details",
-            );
-          })(),
-        ),
+        neighborhoods.map(async (n) => {
+          await this.step(async () => {
+            await this.block.createLatestOf(n);
+          }, "creating latest block");
+          await this.step(
+            () => this.updateNeighborhoodEarliestMissingBlocks(n),
+            "updating missing blocks",
+          );
+          await this.step(
+            () => this.updateNeighborhoodMissingTransactionDetails(n),
+            "updating transaction details",
+          );
+        }),
       );
+    } else {
+      this.logger.debug("No neighborhoods in database...");
     }
   }
 
@@ -134,12 +134,10 @@ export class SchedulerService {
 
     for (const batch of schedule) {
       await Promise.all(
-        batch.map((height) =>
-          (async () => {
-            const blockInfo = await network.blockchain.blockByHeight(height);
-            await this.block.createFromManyBlock(neighbordhood, blockInfo);
-          })(),
-        ),
+        batch.map(async (height) => {
+          const blockInfo = await network.blockchain.blockByHeight(height);
+          await this.block.createFromManyBlock(neighbordhood, blockInfo);
+        }),
       );
 
       // Sleep a bit.

@@ -68,10 +68,11 @@ export class BlockService {
   ): Promise<Pagination<Block>> {
     let query = this.blockRepository
       .createQueryBuilder("b")
+      .select(["b.height", "b.time", "b.hash", "b.appHash"])
       .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
       .addSelect("COUNT(transactions.id) as txCount")
       .leftJoin("b.transactions", "transactions")
-      .groupBy("transactions.id, b.id")
+      .groupBy("transactions.id, b.height, b.time, b.hash, b.appHash")
       .where({ neighborhood: { id: neighborhoodId } })
       .orderBy("height", "DESC");
 

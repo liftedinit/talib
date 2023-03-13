@@ -1,4 +1,4 @@
-import { Box, Divider, Stack } from "@liftedinit/ui";
+import { Box, Divider, Heading, Stack } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getNeighborhoodBlock } from "../features/neighborhoods";
@@ -24,6 +24,7 @@ export function Block() {
 
   return (
     <Box my={6}>
+      <Heading size="sm">Block Details</Heading>
       <Stack direction="row" mt={6}>
         <Stat label="Height" value={data?.height.toLocaleString()} />
         <Stat label="Transactions" value={data?.transactions.length} />

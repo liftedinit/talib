@@ -1,6 +1,6 @@
-import { Box } from "@liftedinit/ui";
-import { useState } from "react";
+import { Box, Heading } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { getNeighborhoodBlocks } from "../features/neighborhoods";
 import { BlockList, Pager } from "../shared";
 
@@ -15,6 +15,7 @@ export function Blocks() {
 
   return (
     <Box my={6}>
+      <Heading size="sm">All Blocks</Heading>
       <BlockList
         blocks={data?.items}
         error={error as Error}

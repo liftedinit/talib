@@ -68,7 +68,11 @@ export function TransactionList({
             {txns.sort(by("blockHeight")).map((txn) => (
               <Tr h={12}>
                 <Td>
-                  <pre>{abbr(txn.hash)}</pre>
+                  <Link to={`/transactions/${txn.hash}`}>
+                    <Text color="brand.teal.500">
+                      <pre>{abbr(txn.hash)}</pre>
+                    </Text>
+                  </Link>
                 </Td>
                 <Td>
                   <Tag variant="outline" size="sm">

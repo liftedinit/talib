@@ -64,27 +64,15 @@ export class BlockService {
   public async findMany(
     neighborhoodId: number,
     options: IPaginationOptions,
-    withTransactions?: boolean,
   ): Promise<Pagination<Block>> {
-    let query = this.blockRepository
+    const query = this.blockRepository
       .createQueryBuilder("b")
       .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
-      .addSelect("COUNT(transactions.id) as txCount")
       .leftJoin("b.transactions", "transactions")
-      .groupBy("transactions.id, b.id")
       .where({ neighborhood: { id: neighborhoodId } })
       .orderBy("height", "DESC");
 
-    if (withTransactions !== undefined) {
-      if (withTransactions) {
-        query = query.having("COUNT(transactions.id) > 0");
-      } else {
-        query = query.having("COUNT(transactions.id) = 0");
-      }
-    }
-    this.logger.debug(
-      `findMany(${neighborhoodId}, ${withTransactions}): ${query.getQuery()}`,
-    );
+    this.logger.debug(`findMany(${neighborhoodId}): ${query.getQuery()}`);
     return await paginate<Block>(query, options);
   }
 

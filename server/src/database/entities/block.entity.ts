@@ -34,9 +34,7 @@ export class Block {
   @Column(ARRAYBUFFER_FIELD_TYPE)
   appHash?: ArrayBuffer;
 
-  @OneToMany(() => Transaction, (tx) => tx.block, {
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => Transaction, (tx) => tx.block, {})
   transactions: Transaction[];
 
   txCount?: number;

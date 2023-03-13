@@ -17,14 +17,21 @@ import {
 import { Link } from "react-router-dom";
 import { abbr, ago, by, ErrorAlert } from "..";
 
+const PrettyMethods: { [name: string]: string } = {
+  "ledger.send": "Send",
+  "account.multisigApprove": "Approve",
+  "account.multisigRevoke": "Revoke",
+  "account.multisigSubmitTransaction": "Submit",
+  "idstore.store": "Put",
+};
+
 interface TxnSummary {
   hash: string;
-  request: string;
-  response: string;
   blockHash: string;
   blockHeight: number;
   blockIndex: number;
   dateTime: string;
+  method?: string;
 }
 
 interface TransactionListProps {
@@ -65,7 +72,7 @@ export function TransactionList({
                 </Td>
                 <Td>
                   <Tag variant="outline" size="sm">
-                    Unknown
+                    {(txn.method && PrettyMethods[txn.method]) ?? "Unknown"}
                   </Tag>
                 </Td>
                 <Td>

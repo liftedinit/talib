@@ -35,9 +35,7 @@ export class Neighborhood {
   @Column()
   version: string;
 
-  @OneToMany(() => Block, (block) => block.neighborhood, {
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => Block, (block) => block.neighborhood, {})
   blocks: Block[];
 
   latestBlock?: Block;

@@ -4,12 +4,6 @@ import { oneLine } from "common-tags";
 export class TransactionSimpleDto {
   @ApiProperty({ description: "Transaction Hash" })
   hash: string;
-
-  @ApiProperty({ description: "Request in binary format" })
-  request: string;
-
-  @ApiProperty({ description: "Response in binary format" })
-  response: string;
 }
 
 export class TransactionDto extends TransactionSimpleDto {
@@ -27,7 +21,28 @@ export class TransactionDto extends TransactionSimpleDto {
       Datetime this transaction was executed (not submitted). This is likely
       the block time as all transactions are executed simultaneously. It may
       be different from the submitted time in the transaction details,
-      depending on a lot of factors.`,
+      depending on a lot of factors.
+    `,
   })
   dateTime: string;
+
+  @ApiProperty()
+  method?: string;
+
+  @ApiProperty()
+  argument?: any;
+
+  @ApiProperty({ required: false })
+  result?: any;
+
+  @ApiProperty({ required: false })
+  error?: any;
+}
+
+export class TransactionDetailsDto extends TransactionDto {
+  @ApiProperty({ description: "Request in binary format" })
+  request: string;
+
+  @ApiProperty({ description: "Response in binary format" })
+  response: string;
 }

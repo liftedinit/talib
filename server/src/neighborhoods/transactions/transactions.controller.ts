@@ -11,7 +11,7 @@ import { Pagination } from "nestjs-typeorm-paginate";
 import { TransactionDto } from "../../dto/transaction.dto";
 import { TransactionsService } from "./transactions.service";
 
-@Controller("api/v1/neighborhoods/:nid/transactions")
+@Controller("neighborhoods/:nid/transactions")
 export class TransactionsController {
   constructor(private transactions: TransactionsService) {}
 
@@ -29,7 +29,11 @@ export class TransactionsController {
   ): Promise<Pagination<TransactionDto>> {
     limit = limit > 100 ? 100 : limit;
 
-    const result = await this.transactions.findMany(nid, { page, limit });
+    const result = await this.transactions.findMany(
+      nid,
+      { page, limit },
+      { details: true },
+    );
     return {
       ...result,
       items: result.items.map((b) => b.intoDto()),

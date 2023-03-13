@@ -6,6 +6,7 @@ import { AppConfigService } from "./configuration.service";
 
 const validationSchema = Joi.object({
   APP_NAME: Joi.string().default("Talib"),
+  APP_STATIC_ROOT: Joi.string(),
   APP_ENV: Joi.string()
     .valid("development", "production", "test", "provision")
     .default("development"),

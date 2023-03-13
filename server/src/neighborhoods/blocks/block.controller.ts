@@ -13,11 +13,11 @@ import { BlockDetailsDto, BlockDto } from "../../dto/block.dto";
 import { ParseHashPipe } from "../../utils/pipes";
 import { BlockService } from "./block.service";
 
-@Controller("api/v1/neighborhoods/:nid/blocks")
+@Controller("neighborhoods/:nid/blocks")
 export class BlockController {
   constructor(private block: BlockService) {}
 
-  @Get()
+  @Get("")
   @ApiResponse({
     status: 200,
     type: BlockDto,

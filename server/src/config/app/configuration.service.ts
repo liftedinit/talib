@@ -23,10 +23,14 @@ export class AppConfigService {
     return Number(this.configService.get<number>("app.port"));
   }
 
-  get is_dev() {
+  get staticRootPath() {
+    return this.configService.get<string | undefined>("app.staticRoot");
+  }
+
+  get isDev() {
     return this.env == "development" || this.env == "dev";
   }
   get debug() {
-    return this.is_dev || this.configService.get<boolean>("app.debug");
+    return this.isDev || this.configService.get<boolean>("app.debug");
   }
 }

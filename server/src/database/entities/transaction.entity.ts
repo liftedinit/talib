@@ -3,15 +3,18 @@ import {
   Entity,
   Index,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import {
+  TransactionDetailsDto,
   TransactionDto,
   TransactionSimpleDto,
 } from "../../dto/transaction.dto";
 import { bufferToHex } from "../../utils/convert";
 import { ARRAYBUFFER_FIELD_TYPE } from "../../utils/database";
 import { Block } from "./block.entity";
+import { TransactionDetails } from "./transaction-details.entity";
 
 @Entity()
 @Index(["block", "block_index"], { unique: true })
@@ -35,6 +38,9 @@ export class Transaction {
   @ManyToOne(() => Block, (block) => block.transactions)
   block: Block;
 
+  @OneToOne(() => TransactionDetails)
+  details: TransactionDetails;
+
   intoDto(): TransactionDto {
     return {
       ...this.intoSimpleDto(),
@@ -42,12 +48,23 @@ export class Transaction {
       blockHeight: this.block.height,
       blockIndex: this.block_index,
       dateTime: this.block.time.toISOString(),
+
+      method: this.details?.method,
+      argument: this.details?.argument,
+      result: this.details?.result,
+      error: this.details?.error,
     };
   }
 
   intoSimpleDto(): TransactionSimpleDto {
     return {
       hash: bufferToHex(this.hash),
+    };
+  }
+
+  intoDetailsDto(): TransactionDetailsDto {
+    return {
+      ...this.intoDto(),
       request: bufferToHex(this.request),
       response: bufferToHex(this.response),
     };

@@ -1,11 +1,14 @@
 import { Box } from "@liftedinit/ui";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getNeighborhoodTransactions } from "../features/neighborhoods";
+import { useContext, useState } from "react";
+import {
+  getNeighborhoodTransactions,
+  NeighborhoodContext,
+} from "../features/neighborhoods";
 import { Pager, TransactionList } from "../shared";
 
 export function Transactions() {
-  const id = 1; // @TODO: Get this from context
+  const { id } = useContext(NeighborhoodContext);
   const [page, setPage] = useState(1);
   const { data, error, isLoading } = useQuery(
     ["neighborhoods", id, "transactions", page],

@@ -1,11 +1,15 @@
 import { Box, Divider, Stack } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
 import { useParams } from "react-router-dom";
-import { getNeighborhoodBlock } from "../features/neighborhoods";
+import {
+  getNeighborhoodBlock,
+  NeighborhoodContext,
+} from "../features/neighborhoods";
 import { Stat, TransactionList } from "../shared";
 
 export function Block() {
-  const id = 1; // @TODO: Get this from context
+  const { id } = useContext(NeighborhoodContext);
   const { hash } = useParams();
   let txns = [];
 

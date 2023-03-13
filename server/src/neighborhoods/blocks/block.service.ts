@@ -68,6 +68,7 @@ export class BlockService {
   ): Promise<Pagination<Block>> {
     let query = this.blockRepository
       .createQueryBuilder("b")
+      .select(["b.height", "b.time", "b.hash", "b.appHash"])
       .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
       .addSelect("COUNT(transactions.id) as txCount")
       .leftJoin("b.transactions", "transactions")

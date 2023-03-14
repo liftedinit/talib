@@ -1,5 +1,12 @@
 import { Outlet, Route, Routes } from "react-router-dom";
-import { Block, Blocks, Home, Layout, Transactions } from "../views";
+import {
+  Block,
+  Blocks,
+  Home,
+  Layout,
+  Transaction,
+  Transactions,
+} from "../views";
 
 export function App() {
   return (
@@ -17,7 +24,10 @@ export function App() {
           <Route index element={<Blocks />} />
           <Route path=":hash" element={<Block />} />
         </Route>
-        <Route path="transactions" element={<Transactions />} />
+        <Route path="transactions">
+          <Route index element={<Transactions />} />
+          <Route path=":hash" element={<Transaction />} />
+        </Route>
       </Route>
     </Routes>
   );

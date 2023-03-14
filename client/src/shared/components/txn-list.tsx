@@ -1,6 +1,7 @@
 import {
   Box,
   Center,
+  Code,
   Flex,
   Heading,
   Spacer,
@@ -17,7 +18,7 @@ import {
 import { Link } from "react-router-dom";
 import { abbr, ago, by, ErrorAlert } from "..";
 
-const PrettyMethods: { [name: string]: string } = {
+export const PrettyMethods: { [name: string]: string } = {
   "ledger.send": "Send",
   "account.multisigApprove": "Approve",
   "account.multisigRevoke": "Revoke",
@@ -68,7 +69,11 @@ export function TransactionList({
             {txns.sort(by("blockHeight")).map((txn) => (
               <Tr h={12}>
                 <Td>
-                  <pre>{abbr(txn.hash)}</pre>
+                  <Link to={`/transactions/${txn.hash}`}>
+                    <Text color="brand.teal.500">
+                      <Code>{abbr(txn.hash)}</Code>
+                    </Text>
+                  </Link>
                 </Td>
                 <Td>
                   <Tag variant="outline" size="sm">

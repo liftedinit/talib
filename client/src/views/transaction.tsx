@@ -2,7 +2,6 @@ import {
   Box,
   Center,
   Code,
-  Divider,
   Heading,
   Spinner,
   Table,
@@ -15,38 +14,47 @@ import { useQuery } from "@tanstack/react-query";
 import { ReactNode, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  getNeighborhoodBlock,
+  getNeighborhoodTransaction,
   NeighborhoodContext,
 } from "../features/neighborhoods";
-import { ago, TransactionList } from "../shared";
+import { ago, PrettyMethods } from "../shared";
 
-export function Block() {
+export function Transaction() {
   const { id } = useContext(NeighborhoodContext);
   const { hash } = useParams();
-  let txns = [];
 
-  const { data, error, isLoading } = useQuery(
-    ["neighborhoods", id, "blocks", hash],
-    getNeighborhoodBlock(id, hash as string),
+  const { data, isLoading } = useQuery(
+    ["neighborhoods", id, "transactions", hash],
+    getNeighborhoodTransaction(id, hash as string),
   );
 
-  let block: { [key: string]: ReactNode } = data
+  let txn: { [key: string]: ReactNode } = data
     ? {
-        Hash: <Code>{data.blockHash}</Code>,
-        Height: data.height.toLocaleString(),
-        Time: `${ago(new Date(data.dateTime))} (${new Date(
-          data.dateTime,
-        ).toLocaleString()})`,
+        Hash: <Code>{data.hash}</Code>,
+        Height: data.blockHeight.toLocaleString(),
+        Time: (
+          <Text>
+            {ago(new Date(data.dateTime))} (
+            <Code>{new Date(data.dateTime).toISOString()}</Code>)
+          </Text>
+        ),
+        Type: data.method ? (
+          <Text>
+            {PrettyMethods[data.method]} (<Code>{data.method}</Code>)
+          </Text>
+        ) : (
+          "Unknown"
+        ),
       }
     : {};
 
-  if (data) {
-    txns = data.transactions.map((txn: any) => ({
+  if (data?.method === "ledger.send") {
+    txn = {
       ...txn,
-      blockHash: data.blockHash,
-      blockHeight: data.height,
-      dateTime: data.dateTime,
-    }));
+      From: <Code>{data.argument.from}</Code>,
+      To: <Code>{data.argument.to}</Code>,
+      Amount: <Text>{data.argument.amount.toLocaleString()} MFX</Text>,
+    };
   }
 
   return (
@@ -55,7 +63,7 @@ export function Block() {
         <Text as={Link} color="brand.teal.500" to="/">
           Home
         </Text>{" "}
-        / Block Details
+        / Transaction Details
       </Heading>
       <Box bg="white" my={6} p={6}>
         {isLoading ? (
@@ -65,7 +73,7 @@ export function Block() {
         ) : (
           <Table>
             <Tbody>
-              {Object.entries(block).map(([key, value]) => (
+              {Object.entries(txn).map(([key, value]) => (
                 <Tr>
                   <Td>
                     <b>{key}</b>
@@ -77,12 +85,6 @@ export function Block() {
           </Table>
         )}
       </Box>
-      <Divider />
-      <TransactionList
-        txns={txns}
-        error={error as Error}
-        isLoading={isLoading}
-      />
     </Box>
   );
 }

@@ -22,7 +22,7 @@ const PrettyMethods: { [name: string]: string } = {
   "account.multisigApprove": "Approve",
   "account.multisigRevoke": "Revoke",
   "account.multisigSubmitTransaction": "Submit",
-  "idstore.store": "Put",
+  "idstore.store": "Register",
 };
 
 interface TxnSummary {

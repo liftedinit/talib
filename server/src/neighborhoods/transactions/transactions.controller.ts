@@ -2,13 +2,18 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Query,
 } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
 import { Pagination } from "nestjs-typeorm-paginate";
-import { TransactionDto } from "../../dto/transaction.dto";
+import {
+  TransactionDetailsDto,
+  TransactionDto,
+} from "../../dto/transaction.dto";
+import { ParseHashPipe } from "../../utils/pipes";
 import { TransactionsService } from "./transactions.service";
 
 @Controller("neighborhoods/:nid/transactions")
@@ -38,5 +43,23 @@ export class TransactionsController {
       ...result,
       items: result.items.map((b) => b.intoDto()),
     };
+  }
+
+  @Get(":thash")
+  @ApiResponse({
+    status: 200,
+    type: TransactionDetailsDto,
+    isArray: true,
+    description: "List all transactions for a neighborhood.",
+  })
+  async findOne(
+    @Param("nid", ParseIntPipe) nid: number,
+    @Param("thash", ParseHashPipe) thash: ArrayBuffer,
+  ): Promise<TransactionDetailsDto> {
+    const tx = await this.transactions.findOneByHash(nid, thash, true);
+    if (!tx) {
+      throw new NotFoundException();
+    }
+    return tx.intoDetailsDto();
   }
 }

@@ -6,7 +6,6 @@ import {
   Pagination,
 } from "nestjs-typeorm-paginate";
 import { DataSource, Repository } from "typeorm";
-import { Block } from "../../database/entities/block.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
@@ -15,8 +14,6 @@ import { NetworkService } from "../../services/network.service";
 @Injectable()
 export class TransactionsService {
   constructor(
-    @InjectRepository(Block)
-    private blockRepository: Repository<Block>,
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
     private network: NetworkService,
@@ -26,19 +23,24 @@ export class TransactionsService {
   async findOneByHash(
     neighborhoodId: number,
     hash: ArrayBuffer,
-    details?: boolean,
-  ) {
-    return await this.blockRepository.findOne({
-      where: {
-        neighborhood: { id: neighborhoodId },
-        hash: hash as any,
-      },
-      ...(details && {
-        relations: {
-          transactions: true,
-        },
-      }),
-    });
+    details = false,
+  ): Promise<Transaction | null> {
+    let query = this.transactionRepository
+      .createQueryBuilder("t")
+      .where("t.hash = :hash", { hash })
+      .leftJoinAndSelect("t.block", "block")
+      .andWhere("block.neighborhoodId = :nid", { nid: neighborhoodId })
+      .addOrderBy("block.height", "DESC");
+
+    if (details) {
+      query = query.innerJoinAndMapOne(
+        "t.details",
+        TransactionDetails,
+        "details",
+        `"details"."transactionId" = t.id`,
+      );
+    }
+    return await query.getOne();
   }
 
   public async findMany(

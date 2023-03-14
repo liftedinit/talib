@@ -8,7 +8,8 @@ import {
   Text,
 } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
-import { NeighborhoodSelector } from "../features/neighborhoods";
+
+import { NeighborhoodSelector } from "./selector";
 
 export function Layout({ children }: React.PropsWithChildren<{}>) {
   return (

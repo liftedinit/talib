@@ -2,13 +2,15 @@ import { Box, Button, Divider, SimpleGrid } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+
 import {
   getNeighborhoodBlocks,
   getNeighborhoodTransactions,
   NeighborhoodContext,
-  NeighborhoodStatus,
-} from "../features/neighborhoods";
-import { BlockList, TransactionList } from "../shared";
+} from "api";
+import { BlockList, TransactionList } from "ui";
+
+import { NeighborhoodStatus } from "./status";
 
 export function Home() {
   const { id } = useContext(NeighborhoodContext);

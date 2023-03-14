@@ -11,8 +11,8 @@ import {
 } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { getNeighborhoods } from "../queries";
-import { NeighborhoodContext } from "./provider";
+
+import { getNeighborhoods, NeighborhoodContext } from "api";
 
 interface Neighborhood {
   name: string;

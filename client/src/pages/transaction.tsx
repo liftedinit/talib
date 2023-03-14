@@ -13,11 +13,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { ReactNode, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  getNeighborhoodTransaction,
-  NeighborhoodContext,
-} from "../features/neighborhoods";
-import { ago, PrettyMethods } from "../shared";
+
+import { getNeighborhoodTransaction, NeighborhoodContext } from "api";
+import { PrettyMethods } from "ui";
+import { ago } from "utils";
 
 export function Transaction() {
   const { id } = useContext(NeighborhoodContext);

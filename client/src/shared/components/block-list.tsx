@@ -1,6 +1,7 @@
 import {
   Box,
   Center,
+  Code,
   Flex,
   Heading,
   Spacer,
@@ -64,7 +65,7 @@ export function BlockList({
                   </Link>
                 </Td>
                 <Td>
-                  <pre>{abbr(block.blockHash)}</pre>
+                  <Code>{abbr(block.blockHash)}</Code>
                 </Td>
                 <Td>{block.txCount.toLocaleString()}</Td>
                 <Td>{ago(new Date(block.dateTime))}</Td>

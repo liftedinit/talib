@@ -1,12 +1,24 @@
-import { Box, Divider, Heading, Stack } from "@liftedinit/ui";
+import {
+  Box,
+  Center,
+  Code,
+  Divider,
+  Heading,
+  Spinner,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Tr,
+} from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { useContext } from "react";
-import { useParams } from "react-router-dom";
+import { ReactNode, useContext } from "react";
+import { Link, useParams } from "react-router-dom";
 import {
   getNeighborhoodBlock,
   NeighborhoodContext,
 } from "../features/neighborhoods";
-import { Stat, TransactionList } from "../shared";
+import { ago, TransactionList } from "../shared";
 
 export function Block() {
   const { id } = useContext(NeighborhoodContext);
@@ -17,6 +29,17 @@ export function Block() {
     ["neighborhoods", id, "blocks", hash],
     getNeighborhoodBlock(id, hash as string),
   );
+
+  let block: { [key: string]: ReactNode } = data
+    ? {
+        Hash: <Code>{data.blockHash}</Code>,
+        Height: data.height.toLocaleString(),
+        Time: `${ago(new Date(data.dateTime))} (${new Date(
+          data.dateTime,
+        ).toLocaleString()})`,
+      }
+    : {};
+
   if (data) {
     txns = data.transactions.map((txn: any) => ({
       ...txn,
@@ -28,12 +51,32 @@ export function Block() {
 
   return (
     <Box my={6}>
-      <Heading size="sm">Block Details</Heading>
-      <Stack direction="row" mt={6}>
-        <Stat label="Height" value={data?.height.toLocaleString()} />
-        <Stat label="Transactions" value={data?.transactions.length} />
-        <Stat label="Time" value={new Date(data?.dateTime).toLocaleString()} />
-      </Stack>
+      <Heading size="sm">
+        <Text as={Link} color="brand.teal.500" to="/">
+          Home
+        </Text>{" "}
+        / Block Details
+      </Heading>
+      <Box bg="white" my={6} p={6}>
+        {isLoading ? (
+          <Center>
+            <Spinner />
+          </Center>
+        ) : (
+          <Table>
+            <Tbody>
+              {Object.entries(block).map(([key, value]) => (
+                <Tr>
+                  <Td>
+                    <b>{key}</b>
+                  </Td>
+                  <Td>{value}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        )}
+      </Box>
       <Divider />
       <TransactionList
         txns={txns}

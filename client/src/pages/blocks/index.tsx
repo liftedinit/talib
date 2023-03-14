@@ -2,18 +2,17 @@ import { Box, Heading, Text } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  getNeighborhoodTransactions,
-  NeighborhoodContext,
-} from "../features/neighborhoods";
-import { Pager, TransactionList } from "../shared";
 
-export function Transactions() {
+import { getNeighborhoodBlocks, NeighborhoodContext } from "api";
+import { BlockList, Pager } from "ui";
+
+export function Blocks() {
   const { id } = useContext(NeighborhoodContext);
   const [page, setPage] = useState(1);
+
   const { data, error, isLoading } = useQuery(
-    ["neighborhoods", id, "transactions", page],
-    getNeighborhoodTransactions(id, { page }),
+    ["neighborhoods", id, "blocks", page],
+    getNeighborhoodBlocks(id, { page }),
   );
 
   return (
@@ -22,10 +21,10 @@ export function Transactions() {
         <Text as={Link} color="brand.teal.500" to="/">
           Home
         </Text>{" "}
-        / All Transactions
+        / All Blocks
       </Heading>
-      <TransactionList
-        txns={data?.items}
+      <BlockList
+        blocks={data?.items}
         error={error as Error}
         isLoading={isLoading}
       />

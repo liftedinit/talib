@@ -1,7 +1,8 @@
 import { Spinner, Stack } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { Stat } from "../../../shared";
-import { getNeighborhood } from "../queries";
+
+import { getNeighborhood } from "api";
+import { Stat } from "ui";
 
 export function NeighborhoodStatus({ id }: { id: number }) {
   const query = useQuery(["neighborhoods", id], getNeighborhood(id));

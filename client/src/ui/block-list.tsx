@@ -15,7 +15,9 @@ import {
   Tr,
 } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
-import { abbr, ago, ErrorAlert } from "..";
+
+import { ErrorAlert } from "ui";
+import { abbr, ago } from "utils";
 
 interface BlockSummary {
   height: number;

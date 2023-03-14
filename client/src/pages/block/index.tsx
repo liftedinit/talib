@@ -14,11 +14,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { ReactNode, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  getNeighborhoodBlock,
-  NeighborhoodContext,
-} from "../features/neighborhoods";
-import { ago, TransactionList } from "../shared";
+
+import { getNeighborhoodBlock, NeighborhoodContext } from "api";
+import { TransactionList } from "ui";
+import { ago } from "utils";
 
 export function Block() {
   const { id } = useContext(NeighborhoodContext);

@@ -1,4 +1,4 @@
-import { get } from "../../shared";
+import { get } from "utils";
 
 const PAGE = 1;
 const LIMIT = 10;

@@ -16,7 +16,9 @@ import {
   Tr,
 } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
-import { abbr, ago, by, ErrorAlert } from "..";
+
+import { ErrorAlert } from "ui";
+import { abbr, ago, by } from "utils";
 
 export const PrettyMethods: { [name: string]: string } = {
   "ledger.send": "Send",

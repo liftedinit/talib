@@ -16,6 +16,7 @@ import {
   Block as ManyBlock,
   Transaction as ManyTransaction,
 } from "../../utils/blockchain";
+import { bufferToHex } from "../../utils/convert";
 
 @Injectable()
 export class BlockService {
@@ -43,22 +44,26 @@ export class BlockService {
     });
   }
 
-  async findOneByHash(
-    neighborhoodId: number,
-    hash: ArrayBuffer,
-    details?: boolean,
-  ) {
-    return await this.blockRepository.findOne({
-      where: {
-        neighborhood: { id: neighborhoodId },
-        hash: hash as any,
-      },
-      ...(details && {
-        relations: {
-          transactions: true,
-        },
-      }),
-    });
+  async findOneByHash(nid: number, hash: ArrayBuffer): Promise<Block> {
+    const q = this.blockRepository
+      .createQueryBuilder("b")
+      .where("b.neighborhoodId = :nid", { nid })
+      .andWhere("b.hash = :hash", { hash })
+      .leftJoinAndMapMany(
+        "b.transactions",
+        "transaction",
+        "t",
+        `"t"."blockId" = "b"."id"`,
+      )
+      .leftJoinAndMapOne(
+        "t.details",
+        TransactionDetails,
+        "details",
+        `"details"."transactionId" = "t"."id"`,
+      );
+
+    this.logger.debug(`findOneByHash(${nid}, ${bufferToHex(hash)}): `);
+    return q.getOne();
   }
 
   public async findMany(

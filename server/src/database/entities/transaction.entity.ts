@@ -41,13 +41,13 @@ export class Transaction {
   @OneToOne(() => TransactionDetails)
   details: TransactionDetails;
 
-  intoDto(): TransactionDto {
+  intoDto(block?: Block): TransactionDto {
     return {
       ...this.intoSimpleDto(),
-      blockHash: bufferToHex(this.block.hash),
-      blockHeight: this.block.height,
+      blockHash: bufferToHex((block || this.block).hash),
+      blockHeight: (block || this.block).height,
       blockIndex: this.block_index,
-      dateTime: this.block.time.toISOString(),
+      dateTime: (block || this.block).time.toISOString(),
 
       method: this.details?.method,
       argument: this.details?.argument,

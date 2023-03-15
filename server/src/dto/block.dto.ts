@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { TransactionSimpleDto } from "./transaction.dto";
+import { TransactionDto } from "./transaction.dto";
 
 export class BlockDto {
   @ApiProperty()
@@ -20,9 +20,9 @@ export class BlockDto {
 
 export class BlockDetailsDto extends BlockDto {
   @ApiProperty({
-    type: TransactionSimpleDto,
+    type: TransactionDto,
     isArray: true,
     description: `Transactions included in this block.`,
   })
-  transactions: TransactionSimpleDto[];
+  transactions: TransactionDto[];
 }

@@ -17,7 +17,7 @@ import { BlockService } from "./block.service";
 export class BlockController {
   constructor(private block: BlockService) {}
 
-  @Get("")
+  @Get()
   @ApiResponse({
     status: 200,
     type: BlockDto,
@@ -48,7 +48,7 @@ export class BlockController {
     @Param("nid", ParseIntPipe) nid: number,
     @Param("bhash", ParseHashPipe) bhash: ArrayBuffer,
   ): Promise<BlockDetailsDto> {
-    const b = await this.block.findOneByHash(nid, bhash, true);
+    const b = await this.block.findOneByHash(nid, bhash);
 
     if (!b) {
       throw new NotFoundException();

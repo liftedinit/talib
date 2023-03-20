@@ -27,7 +27,9 @@ export function parseAddress(
   content: any,
   optional = false,
 ): Address | undefined {
-  if (typeof content == "string") {
+  if (content instanceof Address) {
+    return content;
+  } else if (typeof content == "string") {
     return Address.fromString(content);
   } else if (Buffer.isBuffer(content)) {
     return new Address(content);
@@ -202,7 +204,7 @@ export class TxAnalyzerService {
 
   async analyzeTransaction(tx: Transaction): Promise<TransactionDetails> {
     try {
-      return this.analyzeTransactionImpl(tx);
+      return await this.analyzeTransactionImpl(tx);
     } catch (e) {
       throw new Error(
         `${e}\nContext: id = ${tx.id}, hash = "${bufferToHex(tx.hash)}"`,

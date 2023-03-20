@@ -6,6 +6,7 @@ import { Repository } from "typeorm";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
+import { bufferToHex } from "../../utils/convert";
 import { LedgerSendAnalyzer } from "./tx/ledger.send";
 
 const methodRegistry = {
@@ -36,12 +37,15 @@ export function parseAddress(
     }
   }
 
-  throw new Error(`Invalid content type: ${JSON.stringify(content)}`);
+  throw new Error(
+    `Invalid content type for address: ${JSON.stringify(content)}`,
+  );
 }
 
 export function parseMemo(
   content: any,
   optional = false,
+  context: any = null,
 ): string[] | undefined {
   if (typeof content == "string") {
     return [content];
@@ -51,17 +55,23 @@ export function parseMemo(
     return undefined;
   }
 
-  throw new Error(`Invalid content type: ${JSON.stringify(content)}`);
+  throw new Error(`Invalid content type for memo: ${JSON.stringify(content)}`);
 }
 
-function _parseBuffer(content: any, optional = false): Buffer | undefined {
+function _parseBuffer(
+  content: any,
+  optional = false,
+  context: any = null,
+): Buffer | undefined {
   if (Buffer.isBuffer(content)) {
     return content;
   } else if (optional) {
     return undefined;
   }
 
-  throw new Error(`Invalid content type: ${JSON.stringify(content)}`);
+  throw new Error(
+    `Invalid content type for buffer: ${JSON.stringify(content)}.`,
+  );
 }
 
 function parseError(maybeResult: any) {
@@ -82,14 +92,16 @@ function parseError(maybeResult: any) {
   const fields: Record<string, string> = {};
   if (maybeResult.has(2)) {
     const fs = maybeResult.get(2);
-    if (!(fs instanceof Map)) {
-      throw "Fields is not a map.";
-    }
+    if (fs) {
+      if (!(fs instanceof Map)) {
+        throw "Fields is not a map.";
+      }
 
-    for (const [k, v] of maybeResult.entries()) {
-      // Worst case we get "[object Object]" as keys, but a spec following
-      // blockchain should be fine here.
-      fields[k.toString()] = v.toString();
+      for (const [k, v] of fs.entries()) {
+        // Worst case we get "[object Object]" as keys, but a spec following
+        // blockchain should be fine here.
+        fields[k.toString()] = v.toString();
+      }
     }
   }
 
@@ -126,10 +138,11 @@ export class TxAnalyzerService {
       )
       .limit(limit);
 
+    this.logger.debug(query.getQuery());
     return (await query.getMany()).map((x) => x.id);
   }
 
-  async analyzeTransaction(tx: Transaction): Promise<TransactionDetails> {
+  async analyzeTransactionImpl(tx: Transaction): Promise<TransactionDetails> {
     const details = new TransactionDetails();
     details.transaction = tx;
     details.hash = tx.hash;
@@ -143,7 +156,7 @@ export class TxAnalyzerService {
       const content = payload.value;
 
       const from = parseAddress(content.get(1), true) || Address.anonymous();
-      const to = parseAddress(content.get(2), true);
+      const _to = parseAddress(content.get(2), true);
       method = content.get(3).toString();
       const data = _parseBuffer(content.get(4), true);
       const timestamp = new Date(Number(content.get(5)));
@@ -185,5 +198,15 @@ export class TxAnalyzerService {
 
     // Dynamically load the method.
     return details;
+  }
+
+  async analyzeTransaction(tx: Transaction): Promise<TransactionDetails> {
+    try {
+      return this.analyzeTransactionImpl(tx);
+    } catch (e) {
+      throw new Error(
+        `${e}\nContext: id = ${tx.id}, hash = "${bufferToHex(tx.hash)}"`,
+      );
+    }
   }
 }

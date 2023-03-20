@@ -126,7 +126,7 @@ export class SchedulerService {
 
     // Split missing blocks into groups of parallel.
     const parallel = this.schedulerConfig.parallel;
-    const parallel_sleep = this.schedulerConfig.parallel_sleep;
+    const parallelSleep = this.schedulerConfig.parallelSleep;
     const schedule = [];
     for (let i = 0; i < missingBlocks.length; i += parallel) {
       schedule[schedule.length] = missingBlocks.slice(i, i + parallel);
@@ -141,7 +141,7 @@ export class SchedulerService {
       );
 
       // Sleep a bit.
-      await new Promise((res) => setTimeout(res, parallel_sleep * 1000));
+      await new Promise((res) => setTimeout(res, parallelSleep * 1000));
     }
     this.logger.log(
       `Neighborhood ${neighbordhood.id}: done ${missingBlocks.length} blocks ${

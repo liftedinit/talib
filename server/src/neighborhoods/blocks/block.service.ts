@@ -1,10 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from "nestjs-typeorm-paginate";
+import { IPaginationOptions, Pagination } from "nestjs-typeorm-paginate";
 import { DataSource, Repository } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
@@ -70,15 +66,37 @@ export class BlockService {
     neighborhoodId: number,
     options: IPaginationOptions,
   ): Promise<Pagination<Block>> {
+    const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+    const limit = clamp(Number(options.limit), 1, 1000);
+    const page = clamp(Number(options.page), 1, Infinity);
+    const offset = (page - 1) * limit;
+
     const query = this.blockRepository
       .createQueryBuilder("b")
       .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
       .leftJoin("b.transactions", "transactions")
       .where({ neighborhood: { id: neighborhoodId } })
-      .orderBy("height", "DESC");
+      .orderBy("height", "DESC")
+      .limit(limit)
+      .offset(offset);
+    const countQuery = this.blockRepository
+      .createQueryBuilder("b")
+      .where({ neighborhood: { id: neighborhoodId } });
 
     this.logger.debug(`findMany(${neighborhoodId}): ${query.getQuery()}`);
-    return await paginate<Block>(query, options);
+
+    const totalItems = await countQuery.getCount();
+    const items = await query.getMany();
+    return {
+      items,
+      meta: {
+        totalItems,
+        itemCount: items.length,
+        itemsPerPage: limit,
+        totalPages: Math.ceil(totalItems / limit),
+        currentPage: page,
+      },
+    };
   }
 
   async createLatestOf(neighborhood: Neighborhood): Promise<Block> {

@@ -28,7 +28,7 @@ export class SchedulerConfigService {
     return Number(this.configService.get<number>("scheduler.parallel"));
   }
 
-  get parallel_sleep() {
+  get parallelSleep() {
     return Number(this.configService.get<number>("scheduler.parallel_sleep"));
   }
 }

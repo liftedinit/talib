@@ -6,6 +6,7 @@ import { Block } from "../../database/entities/block.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
+import { BlockDto } from "../../dto/block.dto";
 import { NetworkService } from "../../services/network.service";
 import { TxAnalyzerService } from "../../services/scheduler/tx-analyzer.service";
 import {
@@ -62,20 +63,35 @@ export class BlockService {
     return q.getOne();
   }
 
-  public async findMany(
+  public async findManyDto(
     neighborhoodId: number,
     options: IPaginationOptions,
-  ): Promise<Pagination<Block>> {
+  ): Promise<Pagination<BlockDto>> {
     const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
     const limit = clamp(Number(options.limit), 1, 1000);
     const page = clamp(Number(options.page), 1, Infinity);
     const offset = (page - 1) * limit;
 
-    const query = this.blockRepository
-      .createQueryBuilder("b")
-      .loadRelationCountAndMap("b.txCount", "b.transactions", "transactions")
+    const driver = this.blockRepository.manager.connection.driver;
+    const metadata = this.blockRepository.metadata;
+    const timeColumnMetadata = metadata.ownColumns.find(
+      (x) => x.propertyName == "time",
+    );
+    const isPostgres = driver.options.type == "postgres";
+
+    const query = this.dataSource
+      .createQueryBuilder()
+      .select("b.height", "height")
+      // In PostGres if we don't ask for the specific type we get an incorrect
+      // string and won't format the field properly on the output.
+      .addSelect(`b.time${isPostgres ? "::timestamptz" : ""}`, "time")
+      .addSelect("b.hash", "hash")
+      .addSelect("b.appHash", "appHash")
+      .addSelect("COUNT(transactions.id)", "txCount")
+      .from("block", "b")
       .leftJoin("b.transactions", "transactions")
-      .where({ neighborhood: { id: neighborhoodId } })
+      .where(`b."neighborhoodId" = :nid`, { nid: neighborhoodId })
+      .groupBy(`height, time, b.hash, b."appHash"`)
       .orderBy("height", "DESC")
       .limit(limit)
       .offset(offset);
@@ -86,9 +102,18 @@ export class BlockService {
     this.logger.debug(`findMany(${neighborhoodId}): ${query.getQuery()}`);
 
     const totalItems = await countQuery.getCount();
-    const items = await query.getMany();
+    const items = await query.getRawMany();
+
     return {
-      items,
+      items: items.map((x) => ({
+        height: x.height,
+        dateTime: driver
+          .prepareHydratedValue(x.time, timeColumnMetadata)
+          .toISOString(),
+        appHash: bufferToHex(x.appHash),
+        blockHash: bufferToHex(x.hash),
+        txCount: Number(x.txCount) || 0,
+      })),
       meta: {
         totalItems,
         itemCount: items.length,

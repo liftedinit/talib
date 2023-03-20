@@ -31,12 +31,7 @@ export class BlockController {
   ): Promise<Pagination<BlockDto>> {
     limit = limit > 100 ? 100 : limit;
 
-    const result = await this.block.findMany(nid, { page, limit });
-    const items = result.items.map((b) => b.intoDto());
-    return {
-      ...result,
-      items,
-    };
+    return await this.block.findManyDto(nid, { page, limit });
   }
 
   @Get(":bhash")

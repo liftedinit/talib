@@ -34,10 +34,12 @@ export class SchedulerService {
     if (schedulerConfig.cron !== undefined) {
       // Do not rerun the cron job if the previous one was done.
       const job = new CronJob(schedulerConfig.cron, jobFn);
+      this.logger.log(`Cron scheduled: ${schedulerConfig.cron}`);
       this.schedulerRegistry.addCronJob("updateNeighborhood", job);
       job.start();
     } else if (schedulerConfig.seconds !== undefined) {
       const id = setInterval(jobFn, schedulerConfig.seconds * 1000);
+      this.logger.log(`Interval scheduled: ${schedulerConfig.seconds}sec`);
       this.schedulerRegistry.addInterval("updateNeighborhood", id);
     } else {
       this.logger.log(`Scheduler disabled.`);

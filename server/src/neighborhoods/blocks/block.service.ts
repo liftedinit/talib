@@ -97,11 +97,13 @@ export class BlockService {
       .offset(offset);
     const countQuery = this.blockRepository
       .createQueryBuilder("b")
+      .select("MAX(height) as height")
       .where({ neighborhood: { id: neighborhoodId } });
 
     this.logger.debug(`findMany(${neighborhoodId}): ${query.getQuery()}`);
 
-    const totalItems = await countQuery.getCount();
+    const totalItems = (await countQuery.getRawOne<{ height: number }>())
+      .height;
     const items = await query.getRawMany();
 
     return {
@@ -124,28 +126,20 @@ export class BlockService {
     };
   }
 
-  async createLatestOf(neighborhood: Neighborhood): Promise<Block> {
+  async getLatestHeightOf(neighborhood: Neighborhood): Promise<number> {
     const n = await this.network.forUrl(neighborhood.url);
     const info = await n.blockchain.info();
-    const latest: ManyBlock = await n.blockchain.blockByHeight(
-      info.latestBlock.height,
-    );
-    const maybeLastBlock = await this.findOneByHeight(
-      neighborhood.id,
-      latest.identifier.height,
-    );
-    return (
-      maybeLastBlock ?? (await this.createFromManyBlock(neighborhood, latest))
-    );
+    return info.latestBlock.height;
   }
 
   private missingBlockHeightsQueryForPostgres(
     neighborhood: Neighborhood,
+    latestHeight: number,
     max?: number,
   ) {
     return `
         SELECT all_ids AS missnum
-        FROM generate_series(1, (SELECT MAX(height) FROM block)) all_ids
+        FROM generate_series(1, ${latestHeight}) all_ids
         EXCEPT
         SELECT height FROM block WHERE "neighborhoodId" = ${neighborhood.id}
         ORDER BY missnum
@@ -155,11 +149,13 @@ export class BlockService {
 
   private missingBlockHeightsQueryForSqlite(
     neighborhood: Neighborhood,
+    latestHeight: number,
+
     max?: number,
   ) {
     return `
       WITH Missing (missnum, maxid) AS (
-        SELECT 1 AS missnum, (select max(height) from block)
+        SELECT 1 AS missnum, ${latestHeight}
         UNION ALL
         SELECT missnum + 1, maxid FROM Missing
         WHERE missnum < maxid
@@ -174,12 +170,12 @@ export class BlockService {
 
   async missingBlockHeightsForNeighborhood(
     neighborhood: Neighborhood,
-    max = 500,
+    maxHeight: number,
+    count = 500,
   ): Promise<number[]> {
     const queryFns = {
-      postgres: () =>
-        this.missingBlockHeightsQueryForPostgres(neighborhood, max),
-      sqlite: () => this.missingBlockHeightsQueryForSqlite(neighborhood, max),
+      postgres: (n, h, c) => this.missingBlockHeightsQueryForPostgres(n, h, c),
+      sqlite: (n, h, c) => this.missingBlockHeightsQueryForSqlite(n, h, c),
     };
     const driver = this.blockRepository.manager.connection.options.type;
     if (queryFns[driver] === undefined) {
@@ -187,7 +183,7 @@ export class BlockService {
         `We do not support ${driver} for fetching missing heights. File a bug on Talib's repo.`,
       );
     }
-    const query = queryFns[driver]();
+    const query = queryFns[driver](neighborhood, maxHeight, count);
 
     const result = await this.dataSource.query(query);
     return result.map((r) => Number(r.missnum)) as number[];

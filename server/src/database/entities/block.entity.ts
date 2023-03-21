@@ -14,7 +14,6 @@ import { Transaction } from "./transaction.entity";
 
 @Entity()
 @Index(["neighborhood", "height"], { unique: true })
-@Index(["height"])
 export class Block {
   @PrimaryGeneratedColumn()
   id: number;

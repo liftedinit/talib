@@ -62,7 +62,9 @@ export class SchedulerService {
     try {
       await method();
     } catch (e) {
-      this.logger.warn(`Error happened while ${name}: ${e}`);
+      this.logger.error(
+        `Error happened while ${name}: ${e}.\nStack: ${e.stack}`,
+      );
     }
   }
 
@@ -75,9 +77,6 @@ export class SchedulerService {
       // Do all neighborhoods in parallel.
       await Promise.all(
         neighborhoods.map(async (n) => {
-          await this.step(async () => {
-            await this.block.createLatestOf(n);
-          }, "creating latest block");
           await this.step(
             () => this.updateNeighborhoodEarliestMissingBlocks(n),
             "updating missing blocks",
@@ -112,10 +111,12 @@ export class SchedulerService {
     }
   }
 
-  async updateNeighborhoodEarliestMissingBlocks(neighbordhood: Neighborhood) {
-    const network = await this.network.forUrl(neighbordhood.url);
+  async updateNeighborhoodEarliestMissingBlocks(neighborhood: Neighborhood) {
+    const network = await this.network.forUrl(neighborhood.url);
+    const latestHeight = await this.block.getLatestHeightOf(neighborhood);
     const missingBlocks = await this.block.missingBlockHeightsForNeighborhood(
-      neighbordhood,
+      neighborhood,
+      latestHeight,
       this.schedulerConfig.maxBlocks,
     );
 
@@ -136,7 +137,7 @@ export class SchedulerService {
       await Promise.all(
         batch.map(async (height) => {
           const blockInfo = await network.blockchain.blockByHeight(height);
-          await this.block.createFromManyBlock(neighbordhood, blockInfo);
+          await this.block.createFromManyBlock(neighborhood, blockInfo);
         }),
       );
 
@@ -144,7 +145,7 @@ export class SchedulerService {
       await new Promise((res) => setTimeout(res, parallelSleep * 1000));
     }
     this.logger.log(
-      `Neighborhood ${neighbordhood.id}: done ${missingBlocks.length} blocks ${
+      `Neighborhood ${neighborhood.id}: done ${missingBlocks.length} blocks ${
         missingBlocks[0]
       }..=${missingBlocks[missingBlocks.length - 1]}`,
     );

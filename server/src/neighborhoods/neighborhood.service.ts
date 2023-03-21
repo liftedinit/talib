@@ -80,7 +80,6 @@ export class NeighborhoodService {
     const entity = Neighborhood.createWithDto(status, dto);
     await this.neighborhoodRepository.save([entity]);
 
-    await this.block.createLatestOf(entity);
     return entity;
   }
 

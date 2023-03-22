@@ -33,9 +33,12 @@ export function Block() {
     ? {
         Hash: <Code>{data.blockHash}</Code>,
         Height: data.height.toLocaleString(),
-        Time: `${ago(new Date(data.dateTime))} (${new Date(
-          data.dateTime,
-        ).toLocaleString()})`,
+        Time: (
+          <Text>
+            {ago(new Date(data.dateTime))} (
+            <Code>{new Date(data.dateTime).toISOString()}</Code>)
+          </Text>
+        ),
       }
     : {};
 
@@ -76,12 +79,16 @@ export function Block() {
           </Table>
         )}
       </Box>
-      <Divider />
-      <TransactionList
-        txns={txns}
-        error={error as Error}
-        isLoading={isLoading}
-      />
+      {txns.length && (
+        <>
+          <Divider />
+          <TransactionList
+            txns={txns}
+            error={error as Error}
+            isLoading={isLoading}
+          />
+        </>
+      )}
     </Box>
   );
 }

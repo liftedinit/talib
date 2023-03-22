@@ -21,11 +21,18 @@ import { ErrorAlert } from "ui";
 import { abbr, ago, by } from "utils";
 
 export const PrettyMethods: { [name: string]: string } = {
-  "ledger.send": "Send",
+  "account.addRoles": "Add",
+  "account.create": "Create",
   "account.multisigApprove": "Approve",
   "account.multisigRevoke": "Revoke",
+  "account.multisigSetDefaults": "Set",
   "account.multisigSubmitTransaction": "Submit",
+  "account.multisigWithdraw": "Withdraw",
+  "account.removeRoles": "Remove",
   "idstore.store": "Register",
+  "ledger.send": "Send",
+  "tokens.burn": "Burn",
+  "tokens.mint": "Mint",
 };
 
 interface TxnSummary {

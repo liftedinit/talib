@@ -64,7 +64,7 @@ export function Transaction() {
       From: <Code>{data.argument.from}</Code>,
       To: <Code>{data.argument.to}</Code>,
       Amount: token
-        ? `${(data.argument.amount / token.precision).toLocaleString()} ${
+        ? `${(data.argument.amount / 10 ** token.precision).toLocaleString()} ${
             token.ticker
           }`
         : "Unknown",

@@ -18,6 +18,14 @@ import { getNeighborhoodTransaction, NeighborhoodContext } from "api";
 import { PrettyMethods } from "ui";
 import { ago } from "utils";
 
+const knownTokens = [
+  {
+    address: "mqbh742x4s356ddaryrxaowt4wxtlocekzpufodvowrirfrqaaaaa3l",
+    ticker: "MFX",
+    precision: 9,
+  },
+];
+
 export function Transaction() {
   const { id } = useContext(NeighborhoodContext);
   const { hash } = useParams();
@@ -44,15 +52,22 @@ export function Transaction() {
         ) : (
           "Unknown"
         ),
+        Request: <Code maxW="50em">{data.request}</Code>,
+        Response: <Code maxW="50em">{data.response}</Code>,
       }
     : {};
 
   if (data?.method === "ledger.send") {
+    const token = knownTokens.find((t) => t.address === data.argument.symbol);
     txn = {
       ...txn,
       From: <Code>{data.argument.from}</Code>,
       To: <Code>{data.argument.to}</Code>,
-      Amount: <Text>{data.argument.amount.toLocaleString()} MFX</Text>,
+      Amount: token
+        ? `${(data.argument.amount / token.precision).toLocaleString()} ${
+            token.ticker
+          }`
+        : "Unknown",
     };
   }
 

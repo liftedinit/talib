@@ -8,7 +8,7 @@ import {
   getNeighborhoodTransactions,
   NeighborhoodContext,
 } from "api";
-import { BlockList, TransactionList } from "ui";
+import { BlockList, Search, TransactionList } from "ui";
 
 import { NeighborhoodStatus } from "./status";
 
@@ -31,6 +31,7 @@ export function Home() {
     <>
       <NeighborhoodStatus id={id} />
       <Divider my={6} />
+      <Search />
       <SimpleGrid columns={2} spacing={6}>
         <Box>
           <BlockList

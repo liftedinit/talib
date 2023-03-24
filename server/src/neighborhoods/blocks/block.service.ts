@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { IPaginationOptions, Pagination } from "nestjs-typeorm-paginate";
+import { Pagination } from "nestjs-typeorm-paginate";
 import { DataSource, Repository } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
@@ -24,8 +24,6 @@ export class BlockService {
     private blockRepository: Repository<Block>,
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
-    @InjectRepository(TransactionDetails)
-    private txDetailsRepository: Repository<TransactionDetails>,
     private network: NetworkService,
     private dataSource: DataSource,
     private analyzer: TxAnalyzerService,
@@ -65,11 +63,11 @@ export class BlockService {
 
   public async findManyDto(
     neighborhoodId: number,
-    options: IPaginationOptions,
+    options: { limit: number; page?: number },
   ): Promise<Pagination<BlockDto>> {
     const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
-    const limit = clamp(Number(options.limit), 1, 1000);
-    const page = clamp(Number(options.page), 1, Infinity);
+    const limit = clamp(options.limit, 1, 1000);
+    const page = clamp(options.page || 1, 1, Infinity);
     const offset = (page - 1) * limit;
 
     const driver = this.blockRepository.manager.connection.driver;
@@ -126,10 +124,26 @@ export class BlockService {
     };
   }
 
+  async getLatestHeightFetched(
+    neighborhood: Neighborhood,
+  ): Promise<number | null> {
+    const blocks = await this.findManyDto(neighborhood.id, { limit: 1 });
+    const last = blocks[0]; // Ordered by height descending.
+    return last?.height;
+  }
+
   async getLatestHeightOf(neighborhood: Neighborhood): Promise<number> {
     const n = await this.network.forUrl(neighborhood.url);
     const info = await n.blockchain.info();
     return info.latestBlock.height;
+  }
+
+  async getGenesisBlockHash(
+    neighborhood: Neighborhood,
+  ): Promise<ArrayBuffer | null> {
+    const n = await this.network.forUrl(neighborhood.url);
+    const blockInfo = await n.blockchain.blockByHeight(1);
+    return blockInfo?.identifier.hash;
   }
 
   private missingBlockHeightsQueryForPostgres(

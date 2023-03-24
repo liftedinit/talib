@@ -35,7 +35,9 @@ export class Neighborhood {
   @Column()
   version: string;
 
-  @OneToMany(() => Block, (block) => block.neighborhood, {})
+  @OneToMany(() => Block, (block) => block.neighborhood, {
+    onDelete: "CASCADE",
+  })
   blocks: Block[];
 
   latestBlock?: Block;
@@ -86,5 +88,10 @@ export class Neighborhood {
     result.attributes = JSON.parse(JSON.stringify(status.attributes));
 
     return result;
+  }
+
+  clean() {
+    delete this.latestBlock;
+    delete this.txCount;
   }
 }

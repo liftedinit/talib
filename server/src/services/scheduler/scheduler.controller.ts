@@ -15,7 +15,8 @@ export class SchedulerController {
       this does nothing.
     `,
   })
-  async findAll(): Promise<void> {
+  async run(): Promise<""> {
     await this.scheduler.run();
+    return "";
   }
 }

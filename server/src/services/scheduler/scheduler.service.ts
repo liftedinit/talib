@@ -1,17 +1,10 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
-import { InjectRepository } from "@nestjs/typeorm";
 import { CronJob } from "cron";
-import { Repository } from "typeorm";
 import { SchedulerConfigService } from "../../config/scheduler/configuration.service";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
-import { TransactionDetails } from "../../database/entities/transaction-details.entity";
-import { Transaction } from "../../database/entities/transaction.entity";
-import { BlockService } from "../../neighborhoods/blocks/block.service";
 import { NeighborhoodService } from "../../neighborhoods/neighborhood.service";
-import { TransactionsService } from "../../neighborhoods/transactions/transactions.service";
-import { NetworkService } from "../network.service";
-import { TxAnalyzerService } from "./tx-analyzer.service";
+import { NeighborhoodUpdater } from "./neighborhood-updater/updater";
 
 @Injectable()
 export class SchedulerService {
@@ -19,15 +12,11 @@ export class SchedulerService {
   private done = true;
 
   constructor(
-    private schedulerConfig: SchedulerConfigService,
     private schedulerRegistry: SchedulerRegistry,
-    private network: NetworkService,
+    private schedulerConfig: SchedulerConfigService,
     private neighborhood: NeighborhoodService,
-    private block: BlockService,
-    private transaction: TransactionsService,
-    private txAnalyzer: TxAnalyzerService,
-    @InjectRepository(TransactionDetails)
-    private txDetailsRepository: Repository<TransactionDetails>,
+    @Inject("NEIGHBORHOOD_FACTORY")
+    private readonly updaterFactory: (n: Neighborhood) => NeighborhoodUpdater,
   ) {
     const jobFn = () => this.run();
 
@@ -60,16 +49,6 @@ export class SchedulerService {
     }
   }
 
-  protected async step(method: () => Promise<void>, name: string) {
-    try {
-      await method();
-    } catch (e) {
-      this.logger.error(
-        `Error happened while ${name}: ${e}.\nStack: ${e.stack}`,
-      );
-    }
-  }
-
   async updateNeighborhoods() {
     const neighborhoods = await this.neighborhood.findAll();
 
@@ -79,77 +58,12 @@ export class SchedulerService {
       // Do all neighborhoods in parallel.
       await Promise.all(
         neighborhoods.map(async (n) => {
-          await this.step(
-            () => this.updateNeighborhoodEarliestMissingBlocks(n),
-            "updating missing blocks",
-          );
-          await this.step(
-            () => this.updateNeighborhoodMissingTransactionDetails(n),
-            "updating transaction details",
-          );
+          const i = await this.updaterFactory(n);
+          return i.run();
         }),
       );
     } else {
       this.logger.debug("No neighborhoods in database...");
     }
-  }
-
-  async updateNeighborhoodMissingTransactionDetails(
-    neighborhood: Neighborhood,
-  ) {
-    const missingTxDetailsIds =
-      await this.txAnalyzer.missingTransactionDetailsForNeighborhood(
-        neighborhood,
-      );
-
-    const transactions: Transaction[] = await this.transaction.findManyByIds(
-      neighborhood,
-      missingTxDetailsIds,
-    );
-
-    for (const tx of transactions) {
-      const details = await this.txAnalyzer.analyzeTransaction(tx);
-      await this.txDetailsRepository.save(details);
-    }
-  }
-
-  async updateNeighborhoodEarliestMissingBlocks(neighborhood: Neighborhood) {
-    const network = await this.network.forUrl(neighborhood.url);
-    const latestHeight = await this.block.getLatestHeightOf(neighborhood);
-    const missingBlocks = await this.block.missingBlockHeightsForNeighborhood(
-      neighborhood,
-      latestHeight,
-      this.schedulerConfig.maxBlocks,
-    );
-
-    if (missingBlocks.length == 0) {
-      // Nothing to do, save some math.
-      return;
-    }
-
-    // Split missing blocks into groups of parallel.
-    const parallel = this.schedulerConfig.parallel;
-    const parallelSleep = this.schedulerConfig.parallelSleep;
-    const schedule = [];
-    for (let i = 0; i < missingBlocks.length; i += parallel) {
-      schedule[schedule.length] = missingBlocks.slice(i, i + parallel);
-    }
-
-    for (const batch of schedule) {
-      await Promise.all(
-        batch.map(async (height) => {
-          const blockInfo = await network.blockchain.blockByHeight(height);
-          await this.block.createFromManyBlock(neighborhood, blockInfo);
-        }),
-      );
-
-      // Sleep a bit.
-      await new Promise((res) => setTimeout(res, parallelSleep * 1000));
-    }
-    this.logger.log(
-      `Neighborhood ${neighborhood.id}: done ${missingBlocks.length} blocks ${
-        missingBlocks[0]
-      }..=${missingBlocks[missingBlocks.length - 1]}`,
-    );
   }
 }

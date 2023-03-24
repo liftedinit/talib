@@ -16,7 +16,9 @@ export class TransactionDetails {
   @Column(ARRAYBUFFER_FIELD_TYPE)
   hash: ArrayBuffer;
 
-  @OneToOne(() => Transaction)
+  @OneToOne(() => Transaction, (tx) => tx.details, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   transaction: Transaction;
 

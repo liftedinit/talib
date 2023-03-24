@@ -5,12 +5,18 @@ import { TransactionDetails } from "../../database/entities/transaction-details.
 import { Transaction } from "../../database/entities/transaction.entity";
 import { NetworkService } from "../../services/network.service";
 import { TxAnalyzerService } from "../../services/scheduler/tx-analyzer.service";
+import { TransactionsService } from "../transactions/transactions.service";
 import { BlockController } from "./block.controller";
 import { BlockService } from "./block.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Block, Transaction, TransactionDetails])],
-  providers: [BlockService, NetworkService, TxAnalyzerService],
+  providers: [
+    BlockService,
+    NetworkService,
+    TxAnalyzerService,
+    TransactionsService,
+  ],
   controllers: [BlockController],
   exports: [BlockService],
 })

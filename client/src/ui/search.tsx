@@ -16,10 +16,12 @@ const validTerms = [
 ];
 
 function isValid(term: string) {
+  term = term.replace(/[^0-9a-z]/gi, "");
   return validTerms.some((t) => t.regex.test(term));
 }
 
 function maybeNavigate(term: string, navigate: NavigateFunction) {
+  term = term.replace(/[^0-9a-z]/gi, "");
   return function (e: FormEvent) {
     e.preventDefault();
     for (let t of validTerms) {

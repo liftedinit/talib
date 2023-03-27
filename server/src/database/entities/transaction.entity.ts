@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -35,10 +36,13 @@ export class Transaction {
   @Column(ARRAYBUFFER_FIELD_TYPE)
   response?: ArrayBuffer;
 
-  @ManyToOne(() => Block, (block) => block.transactions)
+  @ManyToOne(() => Block, (block) => block.transactions, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn()
   block: Block;
 
-  @OneToOne(() => TransactionDetails)
+  @OneToOne(() => TransactionDetails, { onDelete: "CASCADE" })
   details: TransactionDetails;
 
   intoDto(block?: Block): TransactionDto {

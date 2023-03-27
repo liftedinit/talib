@@ -1,4 +1,3 @@
-import { Address } from "@liftedinit/many-js";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -38,14 +37,16 @@ export class NeighborhoodService {
         "block",
         "n.id = block.neighborhoodId",
       )
-      .where(
+      .andWhere(
         (qb) =>
           "block.height = " +
           qb
             .subQuery()
             .select("MAX(height)")
             .from(Block, "block")
-            .where("n.id = block.neighborhoodId")
+            .where({
+              neighborhood: { id: nid },
+            })
             .getQuery(),
       )
       .groupBy("n.id, block.id")
@@ -84,13 +85,13 @@ export class NeighborhoodService {
   }
 
   async removeById(id: number): Promise<void> {
-    await this.neighborhoodRepository.delete(id);
+    await this.neighborhoodRepository.delete({ id });
   }
 
-  async removeByAddress(address: Address): Promise<void> {
-    const entity = await this.neighborhoodRepository.findOneBy({
-      address: address.toString(),
-    });
-    await this.removeById(entity.id);
+  async resetNeighborhood(id: number, n: Neighborhood) {
+    await this.blockRepository.delete({ neighborhood: { id } });
+    n.id = id;
+    n.clean();
+    await this.neighborhoodRepository.update({ id }, n);
   }
 }

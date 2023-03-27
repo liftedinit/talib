@@ -18,7 +18,9 @@ export class Block {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Neighborhood, (neighborhood) => neighborhood.blocks)
+  @ManyToOne(() => Neighborhood, (neighborhood) => neighborhood.blocks, {
+    onDelete: "CASCADE",
+  })
   neighborhood: Neighborhood;
 
   @Column({ name: "height", type: "integer", nullable: false })
@@ -33,7 +35,9 @@ export class Block {
   @Column(ARRAYBUFFER_FIELD_TYPE)
   appHash?: ArrayBuffer;
 
-  @OneToMany(() => Transaction, (tx) => tx.block, {})
+  @OneToMany(() => Transaction, (tx) => tx.block, {
+    onDelete: "CASCADE",
+  })
   transactions: Transaction[];
 
   txCount?: number;

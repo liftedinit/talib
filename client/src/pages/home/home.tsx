@@ -1,4 +1,4 @@
-import { Box, Button, Divider, SimpleGrid } from "@liftedinit/ui";
+import { Box, Button, Center, Heading, SimpleGrid } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
@@ -29,8 +29,12 @@ export function Home() {
 
   return (
     <>
+      <Center my={12}>
+        <Heading fontWeight="light">
+          A block explorer for the <b>Manifest</b> network
+        </Heading>
+      </Center>
       <NeighborhoodStatus id={id} />
-      <Divider my={6} />
       <SimpleGrid columns={2} spacing={6}>
         <Box>
           <BlockList

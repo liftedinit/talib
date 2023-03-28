@@ -15,7 +15,11 @@ export interface LedgerSendTx {
   memo?: string[];
 }
 
-export class LedgerSendAnalyzer implements MethodAnalyzer<LedgerSendTx, null> {
+export class LedgerSendAnalyzer extends MethodAnalyzer<LedgerSendTx, null> {
+  constructor() {
+    super();
+  }
+
   async analyzeRequest(sender: Address, data: Buffer): Promise<LedgerSendTx> {
     const payload = await cbor.decodeFirst(data, { tags });
     return {

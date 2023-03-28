@@ -27,8 +27,8 @@ export class TransactionDetails {
   @Column({ type: "date" })
   timestamp: Date;
 
-  @Column({ type: "simple-json" })
-  argument: object;
+  @Column({ type: "simple-json", nullable: true })
+  argument?: object;
 
   @Column({ type: "simple-json", nullable: true })
   result?: any;
@@ -38,4 +38,10 @@ export class TransactionDetails {
 
   @Column({ nullable: true })
   parseError?: string;
+
+  @Column({ type: "simple-json", nullable: true })
+  attributes?: any[];
+
+  @Column({ type: "simple-array", nullable: true })
+  addresses?: string[];
 }

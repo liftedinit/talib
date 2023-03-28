@@ -58,7 +58,9 @@ export class NeighborhoodUpdater {
 
     for (const tx of transactions) {
       const details = await this.txAnalyzer.analyzeTransaction(tx);
-      await this.txDetailsRepository.save(details);
+      if (details) {
+        await this.txDetailsRepository.save(details);
+      }
     }
   }
 

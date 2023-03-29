@@ -50,9 +50,7 @@ export class DataExporter {
                 subscriber.next(",\n");
               }
               subscriber.next("    ");
-              console.log(row);
               const entity = entityClass.export(row);
-              console.log(entity);
               subscriber.next(JSON.stringify(entity));
               f = false;
             }

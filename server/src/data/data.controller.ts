@@ -46,7 +46,7 @@ export class DataController {
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
         }),
     )
-    file: File,
+    file: any,
   ) {
     throw new Error("not implemented");
   }

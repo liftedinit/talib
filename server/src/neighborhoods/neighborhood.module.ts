@@ -6,6 +6,7 @@ import { TransactionDetails } from "../database/entities/transaction-details.ent
 import { Transaction } from "../database/entities/transaction.entity";
 import { NetworkService } from "../services/network.service";
 import { TxAnalyzerService } from "../services/scheduler/tx-analyzer.service";
+import { AddressesModule } from "./addresses/addresses.module";
 import { BlockModule } from "./blocks/block.module";
 import { BlockService } from "./blocks/block.service";
 import { NeighborhoodController } from "./neighborhood.controller";
@@ -22,6 +23,7 @@ import { TransactionsModule } from "./transactions/transactions.module";
     ]),
     BlockModule,
     TransactionsModule,
+    AddressesModule,
   ],
   providers: [
     BlockService,

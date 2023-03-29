@@ -17,7 +17,7 @@ export interface IdStoreStoreTx {
 }
 
 export interface IdStoreStoreResult {
-  recallPhrase: string;
+  recallPhrase: string[];
 }
 
 export class IdStoreStore extends MethodAnalyzer<
@@ -39,7 +39,11 @@ export class IdStoreStore extends MethodAnalyzer<
     };
   }
 
-  analyzeResponse() {
-    return null;
+  async analyzeResponse(data: Buffer): Promise<IdStoreStoreResult> {
+    const payload = await cbor.decodeFirst(data, { tags });
+
+    return {
+      recallPhrase: payload.get(0),
+    };
   }
 }

@@ -24,24 +24,24 @@ export class TransactionDetails {
   @Column()
   method: string;
 
-  @Column({ type: "date" })
+  @Column()
   timestamp: Date;
 
-  @Column({ type: "simple-json", nullable: true })
+  @Column({ type: "json", nullable: true })
   argument?: object;
 
-  @Column({ type: "simple-json", nullable: true })
+  @Column({ type: "json", nullable: true })
   result?: any;
 
-  @Column({ type: "simple-json", nullable: true })
+  @Column({ type: "json", nullable: true })
   error?: { code: number; message: string; fields: { [name: string]: string } };
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   parseError?: string;
 
-  @Column({ type: "simple-json", nullable: true })
-  attributes?: any[];
+  @Column({ type: "simple-json", array: true, default: [] })
+  attributes: any[];
 
-  @Column({ type: "simple-array", nullable: true })
-  addresses?: string[];
+  @Column({ type: "text", array: true, default: [] })
+  addresses: string[];
 }

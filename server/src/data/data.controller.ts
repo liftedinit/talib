@@ -4,7 +4,7 @@ import {
   Header,
   HttpStatus,
   ParseFilePipeBuilder,
-  Post
+  Post,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -46,7 +46,7 @@ export class DataController {
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
         }),
     )
-    file: any,
+    file: File,
   ) {
     throw new Error("not implemented");
   }

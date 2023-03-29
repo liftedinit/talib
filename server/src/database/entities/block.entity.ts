@@ -41,6 +41,14 @@ export class Block {
 
   txCount?: number;
 
+  static export(row: any) {
+    return {
+      ...row,
+      hash: bufferToHex(row.hash),
+      appHash: bufferToHex(row.appHash),
+    };
+  }
+
   intoDto(): BlockDto {
     return {
       height: this.height,

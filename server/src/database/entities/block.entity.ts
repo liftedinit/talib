@@ -8,7 +8,6 @@ import {
 } from "typeorm";
 import { BlockDetailsDto, BlockDto } from "../../dto/block.dto";
 import { bufferToHex } from "../../utils/convert";
-import { ARRAYBUFFER_FIELD_TYPE } from "../../utils/database";
 import { Neighborhood } from "./neighborhood.entity";
 import { Transaction } from "./transaction.entity";
 
@@ -29,10 +28,10 @@ export class Block {
   @Column()
   time: Date;
 
-  @Column(ARRAYBUFFER_FIELD_TYPE)
+  @Column({ type: "bytea" })
   hash: ArrayBuffer;
 
-  @Column(ARRAYBUFFER_FIELD_TYPE)
+  @Column({ type: "bytea" })
   appHash?: ArrayBuffer;
 
   @OneToMany(() => Transaction, (tx) => tx.block, {

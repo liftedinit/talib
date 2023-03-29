@@ -13,7 +13,6 @@ import {
   TransactionSimpleDto,
 } from "../../dto/transaction.dto";
 import { bufferToHex } from "../../utils/convert";
-import { ARRAYBUFFER_FIELD_TYPE } from "../../utils/database";
 import { Block } from "./block.entity";
 import { TransactionDetails } from "./transaction-details.entity";
 
@@ -27,13 +26,13 @@ export class Transaction {
   @Column({ type: "integer" })
   block_index: number;
 
-  @Column(ARRAYBUFFER_FIELD_TYPE)
+  @Column({ type: "bytea" })
   hash: ArrayBuffer;
 
-  @Column(ARRAYBUFFER_FIELD_TYPE)
+  @Column({ type: "bytea" })
   request?: ArrayBuffer;
 
-  @Column(ARRAYBUFFER_FIELD_TYPE)
+  @Column({ type: "bytea" })
   response?: ArrayBuffer;
 
   @ManyToOne(() => Block, (block) => block.transactions, {

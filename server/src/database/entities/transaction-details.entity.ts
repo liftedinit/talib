@@ -5,7 +5,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { ARRAYBUFFER_FIELD_TYPE } from "../../utils/database";
 import { Transaction } from "./transaction.entity";
 
 @Entity()
@@ -13,7 +12,7 @@ export class TransactionDetails {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column(ARRAYBUFFER_FIELD_TYPE)
+  @Column({ type: "bytea" })
   hash: ArrayBuffer;
 
   @OneToOne(() => Transaction, (tx) => tx.details, {

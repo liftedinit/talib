@@ -44,6 +44,15 @@ export class Transaction {
   @OneToOne(() => TransactionDetails, { onDelete: "CASCADE" })
   details: TransactionDetails;
 
+  static export(row: any) {
+    return {
+      ...row,
+      hash: bufferToHex(row.hash),
+      request: row.request && bufferToHex(row.request),
+      response: row.response && bufferToHex(row.response),
+    };
+  }
+
   intoDto(block?: Block): TransactionDto {
     return {
       ...this.intoSimpleDto(),

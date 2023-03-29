@@ -51,6 +51,13 @@ export class Neighborhood {
     this.address_ = v.toString();
   }
 
+  public static export(row: any) {
+    return {
+      ...row,
+      address: row.address.toString(),
+    };
+  }
+
   public intoDto(): NeighborhoodDto {
     return {
       id: this.id,

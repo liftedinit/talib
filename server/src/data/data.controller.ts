@@ -4,7 +4,7 @@ import {
   Header,
   HttpStatus,
   ParseFilePipeBuilder,
-  Post
+  Post,
   Res,
   UploadedFile,
   UseInterceptors,

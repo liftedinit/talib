@@ -1,3 +1,4 @@
+import { Address } from "@liftedinit/many-js";
 import {
   ArgumentMetadata,
   BadRequestException,
@@ -11,6 +12,17 @@ export class ParseHashPipe implements PipeTransform<string, ArrayBuffer> {
   transform(value: string, _metadata: ArgumentMetadata): ArrayBuffer {
     try {
       return hexToBuffer(value);
+    } catch (e) {
+      throw new BadRequestException("Validation failed");
+    }
+  }
+}
+
+@Injectable()
+export class ParseAddressPipe implements PipeTransform<string, Address> {
+  transform(value: string, _metadata: ArgumentMetadata): Address {
+    try {
+      return Address.fromString(value);
     } catch (e) {
       throw new BadRequestException("Validation failed");
     }

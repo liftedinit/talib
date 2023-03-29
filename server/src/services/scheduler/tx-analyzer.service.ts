@@ -1,4 +1,5 @@
 import { Address } from "@liftedinit/many-js";
+import { ManyError } from "@liftedinit/many-js/dist/message/error";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as cbor from "cbor";
@@ -7,22 +8,68 @@ import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
 import { bufferToHex } from "../../utils/convert";
-import { LedgerSendAnalyzer } from "./tx/ledger.send";
 
-const methodRegistry = {
-  "ledger.send": new LedgerSendAnalyzer(),
-};
+async function _getMethodAnalyzer(
+  method: string,
+): Promise<null | MethodAnalyzer<any, any>> {
+  switch (method) {
+    case "ledger.send":
+      return new (await import("./tx/ledger.send.js")).LedgerSendAnalyzer();
+    default:
+      return null;
+  }
+}
 
-export interface MethodAnalyzer<ArgumentT, ResponseT> {
-  analyzeRequest(sender: Address, data: Buffer): Promise<ArgumentT>;
+function _getAllAddressesOf(v: any): Address[] {
+  if (typeof v == "string") {
+    try {
+      return [Address.fromString(v)];
+    } catch (_) {}
+  }
 
-  analyzeResponse(data: Buffer): Promise<ResponseT>;
+  if (typeof v != "object" || v === null) {
+    return [];
+  }
+  if (Array.isArray(v)) {
+    return v.reduce((acc, item) => [...acc, ..._getAllAddressesOf(item)], []);
+  } else if (v instanceof Address) {
+    return [v];
+  }
+
+  return Object.getOwnPropertyNames(v).reduce((acc, key) => {
+    return [...acc, ..._getAllAddressesOf(v[key])];
+  }, []);
+}
+
+export abstract class MethodAnalyzer<ArgumentT, ResponseT> {
+  abstract analyzeRequest(sender: Address, data: Buffer): Promise<ArgumentT>;
+
+  abstract analyzeResponse(data: Buffer): Promise<ResponseT>;
+
+  // Return addresses related to a transaction. This will be compounded in a
+  // set of address string representations, but this method should only return
+  // Addresses without worrying about distinctiveness.
+  // By default, will just navigate a JS object at runtime and check if any
+  // properties are addresses or address strings.
+  async addresses(
+    request: ArgumentT,
+    response: ResponseT | null,
+    error: ManyError | null,
+  ): Promise<Address[]> {
+    return [
+      ..._getAllAddressesOf(request),
+      ..._getAllAddressesOf(response),
+      ..._getAllAddressesOf(error),
+    ];
+  }
 }
 
 export const tags = {
   10000: (value: Uint8Array) => new Address(Buffer.from(value)),
 };
 
+export function parseAddress(content: any, optional: true): Address | undefined;
+export function parseAddress(content: any, optional?: false): Address;
 export function parseAddress(
   content: any,
   optional = false,
@@ -44,10 +91,11 @@ export function parseAddress(
   );
 }
 
+export function parseMemo(content: any, optional: true): string[] | undefined;
+export function parseMemo(content: any, optional?: false): string[];
 export function parseMemo(
   content: any,
   optional = false,
-  context: any = null,
 ): string[] | undefined {
   if (typeof content == "string") {
     return [content];
@@ -60,10 +108,11 @@ export function parseMemo(
   throw new Error(`Invalid content type for memo: ${JSON.stringify(content)}`);
 }
 
-function _parseBuffer(
+export function parseBuffer(content: any, optional: true): Buffer | undefined;
+export function parseBuffer(content: any, optional?: false): Buffer;
+export function parseBuffer(
   content: any,
   optional = false,
-  context: any = null,
 ): Buffer | undefined {
   if (Buffer.isBuffer(content)) {
     return content;
@@ -144,65 +193,87 @@ export class TxAnalyzerService {
     return (await query.getMany()).map((x) => x.id);
   }
 
-  async analyzeTransactionImpl(tx: Transaction): Promise<TransactionDetails> {
+  async analyzeTransactionImpl(
+    tx: Transaction,
+  ): Promise<TransactionDetails | null> {
+    if (!tx.request) {
+      // If the request is null, something went wrong already. Don't bother
+      // parsing.
+      return null;
+    }
+
     const details = new TransactionDetails();
     details.transaction = tx;
     details.hash = tx.hash;
 
-    let method = "";
+    // Is it an error or a return value.
+    try {
+      // Open up the request.
+      const coseRequest = await cbor.decodeFirst(tx.request, { tags });
+      const request = (await cbor.decodeFirst(coseRequest[2], { tags })).value;
 
-    // Open up the request.
-    if (tx.request) {
-      const cose = await cbor.decodeFirst(tx.request, { tags });
-      const payload = await cbor.decodeFirst(cose[2], { tags });
-      const content = payload.value;
+      const coseResponse = await cbor.decodeFirst(tx.response, { tags });
+      const response = (await cbor.decodeFirst(coseResponse[2], { tags }))
+        .value;
 
-      const from = parseAddress(content.get(1), true) || Address.anonymous();
-      const _to = parseAddress(content.get(2), true);
-      method = content.get(3).toString();
-      const data = _parseBuffer(content.get(4), true);
-      const timestamp = new Date(Number(content.get(5)));
-      //const attrs = content.get(8) || undefined;
+      const from = parseAddress(request.get(1), true);
+      const to = parseAddress(request.get(2), true);
+      const method = request.get(3).toString();
+      const maybeAnalyzer = await _getMethodAnalyzer(method);
+      const data = parseBuffer(request.get(4), true);
+      const timestamp = new Date(Number(request.get(5)));
+      const attrs = request.get(8) || [];
 
       details.method = method;
       details.timestamp = timestamp;
+      details.attributes = attrs;
 
-      const maybeAnalyzer = methodRegistry[method];
       if (maybeAnalyzer) {
-        details.argument = await maybeAnalyzer.analyzeRequest(from, data);
-      } else {
-        details.argument = {};
-      }
-    }
+        const argument = await maybeAnalyzer.analyzeRequest(from, data);
+        let result: any = null;
+        let error: any | null = null;
 
-    if (method && tx.response) {
-      const cose = await cbor.decodeFirst(tx.response, { tags });
-      const payload = await cbor.decodeFirst(cose[2], { tags });
-      const content = payload.value;
-
-      // Is it an error or a return value.
-      try {
-        const maybeResult = content.get(4);
+        const maybeResult = response.get(4);
         if (Buffer.isBuffer(maybeResult)) {
-          const maybeAnalyzer = methodRegistry[method];
-          if (maybeAnalyzer) {
-            details.result = await maybeAnalyzer.analyzeResponse(maybeResult);
-          } else {
-            details.result = {};
-          }
+          result = await maybeAnalyzer.analyzeResponse(maybeResult);
         } else if (typeof maybeResult == "object") {
-          details.error = parseError(maybeResult);
+          error = parseError(maybeResult);
         }
-      } catch (e) {
-        details.parseError = e.toString();
+        const addresses = [
+          ...new Set(
+            [
+              ...(await maybeAnalyzer?.addresses(argument, result, error)),
+              from,
+              to,
+            ]
+              .filter((x) => !!x)
+              .map((x) => x.toString()),
+          ),
+        ];
+
+        details.argument = argument;
+        details.result = result;
+        details.error = error;
+
+        // Get all addresses for the message, append from and to, remove
+        // undefined, map to address strings, remove duplicates, make into
+        // array.
+        details.addresses = addresses;
       }
+    } catch (e) {
+      // If an error happens during parsing, we don't want to reparse the
+      // request/response, and we might want to investigate.
+      // We can easily delete all rows that have this field after we fix the
+      // bug.
+      details.parseError = e.toString();
     }
 
-    // Dynamically load the method.
     return details;
   }
 
-  async analyzeTransaction(tx: Transaction): Promise<TransactionDetails> {
+  async analyzeTransaction(
+    tx: Transaction,
+  ): Promise<TransactionDetails | null> {
     try {
       return await this.analyzeTransactionImpl(tx);
     } catch (e) {

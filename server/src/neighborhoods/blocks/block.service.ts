@@ -75,14 +75,13 @@ export class BlockService {
     const timeColumnMetadata = metadata.ownColumns.find(
       (x) => x.propertyName == "time",
     );
-    const isPostgres = driver.options.type == "postgres";
 
     const query = this.dataSource
       .createQueryBuilder()
       .select("b.height", "height")
       // In PostGres if we don't ask for the specific type we get an incorrect
       // string and won't format the field properly on the output.
-      .addSelect(`b.time${isPostgres ? "::timestamptz" : ""}`, "time")
+      .addSelect("b.time::timestamptz", "time")
       .addSelect("b.hash", "hash")
       .addSelect("b.appHash", "appHash")
       .addSelect("COUNT(transactions.id)", "txCount")
@@ -161,43 +160,16 @@ export class BlockService {
     `;
   }
 
-  private missingBlockHeightsQueryForSqlite(
-    neighborhood: Neighborhood,
-    latestHeight: number,
-
-    max?: number,
-  ) {
-    return `
-      WITH Missing (missnum, maxid) AS (
-        SELECT 1 AS missnum, ${latestHeight}
-        UNION ALL
-        SELECT missnum + 1, maxid FROM Missing
-        WHERE missnum < maxid
-      )
-      SELECT missnum
-      FROM Missing
-      LEFT OUTER JOIN block tt on tt.height = Missing.missnum
-      WHERE tt.height is NULL
-      ${max !== undefined ? "LIMIT " + max : ""}
-    ;`;
-  }
-
   async missingBlockHeightsForNeighborhood(
     neighborhood: Neighborhood,
     maxHeight: number,
     count = 500,
   ): Promise<number[]> {
-    const queryFns = {
-      postgres: (n, h, c) => this.missingBlockHeightsQueryForPostgres(n, h, c),
-      sqlite: (n, h, c) => this.missingBlockHeightsQueryForSqlite(n, h, c),
-    };
-    const driver = this.blockRepository.manager.connection.options.type;
-    if (queryFns[driver] === undefined) {
-      throw new Error(
-        `We do not support ${driver} for fetching missing heights. File a bug on Talib's repo.`,
-      );
-    }
-    const query = queryFns[driver](neighborhood, maxHeight, count);
+    const query = this.missingBlockHeightsQueryForPostgres(
+      neighborhood,
+      maxHeight,
+      count,
+    );
 
     const result = await this.dataSource.query(query);
     return result.map((r) => Number(r.missnum)) as number[];

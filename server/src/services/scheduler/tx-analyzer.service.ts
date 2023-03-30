@@ -222,11 +222,13 @@ export class TxAnalyzerService {
       const maybeAnalyzer = await _getMethodAnalyzer(method);
       const data = parseBuffer(request.get(4), true);
       const timestamp = new Date(Number(request.get(5)));
-      const attrs = request.get(8) || [];
+      const attrs = request.get(8);
 
       details.method = method;
       details.timestamp = timestamp;
-      details.attributes = attrs;
+      if (attrs && attrs.length > 0) {
+        details.attributes = attrs;
+      }
 
       if (maybeAnalyzer) {
         const argument = await maybeAnalyzer.analyzeRequest(from, data);

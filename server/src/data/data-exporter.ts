@@ -33,9 +33,11 @@ export class DataExporter {
             subscriber.next(",\n");
           }
           const tableName = entityClass.name;
-          const stream$ = await entityManager.query(
-            `SELECT * from ${tableName}`,
-          );
+          const stream$ = await entityManager
+            .createQueryBuilder()
+            .select()
+            .from(tableName, "")
+            .stream();
           subscriber.next(`  ${JSON.stringify(tableName)}: [\n`);
 
           if (ended) {

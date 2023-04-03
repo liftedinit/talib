@@ -14,15 +14,11 @@ import {
   NeighborhoodDetailsDto,
   NeighborhoodDto,
 } from "../dto/neighborhood.dto";
-import { BlockService } from "./blocks/block.service";
 import { NeighborhoodService } from "./neighborhood.service";
 
 @Controller("neighborhoods")
 export class NeighborhoodController {
-  constructor(
-    private neighborhood: NeighborhoodService,
-    private block: BlockService,
-  ) {}
+  constructor(private neighborhood: NeighborhoodService) {}
 
   @Get()
   @ApiResponse({

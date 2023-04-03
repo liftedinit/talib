@@ -1,3 +1,4 @@
+export * from "./address";
 export * from "./block";
 export * from "./blocks";
 export * from "./home";

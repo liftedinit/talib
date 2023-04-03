@@ -12,7 +12,7 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 const validTerms = [
   { path: "blocks", regex: /^\d+$/ },
   { path: "transactions", regex: /^[0-9a-f]{64}$/ },
-  { path: "address", regex: /^m[0-9a-zA-Z]{49,54}$/ },
+  { path: "addresses", regex: /^m[0-9a-zA-Z]{49,54}$/ },
 ];
 
 function isValid(term: string) {

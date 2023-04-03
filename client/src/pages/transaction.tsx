@@ -61,8 +61,20 @@ export function Transaction() {
     const token = knownTokens.find((t) => t.address === data.argument.symbol);
     txn = {
       ...txn,
-      From: <Code>{data.argument.from}</Code>,
-      To: <Code>{data.argument.to}</Code>,
+      From: (
+        <Link to={`/addresses/${data.argument.from}`}>
+          <Text color="brand.teal.500">
+            <pre>{data.argument.from}</pre>
+          </Text>
+        </Link>
+      ),
+      To: (
+        <Link to={`/addresses/${data.argument.to}`}>
+          <Text color="brand.teal.500">
+            <pre>{data.argument.to}</pre>
+          </Text>
+        </Link>
+      ),
       Amount: token
         ? `${(data.argument.amount / 10 ** token.precision).toLocaleString()} ${
             token.ticker

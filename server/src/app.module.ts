@@ -15,7 +15,6 @@ import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
 import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
-import { DataModule } from './data/data.module';
 
 @Module({
   controllers: [],
@@ -55,7 +54,6 @@ import { DataModule } from './data/data.module';
       }),
     }),
     TypeOrmModule.forFeature([Transaction, TransactionDetails]),
-    DataModule,
   ],
 })
 export class AppModule {

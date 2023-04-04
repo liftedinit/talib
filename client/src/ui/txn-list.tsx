@@ -1,7 +1,6 @@
 import {
   Box,
   Center,
-  Code,
   Flex,
   Heading,
   Spacer,
@@ -80,7 +79,7 @@ export function TransactionList({
                 <Td>
                   <Link to={`/transactions/${txn.hash}`}>
                     <Text color="brand.teal.500">
-                      <Code>{abbr(txn.hash)}</Code>
+                      <pre>{abbr(txn.hash)}</pre>
                     </Text>
                   </Link>
                 </Td>

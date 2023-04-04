@@ -5,7 +5,15 @@ import ReactDOM from "react-dom";
 import { HashRouter, Outlet, Route, Routes } from "react-router-dom";
 
 import { NeighborhoodProvider } from "api";
-import { Block, Blocks, Home, Layout, Transaction, Transactions } from "pages";
+import {
+  Address,
+  Block,
+  Blocks,
+  Home,
+  Layout,
+  Transaction,
+  Transactions,
+} from "pages";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +40,9 @@ ReactDOM.render(
                 <Route path="transactions">
                   <Route index element={<Transactions />} />
                   <Route path=":hash" element={<Transaction />} />
+                </Route>
+                <Route path="addresses">
+                  <Route path=":address" element={<Address />} />
                 </Route>
               </Route>
             </Routes>

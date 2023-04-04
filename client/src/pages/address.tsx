@@ -12,34 +12,20 @@ import {
   Tr,
 } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { ReactNode, useContext } from "react";
+import { useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { getNeighborhoodBlock, NeighborhoodContext } from "api";
+import { getNeighborhoodAddress, NeighborhoodContext } from "api";
 import { TransactionList } from "ui";
-import { ago } from "utils";
 
-export function Block() {
+export function Address() {
   const { id } = useContext(NeighborhoodContext);
-  const { hash } = useParams();
+  const { address } = useParams();
 
   const { data, error, isLoading } = useQuery(
-    ["neighborhoods", id, "blocks", hash],
-    getNeighborhoodBlock(id, hash as string),
+    ["neighborhoods", id, "addresses", address],
+    getNeighborhoodAddress(id, address as string),
   );
-
-  let block: { [key: string]: ReactNode } = data
-    ? {
-        Hash: <Code>{data.blockHash}</Code>,
-        Height: data.height.toLocaleString(),
-        Time: (
-          <Text>
-            {ago(new Date(data.dateTime))} (
-            <Code>{new Date(data.dateTime).toISOString()}</Code>)
-          </Text>
-        ),
-      }
-    : {};
 
   return (
     <Box my={6}>
@@ -47,7 +33,7 @@ export function Block() {
         <Text as={Link} color="brand.teal.500" to="/">
           Home
         </Text>{" "}
-        / Block Details
+        / Address Details
       </Heading>
       <Box bg="white" my={6} p={6}>
         {isLoading ? (
@@ -57,14 +43,14 @@ export function Block() {
         ) : (
           <Table>
             <Tbody>
-              {Object.entries(block).map(([key, value]) => (
-                <Tr>
-                  <Td>
-                    <b>{key}</b>
-                  </Td>
-                  <Td>{value}</Td>
-                </Tr>
-              ))}
+              <Tr>
+                <Td>
+                  <b>Address</b>
+                </Td>
+                <Td>
+                  <Code>{address}</Code>
+                </Td>
+              </Tr>
             </Tbody>
           </Table>
         )}

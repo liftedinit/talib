@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Pagination } from "nestjs-typeorm-paginate";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, Repository, SelectQueryBuilder } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
@@ -29,21 +29,8 @@ export class BlockService {
     private analyzer: TxAnalyzerService,
   ) {}
 
-  findOneByHeight(
-    neighborhoodId: number,
-    height: number,
-  ): Promise<Block | null> {
-    return this.blockRepository.findOneBy({
-      neighborhood: { id: neighborhoodId },
-      height: height,
-    });
-  }
-
-  async findOneByHash(nid: number, hash: ArrayBuffer): Promise<Block> {
-    const q = this.blockRepository
-      .createQueryBuilder("b")
-      .where("b.neighborhoodId = :nid", { nid })
-      .andWhere("b.hash = :hash", { hash })
+  addTransactions(q: SelectQueryBuilder<any>) {
+    return q
       .leftJoinAndMapMany(
         "b.transactions",
         "transaction",
@@ -56,6 +43,25 @@ export class BlockService {
         "details",
         `"details"."transactionId" = "t"."id"`,
       );
+  }
+
+  async findOneByHeight(nid: number, height: number): Promise<Block | null> {
+    let q = this.blockRepository
+      .createQueryBuilder("b")
+      .where("b.neighborhoodId = :nid", { nid })
+      .andWhere("b.height = :height", { height });
+    q = this.addTransactions(q);
+
+    this.logger.debug(`findOneByHeight(${nid}, ${height}): `);
+    return q.getOne();
+  }
+
+  async findOneByHash(nid: number, hash: ArrayBuffer): Promise<Block> {
+    let q = this.blockRepository
+      .createQueryBuilder("b")
+      .where("b.neighborhoodId = :nid", { nid })
+      .andWhere("b.hash = :hash", { hash });
+    q = this.addTransactions(q);
 
     this.logger.debug(`findOneByHash(${nid}, ${bufferToHex(hash)}): `);
     return q.getOne();

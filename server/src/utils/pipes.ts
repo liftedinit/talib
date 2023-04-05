@@ -28,3 +28,27 @@ export class ParseAddressPipe implements PipeTransform<string, Address> {
     }
   }
 }
+
+@Injectable()
+export class ParseAlternatePipe<T, U> implements PipeTransform<string, T | U> {
+  constructor(
+    private readonly t: PipeTransform<string, T>,
+    private readonly u: PipeTransform<string, U>,
+  ) {}
+
+  transform(value: string, metadata: ArgumentMetadata): T | U {
+    try {
+      console.log(1);
+      return this.t.transform(value, metadata);
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      console.log(2);
+      return this.u.transform(value, metadata);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}

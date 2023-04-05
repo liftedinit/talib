@@ -28,8 +28,11 @@ export function NeighborhoodSelector() {
   }
 
   const neighborhoods: Neighborhood[] = data;
-  const activeIndex = neighborhoods.findIndex((n) => n.id === id);
-  const active = neighborhoods[activeIndex === -1 ? 0 : activeIndex];
+  const active = neighborhoods.filter((n) => n.id === id)[0];
+  if (!active) {
+    setId(neighborhoods[0].id);
+    return <Spinner />;
+  }
 
   return (
     <Menu>

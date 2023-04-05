@@ -38,17 +38,11 @@ export class ParseAlternatePipe<T, U> implements PipeTransform<string, T | U> {
 
   transform(value: string, metadata: ArgumentMetadata): T | U {
     try {
-      console.log(1);
       return this.t.transform(value, metadata);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (_e) {}
 
     try {
-      console.log(2);
       return this.u.transform(value, metadata);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (_e) {}
   }
 }

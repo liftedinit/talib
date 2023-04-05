@@ -47,7 +47,6 @@ export class BlockController {
     )
     bhash: ArrayBuffer | number,
   ): Promise<BlockDetailsDto> {
-    console.log(bhash);
     let b;
     if (typeof bhash == "number") {
       b = await this.block.findOneByHeight(nid, bhash);

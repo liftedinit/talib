@@ -10,7 +10,7 @@ import {
 import { ApiResponse } from "@nestjs/swagger";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { BlockDetailsDto, BlockDto } from "../../dto/block.dto";
-import { ParseAlternatePipe, ParseHashPipe } from "../../utils/pipes";
+import { ParseHashOrHeightPipe } from "../../utils/pipes";
 import { BlockService } from "./block.service";
 
 @Controller("neighborhoods/:nid/blocks")
@@ -41,10 +41,7 @@ export class BlockController {
   })
   async findOne(
     @Param("nid", ParseIntPipe) nid: number,
-    @Param(
-      "bhash",
-      new ParseAlternatePipe(new ParseIntPipe(), new ParseHashPipe()),
-    )
+    @Param("bhash", ParseHashOrHeightPipe)
     bhash: ArrayBuffer | number,
   ): Promise<BlockDetailsDto> {
     let b;

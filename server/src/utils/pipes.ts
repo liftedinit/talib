@@ -13,7 +13,9 @@ export class ParseHashPipe implements PipeTransform<string, ArrayBuffer> {
     try {
       return hexToBuffer(value);
     } catch (e) {
-      throw new BadRequestException("Validation failed");
+      throw new BadRequestException(
+        "Validation failed (hexadecimal hash value is expected)",
+      );
     }
   }
 }
@@ -24,25 +26,28 @@ export class ParseAddressPipe implements PipeTransform<string, Address> {
     try {
       return Address.fromString(value);
     } catch (e) {
-      throw new BadRequestException("Validation failed");
+      throw new BadRequestException(
+        "Validation failed (MANY address is expected)",
+      );
     }
   }
 }
 
 @Injectable()
-export class ParseAlternatePipe<T, U> implements PipeTransform<string, T | U> {
-  constructor(
-    private readonly t: PipeTransform<string, T>,
-    private readonly u: PipeTransform<string, U>,
-  ) {}
-
-  transform(value: string, metadata: ArgumentMetadata): T | U {
-    try {
-      return this.t.transform(value, metadata);
-    } catch (_e) {}
+export class ParseHashOrHeightPipe
+  implements PipeTransform<string, ArrayBuffer | number>
+{
+  transform(value: string, metadata: ArgumentMetadata): ArrayBuffer | number {
+    if (Number.isFinite(+value)) {
+      return Number(value);
+    }
 
     try {
-      return this.u.transform(value, metadata);
-    } catch (_e) {}
+      return hexToBuffer(value);
+    } catch (_) {}
+
+    throw new BadRequestException(
+      `Vaidation failed (neither a height or a hexadecimal hash)`,
+    );
   }
 }

@@ -44,7 +44,9 @@ export function Layout({ children }: React.PropsWithChildren<{}>) {
           <NeighborhoodSelector />
         </GridItem>
       </Grid>
-      <Container maxW="container.lg">{children}</Container>
+      <Container pb={6} maxW="container.lg">
+        {children}
+      </Container>
     </>
   );
 }

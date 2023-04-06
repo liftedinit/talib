@@ -1,3 +1,4 @@
+import { Address } from "@liftedinit/many-js";
 import {
   Column,
   Entity,
@@ -26,6 +27,17 @@ export class TransactionDetails {
 
   @Column()
   timestamp: Date;
+
+  @Column({
+    name: "sender",
+    type: "varchar",
+    nullable: true,
+    transformer: {
+      from: (value) => Address.fromString(value),
+      to: (value) => value.toString(),
+    },
+  })
+  sender?: Address;
 
   @Column({ type: "json", nullable: true })
   argument?: object;

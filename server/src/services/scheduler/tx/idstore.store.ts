@@ -1,12 +1,8 @@
 import { Address } from "@liftedinit/many-js";
 import * as cbor from "cbor";
+import { parseAddress, parseBuffer } from "../../../utils/cbor-parsers";
 import { bufferToHex } from "../../../utils/convert";
-import {
-  MethodAnalyzer,
-  parseAddress,
-  parseBuffer,
-  tags,
-} from "../tx-analyzer.service";
+import { MethodAnalyzer, tags } from "../method-analyzer";
 
 export interface IdStoreStoreTx {
   address: string;
@@ -24,12 +20,9 @@ export class IdStoreStore extends MethodAnalyzer<
   IdStoreStoreTx,
   IdStoreStoreResult
 > {
-  constructor() {
-    super();
-  }
+  static method = "idstore.store";
 
-  async analyzeRequest(sender: Address, data: Buffer): Promise<IdStoreStoreTx> {
-    const payload = await cbor.decodeFirst(data, { tags });
+  parseArgs(sender: Address, payload: Map<any, any>): IdStoreStoreTx {
     return {
       address: (
         parseAddress(payload.get(0), true) || Address.anonymous()

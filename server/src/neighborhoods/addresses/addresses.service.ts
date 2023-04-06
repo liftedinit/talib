@@ -1,7 +1,7 @@
 import { Address } from "@liftedinit/many-js";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DataSource, Repository } from "typeorm";
+import { Brackets, DataSource, Repository } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
@@ -36,12 +36,20 @@ export class AddressesService {
         "details",
         `"details"."transactionId" = t.id`,
       )
-      .where(":address = ANY(details.addresses)", {
-        address: address.toString(),
-      })
-      .andWhere("block.neighborhoodId = :nid", { nid })
+      .where("block.neighborhoodId = :nid", { nid })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where(":address = ANY(details.addresses)", {
+            address: address.toString(),
+          });
+          qb.orWhere(":address = details.sender", {
+            address: address.toString(),
+          });
+        }),
+      )
       .addOrderBy("block.height", "DESC");
 
+    this.logger.debug(`getMany(${nid}, ${address}): ${query.getQuery()}`);
     return query.getMany();
   }
 

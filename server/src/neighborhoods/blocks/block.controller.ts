@@ -46,9 +46,9 @@ export class BlockController {
   ): Promise<BlockDetailsDto> {
     let b;
     if (typeof bhash == "number") {
-      b = await this.block.findOneByHeight(nid, bhash);
+      b = await this.block.findOneByHeight(nid, bhash, { details: true });
     } else {
-      b = await this.block.findOneByHash(nid, bhash);
+      b = await this.block.findOneByHash(nid, bhash, { details: true });
     }
 
     if (!b) {

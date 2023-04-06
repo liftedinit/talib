@@ -51,15 +51,22 @@ export class NeighborhoodUpdater {
         neighborhood,
       );
 
+    if (missingTxDetailsIds.length === 0) {
+      return;
+    }
+
     const transactions: Transaction[] = await this.transaction.findManyByIds(
       neighborhood,
       missingTxDetailsIds,
     );
 
+    this.logger.debug(
+      `Updating transaction details for [${missingTxDetailsIds}]`,
+    );
     for (const tx of transactions) {
       const details = await this.txAnalyzer.analyzeTransaction(tx);
       if (details) {
-        await this.txDetailsRepository.save(details);
+        await this.txDetailsRepository.upsert(details, ["transaction"]);
       }
     }
   }

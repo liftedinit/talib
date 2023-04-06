@@ -1,11 +1,6 @@
 import { Address } from "@liftedinit/many-js";
-import * as cbor from "cbor";
-import {
-  MethodAnalyzer,
-  parseAddress,
-  parseMemo,
-  tags,
-} from "../tx-analyzer.service";
+import { parseAddress, parseMemo } from "../../../utils/cbor-parsers";
+import { MethodAnalyzer } from "../method-analyzer";
 
 export interface LedgerSendTx {
   from: string;
@@ -16,12 +11,10 @@ export interface LedgerSendTx {
 }
 
 export class LedgerSendAnalyzer extends MethodAnalyzer<LedgerSendTx, null> {
-  constructor() {
-    super();
-  }
+  static method = "ledger.send";
+  static eventType = [6, 0];
 
-  async analyzeRequest(sender: Address, data: Buffer): Promise<LedgerSendTx> {
-    const payload = await cbor.decodeFirst(data, { tags });
+  parseArgs(sender: Address, payload: Map<any, any>): LedgerSendTx {
     return {
       from: (parseAddress(payload.get(0), true) || sender).toString(),
       to: parseAddress(payload.get(1)).toString(),

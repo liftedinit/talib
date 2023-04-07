@@ -30,6 +30,9 @@ export class TransactionDto extends TransactionSimpleDto {
   method?: string;
 
   @ApiProperty()
+  sender?: string;
+
+  @ApiProperty()
   argument?: any;
 
   @ApiProperty({ required: false })

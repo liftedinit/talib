@@ -5,9 +5,6 @@ import { AppModule } from "./app.module";
 import { AppConfigService } from "./config/app/configuration.service";
 
 async function bootstrap() {
-  const fetch = await import("node-fetch");
-  (global as any).fetch = fetch.default;
-
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });

@@ -14,8 +14,15 @@ export class Neighborhood {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "address", unique: true })
-  protected address_: string;
+  @Column({
+    unique: true,
+    type: "varchar",
+    transformer: {
+      from: (value) => Address.fromString(value),
+      to: (value) => value.toString(),
+    },
+  })
+  address: Address;
 
   @Column({ unique: true })
   url: string;
@@ -43,18 +50,10 @@ export class Neighborhood {
   latestBlock?: Block;
   txCount?: number;
 
-  public get address(): Address {
-    return Address.fromString(this.address_);
-  }
-  public set address(v: Address) {
-    // Ensures we also check the format of the string by decoding and re-encoding.
-    this.address_ = v.toString();
-  }
-
   public intoDto(): NeighborhoodDto {
     return {
       id: this.id,
-      address: this.address_,
+      address: this.address.toString(),
       url: this.url,
       name: this.name,
       description: this.description,

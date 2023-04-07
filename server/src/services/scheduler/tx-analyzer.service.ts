@@ -1,5 +1,3 @@
-import { Address } from "@liftedinit/many-js";
-import { ManyError } from "@liftedinit/many-js/dist/message/error";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as cbor from "cbor";
@@ -7,157 +5,14 @@ import { Repository } from "typeorm";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
+import {
+  parseAddress,
+  parseBuffer,
+  parseError,
+} from "../../utils/cbor-parsers";
 import { bufferToHex } from "../../utils/convert";
-
-async function _getMethodAnalyzer(
-  method: string,
-): Promise<null | MethodAnalyzer<any, any>> {
-  switch (method) {
-    case "ledger.send":
-      return new (await import("./tx/ledger.send.js")).LedgerSendAnalyzer();
-    default:
-      return null;
-  }
-}
-
-function _getAllAddressesOf(v: any): Address[] {
-  if (typeof v == "string") {
-    try {
-      return [Address.fromString(v)];
-    } catch (_) {}
-  }
-
-  if (typeof v != "object" || v === null) {
-    return [];
-  }
-  if (Array.isArray(v)) {
-    return v.reduce((acc, item) => [...acc, ..._getAllAddressesOf(item)], []);
-  } else if (v instanceof Address) {
-    return [v];
-  }
-
-  return Object.getOwnPropertyNames(v).reduce((acc, key) => {
-    return [...acc, ..._getAllAddressesOf(v[key])];
-  }, []);
-}
-
-export abstract class MethodAnalyzer<ArgumentT, ResponseT> {
-  abstract analyzeRequest(sender: Address, data: Buffer): Promise<ArgumentT>;
-
-  abstract analyzeResponse(data: Buffer): Promise<ResponseT>;
-
-  // Return addresses related to a transaction. This will be compounded in a
-  // set of address string representations, but this method should only return
-  // Addresses without worrying about distinctiveness.
-  // By default, will just navigate a JS object at runtime and check if any
-  // properties are addresses or address strings.
-  async addresses(
-    request: ArgumentT,
-    response: ResponseT | null,
-    error: ManyError | null,
-  ): Promise<Address[]> {
-    return [
-      ..._getAllAddressesOf(request),
-      ..._getAllAddressesOf(response),
-      ..._getAllAddressesOf(error),
-    ];
-  }
-}
-
-export const tags = {
-  10000: (value: Uint8Array) => new Address(Buffer.from(value)),
-};
-
-export function parseAddress(content: any, optional: true): Address | undefined;
-export function parseAddress(content: any, optional?: false): Address;
-export function parseAddress(
-  content: any,
-  optional = false,
-): Address | undefined {
-  if (content instanceof Address) {
-    return content;
-  } else if (typeof content == "string") {
-    return Address.fromString(content);
-  } else if (Buffer.isBuffer(content)) {
-    return new Address(content);
-  } else if (content === undefined || content === null) {
-    if (optional) {
-      return undefined;
-    }
-  }
-
-  throw new Error(
-    `Invalid content type for address: ${JSON.stringify(content)}`,
-  );
-}
-
-export function parseMemo(content: any, optional: true): string[] | undefined;
-export function parseMemo(content: any, optional?: false): string[];
-export function parseMemo(
-  content: any,
-  optional = false,
-): string[] | undefined {
-  if (typeof content == "string") {
-    return [content];
-  } else if (Array.isArray(content)) {
-    return content.filter((x) => typeof x == "string");
-  } else if (optional) {
-    return undefined;
-  }
-
-  throw new Error(`Invalid content type for memo: ${JSON.stringify(content)}`);
-}
-
-export function parseBuffer(content: any, optional: true): Buffer | undefined;
-export function parseBuffer(content: any, optional?: false): Buffer;
-export function parseBuffer(
-  content: any,
-  optional = false,
-): Buffer | undefined {
-  if (Buffer.isBuffer(content)) {
-    return content;
-  } else if (optional) {
-    return undefined;
-  }
-
-  throw new Error(
-    `Invalid content type for buffer: ${JSON.stringify(content)}.`,
-  );
-}
-
-function parseError(maybeResult: any) {
-  if (!(maybeResult instanceof Map)) {
-    throw "Payload is not a map.";
-  }
-
-  const code = maybeResult.get(0);
-  if (typeof code !== "number") {
-    throw "Code is not a number.";
-  }
-
-  const message = maybeResult.get(1);
-  if (typeof message !== "string") {
-    throw "Message is not a string.";
-  }
-
-  const fields: Record<string, string> = {};
-  if (maybeResult.has(2)) {
-    const fs = maybeResult.get(2);
-    if (fs) {
-      if (!(fs instanceof Map)) {
-        throw "Fields is not a map.";
-      }
-
-      for (const [k, v] of fs.entries()) {
-        // Worst case we get "[object Object]" as keys, but a spec following
-        // blockchain should be fine here.
-        fields[k.toString()] = v.toString();
-      }
-    }
-  }
-
-  return { code, fields, message };
-}
+import { tags } from "./method-analyzer";
+import { getMethodAnalyzerClass } from "./tx";
 
 @Injectable()
 export class TxAnalyzerService {
@@ -172,7 +27,7 @@ export class TxAnalyzerService {
 
   async missingTransactionDetailsForNeighborhood(
     neighborhood: Neighborhood,
-    limit = 1000,
+    limit = 100,
   ): Promise<number[]> {
     const query = await this.transactionRepository
       .createQueryBuilder("tx")
@@ -185,6 +40,9 @@ export class TxAnalyzerService {
           `tx.id NOT IN (${this.txDetailsRepository
             .createQueryBuilder("td")
             .select(`"transactionId"`)
+            .where("td.argument IS NOT NULL")
+            .orWhere("td.result IS NOT NULL")
+            .orWhere("td.error IS NOT NULL")
             .getQuery()})`,
       )
       .limit(limit);
@@ -219,13 +77,15 @@ export class TxAnalyzerService {
       const from = parseAddress(request.get(1), true);
       const to = parseAddress(request.get(2), true);
       const method = request.get(3).toString();
-      const maybeAnalyzer = await _getMethodAnalyzer(method);
+      const maybeAnalyzerClass = getMethodAnalyzerClass(method);
+      const maybeAnalyzer = maybeAnalyzerClass && new maybeAnalyzerClass();
       const data = parseBuffer(request.get(4), true);
       const timestamp = new Date(Number(request.get(5)));
       const attrs = request.get(8);
 
       details.method = method;
       details.timestamp = timestamp;
+      details.sender = from;
       if (attrs && attrs.length > 0) {
         details.attributes = attrs;
       }
@@ -268,6 +128,7 @@ export class TxAnalyzerService {
       // We can easily delete all rows that have this field after we fix the
       // bug.
       details.parseError = e.toString();
+      this.logger.debug(`Error during parsing: ${e}`);
     }
 
     return details;

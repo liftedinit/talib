@@ -15,6 +15,10 @@ import {
 } from "../../utils/blockchain";
 import { bufferToHex } from "../../utils/convert";
 
+interface FindOneOptions {
+  details?: boolean;
+}
+
 @Injectable()
 export class BlockService {
   private readonly logger = new Logger(BlockService.name);
@@ -45,23 +49,35 @@ export class BlockService {
       );
   }
 
-  async findOneByHeight(nid: number, height: number): Promise<Block | null> {
+  async findOneByHeight(
+    nid: number,
+    height: number,
+    options: FindOneOptions = {},
+  ): Promise<Block | null> {
     let q = this.blockRepository
       .createQueryBuilder("b")
       .where("b.neighborhoodId = :nid", { nid })
       .andWhere("b.height = :height", { height });
-    q = this.addTransactions(q);
+    if (options.details) {
+      q = this.addTransactions(q);
+    }
 
-    this.logger.debug(`findOneByHeight(${nid}, ${height}): `);
+    this.logger.debug(`findOneByHeight(${nid}, ${height}): ${q.getQuery()}`);
     return q.getOne();
   }
 
-  async findOneByHash(nid: number, hash: ArrayBuffer): Promise<Block> {
+  async findOneByHash(
+    nid: number,
+    hash: ArrayBuffer,
+    options: FindOneOptions = {},
+  ): Promise<Block> {
     let q = this.blockRepository
       .createQueryBuilder("b")
       .where("b.neighborhoodId = :nid", { nid })
       .andWhere("b.hash = :hash", { hash });
-    q = this.addTransactions(q);
+    if (options.details) {
+      q = this.addTransactions(q);
+    }
 
     this.logger.debug(`findOneByHash(${nid}, ${bufferToHex(hash)}): `);
     return q.getOne();

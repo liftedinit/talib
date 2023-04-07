@@ -6,7 +6,7 @@ export function idStoreStore(data: any) {
     Address: (
       <Code
         as={Link}
-        to={`/addresses/${data.argument.from}`}
+        to={`/addresses/${data.argument.address}`}
         color="brand.teal.500"
       >
         {data.argument.address}

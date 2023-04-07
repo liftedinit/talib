@@ -7,12 +7,13 @@ import { getNeighborhoodTransaction, NeighborhoodContext } from "api";
 import { ObjectTable, PrettyMethods, QueryBox, TableObject } from "ui";
 import { ago } from "utils";
 
-import { LedgerSend } from "./ledger-send";
+import { idStoreStore, ledgerSend } from "..";
 
 const methodDetails: {
   [method: string]: (data: UseQueryResult) => TableObject;
 } = {
-  "ledger.send": LedgerSend,
+  "idstore.store": idStoreStore,
+  "ledger.send": ledgerSend,
 };
 
 export function Transaction() {

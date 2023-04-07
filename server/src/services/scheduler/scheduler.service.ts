@@ -59,9 +59,10 @@ export class SchedulerService {
       await Promise.all(
         neighborhoods.map(async (n) => {
           const i = await this.updaterFactory(n);
-          return i.run();
+          await i.run();
         }),
       );
+      this.logger.debug(`Done`);
     } else {
       this.logger.debug("No neighborhoods in database...");
     }

@@ -33,16 +33,6 @@ export class NeighborhoodUpdater {
     return this;
   }
 
-  private async step(method: () => Promise<void>, nid: number, name: string) {
-    try {
-      await method();
-    } catch (e) {
-      this.logger.error(
-        `Error happened while ${name} in neighborhood ${nid}: ${e}.\nStack: ${e.stack}`,
-      );
-    }
-  }
-
   private async updateNeighborhoodMissingTransactionDetails(
     neighborhood: Neighborhood,
   ) {
@@ -112,6 +102,14 @@ export class NeighborhoodUpdater {
     }
 
     // Split missing blocks into groups of parallel.
+    // This zips up by parallel, so if blocks 1..20 are missing and parallel is
+    // 5, then [1, 6, 11, 16] are going to be one batch, then [2, 7, 12, 17],
+    // etc.
+    // This does mean the blocks will be out of order in the database, but that
+    // is not a big deal (and they would be out of order regardless if we did
+    // 1..5, 6..10, etc as those would also be run in parallel).
+    // There is an improvement here when we can get ranges of blocks at once,
+    // but this requires some bug fixes in the backend.
     const parallel = this.schedulerConfig.parallel;
     const parallelSleep = this.schedulerConfig.parallelSleep;
     const schedule = [];
@@ -140,20 +138,25 @@ export class NeighborhoodUpdater {
   async run() {
     const n = this.n;
 
-    await this.step(
-      () => this.checkIfNeighborhoodHasBeenReset(n),
-      n.id,
-      "reset neighborhood if necessary",
-    );
-    await this.step(
-      () => this.updateNeighborhoodEarliestMissingBlocks(n),
-      n.id,
-      "updating missing blocks",
-    );
-    await this.step(
-      () => this.updateNeighborhoodMissingTransactionDetails(n),
-      n.id,
-      "updating transaction details",
-    );
+    // If we can't check if neighborhood has been reset, we probably won't be
+    // able to check anything, so just skip blocks too.
+    try {
+      await this.checkIfNeighborhoodHasBeenReset(n);
+      await this.updateNeighborhoodEarliestMissingBlocks(n);
+    } catch (e) {
+      this.logger.log(
+        `Error happened while updating neighborhood blocks:\n${e.stack}`,
+      );
+    }
+
+    // This can be done at all scheduled jobs. It shouldn't take long, and
+    // does not require network access so even if above fails, this should work.
+    try {
+      await this.updateNeighborhoodMissingTransactionDetails(n);
+    } catch (e) {
+      this.logger.error(
+        `Error happened while updating transaction details:\n${e.stack}`,
+      );
+    }
   }
 }

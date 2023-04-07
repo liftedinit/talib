@@ -9,7 +9,7 @@ const knownTokens = [
   },
 ];
 
-export function LedgerSend(data: any) {
+export function ledgerSend(data: any) {
   const token = knownTokens.find((t) => t.address === data.argument.symbol);
   return {
     From: (

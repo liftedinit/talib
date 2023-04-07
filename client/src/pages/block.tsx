@@ -1,32 +1,20 @@
-import {
-  Box,
-  Center,
-  Code,
-  Divider,
-  Heading,
-  Spinner,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Tr,
-} from "@liftedinit/ui";
+import { Box, Code, Heading, Text } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { ReactNode, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { getNeighborhoodBlock, NeighborhoodContext } from "api";
-import { TransactionList } from "ui";
+import { ObjectTable, QueryBox, TransactionList } from "ui";
 import { ago } from "utils";
 
 export function Block() {
   const { id } = useContext(NeighborhoodContext);
   const { hash } = useParams();
-
-  const { data, error, isLoading } = useQuery(
+  const query = useQuery(
     ["neighborhoods", id, "blocks", hash],
     getNeighborhoodBlock(id, hash as string),
   );
+  const { data, error, isLoading } = query;
 
   let block: { [key: string]: ReactNode } = data
     ? {
@@ -49,35 +37,17 @@ export function Block() {
         </Text>{" "}
         / Block Details
       </Heading>
-      <Box bg="white" my={6} p={6}>
-        {isLoading ? (
-          <Center>
-            <Spinner />
-          </Center>
-        ) : (
-          <Table>
-            <Tbody>
-              {Object.entries(block).map(([key, value]) => (
-                <Tr>
-                  <Td>
-                    <b>{key}</b>
-                  </Td>
-                  <Td>{value}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        )}
-      </Box>
-      {data?.transactions.length && (
-        <>
-          <Divider />
-          <TransactionList
-            txns={data.transactions}
-            error={error as Error}
-            isLoading={isLoading}
-          />
-        </>
+      <QueryBox query={query}>
+        <ObjectTable obj={block} />
+      </QueryBox>
+      {data?.transactions.length ? (
+        <TransactionList
+          txns={data.transactions}
+          error={error as Error}
+          isLoading={isLoading}
+        />
+      ) : (
+        ""
       )}
     </Box>
   );

@@ -58,7 +58,7 @@ export function Transaction() {
     : {};
 
   // If we have details for the method type, add them
-  if (data?.argument) {
+  if (data?.argument && methodDetails[data.method]) {
     txn = { ...txn, ...methodDetails[data.method](data) };
   }
 

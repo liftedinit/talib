@@ -2,7 +2,7 @@
   "name": "talib-server",
   "private": true,
   "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "build": "nest build",

@@ -27,7 +27,7 @@ export class TxAnalyzerService {
 
   async missingTransactionDetailsForNeighborhood(
     neighborhood: Neighborhood,
-    limit = 1000,
+    limit = 100,
   ): Promise<number[]> {
     const query = await this.transactionRepository
       .createQueryBuilder("tx")

@@ -12,8 +12,8 @@ export function idStoreStore(data: any) {
         {data.argument.address}
       </Code>
     ),
-    Credentials: <Code>{data.argument.credentials}</Code>,
-    PublicKey: <Code>{data.argument.publicKey}</Code>,
+    Credentials: <Code maxW="50em">{data.argument.credentials}</Code>,
+    PublicKey: <Code maxW="50em">{data.argument.publicKey}</Code>,
     "Recall Phrase": data.result.recallPhrase.join(" "),
   };
 }

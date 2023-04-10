@@ -33,8 +33,8 @@ export class TransactionDetails {
     type: "varchar",
     nullable: true,
     transformer: {
-      from: (value) => Address.fromString(value),
-      to: (value) => value.toString(),
+      from: (value) => (value ? Address.fromString(value) : undefined),
+      to: (value) => (value ? value.toString() : undefined),
     },
   })
   sender?: Address;

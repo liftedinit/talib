@@ -22,7 +22,7 @@
     "@liftedinit/many-js": "github:liftedinit/many-js",
     "@nestjs/common": "^9.3.9",
     "@nestjs/config": "^2.3.1",
-    "@nestjs/core": "^9.0.0",
+    "@nestjs/core": "^9.4.0",
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/schedule": "^2.2.0",

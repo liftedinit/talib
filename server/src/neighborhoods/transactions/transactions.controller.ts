@@ -3,11 +3,12 @@ import {
   DefaultValuePipe,
   Get,
   NotFoundException,
+  Optional,
   Param,
   ParseIntPipe,
   Query,
 } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Pagination } from "nestjs-typeorm-paginate";
 import {
   TransactionDetailsDto,
@@ -31,13 +32,14 @@ export class TransactionsController {
     @Param("nid", ParseIntPipe) nid: number,
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+    @Optional() @Query("method") method?: string,
   ): Promise<Pagination<TransactionDto>> {
     limit = limit > 100 ? 100 : limit;
 
     const result = await this.transactions.findMany(
       nid,
       { page, limit },
-      { details: true },
+      { details: true, method },
     );
     return {
       ...result,
@@ -46,11 +48,12 @@ export class TransactionsController {
   }
 
   @Get(":thash")
-  @ApiResponse({
-    status: 200,
+  @ApiOperation({
+    description: "Show the details of a single transaction.",
+  })
+  @ApiOkResponse({
     type: TransactionDetailsDto,
     isArray: true,
-    description: "List all transactions for a neighborhood.",
   })
   async findOne(
     @Param("nid", ParseIntPipe) nid: number,

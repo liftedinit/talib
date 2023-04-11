@@ -47,7 +47,8 @@ export class TransactionsService {
     neighborhoodId: number,
     options: IPaginationOptions,
     additional?: {
-      details: boolean;
+      method?: string;
+      details?: boolean;
     },
   ): Promise<Pagination<Transaction>> {
     let query = this.transactionRepository
@@ -63,6 +64,12 @@ export class TransactionsService {
         "details",
         `"details"."transactionId" = t.id`,
       );
+
+      if (additional?.method) {
+        query = query.andWhere("details.method = :method", {
+          method: additional.method,
+        });
+      }
     }
     return await paginate<Transaction>(query, options);
   }

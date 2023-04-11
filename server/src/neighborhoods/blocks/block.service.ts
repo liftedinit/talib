@@ -109,7 +109,7 @@ export class BlockService {
       .addSelect("COUNT(transactions.id)", "txCount")
       .from("block", "b")
       .leftJoin("b.transactions", "transactions")
-      .where(`b."neighborhoodId" = :nid`, { nid: neighborhoodId })
+      .where('b."neighborhoodId" = :nid', { nid: neighborhoodId })
       .groupBy(`height, time, b.hash, b."appHash"`)
       .orderBy("height", "DESC")
       .limit(limit)

@@ -1,6 +1,6 @@
 import { Address } from "@liftedinit/many-js";
-import { parseBuffer } from "../../../utils/cbor-parsers";
-import { bufferToHex } from "../../../utils/convert";
+import { parseBuffer } from "../../cbor-parsers";
+import { bufferToHex } from "../../convert";
 import { MethodAnalyzer } from "../method-analyzer";
 
 export interface AccountMultisigRevokeTx {

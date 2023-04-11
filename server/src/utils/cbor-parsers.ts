@@ -57,12 +57,18 @@ export function parseBuffer(
   );
 }
 
-export function parseRoles(roleMap: Map<Address, string[]>): {
+export function parseRoles(
+  roleMap: Map<Address, string[]> | Record<string, string[]>,
+): {
   [address: string]: string[];
 } {
   const roles = {};
 
-  for (const [key, value] of roleMap.entries()) {
+  if (roleMap instanceof Map) {
+    roleMap = Object.fromEntries(roleMap);
+  }
+
+  for (const [key, value] of Object.entries(roleMap)) {
     roles[key.toString()] = value;
   }
 

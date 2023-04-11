@@ -1,12 +1,13 @@
 import { Address } from "@liftedinit/many-js";
 import * as cbor from "cbor";
-import { parseRoles } from "../../../utils/cbor-parsers";
+import { parseRoles } from "../../cbor-parsers";
+import { parseFeatures } from "../account_features";
 import { MethodAnalyzer, tags } from "../method-analyzer";
 
 type Argument = {
   name?: string;
   roles?: { [address: string]: string[] };
-  features: any;
+  features: { [name: string]: any };
 };
 
 type Result = {
@@ -21,7 +22,7 @@ export class AccountCreate extends MethodAnalyzer<Argument, Result> {
     return {
       ...(payload.has(0) && { name: payload.get(0).toString() }),
       ...(payload.has(1) && { roles: parseRoles(payload.get(1)) }),
-      features: JSON.parse(JSON.stringify(payload.get(2))),
+      features: parseFeatures(payload.get(2)),
     };
   }
 

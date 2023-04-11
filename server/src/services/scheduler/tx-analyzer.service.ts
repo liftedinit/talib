@@ -11,8 +11,8 @@ import {
   parseError,
 } from "../../utils/cbor-parsers";
 import { bufferToHex } from "../../utils/convert";
-import { tags } from "./method-analyzer";
-import { getMethodAnalyzerClass } from "./tx";
+import { getMethodAnalyzerClass } from "../../utils/protocol/attributes";
+import { tags } from "../../utils/protocol/method-analyzer";
 
 @Injectable()
 export class TxAnalyzerService {

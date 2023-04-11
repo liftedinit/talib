@@ -1,10 +1,13 @@
-import { Controller, Get } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { Controller, Get, Logger } from "@nestjs/common";
+import { ApiExcludeController, ApiResponse } from "@nestjs/swagger";
 import { oneLine } from "common-tags";
 import { SchedulerService } from "./scheduler.service";
 
+@ApiExcludeController()
 @Controller("scheduler")
 export class SchedulerController {
+  private readonly logger = new Logger(SchedulerController.name);
+
   constructor(private scheduler: SchedulerService) {}
 
   @Get("run")
@@ -16,7 +19,9 @@ export class SchedulerController {
     `,
   })
   async run(): Promise<""> {
-    await this.scheduler.run();
+    // We run the scheduler as a separate job, but ignore the results.
+    // Do not wait on the scheduler. Scheduler runs can take minutes...
+    this.scheduler.run().then(null, (err) => this.logger.error(err));
     return "";
   }
 }

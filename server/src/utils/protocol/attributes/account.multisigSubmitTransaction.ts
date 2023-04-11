@@ -1,7 +1,7 @@
 import { Address } from "@liftedinit/many-js";
 import * as cbor from "cbor";
-import { parseAddress, parseMemo } from "../../../utils/cbor-parsers";
-import { bufferToHex } from "../../../utils/convert";
+import { parseAddress, parseMemo } from "../../cbor-parsers";
+import { bufferToHex } from "../../convert";
 import { MethodAnalyzer, tags } from "../method-analyzer";
 import { getMethodAnalyzerClass } from "./index";
 

@@ -1,7 +1,7 @@
 import { Address } from "@liftedinit/many-js";
 import * as cbor from "cbor";
-import { parseAddress, parseBuffer } from "../../../utils/cbor-parsers";
-import { bufferToHex } from "../../../utils/convert";
+import { parseAddress, parseBuffer } from "../../cbor-parsers";
+import { bufferToHex } from "../../convert";
 import { MethodAnalyzer, tags } from "../method-analyzer";
 
 export interface IdStoreStoreTx {

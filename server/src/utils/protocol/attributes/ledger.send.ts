@@ -1,5 +1,5 @@
 import { Address } from "@liftedinit/many-js";
-import { parseAddress, parseMemo } from "../../../utils/cbor-parsers";
+import { parseAddress, parseMemo } from "../../cbor-parsers";
 import { MethodAnalyzer } from "../method-analyzer";
 
 export interface LedgerSendTx {

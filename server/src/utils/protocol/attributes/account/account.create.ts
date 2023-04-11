@@ -1,8 +1,8 @@
 import { Address } from "@liftedinit/many-js";
 import * as cbor from "cbor";
-import { parseRoles } from "../../cbor-parsers";
-import { parseFeatures } from "../account_features";
-import { MethodAnalyzer, tags } from "../method-analyzer";
+import { parseRoles } from "../../../cbor-parsers";
+import { MethodAnalyzer, tags } from "../../method-analyzer";
+import { parseFeatures } from "./features";
 
 type Argument = {
   name?: string;

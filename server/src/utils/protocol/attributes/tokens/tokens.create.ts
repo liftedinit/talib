@@ -1,7 +1,7 @@
 import { Address } from "@liftedinit/many-js";
 import * as cbor from "cbor";
-import { parseAddress, parseMemo } from "../../cbor-parsers";
-import { MethodAnalyzer, tags } from "../method-analyzer";
+import { parseAddress, parseMemo } from "../../../cbor-parsers";
+import { MethodAnalyzer, tags } from "../../method-analyzer";
 import {
   parseTokenHolderMap,
   parseTokenInfo,
@@ -9,7 +9,7 @@ import {
   TokenHolderMapDto,
   TokenInfoDto,
   TokenInfoSummaryDto,
-} from "../tokens";
+} from "../../tokens";
 
 type Argument = {
   summary: TokenInfoSummaryDto;

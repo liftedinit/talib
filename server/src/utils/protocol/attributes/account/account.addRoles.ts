@@ -1,6 +1,6 @@
 import { Address } from "@liftedinit/many-js";
-import { parseAddress, parseRoles } from "../../cbor-parsers";
-import { MethodAnalyzer } from "../method-analyzer";
+import { parseAddress, parseRoles } from "../../../cbor-parsers";
+import { MethodAnalyzer } from "../../method-analyzer";
 
 interface Argument {
   account: string;

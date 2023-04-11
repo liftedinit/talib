@@ -1,5 +1,5 @@
 import { Address } from "@liftedinit/many-js";
-import { MethodAnalyzer } from "../method-analyzer";
+import { MethodAnalyzer } from "../../method-analyzer";
 
 interface Argument {
   account: string;

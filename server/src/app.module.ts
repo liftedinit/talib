@@ -8,6 +8,7 @@ import { AppConfigService } from "./config/app/configuration.service";
 import { DatabaseConfigModule } from "./config/database/configuration.module";
 import { DatabaseConfigService } from "./config/database/configuration.service";
 import { SchedulerConfigModule } from "./config/scheduler/configuration.module";
+import { DataModule } from "./data/data.module";
 import { Block } from "./database/entities/block.entity";
 import { Neighborhood } from "./database/entities/neighborhood.entity";
 import { TransactionDetails } from "./database/entities/transaction-details.entity";
@@ -54,6 +55,7 @@ import { SchedulerModule } from "./services/scheduler/scheduler.module";
       }),
     }),
     TypeOrmModule.forFeature([Transaction, TransactionDetails]),
+    DataModule,
   ],
 })
 export class AppModule {

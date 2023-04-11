@@ -1,9 +1,9 @@
 import { Address } from "@liftedinit/many-js";
 import * as cbor from "cbor";
-import { parseAddress, parseMemo } from "../../cbor-parsers";
-import { bufferToHex } from "../../convert";
-import { MethodAnalyzer, tags } from "../method-analyzer";
-import { getMethodAnalyzerClass } from "./index";
+import { parseAddress, parseMemo } from "../../../cbor-parsers";
+import { bufferToHex } from "../../../convert";
+import { MethodAnalyzer, tags } from "../../method-analyzer";
+import { getMethodAnalyzerClass } from "../index";
 
 export interface AccountMultisigSubmitTransactionTx {
   account: string;
@@ -58,8 +58,8 @@ export class AccountMultisigSubmitTransaction extends MethodAnalyzer<
     const impl = new maybeTxClass();
     const innerPayload = payload.get(1);
     return {
-      _method: maybeTxClass.method,
-      ...impl.parseArgs(sender, innerPayload),
+      method: maybeTxClass.method,
+      argument: impl.parseArgs(sender, innerPayload),
     };
   }
 

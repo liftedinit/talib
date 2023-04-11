@@ -92,10 +92,10 @@ export function parseError(maybeResult: any) {
 
   const fields: Record<string, string> = {};
   if (maybeResult.has(2)) {
-    const fs = maybeResult.get(2);
+    let fs = maybeResult.get(2);
     if (fs) {
       if (!(fs instanceof Map)) {
-        throw "Fields is not a map.";
+        fs = new Map(Object.entries(fs));
       }
 
       for (const [k, v] of fs.entries()) {

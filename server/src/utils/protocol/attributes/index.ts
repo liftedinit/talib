@@ -1,30 +1,24 @@
 import { MethodAnalyzerClass } from "../method-analyzer";
-import { AccountAddRoles } from "./account.addRoles";
-import { AccountCreate } from "./account.create";
-import { AccountDisable } from "./account.disable";
-import { AccountMultisigApprove } from "./account.multisigApprove";
-import { AccountMultisigRevoke } from "./account.multisigRevoke";
-import { AccountMultisigSetDefaults } from "./account.multisigSetDefaults";
-import { AccountMultisigSubmitTransaction } from "./account.multisigSubmitTransaction";
-import { AccountRemoveRoles } from "./account.removeRoles";
-import { AccountSetDescription } from "./account.setDescription";
-import { IdStoreStore } from "./idstore.store";
-import { LedgerSendAnalyzer } from "./ledger.send";
-import { TokensCreate } from "./tokens.create";
+import * as account from "./account";
+import * as idstore from "./idstore";
+import * as ledger from "./ledger";
+import * as tokens from "./tokens";
 
 const transactionTypes: { [index: string]: MethodAnalyzerClass } = [
-  AccountAddRoles,
-  AccountCreate,
-  AccountDisable,
-  AccountMultisigApprove,
-  AccountMultisigRevoke,
-  AccountMultisigSetDefaults,
-  AccountMultisigSubmitTransaction,
-  AccountRemoveRoles,
-  AccountSetDescription,
-  IdStoreStore,
-  LedgerSendAnalyzer,
-  TokensCreate,
+  account.AccountAddRoles,
+  account.AccountCreate,
+  account.AccountDisable,
+  account.AccountMultisigApprove,
+  account.AccountMultisigRevoke,
+  account.AccountMultisigSetDefaults,
+  account.AccountMultisigSubmitTransaction,
+  account.AccountRemoveRoles,
+  account.AccountSetDescription,
+  idstore.IdStoreStore,
+  ledger.LedgerBurnAnalyzer,
+  ledger.LedgerMintAnalyzer,
+  ledger.LedgerSendAnalyzer,
+  tokens.TokensCreate,
 ].reduce((acc, c: MethodAnalyzerClass) => {
   acc[c.method] = c;
   acc[JSON.stringify(c.eventType)] = c;

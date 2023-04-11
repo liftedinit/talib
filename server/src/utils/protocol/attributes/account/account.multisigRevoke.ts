@@ -1,7 +1,7 @@
 import { Address } from "@liftedinit/many-js";
-import { parseBuffer } from "../../cbor-parsers";
-import { bufferToHex } from "../../convert";
-import { MethodAnalyzer } from "../method-analyzer";
+import { parseBuffer } from "../../../cbor-parsers";
+import { bufferToHex } from "../../../convert";
+import { MethodAnalyzer } from "../../method-analyzer";
 
 export interface AccountMultisigRevokeTx {
   token: string;

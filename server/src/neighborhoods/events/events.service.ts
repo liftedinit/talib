@@ -37,7 +37,7 @@ export class EventsService {
     const query = this.eventRepository
       .createQueryBuilder("e")
       .where({ neighborhood: { id: neighborhoodId } })
-      .orderBy("e.eventId", "DESC")
+      .orderBy("e.id", "DESC")
       .limit(1);
 
     this.logger.debug(`latestEvent(${neighborhoodId}: ${query.getQuery()}`);
@@ -55,6 +55,7 @@ export class EventsService {
   ): Promise<Pagination<EventEntity>> {
     const query = this.eventRepository
       .createQueryBuilder("e")
+      .distinct(true)
       .select()
       .where("e.neighborhoodId = :nid", { nid })
       .andWhere(

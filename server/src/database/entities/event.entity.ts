@@ -13,7 +13,7 @@ export class Event {
   })
   neighborhood: Neighborhood;
 
-  @Column({ type: "bytea" })
+  @Column({ type: "bytea", unique: true })
   eventId: ArrayBuffer;
 
   @Column()

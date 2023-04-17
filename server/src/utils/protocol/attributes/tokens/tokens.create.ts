@@ -27,7 +27,7 @@ type ResultT = {
 type EventT = {
   summary: TokenInfoSummaryDto;
   symbol: string;
-  owner: Address | null;
+  owner: string | null;
   holders: TokenHolderMapDto;
   maximumSupply?: string;
   extendedInfo: any;
@@ -60,7 +60,7 @@ export class TokensCreate extends Analyzer<ArgumentT, ResultT, EventT> {
     return {
       summary: parseTokenInfoSummary(payload.get(1)),
       symbol: payload.get(2).toString(),
-      owner: parseAddress(payload.get(3), true) || null,
+      owner: parseAddress(payload.get(3), true)?.toString() || null,
       holders: parseTokenHolderMap(payload.get(4) || {}),
       maximumSupply: payload.has(5) ? payload.get(5).toString() : undefined,
       extendedInfo: {},

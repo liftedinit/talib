@@ -3,6 +3,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   IPaginationOptions,
+  paginate,
   paginateRaw,
   Pagination,
 } from "nestjs-typeorm-paginate";
@@ -34,7 +35,8 @@ export class AddressesService {
   async findTransactions(
     nid: number,
     address: Address,
-  ): Promise<Transaction[]> {
+    options: IPaginationOptions,
+  ): Promise<Pagination<Transaction>> {
     const query = this.transactionRepository
       .createQueryBuilder("t")
       .leftJoinAndSelect("t.block", "block")
@@ -58,25 +60,30 @@ export class AddressesService {
       .addOrderBy("block.height", "DESC");
 
     this.logger.debug(`getMany(${nid}, ${address}): ${query.getQuery()}`);
-    return query.getMany();
+    return paginate(query, options);
   }
 
-  async findEvents(nid: number, address: Address): Promise<Event[]> {
-    return (
-      await this.events.findWithAddress(nid, address, {
-        page: 1,
-        limit: 100,
-      })
-    ).items;
+  async findEvents(
+    nid: number,
+    address: Address,
+    options: IPaginationOptions,
+  ): Promise<Pagination<Event>> {
+    return await this.events.findWithAddress(nid, address, options);
   }
 
-  async findOne(nid: number, address: Address): Promise<AddressDto> {
+  async findOne(
+    nid: number,
+    address: Address,
+    txOptions: IPaginationOptions,
+    evOptions = txOptions,
+  ): Promise<AddressDto> {
+    const transactions = await this.findTransactions(nid, address, txOptions);
+    const events = await this.findEvents(nid, address, evOptions);
+
     return {
       address: address.toString(),
-      transactions: (await this.findTransactions(nid, address)).map((t) =>
-        t.intoDto(),
-      ),
-      events: (await this.findEvents(nid, address)).map((e) => e.intoDto()),
+      transactions: transactions.items.map((t) => t.intoDto()),
+      events: events.items.map((e) => e.intoDto()),
     };
   }
 

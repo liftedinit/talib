@@ -12,28 +12,28 @@ type Result = null;
 type Event = {
   account: string;
   token: string;
-  approver: string;
+  withdrawer: string;
 };
 
-export class AccountMultisigApprove extends Analyzer<Argument, Result, Event> {
-  static method = "account.multisigApprove";
-  static eventType = [9, [1, 1]];
+export class AccountMultisigWithdraw extends Analyzer<Argument, Result, Event> {
+  static method = "account.multisigWithdraw";
+  static eventType = [9, [1, 4]];
 
-  parseArgs(sender: Address, payload: Map<any, any>) {
+  parseArgs(sender: Address, payload: Map<any, any>): Argument {
     return {
       token: bufferToHex(parseBuffer(payload.get(0))),
     };
   }
 
-  async analyzeResponse(data: Buffer) {
+  async analyzeResponse(data: Buffer): Promise<Result> {
     return null;
   }
 
-  analyzeEvent(payload: Map<any, any>) {
+  analyzeEvent(payload: Map<any, any>): Event {
     return {
       account: parseAddress(payload.get(1)).toString(),
       token: bufferToHex(parseBuffer(payload.get(2))),
-      approver: parseAddress(payload.get(3)).toString(),
+      withdrawer: parseAddress(payload.get(3)).toString(),
     };
   }
 }

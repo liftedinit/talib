@@ -2,12 +2,17 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { SchedulerConfigService } from "../../../config/scheduler/configuration.service";
+import { Event } from "../../../database/entities/event.entity";
 import { Neighborhood } from "../../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../../database/entities/transaction-details.entity";
 import { Transaction } from "../../../database/entities/transaction.entity";
 import { BlockService } from "../../../neighborhoods/blocks/block.service";
+import { EventsService } from "../../../neighborhoods/events/events.service";
 import { NeighborhoodService } from "../../../neighborhoods/neighborhood.service";
 import { TransactionsService } from "../../../neighborhoods/transactions/transactions.service";
+import { getAllAddressesOf } from "../../../utils/cbor-parsers";
+import { bufferToHex } from "../../../utils/convert";
+import { getAnalyzerClass } from "../../../utils/protocol/attributes";
 import { NetworkService } from "../../network.service";
 import { TxAnalyzerService } from "../tx-analyzer.service";
 
@@ -22,6 +27,7 @@ export class NeighborhoodUpdater {
     private neighborhood: NeighborhoodService,
     private block: BlockService,
     private transaction: TransactionsService,
+    private events: EventsService,
     private txAnalyzer: TxAnalyzerService,
     @InjectRepository(TransactionDetails)
     private txDetailsRepository: Repository<TransactionDetails>,
@@ -31,6 +37,52 @@ export class NeighborhoodUpdater {
     this.n = n;
     this.logger = new Logger(`${NeighborhoodUpdater.name}(${n.id})`);
     return this;
+  }
+
+  private async updateNeighborhoodMissingEvents(neighborhood: Neighborhood) {
+    const latestEv = await this.events.latestEvent(neighborhood.id);
+
+    const latestEventId = latestEv ? latestEv.eventId : new ArrayBuffer(0);
+
+    const n = await this.network.forUrl(neighborhood.url);
+    const events = await n.events.list(
+      100,
+      "ASC",
+      // Lower bound on eventID exclusive.
+      new Map([[3, new Map([[0, [1, latestEventId]]])]]),
+    );
+
+    await this.events.save(
+      events.events.map((ev) => {
+        const ne = new Event();
+
+        ne.eventId = ev.id;
+        ne.neighborhood = neighborhood;
+        ne.timestamp = ev.time;
+        ne.method = getAnalyzerClass(undefined, ev.type).method;
+        ne.type = ev.type;
+        ne.info = ev.info;
+        ne.addresses = getAllAddressesOf(ev).map((x) => x.toString());
+
+        return ne;
+      }),
+    );
+
+    console.log(
+      JSON.stringify(
+        events.events
+          .map((ev) => {
+            return {
+              ...ev,
+              id: bufferToHex(ev.id),
+              time: ev.time.toISOString(),
+            };
+          })
+          .filter((ev) => ev.info === null),
+        null,
+        2,
+      ),
+    );
   }
 
   private async updateNeighborhoodMissingTransactionDetails(
@@ -143,6 +195,7 @@ export class NeighborhoodUpdater {
     try {
       await this.checkIfNeighborhoodHasBeenReset(n);
       await this.updateNeighborhoodEarliestMissingBlocks(n);
+      await this.updateNeighborhoodMissingEvents(n);
     } catch (e) {
       this.logger.log(
         `Error happened while updating neighborhood blocks:\n${e.stack}`,

@@ -1,8 +1,8 @@
 import { Address } from "@liftedinit/many-js";
 import { parseAddress, parseMemo } from "../../../cbor-parsers";
-import { MethodAnalyzer } from "../../method-analyzer";
+import { Analyzer } from "../../analyzer";
 
-export interface LedgerSendTx {
+interface ArgumentT {
   from: string;
   to: string;
   amount: number;
@@ -10,11 +10,21 @@ export interface LedgerSendTx {
   memo?: string[];
 }
 
-export class LedgerSendAnalyzer extends MethodAnalyzer<LedgerSendTx, null> {
+type ResultT = null;
+
+interface EventT {
+  from: string;
+  to: string;
+  symbol: string;
+  amount: string;
+  memo?: string[];
+}
+
+export class LedgerSendAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
   static method = "ledger.send";
   static eventType = [6, 0];
 
-  parseArgs(sender: Address, payload: Map<any, any>): LedgerSendTx {
+  parseArgs(sender: Address, payload: Map<any, any>): ArgumentT {
     return {
       from: (parseAddress(payload.get(0), true) || sender).toString(),
       to: parseAddress(payload.get(1)).toString(),
@@ -26,5 +36,15 @@ export class LedgerSendAnalyzer extends MethodAnalyzer<LedgerSendTx, null> {
 
   analyzeResponse() {
     return null;
+  }
+
+  analyzeEvent(payload: Map<any, any>): EventT {
+    return {
+      from: parseAddress(payload.get(1)).toString(),
+      to: parseAddress(payload.get(2)).toString(),
+      symbol: parseAddress(payload.get(3)).toString(),
+      amount: payload.get(4).toString(),
+      memo: parseMemo(payload.get(5), true),
+    };
   }
 }

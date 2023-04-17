@@ -108,3 +108,32 @@ export function parseError(maybeResult: any) {
 
   return { code, fields, message };
 }
+
+export function parseDateTime(value: any): Date {
+  if (value.tag != 1) {
+    throw new Error(`Value not a date: ${JSON.stringify(value)}`);
+  }
+
+  return new Date(Number(value.value) * 1000);
+}
+
+export function getAllAddressesOf(v: any): Address[] {
+  if (typeof v == "string") {
+    try {
+      return [Address.fromString(v)];
+    } catch (_) {}
+  }
+
+  if (typeof v != "object" || v === null) {
+    return [];
+  }
+  if (Array.isArray(v)) {
+    return v.reduce((acc, item) => [...acc, ...getAllAddressesOf(item)], []);
+  } else if (v instanceof Address) {
+    return [v];
+  }
+
+  return Object.getOwnPropertyNames(v).reduce((acc, key) => {
+    return [...acc, ...getAllAddressesOf(v[key])];
+  }, []);
+}

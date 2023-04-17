@@ -1,15 +1,16 @@
 import { Address } from "@liftedinit/many-js";
 import { ManyError } from "@liftedinit/many-js/dist/message/error";
 import * as cbor from "cbor";
+import { getAllAddressesOf } from "../cbor-parsers";
 
 export type MethodAnalyzerClass = {
   method: string;
   eventType?: (number | number[] | number[][])[];
 
-  new (): MethodAnalyzer<any, any>;
+  new (): Analyzer<any, any, any>;
 };
 
-export abstract class MethodAnalyzer<ArgumentT, ResponseT> {
+export abstract class Analyzer<ArgumentT, ResponseT, EventT> {
   abstract parseArgs(sender: Address, payload: Map<any, any>): ArgumentT;
 
   async analyzeRequest(sender: Address, data: Buffer): Promise<ArgumentT> {
@@ -18,6 +19,8 @@ export abstract class MethodAnalyzer<ArgumentT, ResponseT> {
   }
 
   abstract analyzeResponse(data: Buffer): Promise<ResponseT>;
+
+  abstract analyzeEvent(payload: Map<any, any>): EventT;
 
   // Return addresses related to a transaction. This will be compounded in a
   // set of address string representations, but this method should only return
@@ -30,9 +33,9 @@ export abstract class MethodAnalyzer<ArgumentT, ResponseT> {
     error: ManyError | null,
   ): Promise<Address[]> {
     return [
-      ..._getAllAddressesOf(request),
-      ..._getAllAddressesOf(response),
-      ..._getAllAddressesOf(error),
+      ...getAllAddressesOf(request),
+      ...getAllAddressesOf(response),
+      ...getAllAddressesOf(error),
     ];
   }
 }
@@ -40,24 +43,3 @@ export abstract class MethodAnalyzer<ArgumentT, ResponseT> {
 export const tags = {
   10000: (value: Uint8Array) => new Address(Buffer.from(value)),
 };
-
-function _getAllAddressesOf(v: any): Address[] {
-  if (typeof v == "string") {
-    try {
-      return [Address.fromString(v)];
-    } catch (_) {}
-  }
-
-  if (typeof v != "object" || v === null) {
-    return [];
-  }
-  if (Array.isArray(v)) {
-    return v.reduce((acc, item) => [...acc, ..._getAllAddressesOf(item)], []);
-  } else if (v instanceof Address) {
-    return [v];
-  }
-
-  return Object.getOwnPropertyNames(v).reduce((acc, key) => {
-    return [...acc, ..._getAllAddressesOf(v[key])];
-  }, []);
-}

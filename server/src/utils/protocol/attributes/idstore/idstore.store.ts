@@ -2,7 +2,7 @@ import { Address } from "@liftedinit/many-js";
 import * as cbor from "cbor";
 import { parseAddress, parseBuffer } from "../../../cbor-parsers";
 import { bufferToHex } from "../../../convert";
-import { MethodAnalyzer, tags } from "../../method-analyzer";
+import { Analyzer, tags } from "../../analyzer";
 
 export interface IdStoreStoreTx {
   address: string;
@@ -16,9 +16,10 @@ export interface IdStoreStoreResult {
   recallPhrase: string[];
 }
 
-export class IdStoreStore extends MethodAnalyzer<
+export class IdStoreStore extends Analyzer<
   IdStoreStoreTx,
-  IdStoreStoreResult
+  IdStoreStoreResult,
+  never
 > {
   static method = "idstore.store";
 
@@ -38,5 +39,9 @@ export class IdStoreStore extends MethodAnalyzer<
     return {
       recallPhrase: payload.get(0),
     };
+  }
+
+  analyzeEvent(payload: Map<any, any>): never {
+    throw new Error("Not implemented");
   }
 }

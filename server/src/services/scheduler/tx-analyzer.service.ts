@@ -11,8 +11,8 @@ import {
   parseError,
 } from "../../utils/cbor-parsers";
 import { bufferToHex } from "../../utils/convert";
-import { getMethodAnalyzerClass } from "../../utils/protocol/attributes";
-import { tags } from "../../utils/protocol/method-analyzer";
+import { tags } from "../../utils/protocol/analyzer";
+import { getAnalyzerClass } from "../../utils/protocol/attributes";
 
 @Injectable()
 export class TxAnalyzerService {
@@ -77,7 +77,7 @@ export class TxAnalyzerService {
       const from = parseAddress(request.get(1), true);
       const to = parseAddress(request.get(2), true);
       const method = request.get(3).toString();
-      const maybeAnalyzerClass = getMethodAnalyzerClass(method);
+      const maybeAnalyzerClass = getAnalyzerClass(method);
       const maybeAnalyzer = maybeAnalyzerClass && new maybeAnalyzerClass();
       const data = parseBuffer(request.get(4), true);
       const timestamp = new Date(Number(request.get(5)));

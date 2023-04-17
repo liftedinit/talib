@@ -1,28 +1,39 @@
 import { Address } from "@liftedinit/many-js";
-import { parseBuffer } from "../../../cbor-parsers";
+import { parseAddress, parseBuffer } from "../../../cbor-parsers";
 import { bufferToHex } from "../../../convert";
-import { MethodAnalyzer } from "../../method-analyzer";
+import { Analyzer } from "../../analyzer";
 
-export interface AccountMultisigRevokeTx {
+interface Argument {
   token: string;
 }
 
-export type AccountMultisigRevokeResult = null;
+type Result = null;
 
-export class AccountMultisigRevoke extends MethodAnalyzer<
-  AccountMultisigRevokeTx,
-  AccountMultisigRevokeResult
-> {
+type Event = {
+  account: string;
+  token: string;
+  approver: string;
+};
+
+export class AccountMultisigRevoke extends Analyzer<Argument, Result, Event> {
   static method = "account.multisigRevoke";
   static eventType = [9, [1, 2]];
 
-  parseArgs(sender: Address, payload: Map<any, any>): AccountMultisigRevokeTx {
+  parseArgs(sender: Address, payload: Map<any, any>) {
     return {
       token: bufferToHex(parseBuffer(payload.get(0))),
     };
   }
 
-  async analyzeResponse(data: Buffer): Promise<AccountMultisigRevokeResult> {
+  async analyzeResponse(data: Buffer) {
     return null;
+  }
+
+  analyzeEvent(payload: Map<any, any>) {
+    return {
+      account: parseAddress(payload.get(1)).toString(),
+      token: bufferToHex(parseBuffer(payload.get(2))),
+      approver: parseAddress(payload.get(3)).toString(),
+    };
   }
 }

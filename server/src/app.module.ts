@@ -10,6 +10,7 @@ import { DatabaseConfigService } from "./config/database/configuration.service";
 import { SchedulerConfigModule } from "./config/scheduler/configuration.module";
 import { DataModule } from "./data/data.module";
 import { Block } from "./database/entities/block.entity";
+import { Event } from "./database/entities/event.entity";
 import { Neighborhood } from "./database/entities/neighborhood.entity";
 import { TransactionDetails } from "./database/entities/transaction-details.entity";
 import { Transaction } from "./database/entities/transaction.entity";
@@ -48,13 +49,13 @@ import { SchedulerModule } from "./services/scheduler/scheduler.module";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Transaction, TransactionDetails],
+        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails],
         migrations: [],
         synchronize: true,
         ...db.config,
       }),
     }),
-    TypeOrmModule.forFeature([Transaction, TransactionDetails]),
+    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails]),
     DataModule,
   ],
 })

@@ -1,19 +1,27 @@
 import { Address } from "@liftedinit/many-js";
 import { parseAddress, parseMemo } from "../../../cbor-parsers";
-import { MethodAnalyzer } from "../../method-analyzer";
+import { Analyzer } from "../../analyzer";
 import { parseTokenHolderMap, TokenHolderMapDto } from "../../tokens";
 
-export interface Argument {
+interface ArgumentT {
   symbol: string;
   amounts: TokenHolderMapDto;
   memo?: string[];
 }
 
-export class LedgerBurnAnalyzer extends MethodAnalyzer<Argument, null> {
+type ResultT = null;
+
+interface EventT {
+  symbol: string;
+  amounts: { [address: string]: string };
+  memo?: string[];
+}
+
+export class LedgerBurnAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
   static method = "ledger.burn";
   static eventType = [12, 1];
 
-  parseArgs(sender: Address, payload: Map<any, any>): Argument {
+  parseArgs(sender: Address, payload: Map<any, any>) {
     return {
       symbol: parseAddress(payload.get(0)).toString(),
       amounts: parseTokenHolderMap(payload.get(2)),
@@ -23,5 +31,13 @@ export class LedgerBurnAnalyzer extends MethodAnalyzer<Argument, null> {
 
   analyzeResponse() {
     return null;
+  }
+
+  analyzeEvent(payload: Map<any, any>): EventT {
+    return {
+      symbol: parseAddress(payload.get(1)).toString(),
+      amounts: parseTokenHolderMap(payload.get(2)),
+      memo: parseMemo(payload.get(3), true),
+    };
   }
 }

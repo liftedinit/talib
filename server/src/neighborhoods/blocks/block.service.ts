@@ -1,6 +1,10 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Pagination } from "nestjs-typeorm-paginate";
+import {
+  IPaginationOptions,
+  paginateRaw,
+  Pagination,
+} from "nestjs-typeorm-paginate";
 import { DataSource, Repository, SelectQueryBuilder } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
@@ -9,11 +13,11 @@ import { Transaction } from "../../database/entities/transaction.entity";
 import { BlockDto } from "../../dto/block.dto";
 import { NetworkService } from "../../services/network.service";
 import { TxAnalyzerService } from "../../services/scheduler/tx-analyzer.service";
+import { bufferToHex } from "../../utils/convert";
 import {
   Block as ManyBlock,
   Transaction as ManyTransaction,
-} from "../../utils/blockchain";
-import { bufferToHex } from "../../utils/convert";
+} from "../../utils/network/blockchain";
 
 interface FindOneOptions {
   details?: boolean;
@@ -85,13 +89,8 @@ export class BlockService {
 
   public async findManyDto(
     neighborhoodId: number,
-    options: { limit: number; page?: number },
+    options: IPaginationOptions,
   ): Promise<Pagination<BlockDto>> {
-    const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
-    const limit = clamp(options.limit, 1, 1000);
-    const page = clamp(options.page || 1, 1, Infinity);
-    const offset = (page - 1) * limit;
-
     const driver = this.blockRepository.manager.connection.driver;
     const metadata = this.blockRepository.metadata;
     const timeColumnMetadata = metadata.ownColumns.find(
@@ -111,9 +110,7 @@ export class BlockService {
       .leftJoin("b.transactions", "transactions")
       .where('b."neighborhoodId" = :nid', { nid: neighborhoodId })
       .groupBy(`height, time, b.hash, b."appHash"`)
-      .orderBy("height", "DESC")
-      .limit(limit)
-      .offset(offset);
+      .orderBy("height", "DESC");
     const countQuery = this.blockRepository
       .createQueryBuilder("b")
       .select("MAX(height) as height")
@@ -123,10 +120,14 @@ export class BlockService {
 
     const totalItems = (await countQuery.getRawOne<{ height: number }>())
       .height;
-    const items = await query.getRawMany();
 
+    const results = await paginateRaw(query, {
+      ...options,
+      countQueries: false,
+    });
     return {
-      items: items.map((x) => ({
+      ...results,
+      items: results.items.map((x) => ({
         height: x.height,
         dateTime: driver
           .prepareHydratedValue(x.time, timeColumnMetadata)
@@ -136,11 +137,9 @@ export class BlockService {
         txCount: Number(x.txCount) || 0,
       })),
       meta: {
+        ...results.meta,
         totalItems,
-        itemCount: items.length,
-        itemsPerPage: limit,
-        totalPages: Math.ceil(totalItems / limit),
-        currentPage: page,
+        totalPages: Math.ceil(totalItems / +options.limit),
       },
     };
   }
@@ -148,7 +147,10 @@ export class BlockService {
   async getLatestHeightFetched(
     neighborhood: Neighborhood,
   ): Promise<number | null> {
-    const blocks = await this.findManyDto(neighborhood.id, { limit: 1 });
+    const blocks = await this.findManyDto(neighborhood.id, {
+      limit: 1,
+      page: 1,
+    });
     const last = blocks[0]; // Ordered by height descending.
     return last?.height;
   }

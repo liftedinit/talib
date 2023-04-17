@@ -9,6 +9,7 @@ import { TxAnalyzerService } from "../services/scheduler/tx-analyzer.service";
 import { AddressesModule } from "./addresses/addresses.module";
 import { BlockModule } from "./blocks/block.module";
 import { BlockService } from "./blocks/block.service";
+import { EventsModule } from "./events/events.module";
 import { NeighborhoodController } from "./neighborhood.controller";
 import { NeighborhoodService } from "./neighborhood.service";
 import { TransactionsModule } from "./transactions/transactions.module";
@@ -23,6 +24,7 @@ import { TransactionsModule } from "./transactions/transactions.module";
     ]),
     BlockModule,
     TransactionsModule,
+    EventsModule,
     AddressesModule,
   ],
   providers: [

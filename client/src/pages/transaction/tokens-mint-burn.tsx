@@ -1,7 +1,7 @@
 import { Code, Table, Tbody, Td, Tr } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
 
-export function ledgerMintBurn(data: any) {
+export function tokensMintBurn(data: any) {
   return {
     Token: (
       <Code

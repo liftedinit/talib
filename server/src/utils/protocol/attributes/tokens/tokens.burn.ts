@@ -17,8 +17,8 @@ interface EventT {
   memo?: string[];
 }
 
-export class LedgerBurnAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
-  static method = "ledger.burn";
+export class TokensBurnAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
+  static method = "tokens.burn";
   static eventType = [12, 1];
 
   parseArgs(sender: Address, payload: Map<any, any>) {

@@ -1,6 +1,6 @@
 import { Address } from "@liftedinit/many-js";
 import { parseAddress, parseRoles } from "../../../cbor-parsers";
-import { MethodAnalyzer } from "../../method-analyzer";
+import { Analyzer } from "../../analyzer";
 
 interface Argument {
   account: string;
@@ -9,7 +9,12 @@ interface Argument {
 
 type Result = null;
 
-export class AccountAddRoles extends MethodAnalyzer<Argument, Result> {
+type Event = {
+  account: string;
+  roles: { [address: string]: string[] };
+};
+
+export class AccountAddRoles extends Analyzer<Argument, Result, Event> {
   static method = "account.addRoles";
   static eventType = [9, 2];
 
@@ -25,5 +30,12 @@ export class AccountAddRoles extends MethodAnalyzer<Argument, Result> {
 
   async analyzeResponse(data: Buffer): Promise<Result> {
     return null;
+  }
+
+  analyzeEvent(payload: Map<any, any>): Event {
+    return {
+      account: parseAddress(payload.get(1)).toString(),
+      roles: parseRoles(payload.get(2)),
+    };
   }
 }

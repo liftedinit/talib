@@ -1,5 +1,6 @@
 import { Address } from "@liftedinit/many-js";
-import { MethodAnalyzer } from "../../method-analyzer";
+import { parseAddress } from "../../../cbor-parsers";
+import { Analyzer } from "../../analyzer";
 
 interface Argument {
   account: string;
@@ -10,9 +11,18 @@ interface Argument {
 
 type Result = null;
 
-export class AccountMultisigSetDefaults extends MethodAnalyzer<
+type Event = {
+  sender: string;
+  account: string;
+  threshold?: number | null;
+  timeoutInSecs?: number | null;
+  executeAutomatically?: boolean | null;
+};
+
+export class AccountMultisigSetDefaults extends Analyzer<
   Argument,
-  Result
+  Result,
+  Event
 > {
   static method = "account.multisigSetDefaults";
   static eventType = [9, [1, 5]];
@@ -28,5 +38,15 @@ export class AccountMultisigSetDefaults extends MethodAnalyzer<
 
   async analyzeResponse(data: Buffer): Promise<Result> {
     return null;
+  }
+
+  analyzeEvent(payload: Map<any, any>): Event {
+    return {
+      sender: parseAddress(payload.get(1)).toString(),
+      account: parseAddress(payload.get(2)).toString(),
+      ...(payload.has(3) && { threshold: payload.get(3) }),
+      ...(payload.has(4) && { timeoutInSecs: payload.get(4) }),
+      ...(payload.has(5) && { executeAutomatically: payload.get(5) }),
+    };
   }
 }

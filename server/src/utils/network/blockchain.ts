@@ -1,4 +1,5 @@
 import { Message, NetworkModule } from "@liftedinit/many-js";
+import { parseDateTime } from "../cbor-parsers";
 
 export interface BlockIdentifier {
   hash: ArrayBuffer;
@@ -28,6 +29,9 @@ export interface Transaction {
 
 export interface Blockchain extends NetworkModule {
   info(): Promise<BlockchainInfo>;
+  blockByHeight(height: number): Promise<Block>;
+  request(txHash: ArrayBuffer): any;
+  response(txHash: ArrayBuffer): any;
 }
 
 export const Blockchain: Blockchain = {
@@ -70,14 +74,6 @@ function parseBlockIdentifier(id: Map<number, any>): BlockIdentifier {
     hash: id.get(0),
     height: id.get(1),
   };
-}
-
-function parseDateTime(value: any): Date {
-  if (value.tag != 1) {
-    throw new Error(`Value not a date: ${JSON.stringify(value)}`);
-  }
-
-  return new Date(Number(value.value) * 1000);
 }
 
 function parseBlockchainInfo(msg: Message): BlockchainInfo {

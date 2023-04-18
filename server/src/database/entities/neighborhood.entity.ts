@@ -1,13 +1,20 @@
 import { Address, NetworkAttributes } from "@liftedinit/many-js";
 import { NetworkStatusInfo } from "@liftedinit/many-js/dist/network/modules/base/base";
 import { bufferToHex } from "src/utils/convert";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import {
   CreateNeighborhoodDto,
   NeighborhoodDetailsDto,
   NeighborhoodDto,
 } from "../../dto/neighborhood.dto";
 import { Block } from "./block.entity";
+import { Event } from "./event.entity";
 
 @Entity()
 export class Neighborhood {
@@ -46,6 +53,11 @@ export class Neighborhood {
     onDelete: "CASCADE",
   })
   blocks: Block[];
+
+  @ManyToOne(() => Event, (event) => event.neighborhood, {
+    onDelete: "CASCADE",
+  })
+  events: Event[];
 
   latestBlock?: Block;
   txCount?: number;

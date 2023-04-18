@@ -17,8 +17,8 @@ interface EventT {
   memo?: string[];
 }
 
-export class LedgerMintAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
-  static method = "ledger.mint";
+export class TokensMintAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
+  static method = "tokens.mint";
   static eventType = [12, 0];
 
   parseArgs(sender: Address, payload: Map<any, any>) {

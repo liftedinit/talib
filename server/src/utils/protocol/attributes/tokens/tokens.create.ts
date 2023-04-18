@@ -62,7 +62,7 @@ export class TokensCreate extends Analyzer<ArgumentT, ResultT, EventT> {
       symbol: payload.get(2).toString(),
       owner: parseAddress(payload.get(3), true)?.toString() || null,
       holders: parseTokenHolderMap(payload.get(4) || {}),
-      maximumSupply: payload.has(5) ? payload.get(5).toString() : undefined,
+      maximumSupply: payload.has(5) ? payload.get(5)?.toString() : undefined,
       extendedInfo: {},
       memo: parseMemo(payload.get(6), true) || [],
     };

@@ -19,13 +19,19 @@ export function Home() {
     data: blocksData,
     error: blocksError,
     isLoading: blocksLoading,
-  } = useQuery(["neighborhoods", id, "blocks"], getNeighborhoodBlocks(id));
+  } = useQuery(
+    ["neighborhoods", id, "blocks"],
+    getNeighborhoodBlocks(id, { page: 1, limit: 10 }),
+  );
 
   const {
     data: txnData,
     error: txnError,
     isLoading: txnLoading,
-  } = useQuery(["neighborhoods", id, "txns"], getNeighborhoodTransactions(id));
+  } = useQuery(
+    ["neighborhoods", id, "txns"],
+    getNeighborhoodTransactions(id, { page: 1, limit: 10 }),
+  );
 
   return (
     <>

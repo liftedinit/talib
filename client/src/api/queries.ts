@@ -1,7 +1,7 @@
 import { get } from "utils";
 
 const PAGE = 1;
-const LIMIT = 10;
+const LIMIT = 25;
 
 export function getNeighborhoods() {
   return get("neighborhoods");

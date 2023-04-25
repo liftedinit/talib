@@ -24,7 +24,7 @@ export class TokensBurnAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
   parseArgs(sender: Address, payload: Map<any, any>) {
     return {
       symbol: parseAddress(payload.get(0)).toString(),
-      amounts: parseTokenHolderMap(payload.get(2)),
+      amounts: parseTokenHolderMap(payload.get(1)),
       memo: parseMemo(payload.get(2), true),
     };
   }

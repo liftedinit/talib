@@ -1,16 +1,9 @@
 import { Code } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
-
-const knownTokens = [
-  {
-    address: "mqbh742x4s356ddaryrxaowt4wxtlocekzpufodvowrirfrqaaaaa3l",
-    ticker: "MFX",
-    precision: 9,
-  },
-];
+import { findToken } from "./tokens";
 
 export function ledgerSend(data: any) {
-  const token = knownTokens.find((t) => t.address === data.argument.symbol);
+  const token = findToken(data.argument.symbol);
   return {
     From: (
       <Code
@@ -30,10 +23,9 @@ export function ledgerSend(data: any) {
         {data.argument.to}
       </Code>
     ),
-    Amount: token
-      ? `${(data.argument.amount / 10 ** token.precision).toLocaleString()} ${
-          token.ticker
-        }`
-      : "Unknown",
+    Amount: `${(
+      data.argument.amount /
+      10 ** token.precision
+    ).toLocaleString()} ${token.ticker}`,
   };
 }

@@ -1,14 +1,12 @@
 import { Code, Table, Tbody, Td, Tr } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
+import { findToken } from "./tokens";
 
 export function tokensMintBurn(data: any) {
+  const token = findToken(data.argument.symbol);
   return {
     Token: (
-      <Code
-        as={Link}
-        to={`/addresses/${data.argument.symbol}`}
-        color="brand.teal.500"
-      >
+      <Code as={Link} to={`/addresses/${token.address}`} color="brand.teal.500">
         {data.argument.symbol}
       </Code>
     ),
@@ -26,7 +24,13 @@ export function tokensMintBurn(data: any) {
                   {address}
                 </Code>
               </Td>
-              <Td>{amount as string}</Td>
+              <Td isNumeric>
+                {(
+                  parseInt(amount as string) /
+                  10 ** token.precision
+                ).toLocaleString()}{" "}
+                {token.ticker}
+              </Td>
             </Tr>
           ))}
         </Tbody>

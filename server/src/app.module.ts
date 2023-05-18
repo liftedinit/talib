@@ -17,12 +17,15 @@ import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
 import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
+import { MetricModule } from "./metrics/metric.module";
+import { Metric } from "./database/entities/metric.entity";
 
 @Module({
   controllers: [],
   providers: [Logger, NetworkService],
   imports: [
     AppConfigModule,
+    MetricModule,
     NeighborhoodModule,
     SchedulerConfigModule,
     ScheduleModule.forRoot(),
@@ -49,13 +52,13 @@ import { SchedulerModule } from "./services/scheduler/scheduler.module";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails],
+        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, Metric],
         migrations: [],
         synchronize: true,
         ...db.config,
       }),
     }),
-    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails]),
+    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, Metric]),
     DataModule,
   ],
 })

@@ -13,6 +13,7 @@ import {
   Layout,
   Transaction,
   Transactions,
+  Metrics,
 } from "pages";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ ReactDOM.render(
                 <Route path="addresses">
                   <Route path=":address" element={<Address />} />
                 </Route>
+                <Route path="metrics" element={<Metrics />} />
               </Route>
             </Routes>
           </HashRouter>

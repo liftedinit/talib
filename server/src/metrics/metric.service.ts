@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateMetricDto } from "../dto/metric.dto";
 import { Metric } from "../database/entities/metric.entity";
+import { MetricDetails } from "../database/entities/metric-details.entity";
 
 @Injectable()
 export class MetricService {
@@ -11,6 +12,8 @@ export class MetricService {
   constructor(
     @InjectRepository(Metric)
     private metricRepository: Repository<Metric>,
+    @InjectRepository(MetricDetails)
+    private metricDetailsRepository: Repository<MetricDetails>,
   ) {}
 
   findAll(): Promise<Metric[]> {
@@ -44,5 +47,9 @@ export class MetricService {
 
   async removeById(id: number): Promise<void> {
     await this.metricRepository.delete({ id });
+  }
+
+  public async save(entities: Metric[]): Promise<void> {
+    await this.metricRepository.save(entities);
   }
 }

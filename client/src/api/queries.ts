@@ -36,3 +36,7 @@ export function getNeighborhoodTransaction(id: number, hash: string) {
 export function getNeighborhoodAddress(id: number, address: string) {
   return get(`neighborhoods/${id}/addresses/${address}`);
 }
+
+export function getManifestMetricCurrent(stat: string) {
+  return get(`metrics/${stat}/metric/current`)
+}

@@ -11,6 +11,7 @@ import {
 import { BlockList, TransactionList } from "ui";
 
 import { NeighborhoodStatus } from "./status";
+import { NetworkMetrics } from "./metrics";
 
 export function Home() {
   const { id } = useContext(NeighborhoodContext);
@@ -41,6 +42,7 @@ export function Home() {
         </Heading>
       </Center>
       <NeighborhoodStatus id={id} />
+      <NetworkMetrics />
       <SimpleGrid columns={2} spacing={6}>
         <Box>
           <BlockList

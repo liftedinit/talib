@@ -7,6 +7,9 @@ export class MetricDto {
   @ApiProperty()
   name: string;
 
+  @ApiProperty({ required: false })
+  label: string;
+
   @ApiProperty()
   query: string;
 
@@ -28,6 +31,9 @@ export class MetricDetailsDto extends MetricDto {
 export class CreateMetricDto {
   @ApiProperty()
   name: string;
+
+  @ApiProperty({ required: false })
+  label: string;
 
   @ApiProperty()
   query: string;

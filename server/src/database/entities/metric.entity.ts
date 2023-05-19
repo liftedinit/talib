@@ -9,6 +9,9 @@ export class Metric {
   @Column({ unique: true })
   name: string;
 
+  @Column({ nullable: true })
+  label: string;
+
   @Column()
   query: string;
 
@@ -22,6 +25,7 @@ export class Metric {
     return {
       id: this.id,
       name: this.name,
+      label: this.label,
       query: this.query,
       description: this.description,
       homepage: this.homepage,
@@ -31,6 +35,7 @@ export class Metric {
   public static createWithDto(dto: CreateMetricDto): Metric {
     const result = new Metric();
     result.name = dto.name;
+    result.label = dto.label;
     result.query = dto.query;
     result.description = dto.description;
     result.homepage = dto.homepage;

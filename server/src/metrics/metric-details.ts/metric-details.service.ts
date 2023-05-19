@@ -4,11 +4,11 @@ import { HttpService } from "@nestjs/axios";
 import { map, catchError } from "rxjs";
 import * as process from "process";
 import { Metric } from "../../database/entities/metric.entity";
-import { Repository, SelectQueryBuilder } from "typeorm";
+import { Repository } from "typeorm";
 
 const username = process.env.GRAFANA_USERNAME;
 const password = process.env.GRAFANA_PASSWORD;
-const remoteApiUrl = "https://grafana.liftedinit.tech/api/ds/query";
+const remoteApiUrl = process.env.GRAFANA_API_URL + "/api/ds/query";
 
 @Injectable()
 export class MetricDetailsService {
@@ -48,7 +48,13 @@ export class MetricDetailsService {
           ).toString("base64")}`,
         },
       })
-      .pipe(map((res) => res.data?.results.A.frames[0].data.values[1][0]))
+      .pipe(
+        map((res) => {
+          const values = res.data?.results.A.frames[0].data.values[1];
+          const last = values[values.length - 1];
+          return last;
+        }),
+      )
       .pipe(
         catchError(() => {
           throw new ForbiddenException("API not available");

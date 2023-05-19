@@ -37,6 +37,18 @@ export function getNeighborhoodAddress(id: number, address: string) {
   return get(`neighborhoods/${id}/addresses/${address}`);
 }
 
+export function getManifestMetrics() {
+  return get(`metrics`)
+}
+
+export function getManifestMetric(stat: string) {
+  return get(`metrics/${stat}`)
+}
+
 export function getManifestMetricCurrent(stat: string) {
-  return get(`metrics/${stat}/metric/current`)
+  return get(`metrics/${stat}/current`)
+}
+
+export function getManifestMetricSeries(stat: string) {
+  return get(`metrics/${stat}/series`)
 }

@@ -15,12 +15,16 @@ export class Metric {
   @Column({ nullable: true })
   description: string;
 
+  @Column({ nullable: true })
+  homepage: boolean;
+
   intoDto(): MetricDto {
     return {
       id: this.id,
       name: this.name,
       query: this.query,
       description: this.description,
+      homepage: this.homepage,
     };
   }
 
@@ -29,7 +33,7 @@ export class Metric {
     result.name = dto.name;
     result.query = dto.query;
     result.description = dto.description;
-
+    result.homepage = dto.homepage;
     return result;
   }
 }

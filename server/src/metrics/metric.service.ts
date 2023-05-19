@@ -20,14 +20,14 @@ export class MetricService {
     return this.metricRepository.find();
   }
 
-  async get(nid: number): Promise<Metric | null> {
+  async get(name: string): Promise<Metric | null> {
     const query = this.metricRepository
       .createQueryBuilder("n")
-      .where({ id: nid })
+      .where({ name: name })
       .groupBy("n.id")
       .limit(1);
 
-    this.logger.debug(`get(${nid}): \`${query.getQuery()}\``);
+    this.logger.debug(`get(${name}): \`${query.getQuery()}\``);
 
     const one = await query.getOne();
 

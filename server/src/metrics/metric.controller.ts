@@ -27,14 +27,14 @@ export class MetricController {
     return (await this.metric.findAll()).map((x) => x.intoDto());
   }
 
-  @Get(":nid")
+  @Get(":name")
   @ApiResponse({
     status: 200,
     type: MetricDto,
     description: "Show info about one metric watched by this instance.",
   })
-  async findOne(@Param("nid", ParseIntPipe) nid: number): Promise<MetricDto> {
-    const n = await this.metric.get(nid);
+  async findOne(@Param("name") name: string): Promise<MetricDto> {
+    const n = await this.metric.get(name);
     if (!n) {
       throw new NotFoundException();
     }
@@ -47,8 +47,8 @@ export class MetricController {
     return (await this.metric.create(body)).intoDto();
   }
 
-  @Delete(":nid")
-  async remove(@Param("nid", ParseIntPipe) nid: number): Promise<void> {
-    await this.metric.removeById(nid);
+  @Delete(":id")
+  async remove(@Param("id", ParseIntPipe) id: number): Promise<void> {
+    await this.metric.removeById(id);
   }
 }

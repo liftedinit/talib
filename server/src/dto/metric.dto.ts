@@ -12,6 +12,9 @@ export class MetricDto {
 
   @ApiProperty({ required: false })
   description?: string;
+
+  @ApiProperty({ required: false })
+  homepage?: boolean;
 }
 
 export class MetricDetailsDto extends MetricDto {
@@ -31,4 +34,7 @@ export class CreateMetricDto {
 
   @ApiProperty({ required: false })
   description?: string;
+
+  @ApiProperty({ required: false })
+  homepage?: boolean;
 }

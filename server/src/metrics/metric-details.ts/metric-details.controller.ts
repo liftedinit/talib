@@ -1,13 +1,12 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Param } from "@nestjs/common";
 import { MetricDetailsService } from "./metric-details.service";
 
-// @Controller("metrics/:mid/metric")
 @Controller("metrics")
 export class MetricDetailsController {
   constructor(private metricDetailsService: MetricDetailsService) {}
 
-  @Get("nodecount/metric/current")
-  getCurrentNodeCount() {
-    return this.metricDetailsService.getCurrentNodeCount();
+  @Get(":name/current")
+  getMetricCurrent(@Param("name") name: string) {
+    return this.metricDetailsService.getMetricCurrentValue(name);
   }
 }

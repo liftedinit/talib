@@ -11,7 +11,7 @@ import {
 import { BlockList, TransactionList } from "ui";
 
 import { NeighborhoodStatus } from "./status";
-import { NetworkMetrics } from "./metrics";
+import { NetworkMetrics } from "../metrics/networkMetrics";
 
 export function Home() {
   const { id } = useContext(NeighborhoodContext);

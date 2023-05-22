@@ -25,12 +25,12 @@ export function NetworkMetrics() {
   const getUsedDiskSpace = getUsedDiskSpaceQuery.data; 
   const getTotalDiskSpace = getTotalDiskSpaceQuery.data; 
 
-  let convertToGb = (b: number): number => {
+  let convertMemToGb = (b: number): number => {
     let gbValue = (b / (1000));
     return gbValue
   }
 
-  let convertToTb = (b: number): number => {
+  let convertMemToTb = (b: number): number => {
     let gbValue = (b / (1000 * 1000));
     return gbValue
   }
@@ -41,27 +41,26 @@ export function NetworkMetrics() {
     getFreeMemoryQuery.isLoading || 
     getUsedMemoryQuery.isLoading ||
     getFreeDiskSpaceQuery.isLoading ||
-    getUsedDiskSpaceQuery.isLoading )  {
+    getUsedDiskSpaceQuery.isLoading ||
+    getTotalDiskSpaceQuery.isLoading )  {
     return <Spinner />;
   }
 
-  return (   
-    <>
+  return (
     <><Stack direction="row" mt={6}>
         <Stat label="Total Nodes" value={getNodeCount} />
         <Stat label="Total CPU Cores" value={getCpuCores} />
         <Stat label="Total Blocks Produced" value={parseInt(getTotalBlocks)} />
       </Stack>
       <Stack direction="row" mt={6}>
-        <Stat label="Free Memory" value={Math.floor(convertToTb(getFreeMemory)) + " TB"} />
-        <Stat label="Used Memory" value={Math.floor(convertToGb(getUsedMemory)) + " GB"} />
+        <Stat label="Free Memory" value={Math.floor(convertMemToTb(getFreeMemory)) + " TB"} />
+        <Stat label="Used Memory" value={Math.floor(convertMemToGb(getUsedMemory)) + " GB"} />
       </Stack>
       <Stack direction="row" mt={6}>
         <Stat label="Total Disk Space" value={Number(getTotalDiskSpace / 1000 / 1000).toFixed(5) + " PB"} />
         <Stat label="Free Disk Space" value={Number(getFreeDiskSpace / 1000).toFixed(2) + " TB"} />
         <Stat label="Used Disk Space" value={Number(getUsedDiskSpace / 1000).toFixed(2) + " TB"} />
       </Stack>
-      </>
   </>
   );
 }

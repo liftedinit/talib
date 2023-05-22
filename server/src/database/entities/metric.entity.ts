@@ -19,7 +19,7 @@ export class Metric {
   description: string;
 
   @Column({ nullable: true })
-  homepage: boolean;
+  location: string;
 
   intoDto(): MetricDto {
     return {
@@ -28,7 +28,7 @@ export class Metric {
       label: this.label,
       query: this.query,
       description: this.description,
-      homepage: this.homepage,
+      location: this.location,
     };
   }
 
@@ -38,7 +38,7 @@ export class Metric {
     result.label = dto.label;
     result.query = dto.query;
     result.description = dto.description;
-    result.homepage = dto.homepage;
+    result.location = dto.location;
     return result;
   }
 }

@@ -45,7 +45,7 @@ ReactDOM.render(
                 <Route path="addresses">
                   <Route path=":address" element={<Address />} />
                 </Route>
-                <Route path="metrics" element={<Metrics />} />
+                <Route path="metrics" index element={<Metrics />} />
               </Route>
             </Routes>
           </HashRouter>

@@ -45,7 +45,7 @@ export function getManifestMetric(stat: string) {
   return get(`metrics/${stat}`)
 }
 
-export function getManifestMetricCurrent(stat: string, from: string, to: string) {
+export function getManifestMetricCurrent(stat: string, from?: string, to?: string) {
   if (from && to){
     return get(`metrics/${stat}/current?from=${from}&to=${to}`);
   }
@@ -54,7 +54,7 @@ export function getManifestMetricCurrent(stat: string, from: string, to: string)
   }
 }
 
-export function getManifestMetricSeries(stat: string, from: string, to:string) {
+export function getManifestMetricSeries(stat: string, from?: string, to?:string) {
   if (from && to){
     return get(`metrics/${stat}/series?from=${from}&to=${to}`);
   }

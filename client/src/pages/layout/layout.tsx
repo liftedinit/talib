@@ -8,6 +8,7 @@ import {
   Image,
   logoSvg,
   Stack,
+  HStack,
 } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
 import { Search } from "ui";
@@ -21,7 +22,7 @@ export function Layout({ children }: React.PropsWithChildren<{}>) {
         bg="white"
         shadow="lg"
         alignItems="center"
-        templateColumns="200px 1fr 200px"
+        templateColumns="200px 1fr 400px"
         p={6}
         gap={6}
       >
@@ -41,7 +42,12 @@ export function Layout({ children }: React.PropsWithChildren<{}>) {
           </Center>
         </GridItem>
         <GridItem>
-          <NeighborhoodSelector />
+          <HStack>
+            <Heading lineHeight="67px" size="md" fontWeight="normal" marginRight="20px">
+              <Link to="/metrics">Metrics</Link>
+            </Heading>
+            <NeighborhoodSelector />
+          </HStack>
         </GridItem>
       </Grid>
       <Container pb={6} maxW="container.lg">

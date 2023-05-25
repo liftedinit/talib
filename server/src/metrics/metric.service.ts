@@ -3,7 +3,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateMetricDto } from "../dto/metric.dto";
 import { Metric } from "../database/entities/metric.entity";
-import { MetricDetails } from "../database/entities/metric-details.entity";
 
 @Injectable()
 export class MetricService {
@@ -12,8 +11,6 @@ export class MetricService {
   constructor(
     @InjectRepository(Metric)
     private metricRepository: Repository<Metric>,
-    @InjectRepository(MetricDetails)
-    private metricDetailsRepository: Repository<MetricDetails>,
   ) {}
 
   findAll(): Promise<Metric[]> {

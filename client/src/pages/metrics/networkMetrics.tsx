@@ -25,6 +25,7 @@ export function NetworkMetrics() {
   const getUsedDiskSpace = getUsedDiskSpaceQuery.data; 
   const getTotalDiskSpace = getTotalDiskSpaceQuery.data; 
 
+
   let convertMemToGb = (b: number): number => {
     let gbValue = (b / (1000));
     return gbValue

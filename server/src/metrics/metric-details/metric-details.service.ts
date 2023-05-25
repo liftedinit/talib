@@ -9,6 +9,7 @@ import { Repository } from "typeorm";
 const username = process.env.GRAFANA_USERNAME;
 const password = process.env.GRAFANA_PASSWORD;
 const remoteApiUrl = process.env.GRAFANA_API_URL + "/api/ds/query";
+const promDatasourceId = process.env.PROMETHEUS_DATASOURCE_ID;
 
 @Injectable()
 export class MetricDetailsService {
@@ -46,7 +47,7 @@ export class MetricDetailsService {
           range: true,
           datasource: {
             type: "prometheus",
-            uid: "mJZsR1d4z",
+            uid: promDatasourceId,
           },
           expr: "",
           intervalMs: 15000,

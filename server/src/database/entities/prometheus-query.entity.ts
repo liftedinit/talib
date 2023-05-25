@@ -1,8 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { MetricDto, CreateMetricDto } from "../../dto/metric.dto";
+import {
+  PrometheusQueryDto,
+  CreatePrometheusQueryDto,
+} from "../../dto/prometheus-query.dto";
 
 @Entity()
-export class Metric {
+export class PrometheusQuery {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,7 +24,7 @@ export class Metric {
   @Column({ nullable: true })
   location: string;
 
-  intoDto(): MetricDto {
+  intoDto(): PrometheusQueryDto {
     return {
       id: this.id,
       name: this.name,
@@ -32,8 +35,8 @@ export class Metric {
     };
   }
 
-  public static createWithDto(dto: CreateMetricDto): Metric {
-    const result = new Metric();
+  public static createWithDto(dto: CreatePrometheusQueryDto): PrometheusQuery {
+    const result = new PrometheusQuery();
     result.name = dto.name;
     result.label = dto.label;
     result.query = dto.query;

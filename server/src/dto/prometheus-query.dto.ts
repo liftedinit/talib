@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class MetricDto {
+export class PrometheusQueryDto {
   @ApiProperty()
   id: number;
 
@@ -20,7 +20,7 @@ export class MetricDto {
   location?: string;
 }
 
-export class CreateMetricDto {
+export class CreatePrometheusQueryDto {
   @ApiProperty()
   name: string;
 

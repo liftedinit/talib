@@ -8,32 +8,35 @@ import {
   ParseIntPipe,
   Put,
 } from "@nestjs/common";
-import { MetricDto, CreateMetricDto } from "src/dto/metric.dto";
+import {
+  PrometheusQueryDto,
+  CreatePrometheusQueryDto,
+} from "../../dto/prometheus-query.dto";
 import { ApiResponse } from "@nestjs/swagger";
-import { MetricService } from "./metric.service";
+import { PrometheusQueryService } from "./query.service";
 
-@Controller("metrics")
-export class MetricController {
-  constructor(private metric: MetricService) {}
+@Controller("prometheusquery")
+export class PrometheusQueryController {
+  constructor(private metric: PrometheusQueryService) {}
 
   @Get()
   @ApiResponse({
     status: 200,
-    type: MetricDto,
+    type: PrometheusQueryDto,
     isArray: true,
     description: "List all metrics watched by this instance.",
   })
-  async findAll(): Promise<MetricDto[]> {
+  async findAll(): Promise<PrometheusQueryDto[]> {
     return (await this.metric.findAll()).map((x) => x.intoDto());
   }
 
   @Get(":name")
   @ApiResponse({
     status: 200,
-    type: MetricDto,
+    type: PrometheusQueryDto,
     description: "Show info about one metric watched by this instance.",
   })
-  async findOne(@Param("name") name: string): Promise<MetricDto> {
+  async findOne(@Param("name") name: string): Promise<PrometheusQueryDto> {
     const n = await this.metric.get(name);
     if (!n) {
       throw new NotFoundException();
@@ -43,7 +46,9 @@ export class MetricController {
   }
 
   @Put()
-  async create(@Body() body: CreateMetricDto): Promise<MetricDto> {
+  async create(
+    @Body() body: CreatePrometheusQueryDto,
+  ): Promise<PrometheusQueryDto> {
     return (await this.metric.create(body)).intoDto();
   }
 

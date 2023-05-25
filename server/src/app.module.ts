@@ -17,15 +17,15 @@ import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
 import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
-import { MetricModule } from "./metrics/metric.module";
-import { Metric } from "./database/entities/metric.entity";
+import { PrometheusQuery } from "./database/entities/prometheus-query.entity";
+import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
 
 @Module({
   controllers: [],
   providers: [Logger, NetworkService],
   imports: [
     AppConfigModule,
-    MetricModule,
+    PrometheusQueryModule,
     NeighborhoodModule,
     SchedulerConfigModule,
     ScheduleModule.forRoot(),
@@ -52,13 +52,13 @@ import { Metric } from "./database/entities/metric.entity";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, Metric],
+        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, PrometheusQuery],
         migrations: [],
         synchronize: true,
         ...db.config,
       }),
     }),
-    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, Metric]),
+    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, PrometheusQuery]),
     DataModule,
   ],
 })

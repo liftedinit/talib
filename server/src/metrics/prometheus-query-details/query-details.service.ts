@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { HttpService } from "@nestjs/axios";
 import { map, catchError } from "rxjs";
 import * as process from "process";
-import { Metric } from "../../database/entities/metric.entity";
+import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
 import { Repository } from "typeorm";
 
 const username = process.env.GRAFANA_USERNAME;
@@ -12,16 +12,16 @@ const remoteApiUrl = process.env.GRAFANA_API_URL + "/api/ds/query";
 const promDatasourceId = process.env.PROMETHEUS_DATASOURCE_ID;
 
 @Injectable()
-export class MetricDetailsService {
-  private readonly logger = new Logger(MetricDetailsService.name);
+export class PrometheusQueryDetailsService {
+  private readonly logger = new Logger(PrometheusQueryDetailsService.name);
 
   constructor(
-    @InjectRepository(Metric)
-    private metricRepository: Repository<Metric>,
+    @InjectRepository(PrometheusQuery)
+    private metricRepository: Repository<PrometheusQuery>,
     private httpService: HttpService,
   ) {}
 
-  async getPrometheusQuery(name: string): Promise<Metric> {
+  async getPrometheusQuery(name: string): Promise<PrometheusQuery> {
     const query = this.metricRepository
       .createQueryBuilder("n")
       .where({ name: name })
@@ -65,7 +65,7 @@ export class MetricDetailsService {
     return template;
   }
 
-  async getMetricCurrentValue(name: string, from: string, to: string) {
+  async getPrometheusQueryCurrentValue(name: string, from: string, to: string) {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
 
     return this.httpService
@@ -94,7 +94,7 @@ export class MetricDetailsService {
       );
   }
 
-  async getMetricSeries(name: string, from: string, to: string) {
+  async getPrometheusQuerySeries(name: string, from: string, to: string) {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
 
     return this.httpService

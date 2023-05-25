@@ -22,7 +22,7 @@ export function Layout({ children }: React.PropsWithChildren<{}>) {
         bg="white"
         shadow="lg"
         alignItems="center"
-        templateColumns="200px 1fr 400px"
+        templateColumns="200px 1fr 200px"
         p={6}
         gap={6}
       >

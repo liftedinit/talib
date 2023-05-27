@@ -2,6 +2,8 @@ import { get } from "utils";
 
 const PAGE = 1;
 const LIMIT = 25;
+const FROM = "now-60m";
+const TO = "now";
 
 export function getNeighborhoods() {
   return get("neighborhoods");
@@ -38,27 +40,23 @@ export function getNeighborhoodAddress(id: number, address: string) {
 }
 
 export function getManifestMetrics() {
-  return get(`metrics`)
+  return get(`prometheusquery`)
 }
 
 export function getManifestMetric(stat: string) {
-  return get(`metrics/${stat}`)
+  return get(`prometheusquery/${stat}`)
 }
 
-export function getManifestMetricCurrent(stat: string, from?: string, to?: string) {
-  if (from && to){
-    return get(`metrics/${stat}/current?from=${from}&to=${to}`);
-  }
-  else {
-    return get(`metrics/${stat}/current`);
-  }
+export function getManifestMetricCurrent(
+    stat: string, 
+    {from = FROM, to = TO } = {}
+  ) {
+    return get(`prometheusquery/${stat}/current`, { from, to });
 }
 
-export function getManifestMetricSeries(stat: string, from?: string, to?:string) {
-  if (from && to){
-    return get(`metrics/${stat}/series?from=${from}&to=${to}`);
-  }
-  else {
-    return get(`metrics/${stat}/series`);
-  }
+export function getManifestMetricSeries(
+  stat: string, 
+  {from = FROM, to = TO } = {}
+) {
+    return get(`prometheusquery/${stat}/series`, { from, to });
 }

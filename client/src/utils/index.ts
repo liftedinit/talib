@@ -41,3 +41,14 @@ export function get(path: string, params = {}) {
     throw new Error(`${res.statusText} (${res.status})`);
   };
 }
+
+
+export function convertMemToGb(b: number): number {
+  let gbValue = (b / (1000));
+  return gbValue
+}
+
+export function convertMemToTb(b: number): number {
+  let gbValue = (b / (1000 * 1000));
+  return gbValue
+}

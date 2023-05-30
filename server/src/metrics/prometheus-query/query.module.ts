@@ -6,10 +6,20 @@ import { PrometheusQueryService } from "./query.service";
 import { PrometheusQueryController } from "./query.controller";
 import { PrometheusQueryDetailsService } from "../prometheus-query-details/query-details.service";
 import { PrometheusQueryDetailsController } from "../prometheus-query-details/query-details.controller";
+import { PrometheusConfigModule } from "../../config/prometheus/configuration.module";
+import { PrometheusConfigService } from "../../config/prometheus/configuration.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PrometheusQuery]), HttpModule],
-  providers: [PrometheusQueryService, PrometheusQueryDetailsService],
+  imports: [
+    TypeOrmModule.forFeature([PrometheusQuery]),
+    HttpModule,
+    PrometheusConfigModule,
+  ],
+  providers: [
+    PrometheusQueryService,
+    PrometheusQueryDetailsService,
+    PrometheusConfigService,
+  ],
   controllers: [PrometheusQueryController, PrometheusQueryDetailsController],
   exports: [PrometheusQueryService],
 })

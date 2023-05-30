@@ -36,7 +36,7 @@ export function NetworkMetrics() {
   }
 
   return (
-    <><Stack direction="row" mt={6}>
+    <><Stack direction="row" mt={2}>
         <Stat label="Total Nodes" value={getNodeCount} />
         <Stat label="Total CPU Cores" value={getCpuCores} />
         <Stat label="Total Blocks Produced" value={parseInt(getTotalBlocks)} />
@@ -49,12 +49,12 @@ export function NetworkMetrics() {
         <Stat label="Free Disk Space" value={Number(getFreeDiskSpace / 1000).toFixed(2) + " TB"} />
         <Stat label="Used Disk Space" value={Number(getUsedDiskSpace / 1000).toFixed(2) + " TB"} />
       </Stack>
-      <SimpleGrid columns={1} gap="6" mt={6}>
+      <SimpleGrid columns={1} gap="6" mt={2}>
         <Stack direction="row" mt={6}>
           <MetricStat label="Free Memory" metric="freememory" conversion={convertMemToTb} from={"now-7d"} to={"now"} fixedDecimals="5" unit="TB" />
         </Stack>
         <Box bg="white">
-          <MetricChart label="Free Memory" metric="freememory" conversion={convertMemToTb} from={"now-15d"} to={"now"} fixedDecimals="0" />
+          <MetricChart label="Free Memory" metric="freememory" conversion={convertMemToTb} from={"now-15d"} to={"now"} fixedDecimals="0" intervalMs="50000" maxDataPoints="3000" />
         </Box>
       </SimpleGrid>
   </>

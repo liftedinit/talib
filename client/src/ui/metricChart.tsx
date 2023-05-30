@@ -13,10 +13,23 @@ interface StatProps {
   from?: string;
   to?: string;
   fixedDecimals?: number;
+  intervalMs?: number;
+  maxDataPoints?: number;
 }
 
-export function MetricChart({label, metric, conversion, from, to, xlabel, ylabel, fixedDecimals}: StatProps) {
-  const { data: queryData, isLoading } = useQuery([metric + "series"], getManifestMetricSeries(metric,{from: from, to: to}));
+export function MetricChart({
+  label, 
+  metric, 
+  conversion, 
+  from, 
+  to, 
+  xlabel, 
+  ylabel, 
+  fixedDecimals,
+  intervalMs,
+  maxDataPoints,
+}: StatProps) {
+  const { data: queryData, isLoading } = useQuery([metric + "series"], getManifestMetricSeries(metric,{from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints}));
 
   let chartData = {}
 

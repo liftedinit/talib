@@ -2,20 +2,16 @@ import { Injectable, ForbiddenException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { HttpService } from "@nestjs/axios";
 import { map, catchError } from "rxjs";
-import * as process from "process";
 import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { PrometheusConfigService } from "../../config/prometheus/configuration.service";
 import { Repository } from "typeorm";
-
-const username = process.env.GRAFANA_USERNAME;
-const password = process.env.GRAFANA_PASSWORD;
-const remoteApiUrl = process.env.GRAFANA_API_URL + "/api/ds/query";
-const promDatasourceId = process.env.PROMETHEUS_DATASOURCE_ID;
 
 @Injectable()
 export class PrometheusQueryDetailsService {
   private readonly logger = new Logger(PrometheusQueryDetailsService.name);
 
   constructor(
+    private prometheusConfig: PrometheusConfigService,
     @InjectRepository(PrometheusQuery)
     private metricRepository: Repository<PrometheusQuery>,
     private httpService: HttpService,
@@ -38,8 +34,13 @@ export class PrometheusQueryDetailsService {
     return one;
   }
 
-  constructGrafanaQuery(prometheusQuery: string, from: string, to: string) {
-    this.logger.debug(`${prometheusQuery}`);
+  constructGrafanaQuery(
+    prometheusQuery: string,
+    from: string,
+    to: string,
+    intervalMs: number,
+    maxDataPoints: number,
+  ) {
     const template = {
       queries: [
         {
@@ -47,11 +48,11 @@ export class PrometheusQueryDetailsService {
           range: true,
           datasource: {
             type: "prometheus",
-            uid: promDatasourceId,
+            uid: this.prometheusConfig.promDatasourceId,
           },
           expr: "",
-          intervalMs: 15000,
-          maxDataPoints: 3328,
+          intervalMs: intervalMs,
+          maxDataPoints: maxDataPoints,
         },
       ],
       from: "",
@@ -61,21 +62,32 @@ export class PrometheusQueryDetailsService {
     template.queries[0].expr = prometheusQuery;
     template.from = from;
     template.to = to;
-
     return template;
   }
 
-  async getPrometheusQueryCurrentValue(name: string, from: string, to: string) {
+  async getPrometheusQueryCurrentValue(
+    name: string,
+    from: string,
+    to: string,
+    intervalMs: number,
+    maxDataPoints: number,
+  ) {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
 
     return this.httpService
       .post(
-        remoteApiUrl,
-        this.constructGrafanaQuery(getPrometheusQuery.query, from, to),
+        this.prometheusConfig.remoteApiUrl,
+        this.constructGrafanaQuery(
+          getPrometheusQuery.query,
+          from,
+          to,
+          intervalMs,
+          maxDataPoints,
+        ),
         {
           headers: {
             Authorization: `Basic ${Buffer.from(
-              `${username}:${password}`,
+              `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
             ).toString("base64")}`,
           },
         },
@@ -94,17 +106,29 @@ export class PrometheusQueryDetailsService {
       );
   }
 
-  async getPrometheusQuerySeries(name: string, from: string, to: string) {
+  async getPrometheusQuerySeries(
+    name: string,
+    from: string,
+    to: string,
+    intervalMs: number,
+    maxDataPoints: number,
+  ) {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
 
     return this.httpService
       .post(
-        remoteApiUrl,
-        this.constructGrafanaQuery(getPrometheusQuery.query, from, to),
+        this.prometheusConfig.remoteApiUrl,
+        this.constructGrafanaQuery(
+          getPrometheusQuery.query,
+          from,
+          to,
+          intervalMs,
+          maxDataPoints,
+        ),
         {
           headers: {
             Authorization: `Basic ${Buffer.from(
-              `${username}:${password}`,
+              `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
             ).toString("base64")}`,
           },
         },
@@ -116,7 +140,8 @@ export class PrometheusQueryDetailsService {
         }),
       )
       .pipe(
-        catchError(() => {
+        catchError((error) => {
+          console.log("Error:", error.message);
           throw new ForbiddenException("API not available");
         }),
       );

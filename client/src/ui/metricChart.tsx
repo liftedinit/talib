@@ -1,13 +1,12 @@
 import Chart from 'react-apexcharts';
 import { useQuery } from "@tanstack/react-query";
 import { getManifestMetricSeries } from "api";
-import { convertMemToGb, convertMemToTb } from "utils";
 import { Spinner, Box } from "@liftedinit/ui";
 
 interface StatProps {
   label: string;
-  xlabel?: string,
-  ylabel?: string,
+  xtitle?: string,
+  ytitle?: string,
   metric: string;
   conversion?: Function;
   from?: string;
@@ -23,8 +22,8 @@ export function MetricChart({
   conversion, 
   from, 
   to, 
-  xlabel, 
-  ylabel, 
+  xtitle, 
+  ytitle, 
   fixedDecimals,
   intervalMs,
   maxDataPoints,
@@ -36,10 +35,20 @@ export function MetricChart({
   if (!isLoading) {
     chartData = {
       options: {
+        colors: ["#38C7B4"],
+        dataLabels: { enabled: false },
+        chart: { toolbar: { show: false } },
         stroke: {
           curve: 'smooth',
         },
         xaxis: {
+          title: { 
+            text: xtitle || "",
+            style: {
+              fontSize: "1.25em",
+              fontFamily: "Rubik, sans-serif",
+            },
+          },
           type: 'datetime',
           categories: queryData[0]?.slice() || [],
           labels: {
@@ -51,8 +60,15 @@ export function MetricChart({
             }
         }
         },
-        colors: ["#38C7B4"],
-        chart: { toolbar: { show: false } },
+        yaxis: {
+          title: { 
+            text: ytitle || "",
+            style: {
+              fontSize: "1.25em",
+              fontFamily: "Rubik, sans-serif",
+            },
+          },
+        }
       },
       series: [
         {
@@ -68,7 +84,9 @@ export function MetricChart({
     {isLoading ? (
       <Spinner />
     ) : ( 
-    <Chart type="line" series={chartData.series} options={chartData.options} />
+    <Box bg="white" p={4}>
+      <Chart type="area" series={chartData.series} options={chartData.options} />
+    </Box>
     )}
     </>
   );

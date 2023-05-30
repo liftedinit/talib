@@ -62,6 +62,7 @@ export class PrometheusQueryDetailsService {
     template.queries[0].expr = prometheusQuery;
     template.from = from;
     template.to = to;
+    console.log(template);
     return template;
   }
 
@@ -114,7 +115,6 @@ export class PrometheusQueryDetailsService {
     maxDataPoints: number,
   ) {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
-
     return this.httpService
       .post(
         this.prometheusConfig.remoteApiUrl,

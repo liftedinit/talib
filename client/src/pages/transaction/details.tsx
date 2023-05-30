@@ -12,10 +12,10 @@ import {
 const methodDetails: {
   [method: string]: (data: UseQueryResult) => TableObject;
 } = {
-  "account.multisigApprove": multisigAction,
-  "account.multisigReject": multisigAction,
-  "account.multisigRevoke": multisigAction,
   "account.multisigSubmitTransaction": multisigSubmit,
+  "account.multisigApprove": multisigAction,
+  "account.multisigRevoke": multisigAction,
+  "account.multisigExecute": multisigAction,
   "account.multisigWithdraw": multisigAction,
   "idstore.store": idStoreStore,
   "ledger.send": ledgerSend,

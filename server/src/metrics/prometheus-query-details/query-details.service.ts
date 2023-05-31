@@ -62,7 +62,6 @@ export class PrometheusQueryDetailsService {
     template.queries[0].expr = prometheusQuery;
     template.from = from;
     template.to = to;
-    console.log(template);
     return template;
   }
 

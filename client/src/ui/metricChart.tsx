@@ -4,7 +4,8 @@ import { getManifestMetricSeries } from "api";
 import { 
   Center,
   Spinner, 
-  Box,   
+  Box,
+  Text 
 } from "@liftedinit/ui";
 
 interface StatProps {
@@ -34,10 +35,30 @@ export function MetricChart({
   intervalMs,
   maxDataPoints,
 }: StatProps) {
-  const { data: queryData, isLoading } = useQuery([metric + "series"], getManifestMetricSeries(metric,{from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints}));
+  const { data: queryData, isError, isLoading } = useQuery([metric + "series"], getManifestMetricSeries(metric,{from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints}));
   let chartData = {}
+  let categoriesData = []
+  let seriesData = []
 
-  if (!isLoading) {
+  if (isError || !queryData) {
+    categoriesData = [];
+    seriesData = [];
+  }
+
+  if (!isLoading && queryData) {
+    categoriesData = queryData[0]?.slice() || [];
+
+    if (conversion && queryData != null) {
+      seriesData = queryData[1]?.map(conversion)?.map((item) => Number(item.toFixed(fixedDecimals))) || [];
+    }
+    else if (!conversion && queryData != null ) {
+      seriesData = queryData[1]?.map((item) => Number(item.toFixed(fixedDecimals))) || [];
+    }
+    else {
+      seriesData = [];
+    }
+    
+    
     chartData = {
       options: {
         colors: ["#38C7B4"],
@@ -55,12 +76,12 @@ export function MetricChart({
             },
           },
           type: 'datetime',
-          categories: queryData[0]?.slice() || [],
+          categories: categoriesData,
           labels: {
             datetimeFormatter: {
                 year: 'yyyy',
-                month: 'MMM \'yy',
-                day: 'dd MMM',
+                month: 'MM \'yy',
+                day: 'MM/dd',
                 hour: 'HH:mm',
             }
         }
@@ -78,7 +99,7 @@ export function MetricChart({
       series: [
         {
           name: label,
-          data: queryData[1]?.map(conversion)?.map((item) => Number(item.toFixed(fixedDecimals))) || []
+          data: seriesData,
         },
       ],
     };
@@ -86,7 +107,7 @@ export function MetricChart({
 
   return (
     <>
-    {isLoading ? (
+    {isLoading || isError ? (
     <Box bg="white" p={4}>
       <Center>
         <Spinner />
@@ -96,6 +117,13 @@ export function MetricChart({
     <Box bg="white" p={4}>
       <Chart type={type} series={chartData.series} options={chartData.options} />
     </Box>
+    )}
+    {isError && (
+      <Box bg="white" p={4}>
+        <Center>
+          <Text color="brand.teal" fontWeight="bold">Error loading chart data</Text>
+        </Center>
+      </Box>
     )}
     </>
   );

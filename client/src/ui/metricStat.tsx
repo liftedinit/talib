@@ -20,16 +20,20 @@ export function MetricStat({ label, metric, conversion, from, to, fixedDecimals,
   let metricValues: Array<any> = [];
   let metricValue: number | string = "";
 
+
   if (!isLoading) {
     metricValues?.push(queryData);
-    console.log(queryData);
-    if (conversion) {
+    if (conversion && queryData != null) {
       metricValue = metricValues?.map(conversion)?.map((item) => Number(item.toFixed(fixedDecimals))) || "N/A";
     }
-    else {
+    else if (!conversion && queryData != null) {
       metricValue = metricValues?.map((item) => Number(item.toFixed(fixedDecimals))) || "N/A";
     }
+    else {
+      metricValue = "N/A";
+    }
   }
+
 
   return (
     <>

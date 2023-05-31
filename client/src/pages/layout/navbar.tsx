@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Center,
   Container,
   Grid,
@@ -44,7 +45,9 @@ export function Navbar() {
     <GridItem>
       <HStack>
         <Heading lineHeight="67px" size="md" fontWeight="normal" marginRight="20px">
+          <Button colorScheme='brand.teal' size="md">
           <Link to="/metrics">Metrics</Link>
+          </Button>
         </Heading>
         <NeighborhoodSelector />
       </HStack>

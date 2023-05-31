@@ -1,10 +1,15 @@
 import Chart from 'react-apexcharts';
 import { useQuery } from "@tanstack/react-query";
 import { getManifestMetricSeries } from "api";
-import { Spinner, Box } from "@liftedinit/ui";
+import { 
+  Center,
+  Spinner, 
+  Box,   
+} from "@liftedinit/ui";
 
 interface StatProps {
   label: string;
+  type: string;
   xtitle?: string,
   ytitle?: string,
   metric: string;
@@ -18,6 +23,7 @@ interface StatProps {
 
 export function MetricChart({
   label, 
+  type, 
   metric, 
   conversion, 
   from, 
@@ -29,7 +35,6 @@ export function MetricChart({
   maxDataPoints,
 }: StatProps) {
   const { data: queryData, isLoading } = useQuery([metric + "series"], getManifestMetricSeries(metric,{from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints}));
-
   let chartData = {}
 
   if (!isLoading) {
@@ -82,10 +87,14 @@ export function MetricChart({
   return (
     <>
     {isLoading ? (
-      <Spinner />
+    <Box bg="white" p={4}>
+      <Center>
+        <Spinner />
+      </Center>
+    </Box>
     ) : ( 
     <Box bg="white" p={4}>
-      <Chart type="area" series={chartData.series} options={chartData.options} />
+      <Chart type={type} series={chartData.series} options={chartData.options} />
     </Box>
     )}
     </>

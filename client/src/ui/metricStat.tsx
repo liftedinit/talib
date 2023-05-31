@@ -1,7 +1,7 @@
 import { Stat as BaseStat, StatLabel, StatNumber } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { getManifestMetricCurrent } from "api";
-import { Spinner } from "@liftedinit/ui";
+import { Box, Center, Spinner } from "@liftedinit/ui";
 
 interface StatProps {
   label: string;
@@ -10,7 +10,7 @@ interface StatProps {
   from?: string;
   to?: string;
   fixedDecimals?: number;
-  unit: string;
+  unit?: string;
 }
 
 export function MetricStat({ label, metric, conversion, from, to, fixedDecimals, unit }: StatProps) {
@@ -23,13 +23,22 @@ export function MetricStat({ label, metric, conversion, from, to, fixedDecimals,
   if (!isLoading) {
     metricValues?.push(queryData);
     console.log(queryData);
-    metricValue = metricValues?.map(conversion)?.map((item) => Number(item.toFixed(fixedDecimals))) || "N/A";
+    if (conversion) {
+      metricValue = metricValues?.map(conversion)?.map((item) => Number(item.toFixed(fixedDecimals))) || "N/A";
+    }
+    else {
+      metricValue = metricValues?.map((item) => Number(item.toFixed(fixedDecimals))) || "N/A";
+    }
   }
 
   return (
     <>
       {isLoading ? (
-        <Spinner />
+      <Box bg="white" p={4}>
+        <Center>
+          <Spinner />
+        </Center>
+      </Box>
       ) : (
       <BaseStat bg="white" p={6}>
         <StatLabel>{label}</StatLabel>

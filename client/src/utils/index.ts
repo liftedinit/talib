@@ -43,12 +43,22 @@ export function get(path: string, params = {}) {
 }
 
 
-export function convertMemToGb(b: number): number {
+export function convertBytesToGb(b: number): number {
   let gbValue = (b / (1000));
   return gbValue
 }
 
-export function convertMemToTb(b: number): number {
+export function convertBytesToTb(b: number): number {
   let gbValue = (b / (1000 * 1000));
+  return gbValue
+}
+
+export function convertGbToTb(b: number): number {
+  let gbValue = (b / (1000));
+  return gbValue
+}
+
+export function convertTbToPb(b: number): number {
+  let gbValue = (b / (1000 * 1000 ));
   return gbValue
 }

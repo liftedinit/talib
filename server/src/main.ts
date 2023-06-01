@@ -1,4 +1,4 @@
-import { LogLevel } from "@nestjs/common";
+import { LogLevel, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
@@ -10,6 +10,7 @@ async function bootstrap() {
   });
   const appConfig: AppConfigService = app.get(AppConfigService);
 
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.setGlobalPrefix("/api/v1");
   app.useLogger([
     ...(appConfig.debug ? ["debug" as LogLevel] : []),

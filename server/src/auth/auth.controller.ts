@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { SignInDto } from "../dto/auth.dto";
-import { AuthRequired } from "../utils/decorators";
+import { AuthRequired, Public } from "../utils/decorators";
 import { AuthGuard } from "./auth.guard";
 import { AuthService } from "./auth.service";
 
@@ -17,6 +17,7 @@ import { AuthService } from "./auth.service";
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post("login")
   signIn(@Body() signInDto: SignInDto) {

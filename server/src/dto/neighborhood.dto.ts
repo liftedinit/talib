@@ -1,4 +1,6 @@
+import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsUrl } from "class-validator";
 
 export class NeighborhoodDto {
   @ApiProperty()
@@ -35,12 +37,15 @@ export class NeighborhoodDetailsDto extends NeighborhoodDto {
 }
 
 export class CreateNeighborhoodDto {
+  @IsUrl()
   @ApiProperty()
   url: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   name: string;
 
+  @Optional()
   @ApiProperty({ required: false })
   description?: string;
 }

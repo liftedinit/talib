@@ -71,6 +71,7 @@ export class NeighborhoodService {
   }
 
   async create(dto: CreateNeighborhoodDto): Promise<Neighborhood> {
+    this.logger.debug(`create(${JSON.stringify(dto)})`);
     const url = dto.url;
     const network = await this.network.forUrl(url);
     const status = (await network.base.status()).status;

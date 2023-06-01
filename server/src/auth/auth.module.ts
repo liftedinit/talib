@@ -18,7 +18,7 @@ import { AuthService } from "./auth.service";
       useFactory: (jwtConfigService) => ({
         global: true,
         secret: jwtConfigService.secret,
-        signOptions: { expiresIn: "60s" },
+        signOptions: { expiresIn: "5m" },
       }),
     }),
   ],

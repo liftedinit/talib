@@ -1,8 +1,11 @@
 import { Logger, Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
+import { AuthModule } from "./auth/auth.module";
+import { AdminConfigModule } from "./config/admin/configuration.module";
 import { AppConfigModule } from "./config/app/configuration.module";
 import { AppConfigService } from "./config/app/configuration.service";
 import { DatabaseConfigModule } from "./config/database/configuration.module";
@@ -19,6 +22,7 @@ import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
 import { PrometheusQuery } from "./database/entities/prometheus-query.entity";
 import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
+import { UsersModule } from "./users/users.module";
 
 @Module({
   controllers: [],
@@ -28,8 +32,8 @@ import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
     PrometheusQueryModule,
     NeighborhoodModule,
     SchedulerConfigModule,
+    ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
-    SchedulerModule,
     ServeStaticModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [AppConfigService],
@@ -48,6 +52,7 @@ import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
           : [];
       },
     }),
+
     TypeOrmModule.forRootAsync({
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
@@ -59,7 +64,16 @@ import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
       }),
     }),
     TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, PrometheusQuery]),
+
+    AdminConfigModule,
+    AppConfigModule,
+    SchedulerConfigModule,
+
+    AuthModule,
     DataModule,
+    NeighborhoodModule,
+    SchedulerModule,
+    UsersModule,
   ],
 })
 export class AppModule {

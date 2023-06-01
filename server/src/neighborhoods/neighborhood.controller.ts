@@ -14,12 +14,14 @@ import {
   NeighborhoodDetailsDto,
   NeighborhoodDto,
 } from "../dto/neighborhood.dto";
+import { Public } from "../utils/decorators";
 import { NeighborhoodService } from "./neighborhood.service";
 
 @Controller("neighborhoods")
 export class NeighborhoodController {
   constructor(private neighborhood: NeighborhoodService) {}
 
+  @Public()
   @Get()
   @ApiResponse({
     status: 200,
@@ -50,6 +52,7 @@ export class NeighborhoodController {
 
   @Put()
   async create(@Body() body: CreateNeighborhoodDto): Promise<NeighborhoodDto> {
+    console.log("body", body);
     return (await this.neighborhood.create(body)).intoDto();
   }
 

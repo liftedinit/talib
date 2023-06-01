@@ -1,8 +1,11 @@
 import { Logger, Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
+import { AuthModule } from "./auth/auth.module";
+import { AdminConfigModule } from "./config/admin/configuration.module";
 import { AppConfigModule } from "./config/app/configuration.module";
 import { AppConfigService } from "./config/app/configuration.service";
 import { DatabaseConfigModule } from "./config/database/configuration.module";
@@ -17,16 +20,14 @@ import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
 import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
+import { UsersModule } from "./users/users.module";
 
 @Module({
   controllers: [],
   providers: [Logger, NetworkService],
   imports: [
-    AppConfigModule,
-    NeighborhoodModule,
-    SchedulerConfigModule,
+    ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
-    SchedulerModule,
     ServeStaticModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [AppConfigService],
@@ -45,6 +46,7 @@ import { SchedulerModule } from "./services/scheduler/scheduler.module";
           : [];
       },
     }),
+
     TypeOrmModule.forRootAsync({
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
@@ -56,7 +58,16 @@ import { SchedulerModule } from "./services/scheduler/scheduler.module";
       }),
     }),
     TypeOrmModule.forFeature([Event, Transaction, TransactionDetails]),
+
+    AdminConfigModule,
+    AppConfigModule,
+    SchedulerConfigModule,
+
+    AuthModule,
     DataModule,
+    NeighborhoodModule,
+    SchedulerModule,
+    UsersModule,
   ],
 })
 export class AppModule {

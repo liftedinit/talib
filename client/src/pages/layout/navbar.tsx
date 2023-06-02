@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Center,
-  Container,
   Grid,
   GridItem,
   Heading,
@@ -23,7 +22,7 @@ export function Navbar() {
     bg="white"
     shadow="lg"
     alignItems="center"
-    templateColumns="200px 1fr 200px"
+    templateColumns="325px 1fr 325px"
     p={6}
     gap={6}
     >
@@ -37,7 +36,7 @@ export function Navbar() {
     </GridItem>
     <GridItem>
       <Center>
-        <Box w="100%" maxW="container.lg">
+        <Box w="100%" maxW="container.xl">
           <Search />
         </Box>
       </Center>

@@ -17,9 +17,6 @@ export class PrometheusQueryDto {
 
   @ApiProperty({ required: false })
   description?: string;
-
-  @ApiProperty({ required: false })
-  location?: string;
 }
 
 export class CreatePrometheusQueryDto {
@@ -38,8 +35,4 @@ export class CreatePrometheusQueryDto {
   @Optional()
   @ApiProperty({ required: false })
   description?: string;
-
-  @Optional()
-  @ApiProperty({ required: false })
-  location?: string;
 }

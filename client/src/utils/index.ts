@@ -43,12 +43,17 @@ export function get(path: string, params = {}) {
 }
 
 
-export function convertBytesToGb(b: number): number {
-  let gbValue = (b / (1000));
+export function convertBytesToMb(b: number): number {
+  let gbValue = (b / (1000 * 1000));
   return gbValue
 }
 
-export function convertBytesToTb(b: number): number {
+export function convertBytesToGb(b: number): number {
+  let gbValue = (b / (1000 * 1000 * 1000));
+  return gbValue
+}
+
+export function convertKbToTb(b: number): number {
   let gbValue = (b / (1000 * 1000));
   return gbValue
 }

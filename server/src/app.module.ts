@@ -29,8 +29,8 @@ import { UsersModule } from "./users/users.module";
   providers: [Logger, NetworkService],
   imports: [
     AppConfigModule,
-    PrometheusQueryModule,
     NeighborhoodModule,
+    PrometheusQueryModule,
     SchedulerConfigModule,
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
@@ -64,11 +64,9 @@ import { UsersModule } from "./users/users.module";
       }),
     }),
     TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, PrometheusQuery]),
-
     AdminConfigModule,
     AppConfigModule,
     SchedulerConfigModule,
-
     AuthModule,
     DataModule,
     NeighborhoodModule,

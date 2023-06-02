@@ -10,7 +10,7 @@ import {
 
 interface StatProps {
   label: string;
-  type: string;
+  type: any;
   xtitle?: string,
   ytitle?: string,
   metric: string;
@@ -21,6 +21,12 @@ interface StatProps {
   intervalMs?: number;
   maxDataPoints?: number;
 }
+
+interface ChartData {
+  series: { name: string; data: number[] }[];
+  options: any;
+}
+
 
 export function MetricChart({
   label, 
@@ -36,9 +42,12 @@ export function MetricChart({
   maxDataPoints,
 }: StatProps) {
   const { data: queryData, isError, isLoading } = useQuery([metric + "series"], getManifestMetricSeries(metric,{from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints}));
-  let chartData = {}
-  let categoriesData = []
-  let seriesData = []
+  let chartData: ChartData = {
+    series: [] ,
+    options: undefined
+  }
+  let categoriesData: (number|string)[] = []
+  let seriesData: number[] = []
 
   if (isError || !queryData) {
     categoriesData = [];
@@ -49,15 +58,14 @@ export function MetricChart({
     categoriesData = queryData[0]?.slice() || [];
 
     if (conversion && queryData != null) {
-      seriesData = queryData[1]?.map(conversion)?.map((item) => Number(item.toFixed(fixedDecimals))) || [];
+      seriesData = queryData[1]?.map(conversion)?.map((item: number) => Number((item).toFixed(fixedDecimals))) || [];
     }
     else if (!conversion && queryData != null ) {
-      seriesData = queryData[1]?.map((item) => Number(item.toFixed(fixedDecimals))) || [];
+      seriesData = queryData[1]?.map((item: number) => Number((item).toFixed(fixedDecimals))) || [];
     }
     else {
       seriesData = [];
     }
-    
     
     chartData = {
       options: {
@@ -78,11 +86,12 @@ export function MetricChart({
           type: 'datetime',
           categories: categoriesData,
           labels: {
+            overflow: 'scroll',
             datetimeFormatter: {
-                year: 'yyyy',
-                month: 'MM \'yy',
-                day: 'MM/dd',
-                hour: 'HH:mm',
+              year: 'yy',
+              month: 'MMM',
+              day: 'dd',
+              hour: 'HH:mm',
             }
         }
         },
@@ -119,7 +128,7 @@ export function MetricChart({
     </Box>
     )}
     {isError && (
-      <Box bg="white" p={4}>
+      <Box bg="white" p={4} mt={10}>
         <Center>
           <Text color="brand.teal" fontWeight="bold">Error loading chart data</Text>
         </Center>

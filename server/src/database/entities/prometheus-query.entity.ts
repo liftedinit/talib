@@ -21,9 +21,6 @@ export class PrometheusQuery {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ nullable: true })
-  location: string;
-
   intoDto(): PrometheusQueryDto {
     return {
       id: this.id,
@@ -31,7 +28,6 @@ export class PrometheusQuery {
       label: this.label,
       query: this.query,
       description: this.description,
-      location: this.location,
     };
   }
 
@@ -41,7 +37,6 @@ export class PrometheusQuery {
     result.label = dto.label;
     result.query = dto.query;
     result.description = dto.description;
-    result.location = dto.location;
     return result;
   }
 }

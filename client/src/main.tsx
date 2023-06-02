@@ -11,8 +11,10 @@ import {
   Blocks,
   Home,
   Layout,
+  Metrics,
   Transaction,
   Transactions,
+  WideLayout,
 } from "pages";
 
 const queryClient = new QueryClient();
@@ -44,6 +46,13 @@ ReactDOM.render(
                 <Route path="addresses">
                   <Route path=":address" element={<Address />} />
                 </Route>
+              </Route>
+                <Route path="metrics" index element={
+                  <WideLayout>
+                    <Metrics />
+                  </WideLayout>
+                } 
+              >
               </Route>
             </Routes>
           </HashRouter>

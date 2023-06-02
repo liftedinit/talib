@@ -41,3 +41,29 @@ export function get(path: string, params = {}) {
     throw new Error(`${res.statusText} (${res.status})`);
   };
 }
+
+
+export function convertBytesToMb(b: number): number {
+  let gbValue = (b / (1000 * 1000));
+  return gbValue
+}
+
+export function convertBytesToGb(b: number): number {
+  let gbValue = (b / (1000 * 1000 * 1000));
+  return gbValue
+}
+
+export function convertKbToTb(b: number): number {
+  let gbValue = (b / (1000 * 1000));
+  return gbValue
+}
+
+export function convertGbToTb(b: number): number {
+  let gbValue = (b / (1000));
+  return gbValue
+}
+
+export function convertTbToPb(b: number): number {
+  let gbValue = (b / (1000 * 1000 ));
+  return gbValue
+}

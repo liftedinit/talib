@@ -20,12 +20,18 @@ import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
 import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
+import { PrometheusQuery } from "./database/entities/prometheus-query.entity";
+import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
 import { UsersModule } from "./users/users.module";
 
 @Module({
   controllers: [],
   providers: [Logger, NetworkService],
   imports: [
+    AppConfigModule,
+    NeighborhoodModule,
+    PrometheusQueryModule,
+    SchedulerConfigModule,
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
     ServeStaticModule.forRootAsync({
@@ -51,18 +57,16 @@ import { UsersModule } from "./users/users.module";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails],
+        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, PrometheusQuery],
         migrations: [],
         synchronize: true,
         ...db.config,
       }),
     }),
-    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails]),
-
+    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, PrometheusQuery]),
     AdminConfigModule,
     AppConfigModule,
     SchedulerConfigModule,
-
     AuthModule,
     DataModule,
     NeighborhoodModule,

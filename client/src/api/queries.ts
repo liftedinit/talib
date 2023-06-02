@@ -2,6 +2,10 @@ import { get } from "utils";
 
 const PAGE = 1;
 const LIMIT = 25;
+const FROM = "now-60m";
+const TO = "now";
+const INTERVALMS = 30000;
+const MAXDATAPOINTS = 3000;
 
 export function getNeighborhoods() {
   return get("neighborhoods");
@@ -35,4 +39,26 @@ export function getNeighborhoodTransaction(id: number, hash: string) {
 
 export function getNeighborhoodAddress(id: number, address: string) {
   return get(`neighborhoods/${id}/addresses/${address}`);
+}
+
+export function getManifestMetrics() {
+  return get(`prometheusquery`)
+}
+
+export function getManifestMetric(stat: string) {
+  return get(`prometheusquery/${stat}`)
+}
+
+export function getManifestMetricCurrent(
+    stat: string, 
+    {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
+  ) {
+    return get(`prometheusquery/${stat}/current`, { from, to, intervalMs, maxDataPoints });
+}
+
+export function getManifestMetricSeries(
+  stat: string, 
+  {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
+) {
+    return get(`prometheusquery/${stat}/series`, { from, to, intervalMs, maxDataPoints });
 }

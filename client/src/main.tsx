@@ -47,10 +47,10 @@ ReactDOM.render(
                   <Route path=":address" element={<Address />} />
                 </Route>
               </Route>
-                <Route path="metrics" index element={
-                  <WideLayout>
-                    <Metrics />
-                  </WideLayout>
+              <Route path="metrics" element={
+                <WideLayout>
+                  <Metrics />
+                </WideLayout>
                 } 
               >
               </Route>

@@ -6,7 +6,7 @@ import {
   Pagination,
 } from "nestjs-typeorm-paginate";
 
-import { Repository } from "typeorm";
+import { Repository, LessThan, MoreThan } from "typeorm";
 import { Metric as MetricEntity } from "../database/entities/metric.entity";
 import { PrometheusQueryDetailsService } from "./prometheus-query-details/query-details.service";
 
@@ -37,26 +37,47 @@ export class MetricsService {
     return await paginate(query, options);
   }
 
-  public async latestMetric(
-    prometheusQueryId: number,
+  async getCurrent(name: string): Promise<MetricEntity | null> {
+    const query = this.metricRepository
+      .createQueryBuilder("n")
+      .where({ name: name })
+      .orderBy("m.timestamp", "DESC")
+      .limit(1);
+
+    this.logger.debug(`getCurrent(${name}): \`${query.getQuery()}\``);
+
+    const one = await query.getOne();
+
+    if (!one) {
+      return null;
+    }
+
+    return one;
+  }
+
+  async getSeries(
+    name: string,
+    from: Date,
+    to: Date,
   ): Promise<MetricEntity | null> {
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where({ neighborhood: { id: prometheusQueryId } })
-      .orderBy("m.id", "DESC")
-      .limit(1);
+      .where({ name: name })
+      .where("m.timestamp BETWEEN :to AND :from", {
+        to,
+        from,
+      })
+      .orderBy("m.timestamp", "DESC");
+    // .limit(1);
+    this.logger.debug(`getPrevious(${name}): \`${query.getQuery()}\``);
 
-    this.logger.debug(
-      `prometheusQueryId(${prometheusQueryId}: ${query.getQuery()}`,
-    );
+    const one = await query.getOne();
 
-    // // Query prometheus
-    // const latestMetric =
-    //   this.prometheusQueryDetails.getPrometheusQueryCurrentValue(
-    //     prometheusQuery,
-    //   );
+    if (!one) {
+      return null;
+    }
 
-    return await query.getOne();
+    return one;
   }
 
   public async save(entities: MetricEntity[]): Promise<void> {

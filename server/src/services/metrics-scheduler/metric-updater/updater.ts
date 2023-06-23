@@ -5,7 +5,13 @@ import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/conf
 import { Metric } from "../../../database/entities/metric.entity";
 import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
 import { MetricsService } from "../../../metrics/metrics.service";
+import { PrometheusQueryDetailsService } from "src/metrics/prometheus-query-details/query-details.service";
 // import { MetricAnalyzerService } from "../metrics-analyzer.service";
+
+const FROM = "now-5m";
+const TO = "now";
+const INTERVALMS = 30000;
+const MAXDATAPOINTS = 3000;
 
 @Injectable()
 export class MetricUpdater {
@@ -15,6 +21,7 @@ export class MetricUpdater {
   constructor(
     private schedulerConfig: MetricsSchedulerConfigService,
     private metric: MetricsService,
+    private prometheusQueryDetails: PrometheusQueryDetailsService,
     // private metricAnalyzer: MetricAnalyzerService,
     @InjectRepository(Metric)
     private metricRepository: Repository<Metric>,
@@ -26,18 +33,25 @@ export class MetricUpdater {
     return this;
   }
 
-  // private async updateMetricMissingEvents(prometheusQuery: PrometheusQuery) {
-  private async updateMetricMissingEvents(p) {
-    // const latestMetric = await this.metric.latestMetric(prometheusQuery.id);
+  private async updateMetricMissingEvents(p: PrometheusQuery) {
+    const latestMetric =
+      await this.prometheusQueryDetails.getPrometheusQueryCurrentValue(
+        p.name,
+        FROM,
+        TO,
+        INTERVALMS,
+        MAXDATAPOINTS,
+      );
 
-    // return (this.logger = new Logger(`${latestMetric}(${prometheusQuery.id})`));
+    this.logger.debug(
+      `latestMetric for ${p.name} = ${JSON.stringify(latestMetric)}`,
+    );
 
-    return  (this.logger = new Logger(`updateMetricMissingEvents Called: ${p}`));
+    return latestMetric;
   }
 
   async run() {
     const p = this.p;
-
     // If we can't check if metrics has been reset, we probably won't be
     // able to check anything, so just skip blocks too.
     try {

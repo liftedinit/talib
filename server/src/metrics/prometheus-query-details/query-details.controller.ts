@@ -27,6 +27,7 @@ export class PrometheusQueryDetailsController {
     if (!maxDataPoints) {
       maxDataPoints = 3000;
     }
+
     return this.prometheusQueryDetailsService.getPrometheusQueryCurrentValue(
       name,
       from,

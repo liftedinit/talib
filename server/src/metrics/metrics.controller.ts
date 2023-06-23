@@ -34,4 +34,31 @@ export class MetricsController {
       items: result.items.map((b) => b.intoDto()),
     };
   }
+
+  @Get(":name/current")
+  getPrometheusQueryCurrent(@Param("name") name: string) {
+    return this.metrics.getCurrent(name);
+  }
+
+  @Get(":name/series")
+  getPrometheusQuerySeries(
+    @Param("name") name: string,
+    @Query("from") from?: Date,
+    @Query("to") to?: Date,
+    @Query("hours") hours?: number,
+  ) {
+    if (!hours) {
+      hours = 24;
+    }
+    const currentDate = new Date();
+    const previousDate = new Date();
+    previousDate.setHours(previousDate.getHours() - hours);
+    if (!from) {
+      from = currentDate;
+    }
+    if (!to) {
+      to = previousDate;
+    }
+    return this.metrics.getSeries(name, from, to);
+  }
 }

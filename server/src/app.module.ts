@@ -25,6 +25,8 @@ import { MetricsSchedulerConfigModule } from "./config/metrics-scheduler/configu
 import { PrometheusQuery } from "./database/entities/prometheus-query.entity";
 import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
 import { UsersModule } from "./users/users.module";
+import { Metric } from "./database/entities/metric.entity";
+import { MetricModule } from "./metrics/metrics.module";
 
 @Module({
   controllers: [],
@@ -60,13 +62,13 @@ import { UsersModule } from "./users/users.module";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, PrometheusQuery],
+        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, PrometheusQuery, Metric],
         migrations: [],
         synchronize: true,
         ...db.config,
       }),
     }),
-    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, PrometheusQuery]),
+    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, PrometheusQuery, Metric]),
     AdminConfigModule,
     AppConfigModule,
     SchedulerConfigModule,
@@ -74,6 +76,7 @@ import { UsersModule } from "./users/users.module";
     AuthModule,
     DataModule,
     NeighborhoodModule,
+    MetricModule,
     SchedulerModule,
     MetricsSchedulerModule,
     UsersModule,

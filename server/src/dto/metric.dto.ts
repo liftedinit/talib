@@ -6,7 +6,7 @@ export class MetricDto {
   id: number;
 
   @ApiProperty({ description: "Metric's associated prometheus query" })
-  prometheusQueryId: number;
+  prometheusQueryName: string;
 
   @ApiProperty({
     description: oneLine`
@@ -24,7 +24,7 @@ export class MetricDetailsDto {
   datetime: string;
 
   @ApiProperty()
-  prometheusQueryId: number;
+  prometheusQueryName: string;
 
   @ApiProperty()
   data: string;
@@ -35,7 +35,7 @@ export class CreateMetricDto {
   datetime: string;
 
   @ApiProperty()
-  prometheusQueryId: number;
+  prometheusQueryName: string;
 
   @ApiProperty()
   data: string;

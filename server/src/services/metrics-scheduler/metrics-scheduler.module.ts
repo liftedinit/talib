@@ -12,6 +12,11 @@ import { MetricsSchedulerService } from "./metrics-scheduler.service";
 import { PrometheusQueryService } from "src/metrics/prometheus-query/query.service";
 import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
 import { MetricUpdater } from "./metric-updater/updater";
+import { PrometheusQueryDetailsService } from "src/metrics/prometheus-query-details/query-details.service";
+import { PrometheusQueryDetailsModule } from "src/metrics/prometheus-query-details/query-details.module";
+import { PrometheusQueryModule } from "src/metrics/prometheus-query/query.module";
+import { HttpModule } from "@nestjs/axios";
+import { PrometheusQueryDetailsController } from "src/metrics/prometheus-query-details/query-details.controller";
 // import { MetricsAnalyzerService } from "./metrics-analyzer.service";
 
 export const myServiceProvider: Provider = {
@@ -25,6 +30,9 @@ export const myServiceProvider: Provider = {
   controllers: [MetricsSchedulerController],
   imports: [
     TypeOrmModule.forFeature([Metric, PrometheusQuery]),
+    PrometheusQueryModule,
+    PrometheusQueryDetailsModule,
+    HttpModule,
     MetricsSchedulerConfigModule,
   ],
   providers: [
@@ -33,6 +41,8 @@ export const myServiceProvider: Provider = {
     // MetricsAnalyzerService,
     MetricsSchedulerService,
     PrometheusQueryService,
+    PrometheusQueryDetailsService,
+    PrometheusQueryDetailsController,
     myServiceProvider,
   ],
   exports: [MetricsSchedulerService],

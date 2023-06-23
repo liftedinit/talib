@@ -13,16 +13,13 @@ export class Metric {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => PrometheusQuery, (prometheusQuery) => prometheusQuery.id, {
+  @OneToOne(() => PrometheusQuery, (prometheusQuery) => prometheusQuery.name, {
     nullable: true,
   })
   @JoinColumn()
-  prometheusQueryId: PrometheusQuery;
+  prometheusQueryName: PrometheusQuery;
 
-  @Column({ unique: true })
-  metricId: ArrayBuffer;
-
-  @Column()
+  @Column({ type: "timestamptz" })
   timestamp: Date;
 
   @Column({ nullable: true })
@@ -32,7 +29,7 @@ export class Metric {
     return {
       id: this.id,
       dateTime: this.timestamp.toISOString(),
-      prometheusQueryId: this.prometheusQueryId.id,
+      prometheusQueryName: this.prometheusQueryName.name,
       data: this.data,
     };
   }

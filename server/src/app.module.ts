@@ -20,6 +20,8 @@ import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
 import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
+import { MetricsSchedulerModule } from "./services/metrics-scheduler/metrics-scheduler.module";
+import { MetricsSchedulerConfigModule } from "./config/metrics-scheduler/configuration.module";
 import { PrometheusQuery } from "./database/entities/prometheus-query.entity";
 import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
 import { UsersModule } from "./users/users.module";
@@ -32,6 +34,7 @@ import { UsersModule } from "./users/users.module";
     NeighborhoodModule,
     PrometheusQueryModule,
     SchedulerConfigModule,
+    MetricsSchedulerConfigModule,
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
     ServeStaticModule.forRootAsync({
@@ -67,10 +70,12 @@ import { UsersModule } from "./users/users.module";
     AdminConfigModule,
     AppConfigModule,
     SchedulerConfigModule,
+    MetricsSchedulerConfigModule,
     AuthModule,
     DataModule,
     NeighborhoodModule,
     SchedulerModule,
+    MetricsSchedulerModule,
     UsersModule,
   ],
 })

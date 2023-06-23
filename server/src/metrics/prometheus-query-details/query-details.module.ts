@@ -15,5 +15,6 @@ import { PrometheusConfigService } from "../../config/prometheus/configuration.s
   ],
   providers: [PrometheusConfigService, PrometheusQueryDetailsService],
   controllers: [PrometheusQueryDetailsController],
+  exports: [PrometheusQueryDetailsService, PrometheusConfigService],
 })
 export class PrometheusQueryDetailsModule {}

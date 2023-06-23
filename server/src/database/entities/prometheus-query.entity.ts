@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Metric } from "./metric.entity";
 import {
   PrometheusQueryDto,
   CreatePrometheusQueryDto,

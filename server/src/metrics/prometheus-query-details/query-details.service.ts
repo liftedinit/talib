@@ -97,10 +97,15 @@ export class PrometheusQueryDetailsService {
         )
         .pipe(
           map((res) => {
+            const timestamps = res.data?.results.A.frames[0].data.values[0];
             const values = res.data?.results.A.frames[0].data.values[1];
-            const last = values[values.length - 1];
-            this.logger.debug(`lastValue: (${name}): \`${last}\``);
-            return last;
+            const latestTimestamp = timestamps[timestamps.length - 1];
+            const latestValue = values[values.length - 1];
+            const metrics: Array<any> = [latestTimestamp, latestValue];
+            this.logger.debug(
+              `metrics(${name}): \`${JSON.stringify(metrics)}\``,
+            );
+            return metrics;
           }),
         )
         .pipe(

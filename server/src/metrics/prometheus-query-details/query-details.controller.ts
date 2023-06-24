@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query, ParseIntPipe } from "@nestjs/common";
 import { PrometheusQueryDetailsService } from "./query-details.service";
+import { Public } from "../../utils/decorators";
 
 @Controller("prometheusquery")
 export class PrometheusQueryDetailsController {
@@ -7,6 +8,7 @@ export class PrometheusQueryDetailsController {
     private prometheusQueryDetailsService: PrometheusQueryDetailsService,
   ) {}
 
+  @Public()
   @Get(":name/current")
   getPrometheusQueryCurrent(
     @Param("name") name: string,

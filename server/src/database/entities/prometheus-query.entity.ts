@@ -22,6 +22,9 @@ export class PrometheusQuery {
   @Column({ nullable: true })
   description: string;
 
+  @OneToMany(() => Metric, (metric) => metric.prometheusQueryId)
+  metrics: Metric[];
+
   intoDto(): PrometheusQueryDto {
     return {
       id: this.id,

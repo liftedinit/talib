@@ -44,10 +44,21 @@ export class MetricUpdater {
       );
 
     this.logger.debug(
-      `latestMetric for ${p.name} = ${JSON.stringify(latestMetric)}`,
+      `latestMetric for ${p.name} = timestamp: ${JSON.stringify(
+        new Date(latestMetric[0]),
+      )} data: ${JSON.stringify(latestMetric[1])}`,
     );
 
-    return latestMetric;
+    const entity = new Metric();
+    entity.prometheusQueryId = p;
+    entity.timestamp = new Date(latestMetric[0]);
+    entity.data = latestMetric[1];
+
+    const result = await this.metricRepository.save(entity);
+
+    return result;
+
+    // return latestMetric;
   }
 
   async run() {

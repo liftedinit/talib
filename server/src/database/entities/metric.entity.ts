@@ -1,11 +1,11 @@
 import {
   Column,
   Entity,
-  OneToOne,
+  ManyToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { MetricDto } from "../../dto/metric.dto";
+import { MetricDto, CreateMetricDto } from "../../dto/metric.dto";
 import { PrometheusQuery } from "./prometheus-query.entity";
 
 @Entity()
@@ -13,11 +13,11 @@ export class Metric {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => PrometheusQuery, (prometheusQuery) => prometheusQuery.name, {
+  @ManyToOne(() => PrometheusQuery, (prometheusQuery) => prometheusQuery.id, {
     nullable: true,
   })
-  @JoinColumn()
-  prometheusQueryName: PrometheusQuery;
+  @JoinColumn({ name: "prometheus_query_id" })
+  prometheusQueryId: PrometheusQuery;
 
   @Column({ type: "timestamptz" })
   timestamp: Date;
@@ -28,8 +28,8 @@ export class Metric {
   intoDto(): MetricDto {
     return {
       id: this.id,
-      dateTime: this.timestamp.toISOString(),
-      prometheusQueryName: this.prometheusQueryName.name,
+      timestamp: this.timestamp,
+      prometheusQueryId: this.prometheusQueryId.id,
       data: this.data,
     };
   }

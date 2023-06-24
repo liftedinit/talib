@@ -9,6 +9,8 @@ import {
 import { Repository, LessThan, MoreThan } from "typeorm";
 import { Metric as MetricEntity } from "../database/entities/metric.entity";
 import { PrometheusQueryDetailsService } from "./prometheus-query-details/query-details.service";
+import { PrometheusQueryService } from "./prometheus-query/query.service";
+import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
 
 @Injectable()
 export class MetricsService {
@@ -17,6 +19,9 @@ export class MetricsService {
   constructor(
     @InjectRepository(MetricEntity)
     private metricRepository: Repository<MetricEntity>,
+    private prometheusQuery: PrometheusQueryService,
+    // @InjectRepository(PrometheusQuery)
+    // private prometheusQueryRepository: Repository<PrometheusQuery>,
     // private prometheusQueryDetails: PrometheusQueryDetailsService,
   ) {}
 
@@ -30,17 +35,24 @@ export class MetricsService {
   ): Promise<Pagination<MetricEntity>> {
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where("m.prometheusQueryId = :pid", { pid: prometheusQueryId })
-      .orderBy("m.metricId", "DESC");
+      .where("m.prometheusQueryName = :name", { name: prometheusQueryId })
+      .orderBy("m.timestamp", "DESC")
+      .limit(500);
 
     this.logger.debug(`findMany(${prometheusQueryId}: ${query.getQuery()}`);
     return await paginate(query, options);
   }
 
   async getCurrent(name: string): Promise<MetricEntity | null> {
+    const prometheusQuery = await this.prometheusQuery.get(name);
+
+    this.logger.debug(`prometheusQuery ${prometheusQuery.id}`);
+
     const query = this.metricRepository
-      .createQueryBuilder("n")
-      .where({ name: name })
+      .createQueryBuilder("m")
+      .where("m.prometheusQueryId = :prometheusQuery", {
+        prometheusQuery: prometheusQuery.id,
+      })
       .orderBy("m.timestamp", "DESC")
       .limit(1);
 

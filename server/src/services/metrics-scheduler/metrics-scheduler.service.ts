@@ -5,7 +5,6 @@ import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
 import { MetricsSchedulerConfigService } from "../../config/metrics-scheduler/configuration.service";
 import { PrometheusQueryService } from "../../metrics/prometheus-query/query.service";
 import { MetricUpdater } from "../metrics-scheduler/metric-updater/updater";
-import { Query } from "typeorm/driver/Query.js";
 
 @Injectable()
 export class MetricsSchedulerService {

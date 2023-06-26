@@ -46,7 +46,7 @@ export class MetricsService {
   async getCurrent(name: string): Promise<MetricEntity | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
-    this.logger.debug(`prometheusQuery ${prometheusQuery.id}`);
+    this.logger.debug(`prometheusQueryCurrent ${prometheusQuery.id}`);
 
     const query = this.metricRepository
       .createQueryBuilder("m")
@@ -71,25 +71,31 @@ export class MetricsService {
     name: string,
     from: Date,
     to: Date,
-  ): Promise<MetricEntity | null> {
+  ): Promise<MetricEntity[] | null> {
+    const prometheusQuery = await this.prometheusQuery.get(name);
+
+    this.logger.debug(`prometheusQuerySeries ${prometheusQuery.id}`);
+
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where({ name: name })
       .where("m.timestamp BETWEEN :to AND :from", {
         to,
         from,
       })
+      .andWhere("m.prometheusQueryId = :prometheusQuery", {
+        prometheusQuery: prometheusQuery.id,
+      })
       .orderBy("m.timestamp", "DESC");
-    // .limit(1);
-    this.logger.debug(`getPrevious(${name}): \`${query.getQuery()}\``);
 
-    const one = await query.getOne();
+    this.logger.debug(`getSeries(${name}): \`${query.getMany()}\``);
+
+    const one = await query.getMany();
 
     if (!one) {
       return null;
     }
 
-    return one;
+    return await query.getMany();
   }
 
   public async save(entities: MetricEntity[]): Promise<void> {

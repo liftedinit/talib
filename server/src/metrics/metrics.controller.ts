@@ -5,14 +5,18 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  Logger,
 } from "@nestjs/common";
 import { ApiOkResponse } from "@nestjs/swagger";
 import { MetricDetailsDto, MetricDto } from "../dto/metric.dto";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { MetricsService } from "./metrics.service";
+import { ApiQuery } from "@nestjs/swagger";
 
 @Controller("metrics")
 export class MetricsController {
+  private readonly logger = new Logger(MetricsService.name);
+
   constructor(private metrics: MetricsService) {}
 
   @Get()
@@ -41,24 +45,39 @@ export class MetricsController {
   }
 
   @Get(":name/series")
+  @ApiQuery({ name: "from", required: false })
+  @ApiQuery({ name: "to", required: false })
+  @ApiQuery({ name: "hours", required: false })
   getPrometheusQuerySeries(
     @Param("name") name: string,
-    @Query("from") from?: Date,
-    @Query("to") to?: Date,
+    @Query("from") from?: string,
+    @Query("to") to?: string,
     @Query("hours") hours?: number,
   ) {
     if (!hours) {
       hours = 24;
     }
-    const currentDate = new Date();
-    const previousDate = new Date();
-    previousDate.setHours(previousDate.getHours() - hours);
+    this.logger.debug(`from: \`${from}\``);
+    this.logger.debug(`to: \`${to}\``);
+    let currentDate: Date;
+    let previousDate: Date;
+
     if (!from) {
-      from = currentDate;
+      currentDate = new Date();
+    } else {
+      currentDate = new Date();
     }
     if (!to) {
-      to = previousDate;
+      previousDate = new Date();
+      previousDate.setHours(previousDate.getHours() - hours);
+    } else {
+      const fromParts = from.split("-");
+      const fromDays = Number(fromParts[1].replace("d", ""));
+      const fromHours = fromDays * 24;
+      previousDate = new Date();
+      previousDate.setHours(previousDate.getHours() - fromHours);
     }
-    return this.metrics.getSeries(name, from, to);
+
+    return this.metrics.getSeries(name, currentDate, previousDate);
   }
 }

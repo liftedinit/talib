@@ -48,6 +48,7 @@ export function MetricChart({
   }
   let categoriesData: (number|string)[] = []
   let seriesData: number[] = []
+  let formatData: number[] = []
 
   if (isError || !queryData) {
     categoriesData = [];
@@ -55,16 +56,24 @@ export function MetricChart({
   }
 
   if (!isLoading && queryData) {
-    categoriesData = queryData[0]?.slice() || [];
+    for(let i = 0; i < queryData.length; i++) {
+      categoriesData[i] = queryData[i].timestamp
+      seriesData[i] = Number(queryData[i].data);
+    }
 
     if (conversion && queryData != null) {
-      seriesData = queryData[1]?.map(conversion)?.map((item: number) => Number((item).toFixed(fixedDecimals))) || [];
+      formatData = seriesData
+        .map((item: number, index: number, arr: number[]) => conversion(item, index, arr))
+        ?.map((item: unknown) => Number((item as number)
+        .toFixed(fixedDecimals))) || [];
     }
     else if (!conversion && queryData != null ) {
-      seriesData = queryData[1]?.map((item: number) => Number((item).toFixed(fixedDecimals))) || [];
+      formatData = seriesData
+        .map((item: number) => Number((item)
+        .toFixed(fixedDecimals))) || [];
     }
     else {
-      seriesData = [];
+      formatData = [];
     }
     
     chartData = {
@@ -108,7 +117,7 @@ export function MetricChart({
       series: [
         {
           name: label,
-          data: seriesData,
+          data: formatData,
         },
       ],
     };

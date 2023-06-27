@@ -11,9 +11,10 @@ const validationSchema = Joi.object({
     return value;
   }),
   METRICS_SCHEDULER_SECONDS: Joi.number(),
-  METRICS_SCHEDULER_MAX_BLOCK: Joi.number(),
   METRICS_SCHEDULER_PARALLEL: Joi.number(),
   METRICS_SCHEDULER_PARALLEL_SLEEP: Joi.number(),
+  METRICS_SCHEDULER_STARTDATE_TIMESTAMP: Joi.number(),
+  METRICS_SCHEDULER_BATCH_SIZE: Joi.number(),
 }).nand("METRICS_SCHEDULER_CRON", "METRICS_SCHEDULER_SECONDS");
 
 /**

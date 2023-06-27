@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, QueryFailedError } from "typeorm";
 import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 import { Metric } from "../../../database/entities/metric.entity";
 import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
@@ -12,6 +12,7 @@ const FROM = "now-5m";
 const TO = "now";
 const INTERVALMS = 30000;
 const MAXDATAPOINTS = 3000;
+const MAX_HOURS = 48;
 
 @Injectable()
 export class MetricUpdater {
@@ -33,21 +34,20 @@ export class MetricUpdater {
     return this;
   }
 
-  private async updateMetricMissingEvents(p: PrometheusQuery) {
+  private async updateMetricNewValues(p: PrometheusQuery, timestamp) {
     const latestMetric =
-      await this.prometheusQueryDetails.getPrometheusQueryCurrentValue(
+      await this.prometheusQueryDetails.getPrometheusQuerySingleValue(
         p.name,
-        FROM,
-        TO,
+        timestamp,
         INTERVALMS,
         MAXDATAPOINTS,
       );
 
-    this.logger.debug(
-      `latestMetric for ${p.name} = timestamp: ${JSON.stringify(
-        new Date(latestMetric[0]),
-      )} data: ${JSON.stringify(latestMetric[1])}`,
-    );
+    // this.logger.debug(
+    //   `latestMetric for ${p.name} = timestamp: ${JSON.stringify(
+    //     new Date(latestMetric[0]),
+    //   )} data: ${JSON.stringify(latestMetric[1])}`,
+    // );
 
     const entity = new Metric();
     entity.prometheusQueryId = p;
@@ -57,16 +57,65 @@ export class MetricUpdater {
     const result = await this.metricRepository.save(entity);
 
     return result;
+  }
 
-    // return latestMetric;
+  private async seedMetricValues(p: PrometheusQuery) {
+    // Get date of last metric for PrometheusQuery
+    const PrometheusQueryId = p.id;
+    const seedMetricStartDate = await this.metric.seedMetricStartDate(
+      PrometheusQueryId,
+    );
+
+    const currentDate = new Date();
+    let maxBatch: number;
+    const defaultBatchSize = this.schedulerConfig.batch_size;
+
+    const checkBatchSize =
+      currentDate.getTime() - seedMetricStartDate < defaultBatchSize * 300000;
+
+    const calculatedBatchSize =
+      (currentDate.getTime() - seedMetricStartDate) / 300000;
+
+    if (checkBatchSize) {
+      maxBatch = (currentDate.getTime() - seedMetricStartDate) / 300000;
+    } else {
+      this.logger.debug(`Remainig batch for ${p.name}: ${calculatedBatchSize}`);
+      maxBatch = defaultBatchSize;
+    }
+
+    let seedMetricTimestamp = seedMetricStartDate;
+    if (maxBatch < 10) {
+      this.logger.debug(`Batch Size less than 10...skipping job.`);
+    } else {
+      for (let i = 0; i < maxBatch; i++) {
+        try {
+          await this.updateMetricNewValues(p, seedMetricTimestamp);
+          // Increase timestamp 5 mins for next metric
+        } catch (error) {
+          if (
+            error instanceof QueryFailedError &&
+            error.message.includes("unique constraint")
+          ) {
+          } else if (error.message.includes("undefined")) {
+          } else {
+            this.logger.debug(
+              `Error Cause ${error.message} for query ${p.name} ${seedMetricTimestamp}`,
+            );
+          }
+        }
+
+        seedMetricTimestamp += 300000;
+      }
+    }
+
+    return seedMetricStartDate;
   }
 
   async run() {
     const p = this.p;
-    // If we can't check if metrics has been reset, we probably won't be
-    // able to check anything, so just skip blocks too.
     try {
-      await this.updateMetricMissingEvents(p);
+      this.logger.debug(`seeding metric: ${p.name}`);
+      await this.seedMetricValues(p);
     } catch (e) {
       this.logger.log(`Error happened while updating metrics:\n${e.stack}`);
     }

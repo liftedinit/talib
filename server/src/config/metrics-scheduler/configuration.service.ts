@@ -20,10 +20,6 @@ export class MetricsSchedulerConfigService {
     return this.cron !== undefined || this.seconds !== undefined;
   }
 
-  get maxBlocks() {
-    return Number(this.configService.get<number>("metricsScheduler.max_blocks"));
-  }
-
   get parallel() {
     return Number(this.configService.get<number>("metricsScheduler.parallel"));
   }
@@ -31,4 +27,12 @@ export class MetricsSchedulerConfigService {
   get parallelSleep() {
     return Number(this.configService.get<number>("metricsScheduler.parallel_sleep"));
   }
+
+  get startdate_timestamp() {
+    return Number(this.configService.get<number>("metricsScheduler.startdate_timestamp"));
+  }
+
+  get batch_size() {
+    return Number(this.configService.get<number>("metricsScheduler.batch_size"));
+  } 
 }

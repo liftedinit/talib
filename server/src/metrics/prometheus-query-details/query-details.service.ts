@@ -62,6 +62,9 @@ export class PrometheusQueryDetailsService {
     template.queries[0].expr = prometheusQuery;
     template.from = from;
     template.to = to;
+
+    // this.logger.debug(`constructGrafanaQuery: \`${JSON.stringify(template)}\``);
+
     return template;
   }
 
@@ -102,9 +105,9 @@ export class PrometheusQueryDetailsService {
             const latestTimestamp = timestamps[timestamps.length - 1];
             const latestValue = values[values.length - 1];
             const metrics: Array<any> = [latestTimestamp, latestValue];
-            this.logger.debug(
-              `metrics(${name}): \`${JSON.stringify(metrics)}\``,
-            );
+            // this.logger.debug(
+            //   `metrics(${name}): \`${JSON.stringify(metrics)}\``,
+            // );
             return metrics;
           }),
         )
@@ -155,4 +158,53 @@ export class PrometheusQueryDetailsService {
         }),
       );
   }
+
+  async getPrometheusQuerySingleValue(
+    name: string,
+    timestamp: number,
+    intervalMs: number,
+    maxDataPoints: number,
+  ): Promise<any> {
+    const getPrometheusQuery = await this.getPrometheusQuery(name);
+
+    const from = timestamp - 300000;
+    const to = timestamp;
+
+    return await lastValueFrom(
+      this.httpService
+        .post(
+          this.prometheusConfig.remoteApiUrl,
+          this.constructGrafanaQuery(
+            getPrometheusQuery.query,
+            from.toString(),
+            to.toString(),
+            intervalMs,
+            maxDataPoints,
+          ),
+          {
+            headers: {
+              Authorization: `Basic ${Buffer.from(
+                `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
+              ).toString("base64")}`,
+            },
+          },
+        )
+        .pipe(
+          map((res) => {
+            const timestamps = res.data?.results.A.frames[0].data.values[0];
+            const values = res.data?.results.A.frames[0].data.values[1];
+            const latestTimestamp = timestamps[timestamps.length - 1];
+            const latestValue = values[values.length - 1];
+            const metrics: Array<any> = [latestTimestamp, latestValue];
+            return metrics;
+          }),
+        )
+        .pipe(
+          catchError((error: Error) => {
+            throw new ForbiddenException(error.message);
+          }),
+        ),
+    );
+  }
+
 }

@@ -10,6 +10,8 @@ import { PrometheusQueryModule } from "./prometheus-query/query.module";
 import { HttpModule } from "@nestjs/axios";
 import { PrometheusQueryService } from "./prometheus-query/query.service";
 import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
+import { MetricsSchedulerConfigModule } from "src/config/metrics-scheduler/configuration.module";
+import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
       PrometheusQuery,
     ]),
     HttpModule,
+    MetricsSchedulerConfigModule,
     PrometheusQueryModule,
     PrometheusQueryDetailsModule,
   ],
@@ -26,10 +29,15 @@ import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
     MetricsService,
     // NetworkService,
     // TxAnalyzerService,
+    MetricsSchedulerConfigService,
     PrometheusQueryService,
     PrometheusQueryDetailsService,
   ],
   controllers: [MetricsController],
-  exports: [MetricsService, PrometheusQueryDetailsService],
+  exports: [
+    MetricsService,
+    PrometheusQueryDetailsService,
+    MetricsSchedulerConfigService,
+  ],
 })
 export class MetricModule {}

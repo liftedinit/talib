@@ -32,7 +32,7 @@ export function MetricStat({
   let metricValues = [];
   let metricValue = "";
 
-  if (!isLoading) {
+  if (!isLoading && queryData) {
     metricValues?.push(Number(queryData.data));
 
     if (conversion && queryData != null) {

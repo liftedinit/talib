@@ -6,11 +6,10 @@ import {
   Pagination,
 } from "nestjs-typeorm-paginate";
 
-import { Repository, LessThan, MoreThan } from "typeorm";
+import { DataSource, Repository, LessThan, MoreThan } from "typeorm";
 import { Metric as MetricEntity } from "../database/entities/metric.entity";
-import { PrometheusQueryDetailsService } from "./prometheus-query-details/query-details.service";
 import { PrometheusQueryService } from "./prometheus-query/query.service";
-import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
+import { MetricsSchedulerConfigService } from "../config/metrics-scheduler/configuration.service";
 
 @Injectable()
 export class MetricsService {
@@ -19,10 +18,9 @@ export class MetricsService {
   constructor(
     @InjectRepository(MetricEntity)
     private metricRepository: Repository<MetricEntity>,
+    private dataSource: DataSource,
     private prometheusQuery: PrometheusQueryService,
-    // @InjectRepository(PrometheusQuery)
-    // private prometheusQueryRepository: Repository<PrometheusQuery>,
-    // private prometheusQueryDetails: PrometheusQueryDetailsService,
+    private schedulerConfig: MetricsSchedulerConfigService,
   ) {}
 
   findAll(): Promise<MetricEntity[]> {
@@ -39,14 +37,11 @@ export class MetricsService {
       .orderBy("m.timestamp", "DESC")
       .limit(500);
 
-    this.logger.debug(`findMany(${prometheusQueryId}: ${query.getQuery()}`);
     return await paginate(query, options);
   }
 
   async getCurrent(name: string): Promise<MetricEntity | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
-
-    this.logger.debug(`prometheusQueryCurrent ${prometheusQuery.id}`);
 
     const query = this.metricRepository
       .createQueryBuilder("m")
@@ -55,8 +50,6 @@ export class MetricsService {
       })
       .orderBy("m.timestamp", "DESC")
       .limit(1);
-
-    this.logger.debug(`getCurrent(${name}): \`${query.getQuery()}\``);
 
     const one = await query.getOne();
 
@@ -74,8 +67,6 @@ export class MetricsService {
   ): Promise<MetricEntity[] | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
-    this.logger.debug(`prometheusQuerySeries ${prometheusQuery.id}`);
-
     const query = this.metricRepository
       .createQueryBuilder("m")
       .where("m.timestamp BETWEEN :to AND :from", {
@@ -87,8 +78,6 @@ export class MetricsService {
       })
       .orderBy("m.timestamp", "DESC");
 
-    this.logger.debug(`getSeries(${name}): \`${query.getMany()}\``);
-
     const one = await query.getMany();
 
     if (!one) {
@@ -96,6 +85,41 @@ export class MetricsService {
     }
 
     return await query.getMany();
+  }
+
+  async seedMetricStartDate(prometheusQueryId: number) {
+    let startDate: number;
+    // const latestDate = this.metricRepository
+    //   .createQueryBuilder("m")
+    //   .where({ prometheusQueryId: prometheusQueryId })
+    //   .orderBy("m.timestamp", "DESC");
+
+    let latestDate;
+    try {
+      latestDate = await this.metricRepository
+        .createQueryBuilder("m")
+        .where({ prometheusQueryId: prometheusQueryId })
+        .orderBy("m.timestamp", "DESC")
+        .getOne();
+    } catch (error) {
+      // handle the error here, for example:
+      this.logger.debug(`Error in fetching latest date: ${error}`);
+    }
+
+    // const metricOne = latestDate;
+    const timestamp = latestDate?.timestamp || null;
+    const startdate_timestamp = new Date(
+      this.schedulerConfig.startdate_timestamp,
+    ).getTime();
+    const timestamp_formatted = new Date(timestamp).getTime();
+
+    if (timestamp != null && timestamp_formatted > startdate_timestamp) {
+      startDate = timestamp_formatted;
+    } else {
+      startDate = startdate_timestamp;
+    }
+
+    return startDate;
   }
 
   public async save(entities: MetricEntity[]): Promise<void> {

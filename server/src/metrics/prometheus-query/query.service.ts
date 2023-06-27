@@ -24,7 +24,7 @@ export class PrometheusQueryService {
       .groupBy("n.id")
       .limit(1);
 
-    this.logger.debug(`get(${name}): \`${query.getQuery()}\``);
+    // this.logger.debug(`get(${name}): \`${query.getQuery()}\``);
 
     const one = await query.getOne();
 

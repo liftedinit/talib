@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Put,
+  Logger,
 } from "@nestjs/common";
 import {
   PrometheusQueryDto,
@@ -17,6 +18,8 @@ import { PrometheusQueryService } from "./query.service";
 
 @Controller("prometheusquery")
 export class PrometheusQueryController {
+  private readonly logger = new Logger(PrometheusQueryController.name);
+
   constructor(private metric: PrometheusQueryService) {}
 
   @Get()

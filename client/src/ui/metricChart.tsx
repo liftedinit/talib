@@ -56,10 +56,8 @@ export function MetricChart({
   }
 
   if (!isLoading && queryData) {
-    for(let i = 0; i < queryData.length; i++) {
-      categoriesData[i] = queryData[i].timestamp
-      seriesData[i] = Number(queryData[i].data);
-    }
+    categoriesData = queryData[0].timestamps;
+    seriesData = queryData[0].data;
 
     if (conversion && queryData != null) {
       formatData = seriesData
@@ -76,6 +74,7 @@ export function MetricChart({
       formatData = [];
     }
     
+
     chartData = {
       options: {
         colors: ["#38C7B4"],

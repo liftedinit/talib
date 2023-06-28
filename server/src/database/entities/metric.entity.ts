@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   Index,
 } from "typeorm";
-import { MetricDto, CreateMetricDto } from "../../dto/metric.dto";
+import { MetricDto } from "../../dto/metric.dto";
 import { PrometheusQuery } from "./prometheus-query.entity";
 
 @Entity()

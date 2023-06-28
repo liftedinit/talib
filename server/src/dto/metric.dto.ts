@@ -27,7 +27,7 @@ export class MetricDetailsDto {
   prometheusQueryId: number;
 
   @ApiProperty()
-  data: string;
+  data: string | number;
 }
 
 export class CreateMetricDto {

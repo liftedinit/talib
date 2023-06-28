@@ -20,14 +20,6 @@ export class MetricsSchedulerConfigService {
     return this.cron !== undefined || this.seconds !== undefined;
   }
 
-  get parallel() {
-    return Number(this.configService.get<number>("metricsScheduler.parallel"));
-  }
-
-  get parallelSleep() {
-    return Number(this.configService.get<number>("metricsScheduler.parallel_sleep"));
-  }
-
   get startdate_timestamp() {
     return Number(this.configService.get<number>("metricsScheduler.startdate_timestamp"));
   }

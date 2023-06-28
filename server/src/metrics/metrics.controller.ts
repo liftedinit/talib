@@ -10,7 +10,7 @@ import {
 import { ApiOkResponse } from "@nestjs/swagger";
 import { MetricDetailsDto, MetricDto } from "../dto/metric.dto";
 import { Pagination } from "nestjs-typeorm-paginate";
-import { MetricsService } from "./metrics.service";
+import { MetricsService, SeriesEntity } from "./metrics.service";
 import { ApiQuery } from "@nestjs/swagger";
 
 @Controller("metrics")
@@ -53,12 +53,10 @@ export class MetricsController {
     @Query("from") from?: string,
     @Query("to") to?: string,
     @Query("hours") hours?: number,
-  ) {
+  ): Promise<SeriesEntity[]> {
     if (!hours) {
       hours = 24;
     }
-    this.logger.debug(`from: \`${from}\``);
-    this.logger.debug(`to: \`${to}\``);
     let currentDate: Date;
     let previousDate: Date;
 

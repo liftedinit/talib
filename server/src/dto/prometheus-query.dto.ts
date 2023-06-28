@@ -1,6 +1,7 @@
 import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsUrl } from "class-validator";
+
 
 export class PrometheusQueryDto {
   @ApiProperty()
@@ -9,14 +10,17 @@ export class PrometheusQueryDto {
   @ApiProperty()
   name: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   label: string;
 
   @ApiProperty()
   query: string;
 
-  @ApiProperty({ required: false })
-  description?: string;
+  @ApiProperty()
+  description: string;
+
+  @ApiProperty()
+  createdDate: string;
 }
 
 export class CreatePrometheusQueryDto {
@@ -24,15 +28,19 @@ export class CreatePrometheusQueryDto {
   @ApiProperty()
   name: string;
 
-  @Optional()
-  @ApiProperty({ required: false })
+  @IsNotEmpty()
+  @ApiProperty()
   label: string;
 
   @IsNotEmpty()
   @ApiProperty()
   query: string;
 
-  @Optional()
-  @ApiProperty({ required: false })
-  description?: string;
+  @IsNotEmpty()
+  @ApiProperty()
+  description: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  createdDate: string;
 }

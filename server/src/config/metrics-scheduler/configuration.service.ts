@@ -34,5 +34,9 @@ export class MetricsSchedulerConfigService {
 
   get batch_size() {
     return Number(this.configService.get<number>("metricsScheduler.batch_size"));
-  } 
+  }
+
+  get interval() {
+    return Number(this.configService.get<number>("metricsScheduler.interval"));
+  }
 }

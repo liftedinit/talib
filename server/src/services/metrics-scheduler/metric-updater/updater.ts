@@ -62,7 +62,9 @@ export class MetricUpdater {
   private async seedMetricValues(p: PrometheusQuery) {
     // Get date of last metric for PrometheusQuery
     const PrometheusQueryId = p.id;
+    const PrometheusQueryCreatedDate = p.createdDate;
     const seedMetricStartDate = await this.metric.seedMetricStartDate(
+      PrometheusQueryCreatedDate,
       PrometheusQueryId,
     );
 
@@ -71,13 +73,13 @@ export class MetricUpdater {
     const defaultBatchSize = this.schedulerConfig.batch_size;
 
     const checkBatchSize =
-      currentDate.getTime() - seedMetricStartDate < defaultBatchSize * 300000;
+      currentDate.getTime() - seedMetricStartDate < defaultBatchSize * this.schedulerConfig.interval;
 
     const calculatedBatchSize =
-      (currentDate.getTime() - seedMetricStartDate) / 300000;
+      (currentDate.getTime() - seedMetricStartDate) / this.schedulerConfig.interval;
 
     if (checkBatchSize) {
-      maxBatch = (currentDate.getTime() - seedMetricStartDate) / 300000;
+      maxBatch = (currentDate.getTime() - seedMetricStartDate) / this.schedulerConfig.interval;
     } else {
       this.logger.debug(`Remainig batch for ${p.name}: ${calculatedBatchSize}`);
       maxBatch = defaultBatchSize;
@@ -104,11 +106,11 @@ export class MetricUpdater {
           }
         }
 
-        seedMetricTimestamp += 300000;
+        seedMetricTimestamp += this.schedulerConfig.interval;
       }
     }
 
-    return seedMetricStartDate;
+    return null;
   }
 
   async run() {

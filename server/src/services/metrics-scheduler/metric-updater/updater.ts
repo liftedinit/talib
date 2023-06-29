@@ -6,13 +6,9 @@ import { Metric } from "../../../database/entities/metric.entity";
 import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
 import { MetricsService } from "../../../metrics/metrics.service";
 import { PrometheusQueryDetailsService } from "src/metrics/prometheus-query-details/query-details.service";
-// import { MetricAnalyzerService } from "../metrics-analyzer.service";
 
-const FROM = "now-5m";
-const TO = "now";
 const INTERVALMS = 30000;
 const MAXDATAPOINTS = 3000;
-const MAX_HOURS = 48;
 
 @Injectable()
 export class MetricUpdater {
@@ -23,7 +19,6 @@ export class MetricUpdater {
     private schedulerConfig: MetricsSchedulerConfigService,
     private metric: MetricsService,
     private prometheusQueryDetails: PrometheusQueryDetailsService,
-    // private metricAnalyzer: MetricAnalyzerService,
     @InjectRepository(Metric)
     private metricRepository: Repository<Metric>,
   ) {}
@@ -34,7 +29,10 @@ export class MetricUpdater {
     return this;
   }
 
+  // Insert a new metric value into the metrics table
   private async updateMetricNewValues(p: PrometheusQuery, timestamp) {
+    // Retrieve the metric value from Grafana
+    // Fetch the PromQL from the PrometheusQuery table to find the metric
     const latestMetric =
       await this.prometheusQueryDetails.getPrometheusQuerySingleValue(
         p.name,
@@ -43,12 +41,7 @@ export class MetricUpdater {
         MAXDATAPOINTS,
       );
 
-    // this.logger.debug(
-    //   `latestMetric for ${p.name} = timestamp: ${JSON.stringify(
-    //     new Date(latestMetric[0]),
-    //   )} data: ${JSON.stringify(latestMetric[1])}`,
-    // );
-
+    // Construct the metric
     const entity = new Metric();
     entity.prometheusQueryId = p;
     entity.timestamp = new Date(latestMetric[0]);
@@ -59,6 +52,8 @@ export class MetricUpdater {
     return result;
   }
 
+  // Seed metric values for a prometheusQuery
+  // This is the main job of the metrics scheduler
   private async seedMetricValues(p: PrometheusQuery) {
     // Get date of last metric for PrometheusQuery
     const PrometheusQueryId = p.id;
@@ -72,27 +67,37 @@ export class MetricUpdater {
     let maxBatch: number;
     const defaultBatchSize = this.schedulerConfig.batch_size;
 
+    // Check if the batch size remaining is less than the default batch size, boolean
     const checkBatchSize =
       currentDate.getTime() - seedMetricStartDate < defaultBatchSize * this.schedulerConfig.interval;
 
+    // Calculate the total batch size
     const calculatedBatchSize =
       (currentDate.getTime() - seedMetricStartDate) / this.schedulerConfig.interval;
 
+    // If batch size is less than max batch size, set the batch size to the required amount
+    // Prevents running excess queries when job is all caught up
     if (checkBatchSize) {
-      maxBatch = (currentDate.getTime() - seedMetricStartDate) / this.schedulerConfig.interval;
+      maxBatch =
+        (currentDate.getTime() - seedMetricStartDate) /
+        this.schedulerConfig.interval;
     } else {
       this.logger.debug(`Remainig batch for ${p.name}: ${calculatedBatchSize}`);
       maxBatch = defaultBatchSize;
     }
 
+    // Init local var for incrementing
     let seedMetricTimestamp = seedMetricStartDate;
+    // If there are less than 10 metrics to collect, skip this scheduled job
     if (maxBatch < 10) {
       this.logger.debug(`Batch Size less than 10...skipping job.`);
     } else {
       for (let i = 0; i < maxBatch; i++) {
         try {
+          // Try to update a new metric
+          // This will use the incremented value from below to collect the next
+          // data point from Grafana/Prometheus and store in the metrics table
           await this.updateMetricNewValues(p, seedMetricTimestamp);
-          // Increase timestamp 5 mins for next metric
         } catch (error) {
           if (
             error instanceof QueryFailedError &&
@@ -105,7 +110,7 @@ export class MetricUpdater {
             );
           }
         }
-
+        // Inccrement timestamp by the interval (e.g. 10mins)
         seedMetricTimestamp += this.schedulerConfig.interval;
       }
     }

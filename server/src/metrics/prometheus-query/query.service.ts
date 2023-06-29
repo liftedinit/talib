@@ -21,7 +21,9 @@ export class PrometheusQueryService {
     const query = this.metricRepository
       .createQueryBuilder("n")
       .where({ name: name })
-      .groupBy("n.id")
+      .where("n.name = :name", {
+        name: name,
+      })
       .limit(1);
 
     const one = await query.getOne();

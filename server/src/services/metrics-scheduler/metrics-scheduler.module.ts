@@ -16,8 +16,6 @@ import { PrometheusQueryDetailsService } from "src/metrics/prometheus-query-deta
 import { PrometheusQueryDetailsModule } from "src/metrics/prometheus-query-details/query-details.module";
 import { PrometheusQueryModule } from "src/metrics/prometheus-query/query.module";
 import { HttpModule } from "@nestjs/axios";
-import { PrometheusQueryDetailsController } from "src/metrics/prometheus-query-details/query-details.controller";
-// import { MetricsAnalyzerService } from "./metrics-analyzer.service";
 
 export const myServiceProvider: Provider = {
   provide: "PROMETHEUS_QUERY_FACTORY",
@@ -38,11 +36,9 @@ export const myServiceProvider: Provider = {
   providers: [
     MetricsSchedulerConfigService,
     MetricsService,
-    // MetricsAnalyzerService,
     MetricsSchedulerService,
     PrometheusQueryService,
     PrometheusQueryDetailsService,
-    PrometheusQueryDetailsController,
     myServiceProvider,
   ],
   exports: [MetricsSchedulerService],

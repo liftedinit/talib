@@ -2,6 +2,7 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
+  Delete,
   Param,
   ParseIntPipe,
   Query,
@@ -78,4 +79,10 @@ export class MetricsController {
 
     return this.metrics.getSeries(name, currentDate, previousDate);
   }
+
+  @Delete(":name")
+  async remove(@Param("name") name: string): Promise<void> {
+    await this.metrics.removeByPrometheusQueryName(name);
+  }
+
 }

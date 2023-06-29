@@ -5,16 +5,15 @@ import {
   paginate,
   Pagination,
 } from "nestjs-typeorm-paginate";
-
-import { DataSource, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { Metric as MetricEntity } from "../database/entities/metric.entity";
 import { PrometheusQueryService } from "./prometheus-query/query.service";
 import { MetricsSchedulerConfigService } from "../config/metrics-scheduler/configuration.service";
 
-export type SeriesEntity = {
+export interface SeriesEntity {
   data: number[] | string[];
   timestamps: Date[];
-};
+}
 
 @Injectable()
 export class MetricsService {
@@ -23,7 +22,6 @@ export class MetricsService {
   constructor(
     @InjectRepository(MetricEntity)
     private metricRepository: Repository<MetricEntity>,
-    private dataSource: DataSource,
     private prometheusQuery: PrometheusQueryService,
     private schedulerConfig: MetricsSchedulerConfigService,
   ) {}
@@ -32,19 +30,21 @@ export class MetricsService {
     return this.metricRepository.find();
   }
 
+  // Retrieve many metrics by query ID
   public async findMany(
     prometheusQueryId: number,
     options: IPaginationOptions,
   ): Promise<Pagination<MetricEntity>> {
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where("m.prometheusQueryName = :name", { name: prometheusQueryId })
+      .where("m.prometheusQueryId = :id", { id: prometheusQueryId })
       .orderBy("m.timestamp", "DESC")
       .limit(500);
 
     return await paginate(query, options);
   }
 
+  // Get the current value for a metric
   async getCurrent(name: string): Promise<MetricEntity | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
@@ -65,9 +65,8 @@ export class MetricsService {
     return one;
   }
 
-  // Moving averages
+  // Moving average
   normalizeData(inputArray: number[], windowSize: number): number[] {
-    // Create an empty array to store the smoothed values
     const smoothedArray: number[] = [];
 
     // Calculate the offset based on the window size
@@ -95,25 +94,31 @@ export class MetricsService {
     return smoothedArray;
   }
 
-  // Lookback and remove the 95th percentile of outliers
+  // Lookback and remove the 95th percent difference of outliers
   filterOutliers(data: number[]): number[] {
     const filteredData: number[] = [];
 
     let max = 0;
-    // 144 datapoints prior
+    // look back 144 datapoints and get
+    // the recent maximum value
     const lookback = 72;
+    const percentDiff = 0.95;
     for (let i = 0; i < data.length; i++) {
       const previousValues = data.slice(Math.max(i - lookback, 0), i);
       const currentValue = data[i];
 
       let previousMaxValue: number;
+      // Check if previousValues has any entries
+      // prevents -infinity error
       if (previousValues.length > 0) {
         previousMaxValue = Math.max(...previousValues);
       } else {
         previousMaxValue = data[i];
       }
 
-      if (currentValue < previousMaxValue * 0.95) {
+      // Compare currentValue to the maxValue relative to the
+      // acceptable percent difference
+      if (currentValue < previousMaxValue * percentDiff) {
         max = previousMaxValue;
         filteredData.push(max);
       } else {
@@ -129,7 +134,6 @@ export class MetricsService {
     from: Date,
     to: Date,
   ): Promise<SeriesEntity[] | null> {
-    this.logger.debug(`Name:  ${name}`);
     const prometheusQuery = await this.prometheusQuery.get(name);
 
     const query = this.metricRepository
@@ -144,6 +148,8 @@ export class MetricsService {
       .orderBy("m.timestamp", "DESC");
 
     const result: MetricEntity[] | null = await query.getMany();
+
+    // Initialize arrays for data processing
     const seriesData: SeriesEntity[] = [];
     const data: number[] = [];
     const timestamps: Date[] = [];
@@ -153,32 +159,30 @@ export class MetricsService {
       timestamps.push(series.timestamp);
     });
 
+    // Filter outliers and normalize the data
     const windowSize = 12;
     const filteredData = this.filterOutliers(data);
     const smoothedData = this.normalizeData(filteredData, windowSize);
 
+    // Populate return object
     seriesData.push({
       timestamps: timestamps,
       data: smoothedData,
-      // data: data,
     });
-
-    // this.logger.debug(`nonFiltereddata: ${data}`);
-    // this.logger.debug(`filtereDdata: ${this.filterOutliers(data)}`);
 
     return seriesData;
   }
 
+  // Returns the startdate of the metric being tracked from
+  // the most recent value in the database
   async seedMetricStartDate(
     PrometheusQueryCreatedDate: Date,
     prometheusQueryId: number,
   ) {
     let startDate: number;
-    // const latestDate = this.metricRepository
-    //   .createQueryBuilder("m")
-    //   .where({ prometheusQueryId: prometheusQueryId })
-    //   .orderBy("m.timestamp", "DESC");
 
+    // Fetch the metric's latest entry from the data points stored
+    // in the metrics table
     let latestDate;
     try {
       latestDate = await this.metricRepository
@@ -187,18 +191,23 @@ export class MetricsService {
         .orderBy("m.timestamp", "DESC")
         .getOne();
     } catch (error) {
-      // handle the error here, for example:
       this.logger.debug(`Error in fetching latest date: ${error}`);
     }
 
-    // const metricOne = latestDate;
+    // Set timestamp from the most recent row, if exists
     const timestamp = latestDate?.timestamp || null;
+
+    // Fetch the date stored in the prometheus query config table
     const startdate_timestamp = PrometheusQueryCreatedDate.getTime();
     const timestamp_formatted = new Date(timestamp).getTime();
 
+    // Check if timestamp exists and is greater than the query creation date
+    // This means data exists and should continue from the most recent point
     if (timestamp != null && timestamp_formatted > startdate_timestamp) {
       startDate = timestamp_formatted;
     } else {
+      // If no timestamp exists, set timestamp to the prometheus query creation date
+      // This should only occur if data is reset or no metric data exists for a new query
       startDate = startdate_timestamp;
     }
 
@@ -207,5 +216,19 @@ export class MetricsService {
 
   public async save(entities: MetricEntity[]): Promise<void> {
     await this.metricRepository.save(entities);
+  }
+
+  async removeByPrometheusQueryName(name: string): Promise<void> {
+    const prometheusQuery = await this.prometheusQuery.get(name);
+    this.logger.debug(`Deleting metrics with name:  ${prometheusQuery.name}`);
+    await this.metricRepository
+      .createQueryBuilder()
+      .delete()
+      .from(MetricEntity)
+      .where("prometheusQueryId = :id", { id: prometheusQuery.id })
+      .execute();
+    // await this.metricRepository.delete({
+    //   prometheusQueryId: prometheusQuery.id,
+    // });
   }
 }

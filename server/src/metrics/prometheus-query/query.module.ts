@@ -5,7 +5,6 @@ import { PrometheusQuery } from "../../database/entities/prometheus-query.entity
 import { PrometheusQueryService } from "./query.service";
 import { PrometheusQueryController } from "./query.controller";
 import { PrometheusQueryDetailsService } from "../prometheus-query-details/query-details.service";
-import { PrometheusQueryDetailsController } from "../prometheus-query-details/query-details.controller";
 import { PrometheusConfigModule } from "../../config/prometheus/configuration.module";
 import { PrometheusConfigService } from "../../config/prometheus/configuration.service";
 
@@ -20,7 +19,7 @@ import { PrometheusConfigService } from "../../config/prometheus/configuration.s
     PrometheusQueryDetailsService,
     PrometheusConfigService,
   ],
-  controllers: [PrometheusQueryController, PrometheusQueryDetailsController],
+  controllers: [PrometheusQueryController],
   exports: [PrometheusQueryService],
 })
 export class PrometheusQueryModule {}

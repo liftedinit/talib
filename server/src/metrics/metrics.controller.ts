@@ -9,7 +9,7 @@ import {
   Logger,
 } from "@nestjs/common";
 import { ApiOkResponse } from "@nestjs/swagger";
-import { MetricDetailsDto, MetricDto } from "../dto/metric.dto";
+import { MetricDto } from "../dto/metric.dto";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { MetricsService, SeriesEntity } from "./metrics.service";
 import { ApiQuery } from "@nestjs/swagger";
@@ -84,5 +84,4 @@ export class MetricsController {
   async remove(@Param("name") name: string): Promise<void> {
     await this.metrics.removeByPrometheusQueryName(name);
   }
-
 }

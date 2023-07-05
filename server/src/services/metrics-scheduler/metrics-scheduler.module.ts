@@ -3,10 +3,8 @@ import { ModuleRef } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { MetricsSchedulerConfigModule } from "../../config/metrics-scheduler/configuration.module";
 import { MetricsSchedulerConfigService } from "../../config/metrics-scheduler/configuration.service";
-
 import { Metric } from "../../database/entities/metric.entity";
 import { MetricsService } from "../../metrics/metrics.service";
-// import { MetricsUpdater } from "./metrics-updater/updater";
 import { MetricsSchedulerController } from "./metrics-scheduler.controller";
 import { MetricsSchedulerService } from "./metrics-scheduler.service";
 import { PrometheusQueryService } from "src/metrics/prometheus-query/query.service";

@@ -65,35 +65,6 @@ export class MetricsService {
     return one;
   }
 
-  // Moving average
-  normalizeData(inputArray: number[], windowSize: number): number[] {
-    const smoothedArray: number[] = [];
-
-    // Calculate the offset based on the window size
-    const offset = Math.floor(windowSize / 2);
-
-    // Loop through each element in the input array
-    for (let i = 0; i < inputArray.length; i++) {
-      let sum = 0;
-      let count = 0;
-
-      // Calculate the average of the values within the window
-      for (let j = i - offset; j <= i + offset; j++) {
-        if (j >= 0 && j < inputArray.length) {
-          sum += inputArray[j];
-          count++;
-        }
-      }
-
-      // Calculate the average and add it to the smoothed array
-      const average = sum / count;
-      smoothedArray.push(average);
-    }
-
-    // Return the smoothed array
-    return smoothedArray;
-  }
-
   // Lookback and remove the 95th percent difference of outliers
   filterOutliers(data: number[]): number[] {
     const filteredData: number[] = [];
@@ -102,7 +73,7 @@ export class MetricsService {
     // look back 144 datapoints and get
     // the recent maximum value
     const lookback = 72;
-    const percentDiff = 0.95;
+    const percentDiff = 0.90;
     for (let i = 0; i < data.length; i++) {
       const previousValues = data.slice(Math.max(i - lookback, 0), i);
       const currentValue = data[i];
@@ -127,6 +98,19 @@ export class MetricsService {
     }
 
     return filteredData;
+  }
+
+  simpleMovingAverage(data: number[], windowSize: number): number[] {
+    const sma: number[] = [];
+
+    for (let i = 0; i <= data.length - windowSize; i++) {
+      const window = data.slice(i, i + windowSize);
+      const average =
+        window.reduce((sum, value) => sum + value, 0) / windowSize;
+      sma.push(average);
+    }
+
+    return sma;
   }
 
   async getSeries(
@@ -160,9 +144,9 @@ export class MetricsService {
     });
 
     // Filter outliers and normalize the data
-    const windowSize = 12;
+    const windowSize = 18;
     const filteredData = this.filterOutliers(data);
-    const smoothedData = this.normalizeData(filteredData, windowSize);
+    const smoothedData = this.simpleMovingAverage(filteredData, windowSize);
 
     // Populate return object
     seriesData.push({
@@ -227,8 +211,5 @@ export class MetricsService {
       .from(MetricEntity)
       .where("prometheusQueryId = :id", { id: prometheusQuery.id })
       .execute();
-    // await this.metricRepository.delete({
-    //   prometheusQueryId: prometheusQuery.id,
-    // });
   }
 }

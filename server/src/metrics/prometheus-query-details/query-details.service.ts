@@ -24,7 +24,6 @@ export class PrometheusQueryDetailsService {
       .groupBy("n.id")
       .limit(1);
 
-    // this.logger.debug(`getPrometheusQuery(${name}): \`${query.getQuery()}\``);
     const one = await query.getOne();
 
     if (!one) {
@@ -63,8 +62,6 @@ export class PrometheusQueryDetailsService {
     template.from = from;
     template.to = to;
 
-    // this.logger.debug(`constructGrafanaQuery: \`${JSON.stringify(template)}\``);
-
     return template;
   }
 
@@ -76,8 +73,6 @@ export class PrometheusQueryDetailsService {
     maxDataPoints: number,
   ): Promise<any> {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
-
-    // this.logger.debug(`getPrometheusQuery(${name}): \`${JSON.stringify(getPrometheusQuery)}\``);
 
     return await lastValueFrom(
       this.httpService
@@ -105,9 +100,6 @@ export class PrometheusQueryDetailsService {
             const latestTimestamp = timestamps[timestamps.length - 1];
             const latestValue = values[values.length - 1];
             const metrics: Array<any> = [latestTimestamp, latestValue];
-            // this.logger.debug(
-            //   `metrics(${name}): \`${JSON.stringify(metrics)}\``,
-            // );
             return metrics;
           }),
         )

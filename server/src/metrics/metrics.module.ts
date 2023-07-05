@@ -3,7 +3,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Metric } from "../database/entities/metric.entity";
 import { MetricsController } from "./metrics.controller";
 import { MetricsService } from "./metrics.service";
-// import { MetricsAnalyzerService } from "../services/metrics-scheduler/metrics-analyzer.service";
 import { PrometheusQueryDetailsService } from "./prometheus-query-details/query-details.service";
 import { PrometheusQueryDetailsModule } from "./prometheus-query-details/query-details.module";
 import { PrometheusQueryModule } from "./prometheus-query/query.module";
@@ -15,11 +14,7 @@ import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/conf
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      // Neighborhood,
-      Metric,
-      PrometheusQuery,
-    ]),
+    TypeOrmModule.forFeature([Metric, PrometheusQuery]),
     HttpModule,
     MetricsSchedulerConfigModule,
     PrometheusQueryModule,
@@ -27,8 +22,6 @@ import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/conf
   ],
   providers: [
     MetricsService,
-    // NetworkService,
-    // TxAnalyzerService,
     MetricsSchedulerConfigService,
     PrometheusQueryService,
     PrometheusQueryDetailsService,

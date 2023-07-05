@@ -11,7 +11,6 @@ import {
   CreatePrometheusQueryDto,
 } from "../../dto/prometheus-query.dto";
 
-// const default_created_date = "2023-06-14 00:00:00";
 const default_created_date = process.env.METRICS_DEFAULT_CREATED_DATE;
 
 @Entity()

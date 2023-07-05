@@ -66,6 +66,7 @@ export class MetricUpdater {
     const currentDate = new Date();
     let maxBatch: number;
     const defaultBatchSize = this.schedulerConfig.batch_size;
+    const minBatchSize = this.schedulerConfig.min_batch_size;
 
     // Check if the batch size remaining is less than the default batch size, boolean
     const checkBatchSize =
@@ -89,8 +90,8 @@ export class MetricUpdater {
     // Init local var for incrementing
     let seedMetricTimestamp = seedMetricStartDate;
     // If there are less than 10 metrics to collect, skip this scheduled job
-    if (maxBatch < 10) {
-      this.logger.debug(`Batch Size less than 10...skipping job.`);
+    if (maxBatch < minBatchSize) {
+      this.logger.debug(`Batch Size less than ${minBatchSize}...skipping job.`);
     } else {
       for (let i = 0; i < maxBatch; i++) {
         try {

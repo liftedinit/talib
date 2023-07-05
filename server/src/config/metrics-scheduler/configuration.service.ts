@@ -28,6 +28,10 @@ export class MetricsSchedulerConfigService {
     return Number(this.configService.get<number>("metricsScheduler.batch_size"));
   }
 
+  get min_batch_size() {
+    return Number(this.configService.get<number>("metricsScheduler.min_batch_size"));
+  }
+
   get interval() {
     return Number(this.configService.get<number>("metricsScheduler.interval"));
   }

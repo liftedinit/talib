@@ -32,11 +32,13 @@ export function MetricStat({
   let metricValues = [];
   let metricValue = "";
 
+  if (!isLoading && queryData) {
+    metricValues?.push(Number(queryData.data));
 
-  if (!isLoading) {
-    metricValues?.push(queryData);
     if (conversion && queryData != null) {
-      metricValue = metricValues?.map(conversion)?.map((item) => Number((item as number).toFixed(fixedDecimals))).toLocaleString() || "N/A";
+      metricValue = metricValues?.map(conversion)?.map(
+        (item) => Number((item as number).toFixed(fixedDecimals))
+        ).toLocaleString() || "N/A";
     }
     else if (!conversion && queryData != null) {
       metricValue = metricValues?.map((item) => Number(item.toFixed(fixedDecimals))).toLocaleString() || "N/A";
@@ -44,8 +46,8 @@ export function MetricStat({
     else {
       metricValue = "N/A";
     }
-  }
 
+  }
 
   return (
     <>

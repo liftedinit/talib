@@ -1,7 +1,7 @@
 import { Injectable, ForbiddenException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { HttpService } from "@nestjs/axios";
-import { map, catchError } from "rxjs";
+import { map, catchError, lastValueFrom } from "rxjs";
 import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
 import { PrometheusConfigService } from "../../config/prometheus/configuration.service";
 import { Repository } from "typeorm";
@@ -13,18 +13,17 @@ export class PrometheusQueryDetailsService {
   constructor(
     private prometheusConfig: PrometheusConfigService,
     @InjectRepository(PrometheusQuery)
-    private metricRepository: Repository<PrometheusQuery>,
+    private prometheusQueryRepository: Repository<PrometheusQuery>,
     private httpService: HttpService,
   ) {}
 
   async getPrometheusQuery(name: string): Promise<PrometheusQuery> {
-    const query = this.metricRepository
+    const query = this.prometheusQueryRepository
       .createQueryBuilder("n")
       .where({ name: name })
       .groupBy("n.id")
       .limit(1);
 
-    this.logger.debug(`getPrometheusQuery(${name}): \`${query.getQuery()}\``);
     const one = await query.getOne();
 
     if (!one) {
@@ -62,6 +61,7 @@ export class PrometheusQueryDetailsService {
     template.queries[0].expr = prometheusQuery;
     template.from = from;
     template.to = to;
+
     return template;
   }
 
@@ -71,39 +71,44 @@ export class PrometheusQueryDetailsService {
     to: string,
     intervalMs: number,
     maxDataPoints: number,
-  ) {
+  ): Promise<any> {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
 
-    return this.httpService
-      .post(
-        this.prometheusConfig.remoteApiUrl,
-        this.constructGrafanaQuery(
-          getPrometheusQuery.query,
-          from,
-          to,
-          intervalMs,
-          maxDataPoints,
-        ),
-        {
-          headers: {
-            Authorization: `Basic ${Buffer.from(
-              `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
-            ).toString("base64")}`,
+    return await lastValueFrom(
+      this.httpService
+        .post(
+          this.prometheusConfig.remoteApiUrl,
+          this.constructGrafanaQuery(
+            getPrometheusQuery.query,
+            from,
+            to,
+            intervalMs,
+            maxDataPoints,
+          ),
+          {
+            headers: {
+              Authorization: `Basic ${Buffer.from(
+                `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
+              ).toString("base64")}`,
+            },
           },
-        },
-      )
-      .pipe(
-        map((res) => {
-          const values = res.data?.results.A.frames[0].data.values[1];
-          const last = values[values.length - 1];
-          return last;
-        }),
-      )
-      .pipe(
-        catchError(() => {
-          throw new ForbiddenException("API not available");
-        }),
-      );
+        )
+        .pipe(
+          map((res) => {
+            const timestamps = res.data?.results.A.frames[0].data.values[0];
+            const values = res.data?.results.A.frames[0].data.values[1];
+            const latestTimestamp = timestamps[timestamps.length - 1];
+            const latestValue = values[values.length - 1];
+            const metrics: Array<any> = [latestTimestamp, latestValue];
+            return metrics;
+          }),
+        )
+        .pipe(
+          catchError(() => {
+            throw new ForbiddenException("API not available");
+          }),
+        ),
+    );
   }
 
   async getPrometheusQuerySeries(
@@ -145,4 +150,53 @@ export class PrometheusQueryDetailsService {
         }),
       );
   }
+
+  async getPrometheusQuerySingleValue(
+    name: string,
+    timestamp: number,
+    intervalMs: number,
+    maxDataPoints: number,
+  ): Promise<any> {
+    const getPrometheusQuery = await this.getPrometheusQuery(name);
+
+    const from = timestamp - 300000;
+    const to = timestamp;
+
+    return await lastValueFrom(
+      this.httpService
+        .post(
+          this.prometheusConfig.remoteApiUrl,
+          this.constructGrafanaQuery(
+            getPrometheusQuery.query,
+            from.toString(),
+            to.toString(),
+            intervalMs,
+            maxDataPoints,
+          ),
+          {
+            headers: {
+              Authorization: `Basic ${Buffer.from(
+                `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
+              ).toString("base64")}`,
+            },
+          },
+        )
+        .pipe(
+          map((res) => {
+            const timestamps = res.data?.results.A.frames[0].data.values[0];
+            const values = res.data?.results.A.frames[0].data.values[1];
+            const latestTimestamp = timestamps[timestamps.length - 1];
+            const latestValue = values[values.length - 1];
+            const metrics: Array<any> = [latestTimestamp, latestValue];
+            return metrics;
+          }),
+        )
+        .pipe(
+          catchError((error: Error) => {
+            throw new ForbiddenException(error.message);
+          }),
+        ),
+    );
+  }
+
 }

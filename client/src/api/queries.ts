@@ -53,12 +53,12 @@ export function getManifestMetricCurrent(
     stat: string, 
     {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
   ) {
-    return get(`prometheusquery/${stat}/current`, { from, to, intervalMs, maxDataPoints });
+    return get(`metrics/${stat}/current`, { from, to, intervalMs, maxDataPoints });
 }
 
 export function getManifestMetricSeries(
   stat: string, 
   {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
 ) {
-    return get(`prometheusquery/${stat}/series`, { from, to, intervalMs, maxDataPoints });
+    return get(`metrics/${stat}/series`, { from, to, intervalMs, maxDataPoints });
 }

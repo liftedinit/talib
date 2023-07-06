@@ -13,11 +13,9 @@ export class MetricsSchedulerConfigService {
   get cron() {
     return this.configService.get<string | undefined>("metricsScheduler.cron");
   }
-  get seconds() {
-    return this.configService.get<number | undefined>("metricsScheduler.seconds");
-  }
+  
   get enabled() {
-    return this.cron !== undefined || this.seconds !== undefined;
+    return this.cron !== undefined;
   }
 
   get startdate_timestamp() {

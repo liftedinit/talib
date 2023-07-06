@@ -8,7 +8,7 @@ import { MetricsService } from "../../../metrics/metrics.service";
 import { PrometheusQueryDetailsService } from "src/metrics/prometheus-query-details/query-details.service";
 
 const INTERVALMS = 30000;
-const MAXDATAPOINTS = 3000;
+const MAXDATAPOINTS = 30;
 
 @Injectable()
 export class MetricUpdater {

@@ -10,12 +10,11 @@ const validationSchema = Joi.object({
     new CronTime(value);
     return value;
   }),
-  METRICS_SCHEDULER_SECONDS: Joi.number(),
   METRICS_SCHEDULER_STARTDATE_TIMESTAMP: Joi.number(),
   METRICS_SCHEDULER_BATCH_SIZE: Joi.number(),
   METRICS_SCHEDULER_MIN_BATCH_SIZE: Joi.number(),
   METRICS_SCHEDULER_INTERVAL: Joi.number(),
-}).nand("METRICS_SCHEDULER_CRON", "METRICS_SCHEDULER_SECONDS");
+});
 
 /**
  * Import and provide app configuration related classes.

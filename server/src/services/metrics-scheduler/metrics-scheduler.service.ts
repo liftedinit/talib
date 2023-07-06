@@ -26,12 +26,6 @@ export class MetricsSchedulerService {
       this.logger.log(`Cron scheduled: ${metricsSchedulerConfig.cron}`);
       this.schedulerRegistry.addCronJob("updateMetrics", job);
       job.start();
-    } else if (metricsSchedulerConfig.seconds !== undefined) {
-      const id = setInterval(jobFn, metricsSchedulerConfig.seconds * 1000);
-      this.logger.log(
-        `Interval scheduled: ${metricsSchedulerConfig.seconds}sec`,
-      );
-      this.schedulerRegistry.addInterval("updateMetrics", id);
     } else {
       this.logger.log(`Scheduler disabled.`);
     }
@@ -59,7 +53,7 @@ export class MetricsSchedulerService {
         `Updating ${prometheusQueries.length} prometheusQueries.`,
       );
 
-      // Do all prometheusQueries in parallel.
+      // Do all prometheusQueries in parallel
       await Promise.all(
         prometheusQueries.map(async (n) => {
           const i = await this.updaterFactory(n);

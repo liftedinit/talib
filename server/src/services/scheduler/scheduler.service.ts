@@ -53,13 +53,21 @@ export class SchedulerService {
     const neighborhoods = await this.neighborhood.findAll();
 
     if (neighborhoods.length > 0) {
-      this.logger.debug(`Updating ${neighborhoods.length} neighborhoods.`);
+      const enabled = neighborhoods.filter((n) => n.enabled);
+
+      this.logger.debug(`Updating ${enabled.length} neighborhoods.`);
 
       // Do all neighborhoods in parallel.
       await Promise.all(
         neighborhoods.map(async (n) => {
-          const i = await this.updaterFactory(n);
-          await i.run();
+          if (n.enabled) {
+            const i = await this.updaterFactory(n);
+            await i.run();
+          } else {
+            this.logger.debug(
+              `Skipping disabled neighborhood id: ${n.id} name: ${n.name}.`,
+            );
+          }
         }),
       );
       this.logger.debug(`Done`);

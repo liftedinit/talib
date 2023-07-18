@@ -15,6 +15,9 @@ export class NeighborhoodDto {
   @ApiProperty()
   name: string;
 
+  @ApiProperty()
+  enabled: boolean;
+
   @ApiProperty({ required: false })
   description?: string;
 }
@@ -44,6 +47,10 @@ export class CreateNeighborhoodDto {
   @IsNotEmpty()
   @ApiProperty()
   name: string;
+
+  @Optional()
+  @ApiProperty({ required: false })
+  enabled: boolean;
 
   @Optional()
   @ApiProperty({ required: false })

@@ -4,6 +4,7 @@ import { HttpService } from "@nestjs/axios";
 import { map, catchError, lastValueFrom } from "rxjs";
 import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
 import { PrometheusConfigService } from "../../config/prometheus/configuration.service";
+import { Metric } from "../../database/entities/metric.entity";
 import { Repository } from "typeorm";
 
 @Injectable()
@@ -14,6 +15,8 @@ export class PrometheusQueryDetailsService {
     private prometheusConfig: PrometheusConfigService,
     @InjectRepository(PrometheusQuery)
     private prometheusQueryRepository: Repository<PrometheusQuery>,
+    @InjectRepository(Metric)
+    private metricRepository: Repository<Metric>,
     private httpService: HttpService,
   ) {}
 
@@ -158,9 +161,9 @@ export class PrometheusQueryDetailsService {
     maxDataPoints: number,
   ): Promise<any> {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
-
     const from = timestamp - 300000;
     const to = timestamp;
+    const latestMetric = await this.getLatestMetric(name);
 
     return await lastValueFrom(
       this.httpService
@@ -183,20 +186,58 @@ export class PrometheusQueryDetailsService {
         )
         .pipe(
           map((res) => {
+            let latestTimestamp: number;
+            let latestValue: number;
             const timestamps = res.data?.results.A.frames[0].data.values[0];
             const values = res.data?.results.A.frames[0].data.values[1];
-            const latestTimestamp = timestamps[timestamps.length - 1];
-            const latestValue = values[values.length - 1];
+
+            if (values === undefined || timestamps === undefined) {
+              this.logger.debug(
+                `Undefined values or timestamps for query: ${name}`,
+              );
+              // Set timestamp to 5 minutes ago to preserve interval
+              latestTimestamp = from;
+              latestValue = Number(latestMetric.data);
+            } else {
+              latestTimestamp = timestamps[timestamps.length - 1];
+              latestValue = values[values.length - 1];
+            }
+
+            this.logger.debug(
+              `latestTimestamp for query ${name}: ${latestTimestamp}`,
+            );
+            this.logger.debug(`latestValue for query ${name}: ${latestValue}`);
+
+            // const metrics: Array<any> = [latestTimestamp, latestValue];
             const metrics: Array<any> = [latestTimestamp, latestValue];
+
             return metrics;
           }),
         )
         .pipe(
           catchError((error: Error) => {
+            this.logger.error(`Error for query ${name}: ${error.message}`);
             throw new ForbiddenException(error.message);
           }),
         ),
     );
   }
 
+  async getLatestMetric(name: string): Promise<Metric | null> {
+    const prometheusQueryId = await this.getPrometheusQuery(name);
+    let latestMetric: Metric;
+
+    try {
+      latestMetric = await this.metricRepository
+        .createQueryBuilder("m")
+        .where({ prometheusQueryId: prometheusQueryId.id })
+        .orderBy("m.timestamp", "DESC")
+        .getOne();
+      this.logger.debug(`latestMetric for ${name}: ${latestMetric}`);
+    } catch (error) {
+      this.logger.debug(`Error in fetching latest value: ${error}`);
+    }
+
+    return latestMetric;
+  }
 }

@@ -121,6 +121,7 @@ export class NeighborhoodUpdater {
     }
 
     const block = await this.block.findOneByHeight(neighborhood.id, 1);
+
     if (!block || !block.hash) {
       return;
     }
@@ -198,7 +199,7 @@ export class NeighborhoodUpdater {
       await this.updateNeighborhoodMissingEvents(n);
     } catch (e) {
       this.logger.log(
-        `Error happened while updating neighborhood blocks for neighorhood ${n.name}:\n${e.stack}`,
+        `Error happened while updating neighborhood blocks for neighorhood:\n${e.stack}`,
       );
     }
 

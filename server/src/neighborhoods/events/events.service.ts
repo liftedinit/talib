@@ -58,16 +58,12 @@ export class EventsService {
       // .distinct(true)
       .select()
       .where("e.neighborhoodId = :nid", { nid })
-      .orWhere(
+      .andWhere(
         new Brackets((qb) => {
           qb.where(":address = ANY(e.addresses)", {
             address: address.toString(),
           });
-        }),
-      )
-      .orWhere(
-        new Brackets((qb) => {
-          qb.where("e.info LIKE :address", {
+          qb.orWhere("e.info::json->'amounts'->>:address IS NOT NULL", {
             address: address.toString(),
           });
         }),

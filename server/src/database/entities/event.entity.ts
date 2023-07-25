@@ -36,9 +36,6 @@ export class Event {
   @Column({ nullable: true })
   parseError?: string;
 
-  @Column({ nullable: true })
-  status?: string;
-
   intoDto(): EventDto {
     return {
       id: bufferToHex(this.eventId),
@@ -46,6 +43,7 @@ export class Event {
       eventType: this.type,
       method: this.method,
       info: this.info,
+      addresses: this.addresses,
     };
   }
 }

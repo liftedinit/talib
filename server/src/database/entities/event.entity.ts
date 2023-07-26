@@ -43,7 +43,6 @@ export class Event {
       eventType: this.type,
       method: this.method,
       info: this.info,
-      addresses: this.addresses,
     };
   }
 }

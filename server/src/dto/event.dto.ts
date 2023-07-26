@@ -23,7 +23,4 @@ export class EventDto {
 
   @ApiProperty()
   info: any;
-
-  @ApiProperty({ description: "Addresses in the event." })
-  addresses: string[];
 }

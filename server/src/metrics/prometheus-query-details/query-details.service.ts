@@ -202,13 +202,6 @@ export class PrometheusQueryDetailsService {
               latestTimestamp = timestamps[timestamps.length - 1];
               latestValue = values[values.length - 1];
             }
-
-            this.logger.debug(
-              `latestTimestamp for query ${name}: ${latestTimestamp}`,
-            );
-            this.logger.debug(`latestValue for query ${name}: ${latestValue}`);
-
-            // const metrics: Array<any> = [latestTimestamp, latestValue];
             const metrics: Array<any> = [latestTimestamp, latestValue];
 
             return metrics;
@@ -233,7 +226,6 @@ export class PrometheusQueryDetailsService {
         .where({ prometheusQueryId: prometheusQueryId.id })
         .orderBy("m.timestamp", "DESC")
         .getOne();
-      this.logger.debug(`latestMetric for ${name}: ${latestMetric}`);
     } catch (error) {
       this.logger.debug(`Error in fetching latest value: ${error}`);
     }

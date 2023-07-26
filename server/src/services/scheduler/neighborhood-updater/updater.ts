@@ -199,7 +199,7 @@ export class NeighborhoodUpdater {
       await this.updateNeighborhoodMissingEvents(n);
     } catch (e) {
       this.logger.log(
-        `Error happened while updating neighborhood blocks for neighorhood:\n${e.stack}`,
+        `Error happened while updating neighborhood blocks for neighborhood:\n${e.stack}`,
       );
     }
 

@@ -166,7 +166,6 @@ export class BlockService {
   ): Promise<ArrayBuffer | null> {
     const n = await this.network.forUrl(neighborhood.url);
     const blockInfo = await n.blockchain.blockByHeight(1);
-    this.logger.debug(`getGenesisBlockHash(${neighborhood.id}): ${blockInfo}`);
     return blockInfo?.identifier.hash;
   }
 

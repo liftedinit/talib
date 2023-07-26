@@ -22,7 +22,7 @@ export function Navbar() {
     bg="white"
     shadow="lg"
     alignItems="center"
-    templateColumns="425px 1fr 425px"
+    templateColumns="430px 1fr 430px"
     p={6}
     gap={6}
     >

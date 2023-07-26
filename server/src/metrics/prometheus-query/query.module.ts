@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { Metric } from "../../database/entities/metric.entity";
 import { PrometheusQueryService } from "./query.service";
 import { PrometheusQueryController } from "./query.controller";
 import { PrometheusQueryDetailsService } from "../prometheus-query-details/query-details.service";
@@ -10,7 +11,7 @@ import { PrometheusConfigService } from "../../config/prometheus/configuration.s
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PrometheusQuery]),
+    TypeOrmModule.forFeature([Metric, PrometheusQuery]),
     HttpModule,
     PrometheusConfigModule,
   ],

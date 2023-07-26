@@ -45,6 +45,7 @@ export class MetricUpdater {
     const entity = new Metric();
     entity.prometheusQueryId = p;
     entity.timestamp = new Date(latestMetric[0]);
+
     entity.data = latestMetric[1];
 
     const result = await this.metricRepository.save(entity);

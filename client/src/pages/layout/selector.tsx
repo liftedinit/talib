@@ -41,6 +41,7 @@ export function NeighborhoodSelector() {
         rightIcon={<ChevronDownIcon />}
         variant="outline"
         colorScheme="brand.black"
+        size="lg"
       >
         <Text>{active.name}</Text>
       </MenuButton>

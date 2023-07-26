@@ -37,6 +37,9 @@ export class Neighborhood {
   @Column()
   name: string;
 
+  @Column({ default: true })
+  enabled: boolean;
+
   @Column({ nullable: true })
   description: string;
 
@@ -67,6 +70,7 @@ export class Neighborhood {
       id: this.id,
       address: this.address.toString(),
       url: this.url,
+      enabled: this.enabled,
       name: this.name,
       description: this.description,
     };
@@ -93,7 +97,7 @@ export class Neighborhood {
     result.address = Address.fromString(status.address);
     result.url = new URL(dto.url).toString();
     result.description = dto.description;
-
+    result.enabled = dto.enabled;
     result.serverName = status.serverName;
     result.version = status.serverVersion;
     result.attributes = JSON.parse(JSON.stringify(status.attributes));

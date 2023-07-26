@@ -55,12 +55,14 @@ export class EventsService {
   ): Promise<Pagination<EventEntity>> {
     const query = this.eventRepository
       .createQueryBuilder("e")
-      .distinct(true)
       .select()
       .where("e.neighborhoodId = :nid", { nid })
       .andWhere(
         new Brackets((qb) => {
           qb.where(":address = ANY(e.addresses)", {
+            address: address.toString(),
+          });
+          qb.orWhere("e.info::json->'amounts'->>:address IS NOT NULL", {
             address: address.toString(),
           });
         }),

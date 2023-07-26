@@ -6,11 +6,32 @@ export function NetworkMetrics() {
 
   return (
     <>
-      <Heading as='h4' size='md' py="5" pl="5" >Network Totals</Heading>
+      <Heading as='h4' size='md' py="5" pl="5" >Nodes</Heading>
       <SimpleGrid columns={3} gap="6" mt={2}>
-        <MetricStat label="Total Nodes" metric="nodecount" from={"now-1d"} to={"now"} maxDataPoints={50} />
-        <MetricStat label="Total CPU Cores" metric="cpucores" from={"now-1d"} to={"now"} maxDataPoints={50} />
-        <MetricStat label="Total Blocks Produced" metric="totalblocks" from={"now-1d"} to={"now"} maxDataPoints={50} />
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Nodes" metric="nodecount" from={"now-1d"} to={"now"} maxDataPoints={50} />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total CPU Cores" metric="cpucores" from={"now-1d"} to={"now"} maxDataPoints={50} />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Blocks Produced" metric="totalblocks" from={"now-1d"} to={"now"} maxDataPoints={50} />
+        </Box>
+      </SimpleGrid>
+      <Heading as='h4' size='md' py="5" pl="5" >Web Services</Heading>
+      <SimpleGrid columns={3} gap="6" mt={2}>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Web Requests / Sec" metric="nginxrequestssec" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Web Requests / Sec" type="area" metric="nginxrequestssec" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Requests / Sec" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Web Servers" metric="totalwebservers" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total Web Servers" type="area" metric="totalwebservers" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Servers" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Web Requests" metric="totalnginxrequests" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total Web Requests" type="area" metric="totalnginxrequests" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Requests" />
+        </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Disk</Heading>
       <SimpleGrid columns={3} gap="6" mt={2}>

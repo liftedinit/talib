@@ -22,7 +22,7 @@ export function Navbar() {
     bg="white"
     shadow="lg"
     alignItems="center"
-    templateColumns="325px 1fr 325px"
+    templateColumns="425px 1fr 425px"
     p={6}
     gap={6}
     >
@@ -36,7 +36,7 @@ export function Navbar() {
     </GridItem>
     <GridItem>
       <Center>
-        <Box w="100%" maxW="container.xl">
+        <Box w="100%" maxW="container.lg">
           <Search />
         </Box>
       </Center>

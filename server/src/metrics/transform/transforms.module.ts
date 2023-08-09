@@ -3,8 +3,8 @@ import { HttpModule } from "@nestjs/axios";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Metric } from "../../database/entities/metric.entity";
 import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
-import { FunctionsService } from "./functions.service";
-import { FunctionsController } from "./functions.controller";
+import { TransformsService } from "./transforms.service";
+import { TransformsController } from "./trasforms.controller";
 import { PrometheusQueryDetailsModule } from "../prometheus-query-details/query-details.module";
 import { PrometheusQueryService } from "../prometheus-query/query.service";
 import { MetricsService } from "../metrics.service";
@@ -18,13 +18,13 @@ import { ConfigService } from "@nestjs/config";
     PrometheusQueryDetailsModule,
   ],
   providers: [
-    FunctionsService,
+    TransformsService,
     PrometheusQueryService,
     MetricsService,
     MetricsSchedulerConfigService,
     ConfigService,
   ],
-  controllers: [FunctionsController],
-  exports: [FunctionsService],
+  controllers: [TransformsController],
+  exports: [TransformsService],
 })
-export class FunctionsModule {}
+export class TransformsModule {}

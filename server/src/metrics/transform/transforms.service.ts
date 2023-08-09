@@ -12,8 +12,8 @@ type Current = {
 };
 
 @Injectable()
-export class FunctionsService {
-  private readonly logger = new Logger(FunctionsService.name);
+export class TransformsService {
+  private readonly logger = new Logger(TransformsService.name);
 
   constructor(
     @InjectRepository(MetricEntity)

@@ -8,16 +8,16 @@ import {
 } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
 import { ApiQuery } from "@nestjs/swagger";
-import { FunctionsService } from "./functions.service";
+import { TransformsService } from "./transforms.service";
 import { MetricDto } from "../../dto/metric.dto";
 import { MetricsService, SeriesEntity } from "../metrics.service";
 
-@Controller("functions")
-export class FunctionsController {
-  private readonly logger = new Logger(FunctionsController.name);
+@Controller("metrics/transforms")
+export class TransformsController {
+  private readonly logger = new Logger(TransformsController.name);
 
   constructor(
-    private functions: FunctionsService,
+    private transforms: TransformsService,
     private metrics: MetricsService,
   ) {}
 
@@ -28,7 +28,7 @@ export class FunctionsController {
     description: "Show info about one metric watched by this instance.",
   })
   async findOne(@Param("name") name: string): Promise<MetricDto> {
-    const n = await this.functions.get(name);
+    const n = await this.transforms.get(name);
     if (!n) {
       throw new NotFoundException();
     }
@@ -38,7 +38,7 @@ export class FunctionsController {
 
   @Get(":name/sumtotal/current")
   getPrometheusQuerySumTotalCurrent(@Param("name") name: string) {
-    return this.functions.getSumTotal(name);
+    return this.transforms.getSumTotal(name);
   }
 
   @Get(":name/sumtotal/series")
@@ -73,6 +73,6 @@ export class FunctionsController {
       previousDate.setHours(previousDate.getHours() - fromHours);
     }
 
-    return this.functions.getSeriesSumTotal(name);
+    return this.transforms.getSeriesSumTotal(name);
   }
 }

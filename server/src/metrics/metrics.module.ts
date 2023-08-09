@@ -11,8 +11,8 @@ import { PrometheusQueryService } from "./prometheus-query/query.service";
 import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
 import { MetricsSchedulerConfigModule } from "src/config/metrics-scheduler/configuration.module";
 import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
-import { FunctionsModule } from "./functions/functions.module";
-import { FunctionsService } from "./functions/functions.service";
+import { TransformsModule } from "./transform/transforms.module";
+import { TransformsService } from "./transform/transforms.service";
 
 @Module({
   imports: [
@@ -21,21 +21,21 @@ import { FunctionsService } from "./functions/functions.service";
     MetricsSchedulerConfigModule,
     PrometheusQueryModule,
     PrometheusQueryDetailsModule,
-    FunctionsModule,
+    TransformsModule,
   ],
   providers: [
     MetricsService,
     MetricsSchedulerConfigService,
     PrometheusQueryService,
     PrometheusQueryDetailsService,
-    FunctionsService,
+    TransformsService,
   ],
   controllers: [MetricsController],
   exports: [
     MetricsService,
     PrometheusQueryDetailsService,
     MetricsSchedulerConfigService,
-    FunctionsService,
+    TransformsService,
   ],
 })
 export class MetricModule {}

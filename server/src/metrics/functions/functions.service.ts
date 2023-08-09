@@ -4,6 +4,12 @@ import { Repository } from "typeorm";
 import { Metric as MetricEntity } from "../../database/entities/metric.entity";
 import { PrometheusQueryService } from "../prometheus-query/query.service";
 
+type Current = {
+  id: number;
+  timestamp: string;
+  data: string;
+};
+
 @Injectable()
 export class FunctionsService {
   private readonly logger = new Logger(FunctionsService.name);
@@ -33,7 +39,7 @@ export class FunctionsService {
   }
 
   // Get the current value for a metric
-  async getSum(name: string): Promise<number> {
+  async getSum(name: string): Promise<Current> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
     const query = this.metricRepository
@@ -54,6 +60,12 @@ export class FunctionsService {
       0,
     );
 
-    return sum;
+    const sumTotal = {
+      id: Math.floor(Math.random() * 900000) + 100000,
+      timestamp: new Date().toISOString(),
+      data: sum.toString(),
+    };
+
+    return sumTotal;
   }
 }

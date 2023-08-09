@@ -73,7 +73,6 @@ export class FunctionsController {
       previousDate.setHours(previousDate.getHours() - fromHours);
     }
 
-    return this.metrics.getSeries(name, currentDate, previousDate);
+    return this.functions.getSeriesSum(name, currentDate, previousDate);
   }
-
 }

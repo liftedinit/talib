@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Metric as MetricEntity } from "../../database/entities/metric.entity";
 import { PrometheusQueryService } from "../prometheus-query/query.service";
+import { SeriesEntity } from "../metrics.service";
 
 type Current = {
   id: number;
@@ -67,5 +68,51 @@ export class FunctionsService {
     };
 
     return sumTotal;
+  }
+
+  async getSeriesSum(
+    name: string,
+    from: Date,
+    to: Date,
+  ): Promise<SeriesEntity[] | null> {
+    const prometheusQuery = await this.prometheusQuery.get(name);
+
+    const query = this.metricRepository
+      .createQueryBuilder("m")
+      .where("m.timestamp BETWEEN :to AND :from", {
+        to,
+        from,
+      })
+      .andWhere("m.prometheusQueryId = :prometheusQuery", {
+        prometheusQuery: prometheusQuery.id,
+      })
+      .orderBy("m.timestamp", "DESC");
+
+    const result: MetricEntity[] | null = await query.getMany();
+
+    // Initialize arrays for data processing
+    const seriesData: SeriesEntity[] = [];
+    const data: number[] = [];
+    const timestamps: Date[] = [];
+
+    result.forEach((series) => {
+      data.push(Number(series.data));
+      timestamps.push(series.timestamp);
+    });
+
+    // Reformat the data to be a sum of previous values at each timestamp
+    for (let i = 0; i < data.length; i++) {
+      if (i > 0) {
+        data[i] = data[i] + data[i - 1];
+      }
+    }
+
+    // Populate return object
+    seriesData.push({
+      timestamps: timestamps,
+      data: data,
+    });
+
+    return seriesData;
   }
 }

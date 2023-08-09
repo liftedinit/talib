@@ -1,6 +1,6 @@
 import Chart from 'react-apexcharts';
 import { useQuery } from "@tanstack/react-query";
-import { getManifestMetricSeries } from "api";
+import { getManifestMetricSeries, getManifestMetricTransformSeries } from "api";
 import { 
   Center,
   Spinner, 
@@ -20,13 +20,13 @@ interface StatProps {
   fixedDecimals?: number;
   intervalMs?: number;
   maxDataPoints?: number;
+  transform?: string;
 }
 
 interface ChartData {
   series: { name: string; data: number[] }[];
   options: any;
 }
-
 
 export function MetricChart({
   label, 
@@ -40,8 +40,21 @@ export function MetricChart({
   fixedDecimals,
   intervalMs,
   maxDataPoints,
+  transform,
 }: StatProps) {
-  const { data: queryData, isError, isLoading } = useQuery([metric + "series"], getManifestMetricSeries(metric,{from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints}));
+
+  type metricQueryFunction = () => void;
+
+  let metricQuery: metricQueryFunction;
+
+  if (transform) {
+    metricQuery = getManifestMetricTransformSeries(metric, transform, {from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints})
+    }
+  else {
+    metricQuery = getManifestMetricSeries(metric,{from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints})
+  }
+
+  const { data: queryData, isError, isLoading } = useQuery([metric + "series"], metricQuery);
   let chartData: ChartData = {
     series: [] ,
     options: undefined
@@ -74,7 +87,6 @@ export function MetricChart({
       formatData = [];
     }
     
-
     chartData = {
       options: {
         colors: ["#38C7B4"],

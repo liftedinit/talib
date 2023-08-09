@@ -40,7 +40,7 @@ export class FunctionsService {
   }
 
   // Get the current value for a metric
-  async getSum(name: string): Promise<Current> {
+  async getSumTotal(name: string): Promise<Current> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
     const query = this.metricRepository
@@ -70,20 +70,12 @@ export class FunctionsService {
     return sumTotal;
   }
 
-  async getSeriesSum(
-    name: string,
-    from: Date,
-    to: Date,
-  ): Promise<SeriesEntity[] | null> {
+  async getSeriesSumTotal(name: string): Promise<SeriesEntity[] | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where("m.timestamp BETWEEN :to AND :from", {
-        to,
-        from,
-      })
-      .andWhere("m.prometheusQueryId = :prometheusQuery", {
+      .where("m.prometheusQueryId = :prometheusQuery", {
         prometheusQuery: prometheusQuery.id,
       })
       .orderBy("m.timestamp", "DESC");
@@ -101,9 +93,9 @@ export class FunctionsService {
     });
 
     // Reformat the data to be a sum of previous values at each timestamp
-    for (let i = 0; i < data.length; i++) {
-      if (i > 0) {
-        data[i] = data[i] + data[i - 1];
+    for (let i = data.length - 1; i >= 0; i--) {
+      if (i < data.length - 1) {
+        data[i] = data[i] + data[i + 1];
       }
     }
 

@@ -36,16 +36,16 @@ export class FunctionsController {
     return n.intoDto();
   }
 
-  @Get(":name/sum/current")
-  getPrometheusQuerySumCurrent(@Param("name") name: string) {
-    return this.functions.getSum(name);
+  @Get(":name/sumtotal/current")
+  getPrometheusQuerySumTotalCurrent(@Param("name") name: string) {
+    return this.functions.getSumTotal(name);
   }
 
-  @Get(":name/sum/series")
+  @Get(":name/sumtotal/series")
   @ApiQuery({ name: "from", required: false })
   @ApiQuery({ name: "to", required: false })
   @ApiQuery({ name: "hours", required: false })
-  getPrometheusQuerySumSeries(
+  getPrometheusQuerySumTotalSeries(
     @Param("name") name: string,
     @Query("from") from?: string,
     @Query("to") to?: string,
@@ -73,6 +73,6 @@ export class FunctionsController {
       previousDate.setHours(previousDate.getHours() - fromHours);
     }
 
-    return this.functions.getSeriesSum(name, currentDate, previousDate);
+    return this.functions.getSeriesSumTotal(name);
   }
 }

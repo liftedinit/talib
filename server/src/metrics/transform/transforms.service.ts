@@ -70,7 +70,11 @@ export class TransformsService {
     return sumTotal;
   }
 
-  async getSeriesSumTotal(name: string): Promise<SeriesEntity[] | null> {
+  async getSeriesSumTotal(
+    name: string,
+    from: Date,
+    to: Date,
+  ): Promise<SeriesEntity[] | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
     const query = this.metricRepository
@@ -99,10 +103,19 @@ export class TransformsService {
       }
     }
 
-    // Populate return object
+    // Find the index of the first timestamp that is before the "to" date
+    const filterStartIndex = timestamps.findIndex(
+      (timestamp) => new Date(timestamp) < to,
+    );
+
+    // Filter data based on a range of timestamps
+    const filteredData = data.slice(0, filterStartIndex);
+    const filteredTimestamps = timestamps.slice(0, filterStartIndex);
+
+    // Populate return object with filtered data
     seriesData.push({
-      timestamps: timestamps,
-      data: data,
+      timestamps: filteredTimestamps,
+      data: filteredData,
     });
 
     return seriesData;

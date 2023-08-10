@@ -73,6 +73,6 @@ export class TransformsController {
       previousDate.setHours(previousDate.getHours() - fromHours);
     }
 
-    return this.transforms.getSeriesSumTotal(name);
+    return this.transforms.getSeriesSumTotal(name, currentDate, previousDate );
   }
 }

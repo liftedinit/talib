@@ -21,21 +21,6 @@ export class TransformsController {
     private metrics: MetricsService,
   ) {}
 
-  @Get(":name")
-  @ApiResponse({
-    status: 200,
-    type: MetricDto,
-    description: "Show info about one metric watched by this instance.",
-  })
-  async findOne(@Param("name") name: string): Promise<MetricDto> {
-    const n = await this.transforms.get(name);
-    if (!n) {
-      throw new NotFoundException();
-    }
-
-    return n.intoDto();
-  }
-
   @Get(":name/sumtotal/current")
   getPrometheusQuerySumTotalCurrent(@Param("name") name: string) {
     return this.transforms.getSumTotal(name);

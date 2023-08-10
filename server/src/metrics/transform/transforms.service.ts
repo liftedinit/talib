@@ -21,24 +21,6 @@ export class TransformsService {
     private prometheusQuery: PrometheusQueryService,
   ) {}
 
-  async get(name: string): Promise<MetricEntity | null> {
-    const query = this.metricRepository
-      .createQueryBuilder("n")
-      .where({ name: name })
-      .where("n.name = :name", {
-        name: name,
-      })
-      .limit(1);
-
-    const one = await query.getOne();
-
-    if (!one) {
-      return null;
-    }
-
-    return one;
-  }
-
   // Get the current value for a metric
   async getSumTotal(name: string): Promise<Current> {
     const prometheusQuery = await this.prometheusQuery.get(name);

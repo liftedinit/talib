@@ -28,6 +28,11 @@ interface ChartData {
   options: any;
 }
 
+interface queryData {
+    timestamps: string[];
+    data: number[];
+};
+
 export function MetricChart({
   label, 
   type, 
@@ -59,6 +64,7 @@ export function MetricChart({
     series: [] ,
     options: undefined
   }
+
   let categoriesData: (number|string)[] = []
   let seriesData: number[] = []
   let formatData: number[] = []

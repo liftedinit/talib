@@ -28,11 +28,6 @@ interface ChartData {
   options: any;
 }
 
-interface queryData {
-    timestamps: string[];
-    data: number[];
-};
-
 export function MetricChart({
   label, 
   type, 

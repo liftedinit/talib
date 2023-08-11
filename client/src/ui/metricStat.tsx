@@ -16,6 +16,12 @@ interface StatProps {
   transform?: string;
 }
 
+interface QueryData {
+  timestamp: (number|string);
+  data: number;
+  id: number
+}
+
 export function MetricStat({ 
   label, 
   metric, 
@@ -46,7 +52,11 @@ export function MetricStat({
   let metricValue = "";
 
   if (!isLoading && queryData) {
-    metricValues?.push(Number(queryData.data));
+
+    // Apply type to destructured queryData
+    const statData: QueryData = queryData;
+
+    metricValues?.push(Number(statData.data));
 
     if (conversion && queryData != null) {
       metricValue = metricValues?.map(conversion)?.map(

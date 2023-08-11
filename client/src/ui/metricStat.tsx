@@ -27,7 +27,7 @@ interface QueryData {
   id: number
 }
 
-interface StatData {
+interface QueryData {
   timestamp: (number|string);
   data: number;
   id: number

@@ -27,6 +27,12 @@ interface QueryData {
   id: number
 }
 
+interface StatData {
+  timestamp: (number|string);
+  data: number;
+  id: number
+}
+
 export function MetricStat({ 
   label, 
   metric, 

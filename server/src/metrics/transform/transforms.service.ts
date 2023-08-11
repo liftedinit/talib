@@ -59,6 +59,7 @@ export class TransformsService {
   ): Promise<SeriesEntity[] | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
+    // Get all values for a metric from the database from all time
     const query = this.metricRepository
       .createQueryBuilder("m")
       .where("m.prometheusQueryId = :prometheusQuery", {
@@ -78,12 +79,11 @@ export class TransformsService {
       timestamps.push(series.timestamp);
     });
 
-    // Reformat the data to be a sum of previous values at each timestamp
-    for (let i = data.length - 1; i >= 0; i--) {
-      if (i < data.length - 1) {
-        data[i] = data[i] + data[i + 1];
-      }
-    }
+    // Generate the cumulative sum of the data and insert it into the data array
+    data.reduceRight((accumulator, currentValue, currentIndex) => {
+      data[currentIndex] = accumulator + currentValue;
+      return data[currentIndex];
+    });
 
     // Find the index of the first timestamp that is before the "to" date
     const filterStartIndex = timestamps.findIndex(

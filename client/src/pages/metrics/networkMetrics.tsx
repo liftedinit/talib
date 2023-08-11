@@ -6,6 +6,21 @@ export function NetworkMetrics() {
 
   return (
     <>
+      <Heading as='h4' size='md' py="5" pl="5" >Network Totals</Heading>
+      <SimpleGrid columns={3} gap="6" mt={2}>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Blocks Produced" metric="totalblocks" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total Blocks Produced" type="area" metric="totalblocks" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Blocks" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Transactions" metric="totaltransactions" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total Transactions" type="area" metric="totaltransactions" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Networks" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Tokens" metric="totaltokens" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total Tokens" type="area" metric="totaltokens" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Tokens" />
+        </Box>
+      </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Nodes</Heading>
       <SimpleGrid columns={3} gap="6" mt={2}>
         <Box backgroundColor="transparent">
@@ -81,6 +96,6 @@ export function NetworkMetrics() {
           <MetricChart label="Total Buckets" type="area" metric="totalbuckets" from={"now-14d"} to={"now"} fixedDecimals={2} intervalMs={15000} maxDataPoints={250} ytitle="Buckets" />
         </Box>
       </SimpleGrid>
-    </> 
+    </>
   );
 }

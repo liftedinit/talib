@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useState } from "react";
 
-const ID = import.meta.env.PROD ? 6 : 1; // Default to Manifest Ledger in production
+const ID = import.meta.env.PROD ? 6 : 1; // Default to Manifest Ledger Alpha 2 (current) in production
 
 export const NeighborhoodContext = createContext({
   id: ID,

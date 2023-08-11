@@ -21,7 +21,7 @@ export function MetricStat({
   metric, 
   conversion, 
   from, 
-  to,  
+  to,
   fixedDecimals, 
   unit, 
   intervalMs,

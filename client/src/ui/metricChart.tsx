@@ -28,6 +28,11 @@ interface ChartData {
   options: any;
 }
 
+interface QueryData {
+  timestamps: (number|string)[];
+  data: number[];
+}
+
 export function MetricChart({
   label, 
   type, 
@@ -55,6 +60,7 @@ export function MetricChart({
   }
 
   const { data: queryData, isError, isLoading } = useQuery([metric + "series"], metricQuery);
+
   let chartData: ChartData = {
     series: [] ,
     options: undefined
@@ -70,8 +76,12 @@ export function MetricChart({
   }
 
   if (!isLoading && queryData) {
-    categoriesData = queryData[0].timestamps;
-    seriesData = queryData[0].data;
+
+    // Apply type to destructured queryData
+    const typedData: QueryData = queryData[0]
+
+    categoriesData = typedData.timestamps;
+    seriesData = typedData.data;
 
     if (conversion && queryData != null) {
       formatData = seriesData

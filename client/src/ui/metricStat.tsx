@@ -21,6 +21,12 @@ interface QueryData {
   id: number
 }
 
+interface QueryData {
+  timestamp: (number|string);
+  data: number;
+  id: number
+}
+
 export function MetricStat({ 
   label, 
   metric, 
@@ -55,7 +61,7 @@ export function MetricStat({
   if (!isLoading && queryData) {
 
     // Apply type to destructured queryData
-   let statData: QueryData = queryData;
+    const statData: QueryData = queryData;
 
     metricValues?.push(Number(statData.data));
 

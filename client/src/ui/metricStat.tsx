@@ -16,7 +16,7 @@ interface StatProps {
   transform?: string;
 }
 
-interface StatData {
+interface QueryData {
   timestamp: (number|string);
   data: number;
   id: number
@@ -54,7 +54,7 @@ export function MetricStat({
   if (!isLoading && queryData) {
 
     // Apply type to destructured queryData
-    const statData: StatData = queryData;
+    const statData: QueryData = queryData;
 
     metricValues?.push(Number(statData.data));
 

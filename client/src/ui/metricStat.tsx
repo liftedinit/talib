@@ -1,6 +1,6 @@
 import { Stat as BaseStat, StatLabel, StatNumber } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { getManifestMetricCurrent } from "api";
+import { getManifestMetricCurrent, getManifestMetricTransformCurrent } from "api";
 import { Box, Center, Spinner } from "@liftedinit/ui";
 
 interface StatProps {
@@ -13,6 +13,7 @@ interface StatProps {
   fixedDecimals?: number;
   intervalMs?: number;
   maxDataPoints?: number;
+  transform?: string;
 }
 
 export function MetricStat({ 
@@ -20,14 +21,26 @@ export function MetricStat({
   metric, 
   conversion, 
   from, 
-  to, 
+  to,
   fixedDecimals, 
   unit, 
   intervalMs,
-  maxDataPoints 
+  maxDataPoints, 
+  transform,
 }: StatProps) {
 
-  const { data: queryData, isLoading } = useQuery([metric + "current"], getManifestMetricCurrent(metric, {from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints}));
+  type metricQueryFunction = () => void;
+
+  let metricQuery: metricQueryFunction;
+
+  if (transform) {
+    metricQuery = getManifestMetricTransformCurrent(metric, transform, {from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints})
+    }
+  else {
+    metricQuery = getManifestMetricCurrent(metric, {from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints})
+  }
+
+  const { data: queryData, isLoading } =  useQuery([metric + "current"], metricQuery);
 
   let metricValues = [];
   let metricValue = "";

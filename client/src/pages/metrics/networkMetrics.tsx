@@ -10,12 +10,15 @@ export function NetworkMetrics() {
       <SimpleGrid columns={3} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Nodes" metric="nodecount" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total Nodes" type="area" metric="nodecount" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Nodes" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total CPU Cores" metric="cpucores" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total CPU Cores" type="area" metric="cpucores" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Cores" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Blocks Produced" metric="totalblocks" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total Blocks Produced" type="area" metric="totalblocks" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Blocks" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Web Services</Heading>
@@ -29,8 +32,8 @@ export function NetworkMetrics() {
           <MetricChart label="Total Web Servers" type="area" metric="totalwebservers" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Servers" />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Total Web Requests" metric="totalnginxrequests" from={"now-1d"} to={"now"} maxDataPoints={50} />
-          <MetricChart label="Total Web Requests" type="area" metric="totalnginxrequests" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Requests" />
+          <MetricStat label="Total Web Requests" metric="totalnginxrequests" transform="sumtotal" from={"now-1d"} to={"now"} maxDataPoints={50} />
+          <MetricChart label="Total Web Requests" type="area" metric="totalnginxrequests" transform="sumtotal" from={"now-14d"} to={"now"} fixedDecimals={0} intervalMs={15000} maxDataPoints={250} ytitle="Requests" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Disk</Heading>

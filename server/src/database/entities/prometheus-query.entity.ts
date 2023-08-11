@@ -39,11 +39,15 @@ export class PrometheusQuery {
   })
   createdDate: Date;
 
+  @Column({ default: true })
+  enabled: boolean;
+
   intoDto(): PrometheusQueryDto {
     return {
       id: this.id,
       name: this.name,
       label: this.label,
+      enabled: this.enabled,
       query: this.query,
       description: this.description,
       createdDate: this.createdDate.toDateString(),
@@ -54,6 +58,7 @@ export class PrometheusQuery {
     const result = new PrometheusQuery();
     result.name = dto.name;
     result.label = dto.label;
+    result.enabled = dto.enabled;
     result.query = dto.query;
     result.description = dto.description;
     result.createdDate = dto.createdDate

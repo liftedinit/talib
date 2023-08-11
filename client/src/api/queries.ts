@@ -62,3 +62,19 @@ export function getManifestMetricSeries(
 ) {
     return get(`metrics/${stat}/series`, { from, to, intervalMs, maxDataPoints });
 }
+
+export function getManifestMetricTransformCurrent(
+  stat: string, 
+  transform: string,
+  {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
+) {
+  return get(`metrics/transforms/${stat}/${transform}/current`, { from, to, intervalMs, maxDataPoints });
+}
+
+export function getManifestMetricTransformSeries(
+  stat: string, 
+  transform: string,
+  {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
+) {
+    return get(`metrics/transforms/${stat}/${transform}/series`, { from, to, intervalMs, maxDataPoints });
+}

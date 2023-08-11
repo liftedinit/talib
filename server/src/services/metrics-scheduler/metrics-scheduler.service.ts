@@ -49,15 +49,21 @@ export class MetricsSchedulerService {
     const prometheusQueries = await this.prometheusQuery.findAll();
 
     if (prometheusQueries.length > 0) {
-      this.logger.debug(
-        `Updating ${prometheusQueries.length} prometheusQueries.`,
-      );
+      const enabled = prometheusQueries.filter((n) => n.enabled);
+
+      this.logger.debug(`Updating ${enabled.length} prometheusQueries.`);
 
       // Do all prometheusQueries in parallel
       await Promise.all(
         prometheusQueries.map(async (n) => {
-          const i = await this.updaterFactory(n);
-          await i.run();
+          if (n.enabled) {
+            const i = await this.updaterFactory(n);
+            await i.run();
+          } else {
+            this.logger.debug(
+              `Skipping disabled prometheusquery id: ${n.id} name: ${n.name}.`,
+            );
+          }
         }),
       );
       this.logger.debug(`Done`);

@@ -8,31 +8,30 @@ import {
 } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
 import { ApiQuery } from "@nestjs/swagger";
-import { TransformsService } from "./transforms.service";
+import { SystemWideService } from "./systemwide.service";
 import { MetricDto } from "../../dto/metric.dto";
 import { MetricsService, SeriesEntity } from "../metrics.service";
 import { Block as BlockEntity } from "../../database/entities/block.entity";
 
-@Controller("metrics/transforms")
-export class TransformsController {
-  private readonly logger = new Logger(TransformsController.name);
+@Controller("metrics/systemwide")
+export class SystemWideController {
+  private readonly logger = new Logger(SystemWideController.name);
 
   constructor(
-    private transforms: TransformsService,
+    private systemwide: SystemWideService,
     private metrics: MetricsService,
   ) {}
 
-  @Get(":name/sumtotal/current")
-  getPrometheusQuerySumTotalCurrent(@Param("name") name: string) {
-    return this.transforms.getSumTotal(name);
+  @Get("totalblocks/current")
+  getBlocksTotalCurrent() {
+    return this.systemwide.getTotalBlocks();
   }
 
-  @Get(":name/sumtotal/series")
+  @Get("totalblocks/series")
   @ApiQuery({ name: "from", required: false })
   @ApiQuery({ name: "to", required: false })
   @ApiQuery({ name: "hours", required: false })
-  getPrometheusQuerySumTotalSeries(
-    @Param("name") name: string,
+  getBlocksTotalSeries(
     @Query("from") from?: string,
     @Query("to") to?: string,
     @Query("hours") hours?: number,
@@ -59,6 +58,11 @@ export class TransformsController {
       previousDate.setHours(previousDate.getHours() - fromHours);
     }
 
-    return this.transforms.getSeriesSumTotal(name, currentDate, previousDate);
+    return this.systemwide.getTotalBlocksSeries(currentDate, previousDate);
+  }
+
+  @Get("totaltransactions/current")
+  getTransactionsTotalCurrent() {
+    return this.systemwide.getTotalTransactions();
   }
 }

@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Metric } from "../database/entities/metric.entity";
+import { Block } from "../database/entities/block.entity";
+import { Transaction } from "../database/entities/transaction.entity";
 import { MetricsController } from "./metrics.controller";
 import { MetricsService } from "./metrics.service";
 import { PrometheusQueryDetailsService } from "./prometheus-query-details/query-details.service";
@@ -13,15 +15,18 @@ import { MetricsSchedulerConfigModule } from "src/config/metrics-scheduler/confi
 import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 import { TransformsModule } from "./transform/transforms.module";
 import { TransformsService } from "./transform/transforms.service";
+import { SystemWideModule } from "./systemwide/systemwide.module";
+import { SystemWideService } from "./systemwide/systemwide.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Metric, PrometheusQuery]),
+    TypeOrmModule.forFeature([Metric, Block, Transaction, PrometheusQuery]),
     HttpModule,
     MetricsSchedulerConfigModule,
     PrometheusQueryModule,
     PrometheusQueryDetailsModule,
     TransformsModule,
+    SystemWideModule,
   ],
   providers: [
     MetricsService,
@@ -29,6 +34,7 @@ import { TransformsService } from "./transform/transforms.service";
     PrometheusQueryService,
     PrometheusQueryDetailsService,
     TransformsService,
+    SystemWideService,
   ],
   controllers: [MetricsController],
   exports: [
@@ -36,6 +42,7 @@ import { TransformsService } from "./transform/transforms.service";
     PrometheusQueryDetailsService,
     MetricsSchedulerConfigService,
     TransformsService,
+    SystemWideService,
   ],
 })
 export class MetricModule {}

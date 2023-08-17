@@ -41,40 +41,53 @@ export function getNeighborhoodAddress(id: number, address: string) {
   return get(`neighborhoods/${id}/addresses/${address}`);
 }
 
-export function getManifestMetrics() {
+export function getMetrics() {
   return get(`prometheusquery`)
 }
 
-export function getManifestMetric(stat: string) {
+export function getMetric(stat: string) {
   return get(`prometheusquery/${stat}`)
 }
 
-export function getManifestMetricCurrent(
-    stat: string, 
-    {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
+export function getMetricCurrent(
+    stat?: string, 
+    {from = FROM, to = TO } = {}
   ) {
-    return get(`metrics/${stat}/current`, { from, to, intervalMs, maxDataPoints });
+    return get(`metrics/${stat}/current`, { from, to});
 }
 
-export function getManifestMetricSeries(
-  stat: string, 
-  {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
+export function getMetricSeries(
+  stat?: string, 
+  {from = FROM, to = TO } = {}
 ) {
-    return get(`metrics/${stat}/series`, { from, to, intervalMs, maxDataPoints });
+    return get(`metrics/${stat}/series`, { from, to });
 }
 
-export function getManifestMetricTransformCurrent(
-  stat: string, 
-  transform: string,
-  {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
+export function getMetricTransformCurrent(
+  stat?: string, 
+  transform?: string,
+  {from = FROM, to = TO } = {}
 ) {
-  return get(`metrics/transforms/${stat}/${transform}/current`, { from, to, intervalMs, maxDataPoints });
+  return get(`metrics/transforms/${stat}/${transform}/current`, { from, to });
 }
 
-export function getManifestMetricTransformSeries(
-  stat: string, 
-  transform: string,
-  {from = FROM, to = TO, intervalMs = INTERVALMS, maxDataPoints = MAXDATAPOINTS } = {}
+export function getMetricTransformSeries(
+  stat?: string, 
+  transform?: string,
+  {from = FROM, to = TO} = {}
 ) {
-    return get(`metrics/transforms/${stat}/${transform}/series`, { from, to, intervalMs, maxDataPoints });
+    return get(`metrics/transforms/${stat}/${transform}/series`, { from, to });
+}
+
+export function getMetricSystemWideCurrent(
+  metric?: string,
+) {
+  return get(`metrics/systemwide/${metric}/current`);
+}
+
+export function getMetricSystemWideSeries(
+  metric?: string,
+  {from = FROM, to = TO } = {}
+) {
+    return get(`metrics/systemwide/${metric}/series`, { from, to });
 }

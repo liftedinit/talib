@@ -1,7 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { Metric as MetricEntity } from "../../database/entities/metric.entity";
+import { Block as BlockEntity } from "../../database/entities/block.entity";
 import { PrometheusQueryService } from "../prometheus-query/query.service";
 import { SeriesEntity } from "../metrics.service";
 
@@ -11,6 +12,11 @@ type Current = {
   data: string;
 };
 
+export type Blocks = {
+  neighborhoodId: string;
+  highest_value: number;
+};
+
 @Injectable()
 export class TransformsService {
   private readonly logger = new Logger(TransformsService.name);
@@ -18,6 +24,9 @@ export class TransformsService {
   constructor(
     @InjectRepository(MetricEntity)
     private metricRepository: Repository<MetricEntity>,
+    @InjectRepository(BlockEntity)
+    private blockRepository: Repository<BlockEntity>,
+    private dataSource: DataSource,
     private prometheusQuery: PrometheusQueryService,
   ) {}
 

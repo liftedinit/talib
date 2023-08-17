@@ -27,12 +27,6 @@ interface QueryData {
   id: number
 }
 
-interface QueryData {
-  timestamp: (number|string);
-  data: number;
-  id: number
-}
-
 export function MetricStat({ 
   label, 
   metric, 
@@ -67,9 +61,11 @@ export function MetricStat({
   if (!isLoading && queryData) {
 
     // Apply type to destructured queryData
-    const statData: QueryData = queryData;
+   let statData: QueryData = queryData;
 
     metricValues?.push(Number(statData.data));
+
+    console.log(`MetricStat Data ${label}: ${statData.data}`)
 
     if (conversion && queryData != null) {
       metricValue = metricValues?.map(conversion)?.map(

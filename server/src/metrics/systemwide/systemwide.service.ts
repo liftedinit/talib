@@ -31,7 +31,7 @@ export class SystemWideService {
     private dataSource: DataSource,
   ) {}
 
-  // Get the current value for a metric
+  // Get the total blocks produced from all networks
   async getTotalBlocks(): Promise<Current> {
     const query = `
       SELECT "neighborhoodId", MAX(height) AS highest_value
@@ -61,88 +61,7 @@ export class SystemWideService {
     return sumTotal;
   }
 
-  async seedTotalBlocks(): Promise<void> {
-    const query = `
-    SELECT 
-        "neighborhoodId",
-        DATE_TRUNC('hour', "time") + 
-            ((EXTRACT(MINUTE FROM "time") / 10)::int * 10 || ' minutes')::interval AS time_interval,
-        SUM(height) AS total_height
-    FROM block
-    GROUP BY 
-        "neighborhoodId",
-        DATE_TRUNC('hour', "time") + 
-            ((EXTRACT(MINUTE FROM "time") / 10)::int * 10 || ' minutes')::interval
-    ORDER BY 
-        "neighborhoodId",
-        time_interval;
-    `;
-
-    const values = await this.dataSource.query(query);
-
-    return null;
-  }
-
-  async getTotalBlocksSeries(
-    from: Date,
-    to: Date,
-  ): Promise<SeriesEntity[] | null> {
-    const query = `
-    SELECT 
-        "neighborhoodId",
-        DATE_TRUNC('hour', "time") + 
-            ((EXTRACT(MINUTE FROM "time") / 10)::int * 10 || ' minutes')::interval AS time_interval,
-        SUM(height) AS total_height
-    FROM block
-    GROUP BY 
-        "neighborhoodId",
-        DATE_TRUNC('hour', "time") + 
-            ((EXTRACT(MINUTE FROM "time") / 10)::int * 10 || ' minutes')::interval
-    ORDER BY 
-        "neighborhoodId",
-        time_interval;
-    `;
-
-    const values = await this.dataSource.query(query);
-
-    if (!values) {
-      return null;
-    }
-
-    // this.logger.debug(`Total blocks series: ${JSON.stringify(values)}`);
-
-    // Initialize arrays for data processing
-    const seriesData: SeriesEntity[] = [];
-    const data: number[] = values.map((value) => ({
-      ...value,
-      value: Number(value.total_height),
-    }));
-    const timestamps: Date[] = values.map(
-      (value) => new Date(value.time_interval),
-    );
-
-    this.logger.debug(`data: ${JSON.stringify(data)}`);
-    this.logger.debug(`timestamps: ${JSON.stringify(timestamps)}`);
-
-    // Find the index of the first timestamp that is before the "to" date
-    const filterStartIndex = timestamps.findIndex(
-      (timestamp) => new Date(timestamp) < to,
-    );
-
-    // Filter data based on a range of timestamps
-    const filteredData = data.slice(0, filterStartIndex);
-    const filteredTimestamps = timestamps.slice(0, filterStartIndex);
-
-    // Populate return object with filtered data
-    seriesData.push({
-      timestamps: filteredTimestamps,
-      data: filteredData,
-    });
-
-    return seriesData;
-  }
-
-  // Get the current value for a metric
+  // Get the total transactions from all networks
   async getTotalTransactions(): Promise<Current> {
     const query = this.transactionRepository
       .createQueryBuilder("t")

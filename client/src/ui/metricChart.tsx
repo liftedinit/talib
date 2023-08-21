@@ -73,8 +73,6 @@ export function MetricChart({
 
   if (!isLoading && queryData) {
 
-    console.log(queryData[0])
-
     // Apply type to destructured queryData
     const typedData: QueryData = queryData[0]
 

@@ -33,6 +33,7 @@ export const PrettyMethods: { [name: string]: string } = {
   "ledger.send": "Send",
   "tokens.burn": "Burn",
   "tokens.mint": "Mint",
+  "tokens.create": "Create",
 };
 
 interface TxnSummary {

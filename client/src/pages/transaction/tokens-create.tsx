@@ -9,18 +9,11 @@ export function tokensCreate(data: any) {
         {summary.ticker}
       </Code>
     ),
-    Holders: (
+    'Initial Distribution': (
       <Table>
         <Tbody>
           {Object.entries(data.argument.holders).map(([address, amount]) => (
             <Tr>
-              <Td >
-                {(
-                  parseInt(amount as string) /
-                  10 ** summary.precision
-                ).toLocaleString()}{" "}
-                {summary.ticker}
-              </Td>
               <Td>
                 <Code
                   as={Link}
@@ -30,7 +23,13 @@ export function tokensCreate(data: any) {
                   {address}
                 </Code>
               </Td>
-
+              <Td >
+                {(
+                  parseInt(amount as string) /
+                  10 ** summary.precision
+                ).toLocaleString()}{" "}
+                {summary.ticker}
+              </Td>
             </Tr>
           ))}
         </Tbody>

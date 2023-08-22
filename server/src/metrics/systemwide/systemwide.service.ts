@@ -1,9 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
-import { Metric as MetricEntity } from "../../database/entities/metric.entity";
-import { Block as BlockEntity } from "../../database/entities/block.entity";
-import { SeriesEntity } from "../metrics.service";
 import { Transaction as TransactionEntity } from "../../database/entities/transaction.entity";
 
 type Current = {
@@ -22,10 +19,6 @@ export class SystemWideService {
   private readonly logger = new Logger(SystemWideService.name);
 
   constructor(
-    @InjectRepository(MetricEntity)
-    private metricRepository: Repository<MetricEntity>,
-    @InjectRepository(BlockEntity)
-    private blockRepository: Repository<BlockEntity>,
     @InjectRepository(TransactionEntity)
     private transactionRepository: Repository<TransactionEntity>,
     private dataSource: DataSource,
@@ -50,8 +43,6 @@ export class SystemWideService {
       0,
     );
 
-    this.logger.debug(`Total blocks: ${blocksum}`);
-
     const sumTotal = {
       id: Math.floor(Math.random() * 900000) + 100000,
       timestamp: new Date().toISOString(),
@@ -68,8 +59,6 @@ export class SystemWideService {
       .select("COUNT(t.id)", "count");
 
     const transactions = await query.getRawOne();
-
-    this.logger.debug(`Total transactions: ${transactions.count}`);
 
     if (!transactions) {
       return null;

@@ -65,8 +65,6 @@ export function MetricStat({
 
     metricValues?.push(Number(statData.data));
 
-    console.log(`MetricStat Data ${label}: ${statData.data}`)
-
     if (conversion && queryData != null) {
       metricValue = metricValues?.map(conversion)?.map(
         (item) => Number((item as number).toFixed(fixedDecimals))

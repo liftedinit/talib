@@ -11,7 +11,7 @@ export function tokensMintBurn(data: any) {
       </Code>
     ),
     Amounts: (
-      <Table>
+      <Table variant="unstyled">
         <Tbody>
           {Object.entries(data.argument.amounts).map(([address, amount]) => (
             <Tr>

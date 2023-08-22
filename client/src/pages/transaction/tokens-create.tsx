@@ -10,7 +10,7 @@ export function tokensCreate(data: any) {
       </Code>
     ),
     'Initial Distribution': (
-      <Table>
+      <Table variant="unstyled">
         <Tbody>
           {Object.entries(data.argument.holders).map(([address, amount]) => (
             <Tr>

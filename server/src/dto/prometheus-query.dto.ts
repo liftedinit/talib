@@ -2,6 +2,12 @@ import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsUrl } from "class-validator";
 
+enum QueryType {
+  Prometheus = "prometheus",
+  SQL = "sql",
+  LogQL = "logql",
+}
+
 export class PrometheusQueryDto {
   @ApiProperty()
   id: number;
@@ -23,6 +29,12 @@ export class PrometheusQueryDto {
 
   @ApiProperty()
   createdDate: string;
+
+  @ApiProperty({
+    enum: QueryType,
+    description: "The type of query (Prometheus, SQL, LogQL)",
+  })
+  querytype: string;
 }
 
 export class CreatePrometheusQueryDto {
@@ -49,4 +61,10 @@ export class CreatePrometheusQueryDto {
   @IsNotEmpty()
   @ApiProperty()
   createdDate: string;
+
+  @ApiProperty({
+    enum: QueryType,
+    description: "The type of query (Prometheus, SQL, LogQL)",
+  })
+  querytype: string;
 }

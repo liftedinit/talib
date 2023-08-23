@@ -14,8 +14,8 @@ export function tokensMintBurn(data: any) {
       <Table variant="unstyled">
         <Tbody>
           {Object.entries(data.argument.amounts).map(([address, amount]) => (
-            <Tr>
-              <Td>
+            <Tr mt="5px" mb="5px">
+              <Td pt="5px" pb="5px" pl="0" ps="0">
                 <Code
                   as={Link}
                   to={`/addresses/${address}`}
@@ -24,7 +24,7 @@ export function tokensMintBurn(data: any) {
                   {address}
                 </Code>
               </Td>
-              <Td isNumeric>
+              <Td isNumeric pt="5px" pb="5px" pl="5px">
                 {(
                   parseInt(amount as string) /
                   10 ** token.precision

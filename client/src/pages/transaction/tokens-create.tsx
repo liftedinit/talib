@@ -13,8 +13,8 @@ export function tokensCreate(data: any) {
       <Table variant="unstyled">
         <Tbody>
           {Object.entries(data.argument.holders).map(([address, amount]) => (
-            <Tr>
-              <Td>
+            <Tr mt="5px" mb="5px">
+              <Td pt="5px" pb="5px" pl="0" ps="0">
                 <Code
                   as={Link}
                   to={`/addresses/${address}`}
@@ -23,7 +23,7 @@ export function tokensCreate(data: any) {
                   {address}
                 </Code>
               </Td>
-              <Td >
+              <Td isNumeric pt="5px" pb="5px">
                 {(
                   parseInt(amount as string) /
                   10 ** summary.precision

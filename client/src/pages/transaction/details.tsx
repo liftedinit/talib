@@ -7,6 +7,7 @@ import {
   multisigAction,
   multisigSubmit,
   tokensMintBurn,
+  tokensCreate,
 } from ".";
 
 const methodDetails: {
@@ -21,6 +22,7 @@ const methodDetails: {
   "ledger.send": ledgerSend,
   "tokens.burn": tokensMintBurn,
   "tokens.mint": tokensMintBurn,
+  "tokens.create": tokensCreate,
 };
 
 export function details(data: any) {

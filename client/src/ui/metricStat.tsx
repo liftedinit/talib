@@ -1,19 +1,24 @@
 import { Stat as BaseStat, StatLabel, StatNumber } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { getManifestMetricCurrent, getManifestMetricTransformCurrent } from "api";
+import { getMetricCurrent, getMetricTransformCurrent, getMetricSystemWideCurrent } from "api";
 import { Box, Center, Spinner } from "@liftedinit/ui";
 
 interface StatProps {
   label: string;
-  metric: string;
+  metric?: string;
   conversion?: (value: any) => any;
   from?: string;
   to?: string;
   unit?: string;
   fixedDecimals?: number;
-  intervalMs?: number;
-  maxDataPoints?: number;
   transform?: string;
+  systemwide?: boolean;
+}
+
+interface QueryData {
+  timestamp: (number|string);
+  data: number;
+  id: number
 }
 
 interface QueryData {
@@ -30,9 +35,8 @@ export function MetricStat({
   to,
   fixedDecimals, 
   unit, 
-  intervalMs,
-  maxDataPoints, 
   transform,
+  systemwide,
 }: StatProps) {
 
   type metricQueryFunction = () => void;
@@ -40,10 +44,13 @@ export function MetricStat({
   let metricQuery: metricQueryFunction;
 
   if (transform) {
-    metricQuery = getManifestMetricTransformCurrent(metric, transform, {from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints})
+    metricQuery = getMetricTransformCurrent(metric, transform, {from: from, to: to })
     }
+  else if (systemwide) {
+    metricQuery = getMetricSystemWideCurrent(metric)
+  }
   else {
-    metricQuery = getManifestMetricCurrent(metric, {from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints})
+    metricQuery = getMetricCurrent(metric, {from: from, to: to })
   }
 
   const { data: queryData, isLoading } =  useQuery([metric + "current"], metricQuery);

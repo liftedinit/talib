@@ -1,6 +1,6 @@
 import Chart from 'react-apexcharts';
 import { useQuery } from "@tanstack/react-query";
-import { getManifestMetricSeries, getManifestMetricTransformSeries } from "api";
+import { getMetricSeries, getMetricTransformSeries } from "api";
 import { 
   Center,
   Spinner, 
@@ -18,8 +18,6 @@ interface StatProps {
   from?: string;
   to?: string;
   fixedDecimals?: number;
-  intervalMs?: number;
-  maxDataPoints?: number;
   transform?: string;
 }
 
@@ -43,8 +41,6 @@ export function MetricChart({
   xtitle, 
   ytitle, 
   fixedDecimals,
-  intervalMs,
-  maxDataPoints,
   transform,
 }: StatProps) {
 
@@ -53,10 +49,10 @@ export function MetricChart({
   let metricQuery: metricQueryFunction;
 
   if (transform) {
-    metricQuery = getManifestMetricTransformSeries(metric, transform, {from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints})
+    metricQuery = getMetricTransformSeries(metric, transform, {from: from, to: to })
     }
   else {
-    metricQuery = getManifestMetricSeries(metric,{from: from, to: to, intervalMs: intervalMs, maxDataPoints: maxDataPoints})
+    metricQuery = getMetricSeries(metric,{from: from, to: to })
   }
 
   const { data: queryData, isError, isLoading } = useQuery([metric + "series"], metricQuery);
@@ -102,7 +98,10 @@ export function MetricChart({
       options: {
         colors: ["#38C7B4"],
         dataLabels: { enabled: false },
-        chart: { toolbar: { show: false } },
+        chart: { 
+          toolbar: { show: false }, 
+          animations: { enabled: false },
+        },
         stroke: {
           curve: 'smooth',
         },

@@ -1,19 +1,18 @@
 import { Code, Table, Tbody, Td, Tr } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
-import { findToken } from "./tokens";
 
-export function tokensMintBurn(data: any) {
-  const token = findToken(data.argument.symbol);
+export function tokensCreate(data: any) {
+  const summary = data.argument.summary;
   return {
     Token: (
-      <Code as={Link} to={`/addresses/${token.address}`} color="brand.teal.500">
-        {data.argument.symbol}
+      <Code as={Link} to={`/addresses/${data.argument.owner}`} color="brand.teal.500">
+        {summary.ticker}
       </Code>
     ),
-    Amounts: (
+    'Initial Distribution': (
       <Table variant="unstyled">
         <Tbody>
-          {Object.entries(data.argument.amounts).map(([address, amount]) => (
+          {Object.entries(data.argument.holders).map(([address, amount]) => (
             <Tr mt="5px" mb="5px">
               <Td pt="5px" pb="5px" pl="0" ps="0">
                 <Code
@@ -24,12 +23,12 @@ export function tokensMintBurn(data: any) {
                   {address}
                 </Code>
               </Td>
-              <Td isNumeric pt="5px" pb="5px" pl="5px">
+              <Td isNumeric pt="5px" pb="5px">
                 {(
                   parseInt(amount as string) /
-                  10 ** token.precision
+                  10 ** summary.precision
                 ).toLocaleString()}{" "}
-                {token.ticker}
+                {summary.ticker}
               </Td>
             </Tr>
           ))}

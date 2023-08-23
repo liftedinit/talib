@@ -41,7 +41,7 @@ export function Home() {
         </Heading>
       </Center>
       <NeighborhoodStatus id={id} />
-      <SimpleGrid columns={2} spacing={6}>
+      <SimpleGrid columns={{ base: 1, sm: 1, md: 2 }} spacing={6}>
         <Box>
           <BlockList
             blocks={blocksData?.items}

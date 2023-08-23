@@ -11,6 +11,7 @@ import { ApiQuery } from "@nestjs/swagger";
 import { TransformsService } from "./transforms.service";
 import { MetricDto } from "../../dto/metric.dto";
 import { MetricsService, SeriesEntity } from "../metrics.service";
+import { Block as BlockEntity } from "../../database/entities/block.entity";
 
 @Controller("metrics/transforms")
 export class TransformsController {
@@ -58,6 +59,6 @@ export class TransformsController {
       previousDate.setHours(previousDate.getHours() - fromHours);
     }
 
-    return this.transforms.getSeriesSumTotal(name, currentDate, previousDate );
+    return this.transforms.getSeriesSumTotal(name, currentDate, previousDate);
   }
 }

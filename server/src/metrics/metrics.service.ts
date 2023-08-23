@@ -8,7 +8,7 @@ import {
 import { Repository } from "typeorm";
 import { Metric as MetricEntity } from "../database/entities/metric.entity";
 import { PrometheusQueryService } from "./prometheus-query/query.service";
-import { MetricsSchedulerConfigService } from "../config/metrics-scheduler/configuration.service";
+import { MetricsSchedulerConfigService } from "../config/metrics-scheduler/configuration.service"
 
 export interface SeriesEntity {
   data: number[] | string[];

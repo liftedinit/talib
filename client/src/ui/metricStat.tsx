@@ -55,7 +55,7 @@ export function MetricStat({
   if (!isLoading && queryData) {
 
     // Apply type to destructured queryData
-   let statData: QueryData = queryData;
+    const statData: QueryData = queryData;
 
     metricValues?.push(Number(statData.data));
 

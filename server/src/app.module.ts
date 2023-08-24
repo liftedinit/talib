@@ -13,6 +13,7 @@ import { DatabaseConfigService } from "./config/database/configuration.service";
 import { SchedulerConfigModule } from "./config/scheduler/configuration.module";
 import { DataModule } from "./data/data.module";
 import { Block } from "./database/entities/block.entity";
+import { NeighborhoodInfo } from "./database/entities/neighborhood-info.entity";
 import { Event } from "./database/entities/event.entity";
 import { Neighborhood } from "./database/entities/neighborhood.entity";
 import { TransactionDetails } from "./database/entities/transaction-details.entity";
@@ -62,7 +63,7 @@ import { MetricModule } from "./metrics/metrics.module";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, PrometheusQuery, Metric],
+        entities: [Neighborhood, Block, NeighborhoodInfo, Event, Transaction, TransactionDetails, PrometheusQuery, Metric],
         migrations: [],
         synchronize: true,
         ...db.config,

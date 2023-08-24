@@ -42,6 +42,9 @@ export class PrometheusQuery {
   @Column({ default: true })
   enabled: boolean;
 
+  @Column({ nullable: true })
+  querytype: string;
+
   intoDto(): PrometheusQueryDto {
     return {
       id: this.id,
@@ -51,6 +54,7 @@ export class PrometheusQuery {
       query: this.query,
       description: this.description,
       createdDate: this.createdDate.toDateString(),
+      querytype: this.querytype,
     };
   }
 
@@ -64,6 +68,7 @@ export class PrometheusQuery {
     result.createdDate = dto.createdDate
       ? new Date(dto.createdDate)
       : new Date(default_created_date);
+    result.querytype = dto.querytype;
     return result;
   }
 }

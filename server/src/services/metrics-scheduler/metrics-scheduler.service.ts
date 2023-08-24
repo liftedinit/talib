@@ -56,7 +56,7 @@ export class MetricsSchedulerService {
       // Do all prometheusQueries in parallel
       await Promise.all(
         prometheusQueries.map(async (n) => {
-          if (n.enabled) {
+          if (n.enabled && n.querytype == "prometheus") {
             const i = await this.updaterFactory(n);
             await i.run();
           } else {

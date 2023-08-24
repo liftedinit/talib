@@ -6,12 +6,14 @@ import { SchedulerConfigService } from "../../config/scheduler/configuration.ser
 import { Block } from "../../database/entities/block.entity";
 import { Event } from "../../database/entities/event.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
+import { NeighborhoodInfo } from "../../database/entities/neighborhood-info.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
 import { BlockModule } from "../../neighborhoods/blocks/block.module";
 import { BlockService } from "../../neighborhoods/blocks/block.service";
 import { EventsService } from "../../neighborhoods/events/events.service";
 import { NeighborhoodModule } from "../../neighborhoods/neighborhood.module";
+import { NeighborhoodInfoModule } from "../../neighborhoods/neighborhood-info/info.module";
 import { TransactionsModule } from "../../neighborhoods/transactions/transactions.module";
 import { NetworkService } from "../network.service";
 import { NeighborhoodUpdater } from "./neighborhood-updater/updater";
@@ -32,12 +34,14 @@ export const myServiceProvider: Provider = {
     TypeOrmModule.forFeature([
       Neighborhood,
       Block,
+      NeighborhoodInfo,
       Event,
       Transaction,
       TransactionDetails,
     ]),
     BlockModule,
     NeighborhoodModule,
+    NeighborhoodInfoModule,
     SchedulerConfigModule,
     TransactionsModule,
   ],

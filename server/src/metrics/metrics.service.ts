@@ -73,7 +73,7 @@ export class MetricsService {
     // look back 144 datapoints and get
     // the recent maximum value
     const lookback = 72;
-    const percentDiff = 0.90;
+    const percentDiff = 0.9;
     for (let i = 0; i < data.length; i++) {
       const previousValues = data.slice(Math.max(i - lookback, 0), i);
       const currentValue = data[i];

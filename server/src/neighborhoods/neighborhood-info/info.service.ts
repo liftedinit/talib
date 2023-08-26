@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository, SelectQueryBuilder } from "typeorm";
+import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { NeighborhoodInfo } from "../../database/entities/neighborhood-info.entity";
 import { NeighborhoodInfoDto } from "../../dto/neighborhood-info.dto";
 
@@ -14,7 +15,15 @@ export class NeighborhoodInfoService {
 
   constructor(
     @InjectRepository(NeighborhoodInfo)
-    private blockheightRepository: Repository<NeighborhoodInfo>,
+    private infoRepository: Repository<NeighborhoodInfo>,
     private dataSource: DataSource,
   ) {}
+
+  async updateBlockHeight(neighborhoodId: Neighborhood, blockHeight: number) {
+    const neighborhoodInfo = new NeighborhoodInfo();
+    neighborhoodInfo.current = blockHeight;
+    neighborhoodInfo.neighborhood = neighborhoodId;
+
+    return this.infoRepository.save(neighborhoodInfo);
+  }
 }

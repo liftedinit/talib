@@ -9,6 +9,7 @@ import { Transaction } from "../../../database/entities/transaction.entity";
 import { BlockService } from "../../../neighborhoods/blocks/block.service";
 import { EventsService } from "../../../neighborhoods/events/events.service";
 import { NeighborhoodService } from "../../../neighborhoods/neighborhood.service";
+import { NeighborhoodInfoService } from "../../../neighborhoods/neighborhood-info/info.service";
 import { TransactionsService } from "../../../neighborhoods/transactions/transactions.service";
 import { getAllAddressesOf } from "../../../utils/cbor-parsers";
 import { bufferToHex } from "../../../utils/convert";
@@ -29,6 +30,7 @@ export class NeighborhoodUpdater {
     private transaction: TransactionsService,
     private events: EventsService,
     private txAnalyzer: TxAnalyzerService,
+    private neighborhoodInfo: NeighborhoodInfoService,
     @InjectRepository(TransactionDetails)
     private txDetailsRepository: Repository<TransactionDetails>,
   ) {}
@@ -137,6 +139,15 @@ export class NeighborhoodUpdater {
     await this.neighborhood.resetNeighborhood(neighborhood.id, n);
   }
 
+  private async updateBlockHeight(
+    neighborhood: Neighborhood,
+    blockHeight: number,
+  ) {
+    this.neighborhoodInfo.updateBlockHeight(neighborhood, blockHeight);
+
+    return null;
+  }
+
   private async updateNeighborhoodEarliestMissingBlocks(
     neighborhood: Neighborhood,
   ) {
@@ -199,7 +210,7 @@ export class NeighborhoodUpdater {
       await this.updateNeighborhoodMissingEvents(n);
     } catch (e) {
       this.logger.log(
-        `Error happened while updating neighborhood blocks for neighborhood:\n${e.stack}`,
+        `Error happened while updating neighborhood blocks for neighborhood ${n.name}:\n${e.stack}`,
       );
     }
 

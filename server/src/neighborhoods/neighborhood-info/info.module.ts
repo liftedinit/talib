@@ -10,7 +10,11 @@ import { NeighborhoodInfoService } from "./info.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([NeighborhoodInfo, Transaction, TransactionDetails]),
+    TypeOrmModule.forFeature([
+      NeighborhoodInfo,
+      Transaction,
+      TransactionDetails,
+    ]),
   ],
   providers: [
     NeighborhoodInfoService,

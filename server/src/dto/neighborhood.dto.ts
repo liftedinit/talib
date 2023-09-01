@@ -18,6 +18,9 @@ export class NeighborhoodDto {
   @ApiProperty()
   enabled: boolean;
 
+  @ApiProperty()
+  searchable: boolean;
+
   @ApiProperty({ required: false })
   description?: string;
 }
@@ -51,6 +54,10 @@ export class CreateNeighborhoodDto {
   @Optional()
   @ApiProperty({ required: false })
   enabled: boolean;
+
+  @Optional()
+  @ApiProperty({ required: false })
+  searchable: boolean;
 
   @Optional()
   @ApiProperty({ required: false })

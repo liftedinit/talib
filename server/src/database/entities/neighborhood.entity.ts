@@ -40,6 +40,9 @@ export class Neighborhood {
   @Column({ default: true })
   enabled: boolean;
 
+  @Column({ default: true })
+  searchable: boolean;
+
   @Column({ nullable: true })
   description: string;
 
@@ -71,6 +74,7 @@ export class Neighborhood {
       address: this.address.toString(),
       url: this.url,
       enabled: this.enabled,
+      searchable: this.searchable,
       name: this.name,
       description: this.description,
     };
@@ -98,6 +102,7 @@ export class Neighborhood {
     result.url = new URL(dto.url).toString();
     result.description = dto.description;
     result.enabled = dto.enabled;
+    result.searchable = dto.searchable;
     result.serverName = status.serverName;
     result.version = status.serverVersion;
     result.attributes = JSON.parse(JSON.stringify(status.attributes));

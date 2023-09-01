@@ -6,9 +6,11 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Query,
   Put,
+  Logger,
 } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiResponse, ApiQuery } from "@nestjs/swagger";
 import {
   CreateNeighborhoodDto,
   NeighborhoodDetailsDto,
@@ -19,18 +21,32 @@ import { NeighborhoodService } from "./neighborhood.service";
 
 @Controller("neighborhoods")
 export class NeighborhoodController {
+  private readonly logger = new Logger(NeighborhoodController.name);
+
   constructor(private neighborhood: NeighborhoodService) {}
 
   @Public()
   @Get()
+  @ApiQuery({ name: "searchable", required: false })
   @ApiResponse({
     status: 200,
     type: NeighborhoodDto,
     isArray: true,
     description: "List all neighborhoods watched by this instance.",
   })
-  async findAll(): Promise<NeighborhoodDto[]> {
-    return (await this.neighborhood.findAll()).map((x) => x.intoDto());
+  async findAll(
+    @Query("searchable") searchable?: boolean,
+  ): Promise<NeighborhoodDto[]> {
+    if (!searchable) {
+      searchable = true;
+    }
+
+    const neighborhoods = await this.neighborhood.findAll();
+    const filteredNeighborhoods = neighborhoods.filter(
+      (n) => n.searchable === searchable,
+    );
+
+    return filteredNeighborhoods.map((x) => x.intoDto());
   }
 
   @Get(":nid")

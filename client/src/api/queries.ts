@@ -7,8 +7,8 @@ const TO = "now";
 const INTERVALMS = 30000;
 const MAXDATAPOINTS = 3000;
 
-export function getNeighborhoods() {
-  return get("neighborhoods");
+export function getNeighborhoods(searchable: boolean = true) {
+  return get(`neighborhoods/`, { searchable });
 }
 
 export function getNeighborhood(id: number) {

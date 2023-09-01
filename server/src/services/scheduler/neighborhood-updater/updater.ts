@@ -139,14 +139,14 @@ export class NeighborhoodUpdater {
     await this.neighborhood.resetNeighborhood(neighborhood.id, n);
   }
 
-  private async updateBlockHeight(
-    neighborhood: Neighborhood,
-    blockHeight: number,
-  ) {
-    this.neighborhoodInfo.updateBlockHeight(neighborhood, blockHeight);
+  // private async updateBlockHeight(
+  //   neighborhood: Neighborhood,
+  //   blockHeight: number,
+  // ) {
+  //   this.neighborhoodInfo.updateBlockHeight(neighborhood, blockHeight);
 
-    return null;
-  }
+  //   return null;
+  // }
 
   private async updateNeighborhoodEarliestMissingBlocks(
     neighborhood: Neighborhood,

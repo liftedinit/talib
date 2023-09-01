@@ -5,6 +5,7 @@ import { SchedulerConfigService } from "../../config/scheduler/configuration.ser
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { NeighborhoodService } from "../../neighborhoods/neighborhood.service";
 import { NeighborhoodUpdater } from "./neighborhood-updater/updater";
+import { NeighborhoodInfoUpdater } from "./info-updater/updater";
 
 @Injectable()
 export class SchedulerService {
@@ -17,7 +18,10 @@ export class SchedulerService {
     private neighborhood: NeighborhoodService,
     @Inject("NEIGHBORHOOD_FACTORY")
     private readonly updaterFactory: (n: Neighborhood) => NeighborhoodUpdater,
-    // private readonly infoUpdaterFactory: (n: Neighborhood) => NeighborhoodInfoUpdater,
+    @Inject("NEIGHBORHOOD_INFO_FACTORY")
+    private readonly infoUpdaterFactory: (
+      n: Neighborhood,
+    ) => NeighborhoodInfoUpdater,
   ) {
     const jobFn = () => this.run();
 
@@ -62,7 +66,12 @@ export class SchedulerService {
       await Promise.all(
         neighborhoods.map(async (n) => {
           if (n.enabled) {
-            const i = await this.updaterFactory(n);
+            // Run neighborhood updater
+            const u = await this.updaterFactory(n);
+            await u.run();
+
+            // Run neighborhood info updater
+            const i = await this.infoUpdaterFactory(n);
             await i.run();
           } else {
             this.logger.debug(

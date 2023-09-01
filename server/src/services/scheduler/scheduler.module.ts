@@ -17,15 +17,23 @@ import { NeighborhoodInfoModule } from "../../neighborhoods/neighborhood-info/in
 import { TransactionsModule } from "../../neighborhoods/transactions/transactions.module";
 import { NetworkService } from "../network.service";
 import { NeighborhoodUpdater } from "./neighborhood-updater/updater";
+import { NeighborhoodInfoUpdater } from "./info-updater/updater";
 import { SchedulerController } from "./scheduler.controller";
 import { SchedulerService } from "./scheduler.service";
 import { TxAnalyzerService } from "./tx-analyzer.service";
 
-export const myServiceProvider: Provider = {
+export const neighborhoodServiceProvider: Provider = {
   provide: "NEIGHBORHOOD_FACTORY",
   inject: [ModuleRef],
   useFactory: (m: ModuleRef) => async (n: Neighborhood) =>
     (await m.create(NeighborhoodUpdater)).with(n),
+};
+
+export const neighborhodInfoServiceProvider: Provider = {
+  provide: "NEIGHBORHOOD_INFO_FACTORY",
+  inject: [ModuleRef],
+  useFactory: (m: ModuleRef) => async (n: Neighborhood) =>
+    (await m.create(NeighborhoodInfoUpdater)).with(n),
 };
 
 @Module({
@@ -52,7 +60,8 @@ export const myServiceProvider: Provider = {
     NetworkService,
     SchedulerService,
     TxAnalyzerService,
-    myServiceProvider,
+    neighborhoodServiceProvider,
+    neighborhodInfoServiceProvider,
   ],
   exports: [SchedulerService],
 })

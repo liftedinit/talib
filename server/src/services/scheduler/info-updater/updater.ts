@@ -1,53 +1,72 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, QueryFailedError } from "typeorm";
-import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
-import { Metric } from "../../../database/entities/metric.entity";
+import { Repository } from "typeorm";
+import { SchedulerConfigService } from "../../../config/scheduler/configuration.service";
+import { Event } from "../../../database/entities/event.entity";
 import { Neighborhood } from "../../../database/entities/neighborhood.entity";
+import { TransactionDetails } from "../../../database/entities/transaction-details.entity";
+import { Transaction } from "../../../database/entities/transaction.entity";
 import { NeighborhoodInfo } from "../../../database/entities/neighborhood-info.entity";
-// import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
-import { MetricsService } from "../../../metrics/metrics.service";
-// import { PrometheusQueryDetailsService } from "src/metrics/prometheus-query-details/query-details.service";
+import { BlockService } from "../../../neighborhoods/blocks/block.service";
+import { EventsService } from "../../../neighborhoods/events/events.service";
 import { NeighborhoodService } from "../../../neighborhoods/neighborhood.service";
+import { NeighborhoodInfoService } from "../../../neighborhoods/neighborhood-info/info.service";
+import { TransactionsService } from "../../../neighborhoods/transactions/transactions.service";
 import { NetworkService } from "../../network.service";
 
 @Injectable()
-export class BlockHeightUpdater {
+export class NeighborhoodInfoUpdater {
   private logger: Logger;
   private n: Neighborhood;
-  private bh: NeighborhoodInfo;
 
   constructor(
-    private schedulerConfig: MetricsSchedulerConfigService,
+    private schedulerConfig: SchedulerConfigService,
     private network: NetworkService,
     private neighborhood: NeighborhoodService,
-    private metric: MetricsService,
-    @InjectRepository(Metric)
-    private metricRepository: Repository<Metric>,
+    private block: BlockService,
+    private transaction: TransactionsService,
+    private events: EventsService,
+    private neighborhoodInfo: NeighborhoodInfoService,
+    @InjectRepository(TransactionDetails)
+    private txDetailsRepository: Repository<TransactionDetails>,
   ) {}
 
   with(n: Neighborhood) {
     this.n = n;
-    this.logger = new Logger(`${BlockHeightUpdater.name}(${n.id})`);
+    this.logger = new Logger(`${NeighborhoodInfoUpdater.name}(${n.id})`);
     return this;
   }
 
-  // Seed blockheight table with values
-  // This is the main job of the metrics scheduler
-  private async seedBlockHeightValues(n: Neighborhood) {
-    // Get date of last metric for PrometheusQuery
+  private async updateNeighborhoodLatestBlockHeight(
+    neighborhood: Neighborhood,
+  ) {
+    const network = await this.network.forUrl(neighborhood.url);
+    const latestHeight = await this.block.getLatestHeightOf(neighborhood);
+
+    // Update the neighborhood's latest block height
+
+    this.logger.debug(
+      `updateNeighborhoodLatestBlockHeight(${neighborhood.id}): ${latestHeight}`,
+    );
+
+    // info type: blockheight
+    this.logger.debug(
+      `updateCurrent(neighborhoodId: ${neighborhood.id}): value: ${latestHeight}`,
+    );
 
     return null;
   }
 
   async run() {
     const n = this.n;
+
+    // If we can't check if neighborhood has been reset, we probably won't be
+    // able to check anything, so just skip blocks too.
     try {
-      this.logger.debug(`seeding blockheight for network: ${n.name}`);
-      // await this.seedBlockHeightValues(n);
+      await this.updateNeighborhoodLatestBlockHeight(n);
     } catch (e) {
       this.logger.log(
-        `Error happened while updating blockheight for network ${n.name}:\n${e.stack}`,
+        `Error happened while updating neighborhood blocks for neighborhood ${n.name}:\n${e.stack}`,
       );
     }
   }

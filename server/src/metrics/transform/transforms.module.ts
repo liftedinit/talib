@@ -3,24 +3,24 @@ import { HttpModule } from "@nestjs/axios";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Metric } from "../../database/entities/metric.entity";
 import { Block } from "../../database/entities/block.entity";
-import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { MetricQuery } from "../../database/entities/metric-query.entity";
 import { TransformsService } from "./transforms.service";
 import { TransformsController } from "./trasforms.controller";
-import { PrometheusQueryDetailsModule } from "../prometheus-query-details/query-details.module";
-import { PrometheusQueryService } from "../prometheus-query/query.service";
+import { MetricQueryDetailsModule } from "../metric-query-details/query-details.module";
+import { MetricQueryService } from "../metric-query/query.service";
 import { MetricsService } from "../metrics.service";
 import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 import { ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Metric, Block, PrometheusQuery]),
+    TypeOrmModule.forFeature([Metric, Block, MetricQuery]),
     HttpModule,
-    PrometheusQueryDetailsModule,
+    MetricQueryDetailsModule,
   ],
   providers: [
     TransformsService,
-    PrometheusQueryService,
+    MetricQueryService,
     MetricsService,
     MetricsSchedulerConfigService,
     ConfigService,

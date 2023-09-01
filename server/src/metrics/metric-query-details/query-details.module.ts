@@ -1,19 +1,19 @@
 import { Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { MetricQuery } from "../../database/entities/metric-query.entity";
 import { Metric } from "../../database/entities/metric.entity";
-import { PrometheusQueryDetailsService } from "./query-details.service";
+import { MetricQueryDetailsService } from "./query-details.service";
 import { PrometheusConfigModule } from "../../config/prometheus/configuration.module";
 import { PrometheusConfigService } from "../../config/prometheus/configuration.service";
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Metric, PrometheusQuery]),
+    TypeOrmModule.forFeature([Metric, MetricQuery]),
     HttpModule,
     PrometheusConfigModule,
   ],
-  providers: [PrometheusConfigService, PrometheusQueryDetailsService],
+  providers: [PrometheusConfigService, MetricQueryDetailsService],
   controllers: [],
-  exports: [PrometheusQueryDetailsService, PrometheusConfigService],
+  exports: [MetricQueryDetailsService, PrometheusConfigService],
 })
-export class PrometheusQueryDetailsModule {}
+export class MetricQueryDetailsModule {}

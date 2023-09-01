@@ -7,14 +7,14 @@ import {
 } from "typeorm";
 import { Metric } from "./metric.entity";
 import {
-  PrometheusQueryDto,
-  CreatePrometheusQueryDto,
-} from "../../dto/prometheus-query.dto";
+  MetricQueryDto,
+  CreateMetricQueryDto,
+} from "../../dto/metric-query.dto";
 
 const default_created_date = process.env.METRICS_DEFAULT_CREATED_DATE;
 
 @Entity()
-export class PrometheusQuery {
+export class MetricQuery {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -30,7 +30,7 @@ export class PrometheusQuery {
   @Column({ nullable: true })
   description: string;
 
-  @OneToMany(() => Metric, (metric) => metric.prometheusQueryId)
+  @OneToMany(() => Metric, (metric) => metric.metricQueryId)
   metrics: Metric[];
 
   @CreateDateColumn({
@@ -45,7 +45,7 @@ export class PrometheusQuery {
   @Column({ nullable: true })
   querytype: string;
 
-  intoDto(): PrometheusQueryDto {
+  intoDto(): MetricQueryDto {
     return {
       id: this.id,
       name: this.name,
@@ -58,8 +58,8 @@ export class PrometheusQuery {
     };
   }
 
-  public static createWithDto(dto: CreatePrometheusQueryDto): PrometheusQuery {
-    const result = new PrometheusQuery();
+  public static createWithDto(dto: CreateMetricQueryDto): MetricQuery {
+    const result = new MetricQuery();
     result.name = dto.name;
     result.label = dto.label;
     result.enabled = dto.enabled;

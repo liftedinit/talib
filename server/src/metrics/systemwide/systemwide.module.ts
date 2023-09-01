@@ -6,22 +6,22 @@ import { Block } from "../../database/entities/block.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
 import { SystemWideService } from "./systemwide.service";
 import { SystemWideController } from "./systemwide.controller";
-import { PrometheusQueryService } from "../prometheus-query/query.service";
+import { MetricQueryService } from "../metric-query/query.service";
 import { MetricsService } from "../metrics.service";
 import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 import { ConfigService } from "@nestjs/config";
-import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { MetricQuery } from "../../database/entities/metric-query.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Metric, Block, Transaction, PrometheusQuery]),
+    TypeOrmModule.forFeature([Metric, Block, Transaction, MetricQuery]),
     HttpModule,
   ],
   providers: [
     SystemWideService,
     MetricsService,
     MetricsSchedulerConfigService,
-    PrometheusQueryService,
+    MetricQueryService,
     ConfigService,
   ],
   controllers: [SystemWideController],

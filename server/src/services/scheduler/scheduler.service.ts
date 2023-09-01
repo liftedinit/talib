@@ -17,6 +17,7 @@ export class SchedulerService {
     private neighborhood: NeighborhoodService,
     @Inject("NEIGHBORHOOD_FACTORY")
     private readonly updaterFactory: (n: Neighborhood) => NeighborhoodUpdater,
+    // private readonly infoUpdaterFactory: (n: Neighborhood) => NeighborhoodInfoUpdater,
   ) {
     const jobFn = () => this.run();
 

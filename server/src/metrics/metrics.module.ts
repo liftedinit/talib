@@ -5,12 +5,12 @@ import { Block } from "../database/entities/block.entity";
 import { Transaction } from "../database/entities/transaction.entity";
 import { MetricsController } from "./metrics.controller";
 import { MetricsService } from "./metrics.service";
-import { PrometheusQueryDetailsService } from "./prometheus-query-details/query-details.service";
-import { PrometheusQueryDetailsModule } from "./prometheus-query-details/query-details.module";
-import { PrometheusQueryModule } from "./prometheus-query/query.module";
+import { MetricQueryDetailsService } from "./metric-query-details/query-details.service";
+import { MetricQueryDetailsModule } from "./metric-query-details/query-details.module";
+import { MetricQueryModule } from "./metric-query/query.module";
 import { HttpModule } from "@nestjs/axios";
-import { PrometheusQueryService } from "./prometheus-query/query.service";
-import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
+import { MetricQueryService } from "./metric-query/query.service";
+import { MetricQuery } from "src/database/entities/metric-query.entity";
 import { MetricsSchedulerConfigModule } from "src/config/metrics-scheduler/configuration.module";
 import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 import { TransformsModule } from "./transform/transforms.module";
@@ -20,26 +20,26 @@ import { SystemWideService } from "./systemwide/systemwide.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Metric, Block, Transaction, PrometheusQuery]),
+    TypeOrmModule.forFeature([Metric, Block, Transaction, MetricQuery]),
     HttpModule,
     MetricsSchedulerConfigModule,
-    PrometheusQueryModule,
-    PrometheusQueryDetailsModule,
+    MetricQueryModule,
+    MetricQueryDetailsModule,
     TransformsModule,
     SystemWideModule,
   ],
   providers: [
     MetricsService,
     MetricsSchedulerConfigService,
-    PrometheusQueryService,
-    PrometheusQueryDetailsService,
+    MetricQueryService,
+    MetricQueryDetailsService,
     TransformsService,
     SystemWideService,
   ],
   controllers: [MetricsController],
   exports: [
     MetricsService,
-    PrometheusQueryDetailsService,
+    MetricQueryDetailsService,
     MetricsSchedulerConfigService,
     TransformsService,
     SystemWideService,

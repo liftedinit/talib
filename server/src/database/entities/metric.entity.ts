@@ -7,20 +7,20 @@ import {
   Index,
 } from "typeorm";
 import { MetricDto } from "../../dto/metric.dto";
-import { PrometheusQuery } from "./prometheus-query.entity";
+import { MetricQuery } from "./metric-query.entity";
 
 @Entity()
-@Index(["prometheusQueryId", "timestamp"], { unique: true })
+@Index(["metricQueryId", "timestamp"], { unique: true })
 export class Metric {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Index("idx_metric_query", ["prometheusQueryId"])
-  @ManyToOne(() => PrometheusQuery, (prometheusQuery) => prometheusQuery.id, {
+  @Index("idx_metric_query", ["metricQueryId"])
+  @ManyToOne(() => MetricQuery, (metricQuery) => metricQuery.id, {
     nullable: true,
   })
-  @JoinColumn({ name: "prometheus_query_id" })
-  prometheusQueryId: PrometheusQuery;
+  @JoinColumn({ name: "metric_query_id" })
+  metricQueryId: MetricQuery;
 
   @Index("idx_metric_timestamp", ["timestamp"])
   @Column({ type: "timestamptz" })
@@ -33,7 +33,7 @@ export class Metric {
     return {
       id: this.id,
       timestamp: this.timestamp,
-      prometheusQueryId: this.prometheusQueryId.id,
+      metricQueryId: this.metricQueryId.id,
       data: this.data,
     };
   }

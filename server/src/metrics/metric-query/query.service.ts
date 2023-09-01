@@ -1,23 +1,23 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreatePrometheusQueryDto } from "../../dto/prometheus-query.dto";
-import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { CreateMetricQueryDto } from "../../dto/metric-query.dto";
+import { MetricQuery } from "../../database/entities/metric-query.entity";
 
 @Injectable()
-export class PrometheusQueryService {
-  private readonly logger = new Logger(PrometheusQueryService.name);
+export class MetricQueryService {
+  private readonly logger = new Logger(MetricQueryService.name);
 
   constructor(
-    @InjectRepository(PrometheusQuery)
-    private metricRepository: Repository<PrometheusQuery>,
+    @InjectRepository(MetricQuery)
+    private metricRepository: Repository<MetricQuery>,
   ) {}
 
-  findAll(): Promise<PrometheusQuery[]> {
+  findAll(): Promise<MetricQuery[]> {
     return this.metricRepository.find();
   }
 
-  async get(name: string): Promise<PrometheusQuery | null> {
+  async get(name: string): Promise<MetricQuery | null> {
     const query = this.metricRepository
       .createQueryBuilder("n")
       .where({ name: name })
@@ -35,8 +35,8 @@ export class PrometheusQueryService {
     return one;
   }
 
-  async create(dto: CreatePrometheusQueryDto): Promise<PrometheusQuery> {
-    const entity = PrometheusQuery.createWithDto(dto);
+  async create(dto: CreateMetricQueryDto): Promise<MetricQuery> {
+    const entity = MetricQuery.createWithDto(dto);
     await this.metricRepository.save([entity]);
 
     return entity;
@@ -46,7 +46,7 @@ export class PrometheusQueryService {
     await this.metricRepository.delete({ id });
   }
 
-  public async save(entities: PrometheusQuery[]): Promise<void> {
+  public async save(entities: MetricQuery[]): Promise<void> {
     await this.metricRepository.save(entities);
   }
 }

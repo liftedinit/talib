@@ -23,8 +23,8 @@ import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
 import { MetricsSchedulerModule } from "./services/metrics-scheduler/metrics-scheduler.module";
 import { MetricsSchedulerConfigModule } from "./config/metrics-scheduler/configuration.module";
-import { PrometheusQuery } from "./database/entities/prometheus-query.entity";
-import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
+import { MetricQuery } from "./database/entities/metric-query.entity";
+import { MetricQueryModule } from "./metrics/metric-query/query.module";
 import { UsersModule } from "./users/users.module";
 import { Metric } from "./database/entities/metric.entity";
 import { MetricModule } from "./metrics/metrics.module";
@@ -35,7 +35,7 @@ import { MetricModule } from "./metrics/metrics.module";
   imports: [
     AppConfigModule,
     NeighborhoodModule,
-    PrometheusQueryModule,
+    MetricQueryModule,
     SchedulerConfigModule,
     MetricsSchedulerConfigModule,
     ConfigModule.forRoot(),
@@ -63,13 +63,13 @@ import { MetricModule } from "./metrics/metrics.module";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, NeighborhoodInfo, Event, Transaction, TransactionDetails, PrometheusQuery, Metric],
+        entities: [Neighborhood, Block, NeighborhoodInfo, Event, Transaction, TransactionDetails, MetricQuery, Metric],
         migrations: [],
         synchronize: true,
         ...db.config,
       }),
     }),
-    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, PrometheusQuery, Metric]),
+    TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, MetricQuery, Metric]),
     AdminConfigModule,
     AppConfigModule,
     SchedulerConfigModule,

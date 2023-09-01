@@ -7,7 +7,7 @@ import {
 } from "nestjs-typeorm-paginate";
 import { Repository } from "typeorm";
 import { Metric as MetricEntity } from "../database/entities/metric.entity";
-import { PrometheusQueryService } from "./prometheus-query/query.service";
+import { MetricQueryService } from "./metric-query/query.service";
 import { MetricsSchedulerConfigService } from "../config/metrics-scheduler/configuration.service"
 
 export interface SeriesEntity {
@@ -22,7 +22,7 @@ export class MetricsService {
   constructor(
     @InjectRepository(MetricEntity)
     private metricRepository: Repository<MetricEntity>,
-    private prometheusQuery: PrometheusQueryService,
+    private metricQuery: MetricQueryService,
     private schedulerConfig: MetricsSchedulerConfigService,
   ) {}
 
@@ -32,12 +32,12 @@ export class MetricsService {
 
   // Retrieve many metrics by query ID
   public async findMany(
-    prometheusQueryId: number,
+    metricQueryId: number,
     options: IPaginationOptions,
   ): Promise<Pagination<MetricEntity>> {
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where("m.prometheusQueryId = :id", { id: prometheusQueryId })
+      .where("m.metricQueryId = :id", { id: metricQueryId })
       .orderBy("m.timestamp", "DESC")
       .limit(500);
 
@@ -46,12 +46,12 @@ export class MetricsService {
 
   // Get the current value for a metric
   async getCurrent(name: string): Promise<MetricEntity | null> {
-    const prometheusQuery = await this.prometheusQuery.get(name);
+    const metricQuery = await this.metricQuery.get(name);
 
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where("m.prometheusQueryId = :prometheusQuery", {
-        prometheusQuery: prometheusQuery.id,
+      .where("m.metricQueryId = :metricQuery", {
+        metricQuery: metricQuery.id,
       })
       .orderBy("m.timestamp", "DESC")
       .limit(1);
@@ -73,7 +73,7 @@ export class MetricsService {
     // look back 144 datapoints and get
     // the recent maximum value
     const lookback = 72;
-    const percentDiff = 0.90;
+    const percentDiff = 0.9;
     for (let i = 0; i < data.length; i++) {
       const previousValues = data.slice(Math.max(i - lookback, 0), i);
       const currentValue = data[i];
@@ -118,7 +118,7 @@ export class MetricsService {
     from: Date,
     to: Date,
   ): Promise<SeriesEntity[] | null> {
-    const prometheusQuery = await this.prometheusQuery.get(name);
+    const metricQuery = await this.metricQuery.get(name);
 
     const query = this.metricRepository
       .createQueryBuilder("m")
@@ -126,8 +126,8 @@ export class MetricsService {
         to,
         from,
       })
-      .andWhere("m.prometheusQueryId = :prometheusQuery", {
-        prometheusQuery: prometheusQuery.id,
+      .andWhere("m.metricQueryId = :metricQuery", {
+        metricQuery: metricQuery.id,
       })
       .orderBy("m.timestamp", "DESC");
 
@@ -160,8 +160,8 @@ export class MetricsService {
   // Returns the startdate of the metric being tracked from
   // the most recent value in the database
   async seedMetricStartDate(
-    PrometheusQueryCreatedDate: Date,
-    prometheusQueryId: number,
+    MetricQueryCreatedDate: Date,
+    metricQueryId: number,
   ) {
     let startDate: number;
 
@@ -171,7 +171,7 @@ export class MetricsService {
     try {
       latestDate = await this.metricRepository
         .createQueryBuilder("m")
-        .where({ prometheusQueryId: prometheusQueryId })
+        .where({ metricQueryId: metricQueryId })
         .orderBy("m.timestamp", "DESC")
         .getOne();
     } catch (error) {
@@ -181,8 +181,8 @@ export class MetricsService {
     // Set timestamp from the most recent row, if exists
     const timestamp = latestDate?.timestamp || null;
 
-    // Fetch the date stored in the prometheus query config table
-    const startdate_timestamp = PrometheusQueryCreatedDate.getTime();
+    // Fetch the date stored in the metric query config table
+    const startdate_timestamp = MetricQueryCreatedDate.getTime();
     const timestamp_formatted = new Date(timestamp).getTime();
 
     // Check if timestamp exists and is greater than the query creation date
@@ -190,7 +190,7 @@ export class MetricsService {
     if (timestamp != null && timestamp_formatted > startdate_timestamp) {
       startDate = timestamp_formatted;
     } else {
-      // If no timestamp exists, set timestamp to the prometheus query creation date
+      // If no timestamp exists, set timestamp to the metric query creation date
       // This should only occur if data is reset or no metric data exists for a new query
       startDate = startdate_timestamp;
     }
@@ -202,14 +202,14 @@ export class MetricsService {
     await this.metricRepository.save(entities);
   }
 
-  async removeByPrometheusQueryName(name: string): Promise<void> {
-    const prometheusQuery = await this.prometheusQuery.get(name);
-    this.logger.debug(`Deleting metrics with name:  ${prometheusQuery.name}`);
+  async removeByMetricQueryName(name: string): Promise<void> {
+    const metricQuery = await this.metricQuery.get(name);
+    this.logger.debug(`Deleting metrics with name:  ${metricQuery.name}`);
     await this.metricRepository
       .createQueryBuilder()
       .delete()
       .from(MetricEntity)
-      .where("prometheusQueryId = :id", { id: prometheusQuery.id })
+      .where("metricQueryId = :id", { id: metricQuery.id })
       .execute();
   }
 }

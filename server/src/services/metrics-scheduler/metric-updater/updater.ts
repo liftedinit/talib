@@ -3,9 +3,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, QueryFailedError } from "typeorm";
 import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 import { Metric } from "../../../database/entities/metric.entity";
-import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
+import { MetricQuery } from "src/database/entities/metric-query.entity";
 import { MetricsService } from "../../../metrics/metrics.service";
-import { PrometheusQueryDetailsService } from "src/metrics/prometheus-query-details/query-details.service";
+import { MetricQueryDetailsService } from "src/metrics/metric-query-details/query-details.service";
 
 const INTERVALMS = 30000;
 const MAXDATAPOINTS = 30;
@@ -13,28 +13,28 @@ const MAXDATAPOINTS = 30;
 @Injectable()
 export class MetricUpdater {
   private logger: Logger;
-  private p: PrometheusQuery;
+  private p: MetricQuery;
 
   constructor(
     private schedulerConfig: MetricsSchedulerConfigService,
     private metric: MetricsService,
-    private prometheusQueryDetails: PrometheusQueryDetailsService,
+    private prometheusQueryDetails: MetricQueryDetailsService,
     @InjectRepository(Metric)
     private metricRepository: Repository<Metric>,
   ) {}
 
-  with(p: PrometheusQuery) {
+  with(p: MetricQuery) {
     this.p = p;
     this.logger = new Logger(`${MetricUpdater.name}(${p.id})`);
     return this;
   }
 
   // Insert a new metric value into the metrics table
-  private async updateMetricNewValues(p: PrometheusQuery, timestamp) {
+  private async updateMetricNewValues(p: MetricQuery, timestamp) {
     // Retrieve the metric value from Grafana
-    // Fetch the PromQL from the PrometheusQuery table to find the metric
+    // Fetch the PromQL from the MetricQuery table to find the metric
     const latestMetric =
-      await this.prometheusQueryDetails.getPrometheusQuerySingleValue(
+      await this.prometheusQueryDetails.getMetricQuerySingleValue(
         p.name,
         timestamp,
         INTERVALMS,
@@ -43,7 +43,7 @@ export class MetricUpdater {
 
     // Construct the metric
     const entity = new Metric();
-    entity.prometheusQueryId = p;
+    entity.metricQueryId = p;
     entity.timestamp = new Date(latestMetric[0]);
 
     entity.data = latestMetric[1];
@@ -55,13 +55,13 @@ export class MetricUpdater {
 
   // Seed metric values for a prometheusQuery
   // This is the main job of the metrics scheduler
-  private async seedMetricValues(p: PrometheusQuery) {
-    // Get date of last metric for PrometheusQuery
-    const PrometheusQueryId = p.id;
-    const PrometheusQueryCreatedDate = p.createdDate;
+  private async seedMetricPrometheusValues(p: MetricQuery) {
+    // Get date of last metric for MetricQuery
+    const MetricQueryId = p.id;
+    const MetricQueryCreatedDate = p.createdDate;
     const seedMetricStartDate = await this.metric.seedMetricStartDate(
-      PrometheusQueryCreatedDate,
-      PrometheusQueryId,
+      MetricQueryCreatedDate,
+      MetricQueryId,
     );
 
     const currentDate = new Date();
@@ -71,11 +71,13 @@ export class MetricUpdater {
 
     // Check if the batch size remaining is less than the default batch size, boolean
     const checkBatchSize =
-      currentDate.getTime() - seedMetricStartDate < defaultBatchSize * this.schedulerConfig.interval;
+      currentDate.getTime() - seedMetricStartDate <
+      defaultBatchSize * this.schedulerConfig.interval;
 
     // Calculate the total batch size
     const calculatedBatchSize =
-      (currentDate.getTime() - seedMetricStartDate) / this.schedulerConfig.interval;
+      (currentDate.getTime() - seedMetricStartDate) /
+      this.schedulerConfig.interval;
 
     // If batch size is less than max batch size, set the batch size to the required amount
     // Prevents running excess queries when job is all caught up
@@ -124,7 +126,7 @@ export class MetricUpdater {
     const p = this.p;
     try {
       this.logger.debug(`seeding metric: ${p.name}`);
-      await this.seedMetricValues(p);
+      await this.seedMetricPrometheusValues(p);
     } catch (e) {
       this.logger.log(`Error happened while updating metrics:\n${e.stack}`);
     }

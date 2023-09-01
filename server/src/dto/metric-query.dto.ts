@@ -8,7 +8,7 @@ enum QueryType {
   LogQL = "logql",
 }
 
-export class PrometheusQueryDto {
+export class MetricQueryDto {
   @ApiProperty()
   id: number;
 
@@ -32,12 +32,12 @@ export class PrometheusQueryDto {
 
   @ApiProperty({
     enum: QueryType,
-    description: "The type of query (Prometheus, SQL, LogQL)",
+    description: "The type of query (Metric, SQL, LogQL)",
   })
   querytype: string;
 }
 
-export class CreatePrometheusQueryDto {
+export class CreateMetricQueryDto {
   @IsNotEmpty()
   @ApiProperty()
   name: string;
@@ -64,7 +64,7 @@ export class CreatePrometheusQueryDto {
 
   @ApiProperty({
     enum: QueryType,
-    description: "The type of query (Prometheus, SQL, LogQL)",
+    description: "The type of query (Metric, SQL, LogQL)",
   })
   querytype: string;
 }

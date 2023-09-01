@@ -7,27 +7,27 @@ import { Metric } from "../../database/entities/metric.entity";
 import { MetricsService } from "../../metrics/metrics.service";
 import { MetricsSchedulerController } from "./metrics-scheduler.controller";
 import { MetricsSchedulerService } from "./metrics-scheduler.service";
-import { PrometheusQueryService } from "src/metrics/prometheus-query/query.service";
-import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
+import { MetricQueryService } from "src/metrics/metric-query/query.service";
+import { MetricQuery } from "../../database/entities/metric-query.entity";
 import { MetricUpdater } from "./metric-updater/updater";
-import { PrometheusQueryDetailsService } from "src/metrics/prometheus-query-details/query-details.service";
-import { PrometheusQueryDetailsModule } from "src/metrics/prometheus-query-details/query-details.module";
-import { PrometheusQueryModule } from "src/metrics/prometheus-query/query.module";
+import { MetricQueryDetailsService } from "src/metrics/metric-query-details/query-details.service";
+import { MetricQueryDetailsModule } from "src/metrics/metric-query-details/query-details.module";
+import { MetricQueryModule } from "src/metrics/metric-query/query.module";
 import { HttpModule } from "@nestjs/axios";
 
 export const myServiceProvider: Provider = {
   provide: "PROMETHEUS_QUERY_FACTORY",
   inject: [ModuleRef],
-  useFactory: (m: ModuleRef) => async (p: PrometheusQuery) =>
+  useFactory: (m: ModuleRef) => async (p: MetricQuery) =>
     (await m.create(MetricUpdater)).with(p),
 };
 
 @Module({
   controllers: [MetricsSchedulerController],
   imports: [
-    TypeOrmModule.forFeature([Metric, PrometheusQuery]),
-    PrometheusQueryModule,
-    PrometheusQueryDetailsModule,
+    TypeOrmModule.forFeature([Metric, MetricQuery]),
+    MetricQueryModule,
+    MetricQueryDetailsModule,
     HttpModule,
     MetricsSchedulerConfigModule,
   ],
@@ -35,8 +35,8 @@ export const myServiceProvider: Provider = {
     MetricsSchedulerConfigService,
     MetricsService,
     MetricsSchedulerService,
-    PrometheusQueryService,
-    PrometheusQueryDetailsService,
+    MetricQueryService,
+    MetricQueryDetailsService,
     myServiceProvider,
   ],
   exports: [MetricsSchedulerService],

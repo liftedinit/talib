@@ -82,6 +82,6 @@ export class MetricsController {
 
   @Delete(":name")
   async remove(@Param("name") name: string): Promise<void> {
-    await this.metrics.removeByPrometheusQueryName(name);
+    await this.metrics.removeByMetricQueryName(name);
   }
 }

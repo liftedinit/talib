@@ -1,9 +1,9 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from "cron";
-import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
+import { MetricQuery } from "../../database/entities/metric-query.entity";
 import { MetricsSchedulerConfigService } from "../../config/metrics-scheduler/configuration.service";
-import { PrometheusQueryService } from "../../metrics/prometheus-query/query.service";
+import { MetricQueryService } from "../../metrics/metric-query/query.service";
 import { MetricUpdater } from "../metrics-scheduler/metric-updater/updater";
 
 @Injectable()
@@ -14,9 +14,9 @@ export class MetricsSchedulerService {
   constructor(
     private schedulerRegistry: SchedulerRegistry,
     private metricsSchedulerConfig: MetricsSchedulerConfigService,
-    private prometheusQuery: PrometheusQueryService,
+    private prometheusQuery: MetricQueryService,
     @Inject("PROMETHEUS_QUERY_FACTORY")
-    private readonly updaterFactory: (n: PrometheusQuery) => MetricUpdater,
+    private readonly updaterFactory: (n: MetricQuery) => MetricUpdater,
   ) {
     const jobFn = () => this.run();
 

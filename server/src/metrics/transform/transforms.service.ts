@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
 import { Metric as MetricEntity } from "../../database/entities/metric.entity";
 import { Block as BlockEntity } from "../../database/entities/block.entity";
-import { PrometheusQueryService } from "../prometheus-query/query.service";
+import { MetricQueryService } from "../metric-query/query.service";
 import { SeriesEntity } from "../metrics.service";
 
 type Current = {
@@ -27,17 +27,17 @@ export class TransformsService {
     @InjectRepository(BlockEntity)
     private blockRepository: Repository<BlockEntity>,
     private dataSource: DataSource,
-    private prometheusQuery: PrometheusQueryService,
+    private metricQuery: MetricQueryService,
   ) {}
 
   // Get the current value for a metric
   async getSumTotal(name: string): Promise<Current> {
-    const prometheusQuery = await this.prometheusQuery.get(name);
+    const metricQuery = await this.metricQuery.get(name);
 
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where("m.prometheusQueryId = :prometheusQuery", {
-        prometheusQuery: prometheusQuery.id,
+      .where("m.metricQueryId = :metricQuery", {
+        metricQuery: metricQuery.id,
       })
       .orderBy("m.timestamp", "DESC");
 
@@ -66,13 +66,13 @@ export class TransformsService {
     from: Date,
     to: Date,
   ): Promise<SeriesEntity[] | null> {
-    const prometheusQuery = await this.prometheusQuery.get(name);
+    const metricQuery = await this.metricQuery.get(name);
 
     // Get all values for a metric from the database from all time
     const query = this.metricRepository
       .createQueryBuilder("m")
-      .where("m.prometheusQueryId = :prometheusQuery", {
-        prometheusQuery: prometheusQuery.id,
+      .where("m.metricQueryId = :metricQuery", {
+        metricQuery: metricQuery.id,
       })
       .orderBy("m.timestamp", "DESC");
 

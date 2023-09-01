@@ -2,25 +2,25 @@ import { Injectable, ForbiddenException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { HttpService } from "@nestjs/axios";
 import { map, catchError, lastValueFrom } from "rxjs";
-import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { MetricQuery } from "../../database/entities/metric-query.entity";
 import { PrometheusConfigService } from "../../config/prometheus/configuration.service";
 import { Metric } from "../../database/entities/metric.entity";
 import { Repository } from "typeorm";
 
 @Injectable()
-export class PrometheusQueryDetailsService {
-  private readonly logger = new Logger(PrometheusQueryDetailsService.name);
+export class MetricQueryDetailsService {
+  private readonly logger = new Logger(MetricQueryDetailsService.name);
 
   constructor(
     private prometheusConfig: PrometheusConfigService,
-    @InjectRepository(PrometheusQuery)
-    private prometheusQueryRepository: Repository<PrometheusQuery>,
+    @InjectRepository(MetricQuery)
+    private prometheusQueryRepository: Repository<MetricQuery>,
     @InjectRepository(Metric)
     private metricRepository: Repository<Metric>,
     private httpService: HttpService,
   ) {}
 
-  async getPrometheusQuery(name: string): Promise<PrometheusQuery> {
+  async getMetricQuery(name: string): Promise<MetricQuery> {
     const query = this.prometheusQueryRepository
       .createQueryBuilder("n")
       .where({ name: name })
@@ -68,21 +68,21 @@ export class PrometheusQueryDetailsService {
     return template;
   }
 
-  async getPrometheusQueryCurrentValue(
+  async getMetricQueryCurrentValue(
     name: string,
     from: string,
     to: string,
     intervalMs: number,
     maxDataPoints: number,
   ): Promise<any> {
-    const getPrometheusQuery = await this.getPrometheusQuery(name);
+    const getMetricQuery = await this.getMetricQuery(name);
 
     return await lastValueFrom(
       this.httpService
         .post(
           this.prometheusConfig.remoteApiUrl,
           this.constructGrafanaQuery(
-            getPrometheusQuery.query,
+            getMetricQuery.query,
             from,
             to,
             intervalMs,
@@ -114,19 +114,19 @@ export class PrometheusQueryDetailsService {
     );
   }
 
-  async getPrometheusQuerySeries(
+  async getMetricQuerySeries(
     name: string,
     from: string,
     to: string,
     intervalMs: number,
     maxDataPoints: number,
   ) {
-    const getPrometheusQuery = await this.getPrometheusQuery(name);
+    const getMetricQuery = await this.getMetricQuery(name);
     return this.httpService
       .post(
         this.prometheusConfig.remoteApiUrl,
         this.constructGrafanaQuery(
-          getPrometheusQuery.query,
+          getMetricQuery.query,
           from,
           to,
           intervalMs,
@@ -154,13 +154,13 @@ export class PrometheusQueryDetailsService {
       );
   }
 
-  async getPrometheusQuerySingleValue(
+  async getMetricQuerySingleValue(
     name: string,
     timestamp: number,
     intervalMs: number,
     maxDataPoints: number,
   ): Promise<any> {
-    const getPrometheusQuery = await this.getPrometheusQuery(name);
+    const getMetricQuery = await this.getMetricQuery(name);
     const from = timestamp - 300000;
     const to = timestamp;
     const latestMetric = await this.getLatestMetric(name);
@@ -170,7 +170,7 @@ export class PrometheusQueryDetailsService {
         .post(
           this.prometheusConfig.remoteApiUrl,
           this.constructGrafanaQuery(
-            getPrometheusQuery.query,
+            getMetricQuery.query,
             from.toString(),
             to.toString(),
             intervalMs,
@@ -217,7 +217,7 @@ export class PrometheusQueryDetailsService {
   }
 
   async getLatestMetric(name: string): Promise<Metric | null> {
-    const prometheusQueryId = await this.getPrometheusQuery(name);
+    const prometheusQueryId = await this.getMetricQuery(name);
     let latestMetric: Metric;
 
     try {

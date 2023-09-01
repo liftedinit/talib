@@ -42,6 +42,20 @@ export class MetricQueryService {
     return entity;
   }
 
+  async update(
+    id: number,
+    updateQueryDto: Partial<CreateMetricQueryDto>,
+  ): Promise<MetricQuery> {
+    const query = await this.metricRepository.findOne({ where: { id } });
+
+    if (!query) {
+      return undefined;
+    }
+
+    Object.assign(query, updateQueryDto); // Merge the changes from updateUserDto into the user entity
+    return this.metricRepository.save(query); // Save the updated user to the database
+  }
+
   async removeById(id: number): Promise<void> {
     await this.metricRepository.delete({ id });
   }

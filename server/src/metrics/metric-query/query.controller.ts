@@ -15,8 +15,9 @@ import {
 } from "../../dto/metric-query.dto";
 import { ApiResponse } from "@nestjs/swagger";
 import { MetricQueryService } from "./query.service";
+import { MetricQuery } from "../../database/entities/metric-query.entity";
 
-@Controller("prometheusquery")
+@Controller("metricquery")
 export class MetricQueryController {
   private readonly logger = new Logger(MetricQueryController.name);
 
@@ -51,6 +52,20 @@ export class MetricQueryController {
   @Put()
   async create(@Body() body: CreateMetricQueryDto): Promise<MetricQueryDto> {
     return (await this.metric.create(body)).intoDto();
+  }
+
+  @Put(":id")
+  async updateUser(
+    @Param("id") id: number,
+    @Body() updateQueryDto: Partial<MetricQueryDto>,
+  ): Promise<MetricQuery> {
+    const updatedQuery = await this.metric.update(id, updateQueryDto);
+
+    if (!updatedQuery) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return updatedQuery;
   }
 
   @Delete(":id")

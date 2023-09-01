@@ -13,7 +13,7 @@ const MAXDATAPOINTS = 30;
 @Injectable()
 export class MetricUpdater {
   private logger: Logger;
-  private p: MetricQuery;
+  private m: MetricQuery;
 
   constructor(
     private schedulerConfig: MetricsSchedulerConfigService,
@@ -23,19 +23,19 @@ export class MetricUpdater {
     private metricRepository: Repository<Metric>,
   ) {}
 
-  with(p: MetricQuery) {
-    this.p = p;
-    this.logger = new Logger(`${MetricUpdater.name}(${p.id})`);
+  with(m: MetricQuery) {
+    this.m = m;
+    this.logger = new Logger(`${MetricUpdater.name}(${m.id})`);
     return this;
   }
 
   // Insert a new metric value into the metrics table
-  private async updateMetricNewValues(p: MetricQuery, timestamp) {
+  private async updateMetricNewValues(m: MetricQuery, timestamp) {
     // Retrieve the metric value from Grafana
     // Fetch the PromQL from the MetricQuery table to find the metric
     const latestMetric =
       await this.prometheusQueryDetails.getMetricQuerySingleValue(
-        p.name,
+        m.name,
         timestamp,
         INTERVALMS,
         MAXDATAPOINTS,
@@ -43,7 +43,7 @@ export class MetricUpdater {
 
     // Construct the metric
     const entity = new Metric();
-    entity.metricQueryId = p;
+    entity.metricQueryId = m;
     entity.timestamp = new Date(latestMetric[0]);
 
     entity.data = latestMetric[1];
@@ -55,10 +55,10 @@ export class MetricUpdater {
 
   // Seed metric values for a prometheusQuery
   // This is the main job of the metrics scheduler
-  private async seedMetricPrometheusValues(p: MetricQuery) {
+  private async seedMetricPrometheusValues(m: MetricQuery) {
     // Get date of last metric for MetricQuery
-    const MetricQueryId = p.id;
-    const MetricQueryCreatedDate = p.createdDate;
+    const MetricQueryId = m.id;
+    const MetricQueryCreatedDate = m.createdDate;
     const seedMetricStartDate = await this.metric.seedMetricStartDate(
       MetricQueryCreatedDate,
       MetricQueryId,
@@ -86,7 +86,7 @@ export class MetricUpdater {
         (currentDate.getTime() - seedMetricStartDate) /
         this.schedulerConfig.interval;
     } else {
-      this.logger.debug(`Remainig batch for ${p.name}: ${calculatedBatchSize}`);
+      this.logger.debug(`Remainig batch for ${m.name}: ${calculatedBatchSize}`);
       maxBatch = defaultBatchSize;
     }
 
@@ -101,7 +101,7 @@ export class MetricUpdater {
           // Try to update a new metric
           // This will use the incremented value from below to collect the next
           // data point from Grafana/Prometheus and store in the metrics table
-          await this.updateMetricNewValues(p, seedMetricTimestamp);
+          await this.updateMetricNewValues(m, seedMetricTimestamp);
         } catch (error) {
           if (
             error instanceof QueryFailedError &&
@@ -110,7 +110,7 @@ export class MetricUpdater {
           } else if (error.message.includes("undefined")) {
           } else {
             this.logger.debug(
-              `Error Cause ${error.message} for query ${p.name} ${seedMetricTimestamp}`,
+              `Error Cause ${error.message} for query ${m.name} ${seedMetricTimestamp}`,
             );
           }
         }
@@ -123,10 +123,10 @@ export class MetricUpdater {
   }
 
   async run() {
-    const p = this.p;
+    const m = this.m;
     try {
-      this.logger.debug(`seeding metric: ${p.name}`);
-      await this.seedMetricPrometheusValues(p);
+      this.logger.debug(`seeding metric: ${m.name}`);
+      await this.seedMetricPrometheusValues(m);
     } catch (e) {
       this.logger.log(`Error happened while updating metrics:\n${e.stack}`);
     }

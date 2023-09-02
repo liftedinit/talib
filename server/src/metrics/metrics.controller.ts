@@ -41,7 +41,7 @@ export class MetricsController {
   }
 
   @Get(":name/current")
-  getPrometheusQueryCurrent(@Param("name") name: string) {
+  getMetricQueryCurrent(@Param("name") name: string) {
     return this.metrics.getCurrent(name);
   }
 
@@ -49,7 +49,7 @@ export class MetricsController {
   @ApiQuery({ name: "from", required: false })
   @ApiQuery({ name: "to", required: false })
   @ApiQuery({ name: "hours", required: false })
-  getPrometheusQuerySeries(
+  getMetricQuerySeries(
     @Param("name") name: string,
     @Query("from") from?: string,
     @Query("to") to?: string,

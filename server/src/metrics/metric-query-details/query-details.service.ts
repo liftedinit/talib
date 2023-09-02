@@ -14,14 +14,14 @@ export class MetricQueryDetailsService {
   constructor(
     private prometheusConfig: PrometheusConfigService,
     @InjectRepository(MetricQuery)
-    private prometheusQueryRepository: Repository<MetricQuery>,
+    private metricQueryRepository: Repository<MetricQuery>,
     @InjectRepository(Metric)
     private metricRepository: Repository<Metric>,
     private httpService: HttpService,
   ) {}
 
   async getMetricQuery(name: string): Promise<MetricQuery> {
-    const query = this.prometheusQueryRepository
+    const query = this.metricQueryRepository
       .createQueryBuilder("n")
       .where({ name: name })
       .groupBy("n.id")
@@ -37,7 +37,7 @@ export class MetricQueryDetailsService {
   }
 
   constructGrafanaQuery(
-    prometheusQuery: string,
+    metricQuery: string,
     from: string,
     to: string,
     intervalMs: number,
@@ -61,7 +61,7 @@ export class MetricQueryDetailsService {
       to: "",
     };
 
-    template.queries[0].expr = prometheusQuery;
+    template.queries[0].expr = metricQuery;
     template.from = from;
     template.to = to;
 
@@ -217,13 +217,13 @@ export class MetricQueryDetailsService {
   }
 
   async getLatestMetric(name: string): Promise<Metric | null> {
-    const prometheusQueryId = await this.getMetricQuery(name);
+    const metricQueryId = await this.getMetricQuery(name);
     let latestMetric: Metric;
 
     try {
       latestMetric = await this.metricRepository
         .createQueryBuilder("m")
-        .where({ prometheusQueryId: prometheusQueryId.id })
+        .where({ metricQueryId: metricQueryId.id })
         .orderBy("m.timestamp", "DESC")
         .getOne();
     } catch (error) {

@@ -23,7 +23,7 @@ export class TransformsController {
   ) {}
 
   @Get(":name/sumtotal/current")
-  getPrometheusQuerySumTotalCurrent(@Param("name") name: string) {
+  getMetricQuerySumTotalCurrent(@Param("name") name: string) {
     return this.transforms.getSumTotal(name);
   }
 
@@ -31,7 +31,7 @@ export class TransformsController {
   @ApiQuery({ name: "from", required: false })
   @ApiQuery({ name: "to", required: false })
   @ApiQuery({ name: "hours", required: false })
-  getPrometheusQuerySumTotalSeries(
+  getMetricQuerySumTotalSeries(
     @Param("name") name: string,
     @Query("from") from?: string,
     @Query("to") to?: string,

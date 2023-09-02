@@ -34,6 +34,8 @@ export const PrettyMethods: { [name: string]: string } = {
   "tokens.burn": "Burn",
   "tokens.mint": "Mint",
   "tokens.create": "Create",
+  "kvstore.put": "Put",
+  "kvstore.transfer": "Transfer",
 };
 
 interface TxnSummary {

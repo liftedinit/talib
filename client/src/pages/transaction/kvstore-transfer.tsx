@@ -2,31 +2,26 @@ import { Code } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
 import { findToken } from "./tokens";
 
-export function ledgerSend(data: any) {
+export function kvstoreTransfer(data: any) {
   console.log(data)
-  const token = findToken(data.argument.symbol);
   return {
     From: (
       <Code
         as={Link}
-        to={`/addresses/${data.argument.from}`}
+        to={`/addresses/${data.argument.owner}`}
         color="brand.teal.500"
       >
-        {data.argument.from}
+        {data.argument.owner}
       </Code>
     ),
     To: (
       <Code
         as={Link}
-        to={`/addresses/${data.argument.to}`}
+        to={`/addresses/${data.argument.new_owner}`}
         color="brand.teal.500"
       >
-        {data.argument.to}
+        {data.argument.new_owner}
       </Code>
     ),
-    Amount: `${(
-      data.argument.amount /
-      10 ** token.precision
-    ).toLocaleString()} ${token.ticker}`,
   };
 }

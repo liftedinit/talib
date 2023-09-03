@@ -1,4 +1,4 @@
-import { Box, Code, Heading, Text } from "@liftedinit/ui";
+import { Alert, AlertIcon, Box, Code, Heading, Text } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -42,9 +42,18 @@ export function Transaction() {
         </Text>{" "}
         / Transaction Details
       </Heading>
+      { !data ? (
+        <Box bg="white" my={6}>
+          <Alert status='error'>
+              <AlertIcon />
+              Transaction not found
+          </Alert>
+        </Box>
+      ) : (
       <QueryBox query={query}>
         <ObjectTable obj={txn} />
       </QueryBox>
+      )}
     </Box>
   );
 }

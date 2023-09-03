@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { findToken } from "./tokens";
 
 export function kvstoreTransfer(data: any) {
-  console.log(data)
   return {
     From: (
       <Code

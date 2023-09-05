@@ -1,3 +1,4 @@
+import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 
 enum InfoType {
@@ -20,14 +21,20 @@ export class NeighborhoodInfoDto {
     enum: InfoType,
     description: "The type of the info stored for the neighborhood.",
   })
-  info_type: string;
+  infoType: string;
 }
 
-// export class BlockDetailsDto extends BlockDto {
-//   @ApiProperty({
-//     type: TransactionDto,
-//     isArray: true,
-//     description: `Transactions included in this block.`,
-//   })
-//   transactions: TransactionDto[];
-// }
+export class UpdateCurrentDto {
+  @ApiProperty()
+  current: number;
+
+  @Optional()
+  @ApiProperty()
+  previous: number[];
+
+  @Optional()
+  @ApiProperty({
+    enum: InfoType,
+  })
+  infoType: string;
+}

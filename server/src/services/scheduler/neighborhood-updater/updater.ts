@@ -108,6 +108,9 @@ export class NeighborhoodUpdater {
       `Updating transaction details for [${missingTxDetailsIds}]`,
     );
     for (const tx of transactions) {
+      this.logger.debug(
+        `Updating transaction details for neighborhood: ${neighborhood.name}`,
+      );
       const details = await this.txAnalyzer.analyzeTransaction(tx);
       if (details) {
         await this.txDetailsRepository.upsert(details, ["transaction"]);

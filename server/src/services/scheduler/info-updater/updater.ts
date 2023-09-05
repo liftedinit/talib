@@ -26,9 +26,8 @@ export class NeighborhoodInfoUpdater {
     private block: BlockService,
     private transaction: TransactionsService,
     private events: EventsService,
+    private info: NeighborhoodInfoService,
     private neighborhoodInfo: NeighborhoodInfoService,
-    @InjectRepository(TransactionDetails)
-    private txDetailsRepository: Repository<TransactionDetails>,
   ) {}
 
   with(n: Neighborhood) {
@@ -40,19 +39,36 @@ export class NeighborhoodInfoUpdater {
   private async updateNeighborhoodLatestBlockHeight(
     neighborhood: Neighborhood,
   ) {
-    const network = await this.network.forUrl(neighborhood.url);
     const latestHeight = await this.block.getLatestHeightOf(neighborhood);
 
-    // Update the neighborhood's latest block height
+    const getCurrentInfo = await this.neighborhoodInfo.get(
+      neighborhood,
+      "blockheight",
+    );
 
     this.logger.debug(
       `updateNeighborhoodLatestBlockHeight(${neighborhood.id}): ${latestHeight}`,
     );
 
     // info type: blockheight
-    this.logger.debug(
-      `updateCurrent(neighborhoodId: ${neighborhood.id}): value: ${latestHeight}`,
+    this.logger.debug(`updateCurrent(${JSON.stringify(getCurrentInfo)})`);
+
+    if (getCurrentInfo == null) {
+      return this.info.createCurrent(neighborhood, "blockheight", latestHeight);
+    }
+
+    // Update the neighborhood's latest block height
+    return this.info.updateCurrent(
+      neighborhood.id,
+      "blockheight",
+      latestHeight,
     );
+
+    // return null;
+  }
+
+  private async updateNeighborhoodResetBlockHeight(neighborhood: Neighborhood) {
+    this.logger.debug(`updateNeighborhoodResetBlockHeight(${neighborhood.id})`);
 
     return null;
   }

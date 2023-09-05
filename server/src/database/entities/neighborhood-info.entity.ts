@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { NeighborhoodInfoDto } from "../../dto/neighborhood-info.dto";
 // import { bufferToHex } from "../../utils/convert";
 import { Neighborhood } from "./neighborhood.entity";
@@ -15,9 +8,13 @@ export class NeighborhoodInfo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Neighborhood, (neighborhood) => neighborhood.blocks, {
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(
+    () => Neighborhood,
+    (neighborhood) => neighborhood.neighborhoodInfo,
+    {
+      onDelete: "CASCADE",
+    },
+  )
   neighborhood: Neighborhood;
 
   @Column({ name: "height", type: "integer", nullable: false })
@@ -27,20 +24,13 @@ export class NeighborhoodInfo {
   previous: number[];
 
   @Column({ nullable: true })
-  info_type: string;
+  infoType: string;
 
   intoDto(): NeighborhoodInfoDto {
     return {
       current: this.current,
       previous: this.previous,
-      info_type: this.info_type,
+      infoType: this.infoType,
     };
   }
-
-  // intoDetailsDto(): BlockDetailsDto {
-  //   return {
-  //     ...this.intoDto(),
-  //     transactions: this.transactions?.map((t) => t.intoDto(this)),
-  //   };
-  // }
 }

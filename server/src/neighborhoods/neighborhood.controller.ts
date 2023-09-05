@@ -68,7 +68,7 @@ export class NeighborhoodController {
 
   @Put()
   async create(@Body() body: CreateNeighborhoodDto): Promise<NeighborhoodDto> {
-    console.log("body", body);
+    this.logger.debug("body", body);
     return (await this.neighborhood.create(body)).intoDto();
   }
 

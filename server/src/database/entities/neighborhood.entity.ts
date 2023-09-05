@@ -15,6 +15,7 @@ import {
 } from "../../dto/neighborhood.dto";
 import { Block } from "./block.entity";
 import { Event } from "./event.entity";
+import { NeighborhoodInfo } from "./neighborhood-info.entity";
 
 @Entity()
 export class Neighborhood {
@@ -64,6 +65,11 @@ export class Neighborhood {
     onDelete: "CASCADE",
   })
   events: Event[];
+
+  @ManyToOne(() => Event, (neighborhoodInfo) => neighborhoodInfo.neighborhood, {
+    onDelete: "CASCADE",
+  })
+  neighborhoodInfo: NeighborhoodInfo[];
 
   latestBlock?: Block;
   txCount?: number;

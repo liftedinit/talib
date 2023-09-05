@@ -6,3 +6,5 @@ export * from "./multisig";
 export * from "./tokens-mint-burn";
 export * from "./transaction";
 export * from "./tokens-create";
+export * from "./kvstore-put";
+export * from "./kvstore-transfer";

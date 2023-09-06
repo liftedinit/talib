@@ -24,7 +24,7 @@ export class KvstorePutAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
     return {
       key: payload.get(0),
       value: payload.get(1),
-      owner: (parseAddress(payload.get(2), true) || sender).toString(),
+      owner: (parseAddress(payload.get(2)) || sender).toString(),
     };
   }
 

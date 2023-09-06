@@ -45,6 +45,8 @@ export function Transaction() {
       }
     : txn;
 
+  console.log(data)
+
   return (
     <Box my={6}>
       <Heading size="sm">

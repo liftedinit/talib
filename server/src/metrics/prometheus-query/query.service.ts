@@ -52,8 +52,8 @@ export class PrometheusQueryService {
       return undefined;
     }
 
-    Object.assign(query, updateQueryDto); // Merge the changes from updateUserDto into the user entity
-    return this.metricRepository.save(query); // Save the updated user to the database
+    Object.assign(query, updateQueryDto);
+    return this.metricRepository.save(query);
   }
 
   async removeById(id: number): Promise<void> {

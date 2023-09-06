@@ -53,8 +53,13 @@ export function convertBytesToGb(b: number): number {
   return gbValue
 }
 
-export function convertKbToTb(b: number): number {
+export function convertKbToGb(b: number): number {
   let gbValue = (b / (1000 * 1000));
+  return gbValue
+}
+
+export function convertKbToTb(b: number): number {
+  let gbValue = (b / (1000 * 1000 * 1000));
   return gbValue
 }
 
@@ -66,4 +71,9 @@ export function convertGbToTb(b: number): number {
 export function convertTbToPb(b: number): number {
   let gbValue = (b / (1000 * 1000 ));
   return gbValue
+}
+
+export function convertNumToBil(b: number): number {
+  let bilValue = (b / 1000000000);
+  return bilValue
 }

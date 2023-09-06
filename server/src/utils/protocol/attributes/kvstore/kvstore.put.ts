@@ -22,9 +22,9 @@ export class KvstorePutAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
 
   parseArgs(sender: Address, payload: Map<any, any>): ArgumentT {
     return {
-      key: payload.get(1),
-      value: payload.get(2),
-      owner: (parseAddress(payload.get(3), true) || sender).toString(),
+      key: payload.get(0),
+      value: payload.get(1),
+      owner: (parseAddress(payload.get(2), true) || sender).toString(),
     };
   }
 

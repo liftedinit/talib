@@ -30,7 +30,7 @@ interface QueryData {
 export function MetricStat({ 
   label, 
   metric, 
-  conversion, 
+  conversion,
   from, 
   to,
   fixedDecimals, 

@@ -5,7 +5,7 @@ import { Analyzer } from "../../analyzer";
 interface ArgumentT {
   key: string;
   owner: string;
-  new_owner: string;
+  new_owner?: string;
 }
 
 type ResultT = null;
@@ -13,7 +13,7 @@ type ResultT = null;
 interface EventT {
   key: string;
   owner: string;
-  new_owner: string;
+  new_owner?: string;
 }
 
 export class KvstoreTransferAnalyzer extends Analyzer<
@@ -26,9 +26,9 @@ export class KvstoreTransferAnalyzer extends Analyzer<
 
   parseArgs(sender: Address, payload: Map<any, any>): ArgumentT {
     return {
-      key: payload.get(1),
-      owner: (parseAddress(payload.get(2), true) || sender).toString(),
-      new_owner: parseAddress(payload.get(3), true).toString(),
+      key: payload.get(0),
+      owner: (parseAddress(payload.get(1), true) || sender).toString(),
+      new_owner: parseAddress(payload.get(2), true).toString(),
     };
   }
 
@@ -40,7 +40,7 @@ export class KvstoreTransferAnalyzer extends Analyzer<
     return {
       key: payload.get(1).toString(),
       owner: parseAddress(payload.get(2)).toString(),
-      new_owner: parseAddress(payload.get(3)).toString(),
+      new_owner: parseAddress(payload.get(3), true).toString(),
     };
   }
 }

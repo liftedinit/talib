@@ -8,6 +8,8 @@ import {
   multisigSubmit,
   tokensMintBurn,
   tokensCreate,
+  kvstorePut,
+  kvstoreTransfer,
 } from ".";
 
 const methodDetails: {
@@ -23,6 +25,8 @@ const methodDetails: {
   "tokens.burn": tokensMintBurn,
   "tokens.mint": tokensMintBurn,
   "tokens.create": tokensCreate,
+  "kvstore.put": kvstorePut,
+  "kvstore.transfer": kvstoreTransfer,
 };
 
 export function details(data: any) {

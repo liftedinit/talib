@@ -89,11 +89,11 @@ export function NetworkMetrics() {
           <MetricChart label="Total IPv4 Bandwidth Received" type="area" metric="ipv4bandwidthreceived" transform="sumtotal" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Total Ipv4 Packets Sent" metric="ipv4packetssent" transform="sumtotal" conversion={convertNumToBil} from={"now-1d"} to={"now"} fixedDecimals={5} unit="Packets" />
+          <MetricStat label="Total Ipv4 Packets Sent" metric="ipv4packetssent" transform="sumtotal" conversion={convertNumToBil} from={"now-1d"} to={"now"} fixedDecimals={5} unit="Bil. Packets" />
           <MetricChart label="Total IPv4 Packets Sent" type="area" metric="ipv4packetssent" transform="sumtotal" conversion={convertNumToBil} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="Billion" />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Total Ipv4 Packets Received" metric="ipv4packetsreceived" transform="sumtotal" conversion={convertNumToBil} from={"now-1d"} to={"now"} fixedDecimals={5} unit="Packets" />
+          <MetricStat label="Total Ipv4 Packets Received" metric="ipv4packetsreceived" transform="sumtotal" conversion={convertNumToBil} from={"now-1d"} to={"now"} fixedDecimals={5} unit="Bil. Packets" />
           <MetricChart label="Total IPv4 Packets Received" type="area" metric="ipv4packetsreceived" transform="sumtotal" conversion={convertNumToBil} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="Billion" />
         </Box>
       </SimpleGrid>

@@ -28,13 +28,13 @@ interface QueryData {
 }
 
 export function MetricStat({ 
-  label, 
-  metric, 
+  label,
+  metric,
   conversion,
-  from, 
+  from,
   to,
-  fixedDecimals, 
-  unit, 
+  fixedDecimals,
+  unit,
   transform,
   systemwide,
 }: StatProps) {

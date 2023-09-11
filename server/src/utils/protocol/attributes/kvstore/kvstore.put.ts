@@ -1,5 +1,5 @@
 import { Address } from "@liftedinit/many-js";
-import { parseAddress } from "../../../cbor-parsers";
+import { parseAddress, parseBuffer } from "../../../cbor-parsers";
 import { Analyzer } from "../../analyzer";
 
 interface ArgumentT {
@@ -22,9 +22,9 @@ export class KvstorePutAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
 
   parseArgs(sender: Address, payload: Map<any, any>): ArgumentT {
     return {
-      key: payload.get(0),
-      value: payload.get(1),
-      owner: (parseAddress(payload.get(2)) || sender).toString(),
+      key: parseBuffer(payload.get(0)).toString(),
+      value: parseBuffer(payload.get(1)).toString(),
+      owner: (parseAddress(payload.get(2), true) || sender).toString(),
     };
   }
 
@@ -36,7 +36,7 @@ export class KvstorePutAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
     return {
       key: payload.get(1).toString(),
       value: payload.get(2).toString(),
-      owner: parseAddress(payload.get(3)).toString(),
+      owner: parseAddress(payload.get(3), true).toString(),
     };
   }
 }

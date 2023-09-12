@@ -21,5 +21,10 @@ export function kvstoreTransfer(data: any) {
         {data.argument.new_owner}
       </Code>
     ),
+    Key: (
+      <Code maxW="50em"> 
+        {data.argument.key}
+      </Code>
+    ),
   };
 }

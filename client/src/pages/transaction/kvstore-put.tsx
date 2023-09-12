@@ -1,7 +1,9 @@
 import { Code, Text } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
+import { ExpandCode } from "ui";
 
 export function kvstorePut(data: any) {
+  console.log(data)
   return {
     From: (
       <Code
@@ -13,14 +15,12 @@ export function kvstorePut(data: any) {
       </Code>
     ),
     Key: (
-      <Text as="span" color="brand.teal.500"> 
+      <Code maxW="50em"> 
         {data.argument.key}
-      </Text>
+      </Code>
     ),
     Value: (  
-      <Text as="span" color="brand.teal.500"> 
-        {data.argument.value} 
-      </Text> 
+      <ExpandCode content={data.argument.value} />
     ),
   };
 }

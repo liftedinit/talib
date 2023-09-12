@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { getNeighborhoodTransaction, NeighborhoodContext } from "api";
-import { ObjectTable, QueryBox, TableObject } from "ui";
+import { ObjectTable, QueryBox, TableObject, ExpandCode } from "ui";
 import { basics, details } from ".";
 
 export function Transaction() {
@@ -40,8 +40,8 @@ export function Transaction() {
   txn = data
     ? {
         ...txn,
-        Request: <Code maxW="50em">{data.request}</Code>,
-        Response: <Code maxW="50em">{data.response}</Code>,
+        Request: <ExpandCode content={data.request} />,
+        Response: <ExpandCode content={data.request} />,
       }
     : txn;
 

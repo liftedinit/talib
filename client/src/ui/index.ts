@@ -8,3 +8,4 @@ export * from "./query-box";
 export * from "./search";
 export * from "./stat";
 export * from "./txn-list";
+export * from "./expand-code";

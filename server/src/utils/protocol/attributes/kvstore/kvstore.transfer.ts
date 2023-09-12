@@ -26,7 +26,7 @@ export class KvstoreTransferAnalyzer extends Analyzer<
 
   parseArgs(sender: Address, payload: Map<any, any>): ArgumentT {
     return {
-      key: parseBuffer(payload.get(0)).toString(),
+      key: parseBuffer(payload.get(0)).toString("base64"),
       owner: (parseAddress(payload.get(1), true) || sender).toString(),
       new_owner: parseAddress(payload.get(2), true).toString(),
     };
@@ -38,7 +38,7 @@ export class KvstoreTransferAnalyzer extends Analyzer<
 
   analyzeEvent(payload: Map<any, any>): EventT {
     return {
-      key: payload.get(1).toString(),
+      key: payload.get(1).toString("base64"),
       owner: parseAddress(payload.get(2), true).toString(),
       new_owner: parseAddress(payload.get(3), true).toString(),
     };

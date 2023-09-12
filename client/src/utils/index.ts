@@ -77,3 +77,6 @@ export function convertNumToBil(b: number): number {
   let bilValue = (b / 1000000000);
   return bilValue
 }
+
+export const STALE_INTERVAL = 60000;
+export const REFRESH_INTERVAL = 10000;

@@ -40,6 +40,14 @@ export abstract class Analyzer<ArgumentT, ResponseT, EventT> {
   }
 }
 
+const parseAddressTag = (value: any) => {
+  if (value instanceof Uint8Array) {
+    return new Address(Buffer.from(value));
+  } else if (typeof value === "string") {
+    return Address.fromString(value);
+  }
+};
+
 export const tags = {
-  10000: (value: Uint8Array) => new Address(Buffer.from(value)),
+  10000: parseAddressTag,
 };

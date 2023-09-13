@@ -1,12 +1,12 @@
 import { Box, Heading, SimpleGrid } from "@liftedinit/ui";
 import { MetricChart, MetricStat } from "ui";
-import { convertBytesToMb, convertBytesToGb, convertKbToTb, convertGbToTb, convertTbToPb } from "utils";
+import { convertBytesToMb, convertKbToGb, convertKbToTb, convertGbToTb, convertNumToBil } from "utils";
 
 export function NetworkMetrics() {
 
   return (
     <>
-      <Heading as='h4' size='md' py="5" pl="5" >Network Totals</Heading>
+      <Heading as='h4' size='md' py="5" pl="5" >Blockchain Network Totals</Heading>
       <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Blocks Produced" metric="totalblocks" systemwide />
@@ -66,16 +66,35 @@ export function NetworkMetrics() {
       <Heading as='h4' size='md' py="5" pl="5" >RAM</Heading>
       <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
-          <MetricStat label="Total Memory" metric="totalmemory" conversion={convertKbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
-          <MetricChart label="Total Memory" type="area" metric="totalmemory" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricStat label="Total Memory" metric="totalmemory" conversion={convertKbToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
+          <MetricChart label="Total Memory" type="area" metric="totalmemory" conversion={convertKbToGb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Free Memory" metric="freememory" conversion={convertKbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
-          <MetricChart label="Free Memory" type="area" metric="freememory" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricStat label="Free Memory" metric="freememory" conversion={convertKbToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
+          <MetricChart label="Free Memory" type="area" metric="freememory" conversion={convertKbToGb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Used Memory" metric="usedmemory" conversion={convertKbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
-          <MetricChart label="Used Memory" type="area" metric="usedmemory" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricStat label="Used Memory" metric="usedmemory" conversion={convertKbToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
+          <MetricChart label="Used Memory" type="area" metric="usedmemory" conversion={convertKbToGb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+        </Box>
+      </SimpleGrid>
+      <Heading as='h4' size='md' py="5" pl="5" >Network</Heading>
+      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 4 }} gap="6" mt={2}>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total IPv4 Bandwidth Sent" metric="ipv4bandwidthsent" transform="sumtotal" conversion={convertKbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
+          <MetricChart label="Total IPv4 Bandwidth Sent" type="area" metric="ipv4bandwidthsent" transform="sumtotal" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total IPv4 Bandwidth Received" metric="ipv4bandwidthreceived" transform="sumtotal" conversion={convertKbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
+          <MetricChart label="Total IPv4 Bandwidth Received" type="area" metric="ipv4bandwidthreceived" transform="sumtotal" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Ipv4 Packets Sent" metric="ipv4packetssent" transform="sumtotal" conversion={convertNumToBil} from={"now-1d"} to={"now"} fixedDecimals={5} unit="Bil. Packets" />
+          <MetricChart label="Total IPv4 Packets Sent" type="area" metric="ipv4packetssent" transform="sumtotal" conversion={convertNumToBil} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="Billion" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Ipv4 Packets Received" metric="ipv4packetsreceived" transform="sumtotal" conversion={convertNumToBil} from={"now-1d"} to={"now"} fixedDecimals={5} unit="Bil. Packets" />
+          <MetricChart label="Total IPv4 Packets Received" type="area" metric="ipv4packetsreceived" transform="sumtotal" conversion={convertNumToBil} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="Billion" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Object Storage</Heading>

@@ -15,6 +15,7 @@ import {
 } from "../../dto/prometheus-query.dto";
 import { ApiResponse } from "@nestjs/swagger";
 import { PrometheusQueryService } from "./query.service";
+import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
 
 @Controller("prometheusquery")
 export class PrometheusQueryController {
@@ -53,6 +54,20 @@ export class PrometheusQueryController {
     @Body() body: CreatePrometheusQueryDto,
   ): Promise<PrometheusQueryDto> {
     return (await this.metric.create(body)).intoDto();
+  }
+
+  @Put(":id")
+  async updateQuery(
+    @Param("id") id: number,
+    @Body() updateQueryDto: Partial<PrometheusQueryDto>,
+  ): Promise<PrometheusQuery> {
+    const updatedQuery = await this.metric.update(id, updateQueryDto);
+
+    if (!updatedQuery) {
+      throw new NotFoundException(`Query with ID ${id} not found`);
+    }
+
+    return updatedQuery;
   }
 
   @Delete(":id")

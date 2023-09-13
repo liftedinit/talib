@@ -42,6 +42,20 @@ export class PrometheusQueryService {
     return entity;
   }
 
+  async update(
+    id: number,
+    updateQueryDto: Partial<CreatePrometheusQueryDto>,
+  ): Promise<PrometheusQuery> {
+    const query = await this.metricRepository.findOne({ where: { id } });
+
+    if (!query) {
+      return undefined;
+    }
+
+    Object.assign(query, updateQueryDto);
+    return this.metricRepository.save(query);
+  }
+
   async removeById(id: number): Promise<void> {
     await this.metricRepository.delete({ id });
   }

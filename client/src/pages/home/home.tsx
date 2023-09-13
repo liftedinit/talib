@@ -2,6 +2,7 @@ import { Box, Button, Center, Heading, SimpleGrid } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { STALE_INTERVAL, REFRESH_INTERVAL } from "utils";
 
 import {
   getNeighborhoodBlocks,
@@ -22,6 +23,10 @@ export function Home() {
   } = useQuery(
     ["neighborhoods", id, "blocks"],
     getNeighborhoodBlocks(id, { page: 1, limit: 10 }),
+    {
+      staleTime: STALE_INTERVAL,
+      refetchInterval: REFRESH_INTERVAL,
+    },
   );
 
   const {
@@ -31,6 +36,10 @@ export function Home() {
   } = useQuery(
     ["neighborhoods", id, "txns"],
     getNeighborhoodTransactions(id, { page: 1, limit: 10 }),
+    {
+      staleTime: STALE_INTERVAL,
+      refetchInterval: REFRESH_INTERVAL,
+    },
   );
 
   return (

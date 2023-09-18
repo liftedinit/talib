@@ -41,7 +41,7 @@ export function Transaction() {
     ? {
         ...txn,
         Request: <ExpandCode content={data.request} />,
-        Response: <ExpandCode content={data.request} />,
+        Response: <ExpandCode content={data.response} />,
       }
     : txn;
 

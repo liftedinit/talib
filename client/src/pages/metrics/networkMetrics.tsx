@@ -48,7 +48,7 @@ export function NetworkMetrics() {
           <MetricChart label="Total Web Requests" type="area" metric="totalnginxrequests" transform="sumtotal" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests" />
         </Box>
       </SimpleGrid>
-      <Heading as='h4' size='md' py="5" pl="5" >Decentralized Web Hosting</Heading>
+      <Heading as='h4' size='md' py="5" pl="5" >Decentralized Website Hosting</Heading>
       <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Web Requests / Sec" metric="webrequestssec" from={"now-1d"} to={"now"} />

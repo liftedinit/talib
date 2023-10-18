@@ -48,6 +48,21 @@ export function NetworkMetrics() {
           <MetricChart label="Total Web Requests" type="area" metric="totalnginxrequests" transform="sumtotal" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests" />
         </Box>
       </SimpleGrid>
+      <Heading as='h4' size='md' py="5" pl="5" >Decentralized Website Hosting</Heading>
+      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Web Requests / Sec" metric="webrequestssec" from={"now-1d"} to={"now"} />
+          <MetricChart label="Web Requests / Sec" type="area" metric="webrequestssec" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests / Sec" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Sites" metric="totalsitecount" from={"now-1d"} to={"now"} />
+          <MetricChart label="Total Sites" type="area" metric="totalsitecount" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Sites" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Web Requests" metric="totalwebrequests" transform="sumtotal" from={"now-1d"} to={"now"} />
+          <MetricChart label="Total Web Requests" type="area" metric="totalwebrequests" transform="sumtotal" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests" />
+        </Box>
+      </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Disk</Heading>
       <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">

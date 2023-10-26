@@ -15,7 +15,7 @@ export function ExpandCode({ content }: any) {
   );
 
   return (
-    <Box bg="white" my={6}>
+    <Box my={6}>
       {
         isExpanded ? (
           <Code maxW="50em">

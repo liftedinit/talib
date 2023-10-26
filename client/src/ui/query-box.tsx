@@ -10,7 +10,7 @@ interface QueryBoxProps {
 export function QueryBox({ query, children }: QueryBoxProps) {
   const { isLoading } = query;
   return (
-    <Box bg="white" my={6}>
+    <Box my={6}>
       {isLoading ? (
         <Center>
           <Spinner />

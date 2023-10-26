@@ -38,7 +38,7 @@ export function Search() {
 
   return (
     <form onSubmit={maybeNavigate(term, navigate)}>
-      <InputGroup bg="white">
+      <InputGroup>
         <InputLeftElement children={<SearchIcon />} />
         <Input
           placeholder="Search by block height, transaction hash, or address"

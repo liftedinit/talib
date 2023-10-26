@@ -1,3 +1,17 @@
+import { useColorModeValue } from "@liftedinit/ui";
+
+export function useBgColor() {
+  return useColorModeValue('white', 'lifted.gray.700');
+}
+
+export function useTextColor() {
+  return useColorModeValue('black', 'white');
+}
+
+export function useButtonBg() {
+  return useColorModeValue('lifted.gray.200', 'lifted.gray.600');
+}
+
 export function abbr(hash: string) {
   return hash.slice(0, 4) + "..." + hash.slice(-4);
 }

@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { getNeighborhoodBlock, NeighborhoodContext } from "api";
 import { ObjectTable, QueryBox, TransactionList } from "ui";
-import { ago } from "utils";
+import { ago, useBgColor } from "utils";
 
 export function Block() {
   const { id } = useContext(NeighborhoodContext);
@@ -29,8 +29,10 @@ export function Block() {
       }
     : {};
 
+  const bg = useBgColor();
+
   return (
-    <Box my={6}>
+    <Box my={6} bg={bg} p={5}>
       <Heading size="sm">
         <Text as={Link} color="brand.teal.500" to="/">
           Home

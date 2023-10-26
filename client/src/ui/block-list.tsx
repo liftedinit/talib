@@ -17,7 +17,7 @@ import {
 import { Link } from "react-router-dom";
 
 import { ErrorAlert } from "ui";
-import { abbr, ago } from "utils";
+import { abbr, ago, useBgColor } from "utils";
 
 interface BlockSummary {
   height: number;
@@ -37,8 +37,11 @@ export function BlockList({
   error,
   isLoading = false,
 }: BlockListProps) {
+
+  const bg = useBgColor();
+
   return (
-    <Box bg="white" my={6} p={6}>
+    <Box my={6} p={6} bg={bg}>
       <Flex mb={6}>
         <Heading size="sm">Blocks</Heading>
         <Spacer />
@@ -67,7 +70,7 @@ export function BlockList({
                   </Link>
                 </Td>
                 <Td>
-                  <Code>{abbr(block.blockHash)}</Code>
+                  <Code colorScheme="gray">{abbr(block.blockHash)}</Code>
                 </Td>
                 <Td>{block.txCount.toLocaleString()}</Td>
                 <Td>{ago(new Date(block.dateTime))}</Td>

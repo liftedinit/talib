@@ -9,30 +9,33 @@ import {
   logoSvg,
   Stack,
   HStack,
+  DarkMode,
 } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
-import { Search } from "ui";
-
+import { Search, DarkModeToggle } from "ui";
+import { useBgColor } from "utils";
 import { NeighborhoodSelector } from "./selector";
 
 export function Navbar() {
 
+  const bg = useBgColor();
+
   return (
     <Grid
-    bg="white"
     shadow="lg"
+    bg={bg}
     alignItems="center"
-    templateColumns="430px 1fr 430px"
+    templateColumns="440px 1fr 440px"
     p={6}
     gap={6}
     >
     <GridItem>
-      <Stack direction="row">
+      <HStack direction="row">
         <Image src={logoSvg} h="67px" mr={3} alt="Lifted Logo" />
         <Heading lineHeight="67px" size="md" fontWeight="normal">
           <Link to="/">Talib</Link>
         </Heading>
-      </Stack>
+      </HStack>
     </GridItem>
     <GridItem>
       <Center>
@@ -42,13 +45,16 @@ export function Navbar() {
       </Center>
     </GridItem>
     <GridItem>
-      <HStack>
-        <Heading lineHeight="67px" size="md" fontWeight="normal" marginRight="20px">
+      <HStack display="flex" justifyContent="space-between">
+        <Heading lineHeight="67px" size="md" fontWeight="normal" marginRight="20px" justify-self-end>
           <Button colorScheme='brand.teal' size="md">
           <Link to="/metrics">Metrics</Link>
           </Button>
         </Heading>
-        <NeighborhoodSelector />
+        <NeighborhoodSelector justify-self-end />
+        <Heading size="md" justify-self-end>
+          <DarkModeToggle />
+        </Heading>
       </HStack>
     </GridItem>
     </Grid>

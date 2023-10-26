@@ -40,8 +40,8 @@ export function NeighborhoodSelector() {
         as={Button}
         rightIcon={<ChevronDownIcon />}
         variant="outline"
-        colorScheme="brand.black"
-        size="lg"
+        colorScheme="brand.white"
+        size="sm"
       >
         <Text>{active.name}</Text>
       </MenuButton>

@@ -158,7 +158,7 @@ export function MetricChart({
     </Box>
     ) : ( 
     <Box p={4} bg={bg}>
-      <Chart type={type} series={chartData.series} options={chartData.options} />
+      <Chart type={type} series={chartData.series} options={chartData.options} className="talib-chart" />
     </Box>
     )}
     {isError && (

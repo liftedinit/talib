@@ -52,7 +52,7 @@ export function BlockList({
           <Spinner />
         </Center>
       ) : (
-        <Table size="sm">
+        <Table size="sm" className="table-lifted">
           <Thead>
             <Th>Height</Th>
             <Th>Hash</Th>

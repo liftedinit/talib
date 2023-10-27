@@ -11,7 +11,7 @@ interface ObjectTableProps {
 
 export function ObjectTable({ obj }: ObjectTableProps) {
   return (
-    <Table>
+    <Table class="table-lifted">
       <Tbody>
         {Object.entries(obj).map(([key, value]) => (
           <Tr>

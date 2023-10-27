@@ -72,7 +72,7 @@ export function TransactionList({
           <Spinner />
         </Center>
       ) : (
-        <Table size="sm" className="table-lifted">
+        <Table size="sm" className="talib-table">
           <Thead>
             <Th>Hash</Th>
             <Th>Type</Th>

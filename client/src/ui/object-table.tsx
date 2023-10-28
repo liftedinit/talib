@@ -11,7 +11,7 @@ interface ObjectTableProps {
 
 export function ObjectTable({ obj }: ObjectTableProps) {
   return (
-    <Table class="talib-table">
+    <Table className="talib-table">
       <Tbody>
         {Object.entries(obj).map(([key, value]) => (
           <Tr>

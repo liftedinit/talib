@@ -16,7 +16,7 @@ export function Blocks() {
   );
 
   return (
-    <Box my={6}>
+    <Box my={6} p={6}>
       <Heading size="sm">
         <Text as={Link} color="brand.teal.500" to="/">
           Home

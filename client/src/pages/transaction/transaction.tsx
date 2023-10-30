@@ -7,6 +7,8 @@ import { getNeighborhoodTransaction, NeighborhoodContext } from "api";
 import { ObjectTable, QueryBox, TableObject, ExpandCode } from "ui";
 import { basics, details } from ".";
 
+import { useBgColor } from "utils";
+
 export function Transaction() {
   const { id } = useContext(NeighborhoodContext);
   const { hash } = useParams();
@@ -36,6 +38,8 @@ export function Transaction() {
     }
   }, [isError, isSuccess]);
 
+  const bg = useBgColor();
+
   // Add request and response (in CBOR) at the end
   txn = data
     ? {
@@ -46,7 +50,7 @@ export function Transaction() {
     : txn;
 
   return (
-    <Box my={6}>
+    <Box my={6} bg={bg} p={6}>
       <Heading size="sm">
         <Text as={Link} color="brand.teal.500" to="/">
           Home

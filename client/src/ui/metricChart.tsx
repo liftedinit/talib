@@ -7,6 +7,8 @@ import {
   Box,
   Text 
 } from "@liftedinit/ui";
+import { useBgColor, useTextColor } from 'utils';
+
 
 interface StatProps {
   label: string;
@@ -70,6 +72,8 @@ export function MetricChart({
     categoriesData = [];
     seriesData = [];
   }
+
+  const bg = useBgColor();
 
   if (!isLoading && queryData) {
 
@@ -147,18 +151,18 @@ export function MetricChart({
   return (
     <>
     {isLoading || isError ? (
-    <Box bg="white" p={4}>
+    <Box p={4} bg={bg}>
       <Center>
         <Spinner />
       </Center>
     </Box>
     ) : ( 
-    <Box bg="white" p={4}>
-      <Chart type={type} series={chartData.series} options={chartData.options} />
+    <Box p={4} bg={bg}>
+      <Chart type={type} series={chartData.series} options={chartData.options} className="talib-chart" />
     </Box>
     )}
     {isError && (
-      <Box bg="white" p={4} mt={10}>
+      <Box p={4} mt={10} bg={bg}>
         <Center>
           <Text color="brand.teal" fontWeight="bold">Error loading chart data</Text>
         </Center>

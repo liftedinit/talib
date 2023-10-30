@@ -17,7 +17,7 @@ import {
 import { Link } from "react-router-dom";
 
 import { ErrorAlert } from "ui";
-import { abbr, ago, by } from "utils";
+import { abbr, ago, by, useBgColor } from "utils";
 
 export const PrettyMethods: { [name: string]: string } = {
   "account.addRoles": "Add",
@@ -58,8 +58,10 @@ export function TransactionList({
   error,
   isLoading = false,
 }: TransactionListProps) {
+  const bg = useBgColor();
+
   return (
-    <Box bg="white" my={6} p={6}>
+    <Box my={6} p={6} bg={bg}>
       <Flex mb={6}>
         <Heading size="sm">Transactions</Heading>
         <Spacer />
@@ -70,7 +72,7 @@ export function TransactionList({
           <Spinner />
         </Center>
       ) : (
-        <Table size="sm">
+        <Table size="sm" className="talib-table">
           <Thead>
             <Th>Hash</Th>
             <Th>Type</Th>

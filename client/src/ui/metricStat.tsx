@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getMetricCurrent, getMetricTransformCurrent, getMetricSystemWideCurrent } from "api";
 import { Box, Center, Spinner } from "@liftedinit/ui";
 
+import { useBgColor } from 'utils';
+
 interface StatProps {
   label: string;
   metric?: string;
@@ -38,6 +40,8 @@ export function MetricStat({
   transform,
   systemwide,
 }: StatProps) {
+
+  const bg = useBgColor();
 
   type metricQueryFunction = () => void;
 
@@ -82,14 +86,14 @@ export function MetricStat({
   return (
     <>
       {isLoading ? (
-      <Box bg="white" p={4}>
+      <Box p={4} bg={bg}>
         <Center>
           <Spinner />
         </Center>
       </Box>
       ) : (
-      <BaseStat bg="white" p={6} mb={5}>
-        <StatLabel color="lifted.gray.500">{label}</StatLabel>
+      <BaseStat p={6} bg={bg}>
+        <StatLabel>{label}</StatLabel>
         <StatNumber>
           { metricValue } {unit}
         </StatNumber>

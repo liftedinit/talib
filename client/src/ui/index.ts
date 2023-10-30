@@ -9,3 +9,4 @@ export * from "./search";
 export * from "./stat";
 export * from "./txn-list";
 export * from "./expand-code";
+export * from "./color-mode";

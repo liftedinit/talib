@@ -22,7 +22,7 @@ export function NeighborhoodStatus({ id }: { id: number }) {
       {query.isLoading ? (
         <Spinner />
       ) : (
-        <Stack direction="row" mt={6}>
+        <Stack direction="row" mt={6} mb={4}>
           <Stat label="Height" value={height} />
           <Stat label="Transactions" value={txnCount} />
           <Stat label="Status" value={status} />

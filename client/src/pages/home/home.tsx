@@ -2,7 +2,8 @@ import { Box, Button, Center, Heading, SimpleGrid } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { STALE_INTERVAL, REFRESH_INTERVAL } from "utils";
+import { useButtonBg, STALE_INTERVAL, REFRESH_INTERVAL } from "utils";
+
 
 import {
   getNeighborhoodBlocks,
@@ -29,7 +30,7 @@ export function Home() {
     },
   );
 
-  const {
+  const { 
     data: txnData,
     error: txnError,
     isLoading: txnLoading,
@@ -41,6 +42,8 @@ export function Home() {
       refetchInterval: REFRESH_INTERVAL,
     },
   );
+
+  const buttonBg = useButtonBg();
 
   return (
     <>
@@ -57,7 +60,7 @@ export function Home() {
             error={blocksError as Error}
             isLoading={blocksLoading}
           />
-          <Button as={Link} to="blocks" isFullWidth>
+          <Button as={Link} to="blocks" isFullWidth bg={buttonBg}>
             More
           </Button>
         </Box>
@@ -67,7 +70,7 @@ export function Home() {
             error={txnError as Error}
             isLoading={txnLoading}
           />
-          <Button as={Link} to="transactions" isFullWidth>
+          <Button as={Link} to="transactions" isFullWidth bg={buttonBg}>
             More
           </Button>
         </Box>

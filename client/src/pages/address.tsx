@@ -6,6 +6,8 @@ import { Link, useParams } from "react-router-dom";
 import { getNeighborhoodAddress, NeighborhoodContext } from "api";
 import { ObjectTable, QueryBox, TransactionList } from "ui";
 
+import { useBgColor } from "utils";
+
 export function Address() {
   const { id } = useContext(NeighborhoodContext);
   const { address } = useParams();
@@ -16,8 +18,10 @@ export function Address() {
   );
   const { data, error, isLoading } = query;
 
+  const bg = useBgColor();
+
   return (
-    <Box my={6}>
+    <Box my={6} bg={bg} p={6}>
       <Heading size="sm">
         <Text as={Link} color="brand.teal.500" to="/">
           Home

@@ -1,4 +1,5 @@
 import { Stat as BaseStat, StatLabel, StatNumber } from "@liftedinit/ui";
+import { useBgColor } from "utils";
 
 interface StatProps {
   label: string;
@@ -6,8 +7,11 @@ interface StatProps {
 }
 
 export function Stat({ label, value }: StatProps) {
+
+  const bg = useBgColor();
+
   return (
-    <BaseStat bg="white" p={6}>
+    <BaseStat p={6} bg={bg}>
       <StatLabel>{label}</StatLabel>
       <StatNumber>{value ?? "N/A"}</StatNumber>
     </BaseStat>

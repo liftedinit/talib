@@ -1,4 +1,4 @@
-import { theme, ThemeProvider } from "@liftedinit/ui";
+import { theme, ThemeProvider, ColorModeScript } from "@liftedinit/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -22,6 +22,7 @@ const queryClient = new QueryClient();
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <QueryClientProvider client={queryClient}>
         <NeighborhoodProvider>
           <HashRouter>

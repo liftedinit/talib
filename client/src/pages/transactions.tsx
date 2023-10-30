@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { getNeighborhoodTransactions, NeighborhoodContext } from "api";
 import { Pager, TransactionList } from "ui";
 
+import { useBgColor } from "utils";
+
 export function Transactions() {
   const { id } = useContext(NeighborhoodContext);
   const [page, setPage] = useState(1);
@@ -14,8 +16,10 @@ export function Transactions() {
     getNeighborhoodTransactions(id, { page }),
   );
 
+  const bg = useBgColor();
+
   return (
-    <Box my={6}>
+    <Box my={6} p={6} bg={bg}>
       <Heading size="sm">
         <Text as={Link} color="brand.teal.500" to="/">
           Home

@@ -222,20 +222,18 @@ export class PrometheusQueryDetailsService {
     );
   }
 
-  async getPrometheusQueryFrames(
+  async getPrometheusQuerySingleFrames(
     name: string,
     timestamp: number,
     intervalMs: number,
     maxDataPoints: number,
   ): Promise<any> {
-    this.logger.debug(`timestamp: ${timestamp}`)
-
     const getPrometheusQuery = await this.getPrometheusQuery(name);
-    const from = timestamp - 300000;
+    const from = timestamp - 3000000;
     const to = timestamp;
-    const latestMetric = await this.getLatestMetric(name);
 
-    return await this.httpService
+    return await lastValueFrom(
+      this.httpService
         .post(
           this.prometheusConfig.remoteApiUrl,
           this.constructGrafanaQuery(
@@ -260,7 +258,6 @@ export class PrometheusQueryDetailsService {
             let latestTimestamp: number;
             let latestValue: number;
             let metrics: Array<any> = [];
-            let latestValues: Array<any> = [];
 
             for (let i = 0; i < results.frames.length; i++) {
               const frame = results.frames[i];
@@ -269,24 +266,14 @@ export class PrometheusQueryDetailsService {
               const values = frame.data.values[1];
               const instance = frame.schema.fields[1].labels.instance;
 
-              // this.logger.debug(`frames: ${JSON.stringify(frame)}`);
-              this.logger.debug(`instance: ${JSON.stringify(instance)}`);
+              latestTimestamp = timestamps[timestamps.length - 1];
+              latestValue = values[values.length - 1];
 
-              if (values === undefined || timestamps === undefined) {
-                this.logger.debug(
-                  `Undefined values or timestamps for query: ${name}`,
-                );
-                // Set timestamp to 5 minutes ago to preserve interval
-                latestTimestamp = from;
-                latestValue = Number(latestMetric.data);
-              } else {
-                latestTimestamp = timestamps[timestamps.length - 1];
-                latestValue = values[values.length - 1];
-              }
-
-              metrics.push([latestTimestamp, latestValue]);
+              metrics.push([latestTimestamp, latestValue, instance]);
 
             }
+
+            // this.logger.debug(`metrics: ${JSON.stringify(metrics)}`);
 
             return metrics;
           }),
@@ -297,6 +284,7 @@ export class PrometheusQueryDetailsService {
             throw new ForbiddenException(error.message);
           }),
         )
+    );
   }
 
   async getLatestMetric(name: string): Promise<Metric | null> {

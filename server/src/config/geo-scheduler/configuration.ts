@@ -1,7 +1,7 @@
 import { registerAs } from "@nestjs/config";
 import * as process from "process";
 
-export default registerAs("metricsScheduler", () => ({
+export default registerAs("geoScheduler", () => ({
   cron: process.env.GEO_SCHEDULER_CRON,
   startdate_timestamp: process.env.GEO_SCHEDULER_STARTDATE_TIMESTAMP,
   interval: process.env.GEO_SCHEDULER_INTERVAL,

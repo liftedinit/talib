@@ -39,13 +39,14 @@ export class GeoUpdater {
   }
 
   // Insert a new metric value into the metrics table
-  private async updateLocationNewValues(location, timestamp) {
+  private async updateLocationNewValues(instance, latitude, longitude) {
     // Construct the metric
     const entity = new Location();
 
     // entity.timestamp = new Date(latestLocation[0]);
-    entity.latitude = location[0];
-    entity.longitude  = location[1];
+    entity.latitude = latitude;
+    entity.longitude  = longitude;
+    entity.instance = instance;
 
     const result = await this.locationRepository.save(entity);
 
@@ -129,6 +130,49 @@ export class GeoUpdater {
     }
 
     this.logger.debug(`Combined geolocations: ${JSON.stringify(combinedLocations)}`);
+
+
+    // Iterate over the combined locations and insert into the database
+    for (const instanceName in combinedLocations) {
+
+      // Check if the database has an entry for the instance name
+      const instanceExists = await this.locationRepository.findOne({
+        where: { instance: instanceName },
+      });
+
+      // if the instance doesn't exist, create a new entry
+      if (!instanceExists) {
+        // Check if the instance has both a latitude and longitude value
+        if (
+          combinedLocations[instanceName].latitude !== undefined &&
+          combinedLocations[instanceName].longitude !== undefined
+        ) {
+          // If it does, insert the location into the database
+          await this.updateLocationNewValues(
+            instanceName,
+            combinedLocations[instanceName].latitude,
+            combinedLocations[instanceName].longitude,
+          );
+        }
+      } else {
+        // if the instance already exists check that the latitude and longitude values
+        // are not null or aren't the same 
+        if (
+          (instanceExists.latitude !== combinedLocations[instanceName].latitude ||
+            instanceExists.longitude !== combinedLocations[instanceName].longitude) &&
+          combinedLocations[instanceName].latitude !== undefined &&
+          combinedLocations[instanceName].longitude !== undefined
+        ) {
+          // If they are different, update the location in the database
+          await this.updateLocationNewValues(
+            instanceName,
+            combinedLocations[instanceName].latitude,
+            combinedLocations[instanceName].longitude,
+          );
+        }
+      }
+
+    }
 
     return null;
   }

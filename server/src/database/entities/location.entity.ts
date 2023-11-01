@@ -2,13 +2,11 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  Index,
 } from "typeorm";
-import { LocationDto } from "../../dto/location.dto";
+import { LocationDto, CreateLocationDto } from "../../dto/location.dto";
 
 @Entity()
-@Index(["prometheusQueryId", "timestamp"], { unique: true })
-export class Metric {
+export class Location {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,5 +26,13 @@ export class Metric {
       latitude: this.latitude,
       longitude: this.longitude,
     };
+  }
+
+  public static createWithDto(dto: CreateLocationDto): Location {
+    const result = new Location();
+    result.instance = dto.instance;
+    result.latitude = dto.latitude;
+    result.longitude = dto.longitude;
+    return result;
   }
 }

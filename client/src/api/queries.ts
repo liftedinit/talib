@@ -91,3 +91,8 @@ export function getMetricSystemWideSeries(
 ) {
     return get(`metrics/systemwide/${metric}/series`, { from, to });
 }
+
+export function getLocations() {
+  return get("location");
+}
+

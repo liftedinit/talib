@@ -30,8 +30,8 @@ export class CreatePrometheusQueryDto {
   @ApiProperty()
   name: string;
 
-  @Optional()
-  @ApiProperty({ required: false })
+  @IsNotEmpty()
+  @ApiProperty()
   enabled: boolean;
 
   @IsNotEmpty()

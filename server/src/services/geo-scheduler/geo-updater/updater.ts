@@ -83,54 +83,43 @@ export class GeoUpdater {
   // Seed metric values for a prometheusQuery
   // This is the main job of the metrics scheduler
   private async seedLocationValues(queries: PrometheusQueries){
-
     const timestamp = new Date().getTime();
-
+    
     // Get names of each prometheus Query and store in local var mapped to LocationQueryNames interface
     const locationQueryNames: LocationQueryNames = {
       latitude: queries.latitude.name,
       longitude: queries.longitude.name
     };
-
     const locationData = await this.getLocations(locationQueryNames, timestamp);
-
-    // this.logger.debug(`Location Data: ${JSON.stringify(locationData)}`)
 
     // Create a dictionary to store the combined latitude and longitude objects
     const combinedLocations: { [key: string]: { latitude?: number; longitude?: number } } = {};
 
-    // Iterate over the latitude values
-    for (const latValue of locationData.latitudeValues) {
-      // Extract the instance name
-      const instanceName = latValue[2];
+    // Process latitude values
+    locationData.latitudeValues
+      .map(latValue => [latValue[2], latValue[1]])
+      .filter(([instanceName]) => instanceName)
+      .forEach(([instanceName, latitude]) => {
+        if (instanceName in combinedLocations) {
+          combinedLocations[instanceName].latitude = latitude;
+        } else {
+          combinedLocations[instanceName] = { latitude };
+        }
+      });
 
-      // Check if the instance name already exists in the dictionary
-      if (instanceName in combinedLocations) {
-        // If it exists, append the latitude value to the existing instance
-        combinedLocations[instanceName].latitude = latValue[1];
-      } else {
-        // If it doesn't exist, create a new instance with the latitude value
-        combinedLocations[instanceName] = { latitude: latValue[1] };
-      }
-    }
-
-    // Iterate over the longitude values
-    for (const lonValue of locationData.longitudeValues) {
-      // Extract the instance name
-      const instanceName = lonValue[2];
-
-      // Check if the instance name already exists in the dictionary
-      if (instanceName in combinedLocations) {
-        // If it exists, append the longitude value to the existing instance
-        combinedLocations[instanceName].longitude = lonValue[1];
-      } else {
-        // If it doesn't exist, create a new entry with the longitude value
-        combinedLocations[instanceName] = { longitude: lonValue[1] };
-      }
-    }
+    // Process longitude values
+    locationData.longitudeValues
+      .map(lonValue => [lonValue[2], lonValue[1]])
+      .filter(([instanceName]) => instanceName)
+      .forEach(([instanceName, longitude]) => {
+        if (instanceName in combinedLocations) {
+          combinedLocations[instanceName].longitude = longitude;
+        } else {
+          combinedLocations[instanceName] = { longitude };
+        }
+      });
 
     this.logger.debug(`Combined geolocations: ${JSON.stringify(combinedLocations)}`);
-
 
     // Iterate over the combined locations and insert into the database
     for (const instanceName in combinedLocations) {

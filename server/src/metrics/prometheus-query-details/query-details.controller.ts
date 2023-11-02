@@ -47,7 +47,7 @@ export class PrometheusQueryDetailsController {
   @ApiResponse({
     status: 200,
     // type: PrometheusQueryDto,
-    description: "Show query details with frames for a query watched by this instance.",
+    description: "Show info for current metric values including all frames for a query watched by this instance.",
   })
   async getFrames(
     @Param("name") name: string,
@@ -55,9 +55,7 @@ export class PrometheusQueryDetailsController {
     @Query("intervalMs") intervalMs: number,
     @Query("maxDataPoints") maxDataPoints: number,
   ) {
-
-    this.logger.debug(`timestamp controller: ${timestamp}`)
-    const f = await this.queryDetails.getPrometheusQueryFrames(name, timestamp, intervalMs, maxDataPoints );
+    const f = await this.queryDetails.getPrometheusQueryCurrentFrames(name, timestamp, intervalMs, maxDataPoints );
 
     this.logger.debug(f);
     if (!f) {

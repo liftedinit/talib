@@ -222,7 +222,7 @@ export class PrometheusQueryDetailsService {
     );
   }
 
-  async getPrometheusQuerySingleFrames(
+  async getPrometheusQueryCurrentFrames(
     name: string,
     timestamp: number,
     intervalMs: number,

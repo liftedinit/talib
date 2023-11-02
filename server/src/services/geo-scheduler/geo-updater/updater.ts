@@ -58,7 +58,7 @@ export class GeoUpdater {
     // Retrieve the metric value from Grafana
     // Fetch the PromQL from the PrometheusQuery table to find the metric
     const latitudeValues =
-      await this.prometheusQueryDetails.getPrometheusQuerySingleFrames(
+      await this.prometheusQueryDetails.getPrometheusQueryCurrentFrames(
         queryNames.latitude,
         timestamp,
         INTERVALMS,
@@ -66,7 +66,7 @@ export class GeoUpdater {
       );
 
     const longitudeValues =
-      await this.prometheusQueryDetails.getPrometheusQuerySingleFrames(
+      await this.prometheusQueryDetails.getPrometheusQueryCurrentFrames(
         queryNames.longitude,
         timestamp,
         INTERVALMS,

@@ -1,9 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, QueryFailedError } from "typeorm";
-import { GeoSchedulerConfigService } from "../../../config/geo-scheduler/configuration.service";
+import { Repository } from "typeorm";
 import { Location } from "../../../database/entities/location.entity";
-import { PrometheusQuery } from "../../../database/entities/prometheus-query.entity";
+import { PrometheusQueryService } from "../../../metrics/prometheus-query/query.service";
 import { PrometheusQueryDetailsService } from "../../../metrics/prometheus-query-details/query-details.service";
 import { PrometheusQueries } from "../geo-scheduler.service";
 
@@ -26,8 +25,8 @@ export class GeoUpdater {
   private queries: PrometheusQueries;
 
   constructor(
-    private schedulerConfig: GeoSchedulerConfigService,
     private prometheusQueryDetails: PrometheusQueryDetailsService,
+    private prometheusQuery: PrometheusQueryService,
     @InjectRepository(Location)
     private locationRepository: Repository<Location>,
   ) {}
@@ -38,12 +37,11 @@ export class GeoUpdater {
     return this;
   }
 
-  // Insert a new metric value into the metrics table
+  // Insert a new location into the locations table
   private async updateLocationNewValues(instance, latitude, longitude) {
-    // Construct the metric
+    // Construct the location
     const entity = new Location();
 
-    // entity.timestamp = new Date(latestLocation[0]);
     entity.latitude = latitude;
     entity.longitude  = longitude;
     entity.instance = instance;
@@ -80,11 +78,39 @@ export class GeoUpdater {
     
     }
 
+  private async checkNodeStatus(timestamp: number, instanceName: string): Promise<boolean> {
+    // Retrieve the prometheus status query 
+    const status = await this.prometheusQuery.get('status');
+    let nodeStatus;
+
+    if (!status) {
+      return false;
+    } else {
+      nodeStatus = await this.prometheusQueryDetails.getPrometheusQuerySingleValue(
+        status.name,
+        timestamp,
+        INTERVALMS,
+        MAXDATAPOINTS,
+        [{label: "instance", value: instanceName}]
+      ) 
+    }
+
+    this.logger.debug(`nodeStatus: ${JSON.stringify(nodeStatus)}`);
+
+    // If nodeStatus[1] = 1 return true, else return false
+    if (nodeStatus[1] === 1) {
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
   // Seed metric values for a prometheusQuery
   // This is the main job of the metrics scheduler
   private async seedLocationValues(queries: PrometheusQueries){
     const timestamp = new Date().getTime();
-    
+
     // Get names of each prometheus Query and store in local var mapped to LocationQueryNames interface
     const locationQueryNames: LocationQueryNames = {
       latitude: queries.latitude.name,
@@ -118,8 +144,6 @@ export class GeoUpdater {
           combinedLocations[instanceName] = { longitude };
         }
       });
-
-    this.logger.debug(`Combined geolocations: ${JSON.stringify(combinedLocations)}`);
 
     // Iterate over the combined locations and insert into the database
     for (const instanceName in combinedLocations) {
@@ -160,7 +184,6 @@ export class GeoUpdater {
           );
         }
       }
-
     }
 
     return null;

@@ -2,7 +2,6 @@ import { Injectable, ForbiddenException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { HttpService } from "@nestjs/axios";
 import { map, catchError, lastValueFrom } from "rxjs";
-import { toArray } from 'rxjs/operators';
 import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
 import { PrometheusConfigService } from "../../config/prometheus/configuration.service";
 import { Metric } from "../../database/entities/metric.entity";
@@ -162,11 +161,21 @@ export class PrometheusQueryDetailsService {
     timestamp: number,
     intervalMs: number,
     maxDataPoints: number,
+    injectLabels?: { label: string; value: string }[]
   ): Promise<any> {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
     const from = timestamp - 300000;
     const to = timestamp;
     const latestMetric = await this.getLatestMetric(name);
+
+    // if injectLabel is defined, inject it into the query
+    if (injectLabels) {
+      const labels = injectLabels.map(item => `${item.label}="${item.value}"`).join(", ");
+      getPrometheusQuery.query = getPrometheusQuery.query.replace(
+        /}/,
+        `, ${labels}}`
+      );
+    }
 
     return await lastValueFrom(
       this.httpService
@@ -194,8 +203,7 @@ export class PrometheusQueryDetailsService {
             const timestamps = res.data?.results.A.frames[0].data.values[0];
             const values = res.data?.results.A.frames[0].data.values[1];
 
-            this.logger.debug(`timestamps: ${JSON.stringify(timestamps)}`)
-            this.logger.debug(`values: ${JSON.stringify(values)}`)
+
 
             if (values === undefined || timestamps === undefined) {
               this.logger.debug(
@@ -204,9 +212,15 @@ export class PrometheusQueryDetailsService {
               // Set timestamp to 5 minutes ago to preserve interval
               latestTimestamp = from;
               latestValue = Number(latestMetric.data);
+
+              this.logger.debug(`timestamp: ${JSON.stringify(latestTimestamp)}`)
+              this.logger.debug(`value: ${JSON.stringify(latestValue)}`)
             } else {
               latestTimestamp = timestamps[timestamps.length - 1];
               latestValue = values[values.length - 1];
+
+              this.logger.debug(`timestamp: ${JSON.stringify(latestTimestamp)}`)
+              this.logger.debug(`value: ${JSON.stringify(latestValue)}`)
             }
             const metrics: Array<any> = [latestTimestamp, latestValue];
 

@@ -20,6 +20,20 @@ export class PrometheusQueryDetailsService {
     private httpService: HttpService,
   ) {}
 
+
+  createAuthorizationHeader(prometheusConfig: PrometheusConfigService): any {
+    const username = prometheusConfig.username;
+    const password = prometheusConfig.password;
+    const credentials = `${username}:${password}`;
+    const base64Credentials = Buffer.from(credentials).toString("base64");
+  
+    return {
+      headers: {
+        Authorization: `Basic ${base64Credentials}`,
+      },
+    };
+  }
+
   async getPrometheusQuery(name: string): Promise<PrometheusQuery> {
     const query = this.prometheusQueryRepository
       .createQueryBuilder("n")
@@ -88,13 +102,7 @@ export class PrometheusQueryDetailsService {
             intervalMs,
             maxDataPoints,
           ),
-          {
-            headers: {
-              Authorization: `Basic ${Buffer.from(
-                `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
-              ).toString("base64")}`,
-            },
-          },
+          this.createAuthorizationHeader(this.prometheusConfig),
         )
         .pipe(
           map((res) => {
@@ -134,13 +142,7 @@ export class PrometheusQueryDetailsService {
           intervalMs,
           maxDataPoints,
         ),
-        {
-          headers: {
-            Authorization: `Basic ${Buffer.from(
-              `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
-            ).toString("base64")}`,
-          },
-        },
+        this.createAuthorizationHeader(this.prometheusConfig),
       )
       .pipe(
         map((res) => {
@@ -188,13 +190,7 @@ export class PrometheusQueryDetailsService {
             intervalMs,
             maxDataPoints,
           ),
-          {
-            headers: {
-              Authorization: `Basic ${Buffer.from(
-                `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
-              ).toString("base64")}`,
-            },
-          },
+          this.createAuthorizationHeader(this.prometheusConfig),
         )
         .pipe(
           map((res) => {
@@ -257,13 +253,7 @@ export class PrometheusQueryDetailsService {
             intervalMs,
             maxDataPoints,
           ),
-          {
-            headers: {
-              Authorization: `Basic ${Buffer.from(
-                `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
-              ).toString("base64")}`,
-            },
-          },
+          this.createAuthorizationHeader(this.prometheusConfig),
         )
         .pipe(
           map((res) => {

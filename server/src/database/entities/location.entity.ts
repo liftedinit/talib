@@ -10,13 +10,13 @@ export class Location {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   instance: string;
 
-  @Column()
+  @Column({ type: "float" })
   latitude: number;
 
-  @Column()
+  @Column({ type: "float" })
   longitude: number;
 
   intoDto(): LocationDto {

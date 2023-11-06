@@ -14,9 +14,15 @@ interface LocationQueryNames {
   longitude: string;
 }
 
+interface LocationValue {
+  id: number;
+  latitude: number;
+  instance: string;
+}
+
 interface LocationData {
-  latitudeValues: any;
-  longitudeValues: any;
+  latitudeValues: LocationValue[];
+  longitudeValues: LocationValue[];
 }
 
 @Injectable()
@@ -38,7 +44,7 @@ export class GeoUpdater {
   }
 
   // Insert a new location into the locations table
-  private async updateLocationNewValues(instance, latitude, longitude) {
+  private async updateLocationNewValues(instance: string, latitude: number, longitude: number) {
     // Construct the location
     const entity = new Location();
 
@@ -70,6 +76,18 @@ export class GeoUpdater {
         INTERVALMS,
         MAXDATAPOINTS,
       );
+
+    // shift decimal place 4 units to the left for latitude and longitude
+    latitudeValues.forEach((value) => {
+      // ensure value[1] is a float with 4 decimal places
+      value[1] = parseFloat(value[1].toFixed(4));
+      value[1] = value[1] / 10000;
+    });
+
+    longitudeValues.forEach((value) => {
+      value[1] = parseFloat(value[1].toFixed(4));
+      value[1] = value[1] / 10000;
+    });
 
     return {
       latitudeValues, 

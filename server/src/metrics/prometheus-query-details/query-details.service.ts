@@ -199,8 +199,6 @@ export class PrometheusQueryDetailsService {
             const timestamps = res.data?.results.A.frames[0].data.values[0];
             const values = res.data?.results.A.frames[0].data.values[1];
 
-
-
             if (values === undefined || timestamps === undefined) {
               this.logger.debug(
                 `Undefined values or timestamps for query: ${name}`,
@@ -208,15 +206,9 @@ export class PrometheusQueryDetailsService {
               // Set timestamp to 5 minutes ago to preserve interval
               latestTimestamp = from;
               latestValue = Number(latestMetric.data);
-
-              this.logger.debug(`timestamp: ${JSON.stringify(latestTimestamp)}`)
-              this.logger.debug(`value: ${JSON.stringify(latestValue)}`)
             } else {
               latestTimestamp = timestamps[timestamps.length - 1];
               latestValue = values[values.length - 1];
-
-              this.logger.debug(`timestamp: ${JSON.stringify(latestTimestamp)}`)
-              this.logger.debug(`value: ${JSON.stringify(latestValue)}`)
             }
             const metrics: Array<any> = [latestTimestamp, latestValue];
 
@@ -276,8 +268,6 @@ export class PrometheusQueryDetailsService {
               metrics.push([latestTimestamp, latestValue, instance]);
 
             }
-
-            // this.logger.debug(`metrics: ${JSON.stringify(metrics)}`);
 
             return metrics;
           }),

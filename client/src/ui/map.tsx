@@ -60,7 +60,7 @@ export function MapChart() {
   }, [markers]);
 
   const handleMouseEnter = (event: any, marker:any) => {
-    calculateMarkersCount([marker[0], marker[1]], 5);
+    calculateMarkersCount([marker[0], marker[1]], 3);
   };
 
   const handleMouseLeave = () => {

@@ -15,6 +15,7 @@ import {
   Marker,
   ZoomableGroup,
 } from "react-simple-maps"
+import { Location } from 'ui';
 import { getLocations} from "api";
 import { useMapBgColor, useMapStrokeColor, useMarkerColor} from 'utils';
 
@@ -108,7 +109,7 @@ export function MapChart() {
           <Marker coordinates={marker}
           onMouseEnter={(event) => handleMouseEnter(event, marker)}
             onMouseLeave={handleMouseLeave} >
-            <circle r={1} fill={markerColor} />
+            <Location radius={2} fillColor={markerColor} borderColor="lifted.gray.200" />
           </Marker>
           </Tooltip>
           </>

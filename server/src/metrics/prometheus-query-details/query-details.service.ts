@@ -20,6 +20,20 @@ export class PrometheusQueryDetailsService {
     private httpService: HttpService,
   ) {}
 
+
+  createAuthorizationHeader(prometheusConfig: PrometheusConfigService): any {
+    const username = prometheusConfig.username;
+    const password = prometheusConfig.password;
+    const credentials = `${username}:${password}`;
+    const base64Credentials = Buffer.from(credentials).toString("base64");
+  
+    return {
+      headers: {
+        Authorization: `Basic ${base64Credentials}`,
+      },
+    };
+  }
+
   async getPrometheusQuery(name: string): Promise<PrometheusQuery> {
     const query = this.prometheusQueryRepository
       .createQueryBuilder("n")
@@ -88,13 +102,7 @@ export class PrometheusQueryDetailsService {
             intervalMs,
             maxDataPoints,
           ),
-          {
-            headers: {
-              Authorization: `Basic ${Buffer.from(
-                `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
-              ).toString("base64")}`,
-            },
-          },
+          this.createAuthorizationHeader(this.prometheusConfig),
         )
         .pipe(
           map((res) => {
@@ -112,6 +120,8 @@ export class PrometheusQueryDetailsService {
           }),
         ),
     );
+
+
   }
 
   async getPrometheusQuerySeries(
@@ -132,13 +142,7 @@ export class PrometheusQueryDetailsService {
           intervalMs,
           maxDataPoints,
         ),
-        {
-          headers: {
-            Authorization: `Basic ${Buffer.from(
-              `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
-            ).toString("base64")}`,
-          },
-        },
+        this.createAuthorizationHeader(this.prometheusConfig),
       )
       .pipe(
         map((res) => {
@@ -159,11 +163,21 @@ export class PrometheusQueryDetailsService {
     timestamp: number,
     intervalMs: number,
     maxDataPoints: number,
+    injectLabels?: { label: string; value: string }[]
   ): Promise<any> {
     const getPrometheusQuery = await this.getPrometheusQuery(name);
     const from = timestamp - 300000;
     const to = timestamp;
     const latestMetric = await this.getLatestMetric(name);
+
+    // if injectLabel is defined, inject it into the query
+    if (injectLabels) {
+      const labels = injectLabels.map(item => `${item.label}="${item.value}"`).join(", ");
+      getPrometheusQuery.query = getPrometheusQuery.query.replace(
+        /}/,
+        `, ${labels}}`
+      );
+    }
 
     return await lastValueFrom(
       this.httpService
@@ -176,13 +190,7 @@ export class PrometheusQueryDetailsService {
             intervalMs,
             maxDataPoints,
           ),
-          {
-            headers: {
-              Authorization: `Basic ${Buffer.from(
-                `${this.prometheusConfig.username}:${this.prometheusConfig.password}`,
-              ).toString("base64")}`,
-            },
-          },
+          this.createAuthorizationHeader(this.prometheusConfig),
         )
         .pipe(
           map((res) => {
@@ -213,6 +221,63 @@ export class PrometheusQueryDetailsService {
             throw new ForbiddenException(error.message);
           }),
         ),
+    );
+  }
+
+  async getPrometheusQueryCurrentFrames(
+    name: string,
+    timestamp: number,
+    intervalMs: number,
+    maxDataPoints: number,
+  ): Promise<any> {
+    const getPrometheusQuery = await this.getPrometheusQuery(name);
+    const from = timestamp - 3000000;
+    const to = timestamp;
+
+    return await lastValueFrom(
+      this.httpService
+        .post(
+          this.prometheusConfig.remoteApiUrl,
+          this.constructGrafanaQuery(
+            getPrometheusQuery.query,
+            from.toString(),
+            to.toString(),
+            intervalMs,
+            maxDataPoints,
+          ),
+          this.createAuthorizationHeader(this.prometheusConfig),
+        )
+        .pipe(
+          map((res) => {
+            const results = res.data?.results.A;
+
+            let latestTimestamp: number;
+            let latestValue: number;
+            let metrics: Array<any> = [];
+
+            for (let i = 0; i < results.frames.length; i++) {
+              const frame = results.frames[i];
+
+              const timestamps = frame.data.values[0];
+              const values = frame.data.values[1];
+              const instance = frame.schema.fields[1].labels.instance;
+
+              latestTimestamp = timestamps[timestamps.length - 1];
+              latestValue = values[values.length - 1];
+
+              metrics.push([latestTimestamp, latestValue, instance]);
+
+            }
+
+            return metrics;
+          }),
+        )
+        .pipe(
+          catchError((error: Error) => {
+            this.logger.error(`Error for query ${name}: ${error.message}`);
+            throw new ForbiddenException(error.message);
+          }),
+        )
     );
   }
 

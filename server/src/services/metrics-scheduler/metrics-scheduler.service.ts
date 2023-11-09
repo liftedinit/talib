@@ -20,10 +20,10 @@ export class MetricsSchedulerService {
   ) {
     const jobFn = () => this.run();
 
-    if (metricsSchedulerConfig.cron !== undefined) {
+    if (this.metricsSchedulerConfig.cron !== undefined) {
       // Do not rerun the cron job if the previous one was done.
-      const job = new CronJob(metricsSchedulerConfig.cron, jobFn);
-      this.logger.log(`Cron scheduled: ${metricsSchedulerConfig.cron}`);
+      const job = new CronJob(this.metricsSchedulerConfig.cron, jobFn);
+      this.logger.log(`Cron scheduled: ${this.metricsSchedulerConfig.cron}`);
       this.schedulerRegistry.addCronJob("updateMetrics", job);
       job.start();
     } else {

@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Metric } from "../database/entities/metric.entity";
 import { Block } from "../database/entities/block.entity";
 import { Transaction } from "../database/entities/transaction.entity";
+import { Location } from "../database/entities/location.entity";
 import { MetricsController } from "./metrics.controller";
 import { MetricsService } from "./metrics.service";
 import { PrometheusQueryDetailsService } from "./prometheus-query-details/query-details.service";
@@ -17,18 +18,22 @@ import { TransformsModule } from "./transform/transforms.module";
 import { TransformsService } from "./transform/transforms.service";
 import { SystemWideModule } from "./systemwide/systemwide.module";
 import { SystemWideService } from "./systemwide/systemwide.service";
+import { LocationModule } from "./location/location.module";
+import { LocationService } from "./location/location.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Metric, Block, Transaction, PrometheusQuery]),
+    TypeOrmModule.forFeature([Metric, Location, Block, Transaction, PrometheusQuery]),
     HttpModule,
     MetricsSchedulerConfigModule,
     PrometheusQueryModule,
     PrometheusQueryDetailsModule,
+    LocationModule,
     TransformsModule,
     SystemWideModule,
   ],
   providers: [
+    LocationService,
     MetricsService,
     MetricsSchedulerConfigService,
     PrometheusQueryService,

@@ -16,6 +16,18 @@ export function abbr(hash: string) {
   return hash.slice(0, 4) + "..." + hash.slice(-4);
 }
 
+export function useMapBgColor() {
+  return useColorModeValue('lifted.gray.200', 'lifted.gray.700');
+}
+
+export function useMapStrokeColor() {
+  return useColorModeValue('brand.teal.400', 'brand.teal.400');
+}
+
+export function useMarkerColor() {
+  return useColorModeValue('#22776C', 'white');
+}
+
 export function ago(date: Date) {
   const secAgo = Math.floor((new Date().getTime() - date.getTime()) / 1000);
 

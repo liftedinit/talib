@@ -14,6 +14,7 @@ import { SchedulerConfigModule } from "./config/scheduler/configuration.module";
 import { DataModule } from "./data/data.module";
 import { Block } from "./database/entities/block.entity";
 import { Event } from "./database/entities/event.entity";
+import { Location } from "./database/entities/location.entity";
 import { Neighborhood } from "./database/entities/neighborhood.entity";
 import { TransactionDetails } from "./database/entities/transaction-details.entity";
 import { Transaction } from "./database/entities/transaction.entity";
@@ -22,6 +23,8 @@ import { NetworkService } from "./services/network.service";
 import { SchedulerModule } from "./services/scheduler/scheduler.module";
 import { MetricsSchedulerModule } from "./services/metrics-scheduler/metrics-scheduler.module";
 import { MetricsSchedulerConfigModule } from "./config/metrics-scheduler/configuration.module";
+import { GeoSchedulerModule } from "./services/geo-scheduler/geo-scheduler.module";
+import { GeoSchedulerConfigModule } from "./config/geo-scheduler/configuration.module";
 import { PrometheusQuery } from "./database/entities/prometheus-query.entity";
 import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
 import { UsersModule } from "./users/users.module";
@@ -37,6 +40,7 @@ import { MetricModule } from "./metrics/metrics.module";
     PrometheusQueryModule,
     SchedulerConfigModule,
     MetricsSchedulerConfigModule,
+    GeoSchedulerConfigModule,
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
     ServeStaticModule.forRootAsync({
@@ -62,7 +66,7 @@ import { MetricModule } from "./metrics/metrics.module";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, PrometheusQuery, Metric],
+        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, PrometheusQuery, Metric, Location],
         migrations: [],
         synchronize: true,
         ...db.config,
@@ -73,6 +77,7 @@ import { MetricModule } from "./metrics/metrics.module";
     AppConfigModule,
     SchedulerConfigModule,
     MetricsSchedulerConfigModule,
+    GeoSchedulerConfigModule,
     AuthModule,
     DataModule,
     NeighborhoodModule,
@@ -80,6 +85,7 @@ import { MetricModule } from "./metrics/metrics.module";
     SchedulerModule,
     MetricsSchedulerModule,
     UsersModule,
+    GeoSchedulerModule,
   ],
 })
 export class AppModule {

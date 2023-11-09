@@ -1,5 +1,5 @@
-import { Box, Heading, Text, Center} from "@liftedinit/ui";
-import { Link } from "react-router-dom";
+import { Heading, SimpleGrid, Center} from "@liftedinit/ui";
+import { MapChart } from "ui";
 import { NetworkMetrics } from "./networkMetrics";
 
 export function Metrics() {
@@ -11,6 +11,14 @@ export function Metrics() {
       </Heading>
     </Center>
     <NetworkMetrics />
+    <Center mt={12}>
+      <Heading fontWeight="light">
+        Nodes on the <b>Manifest</b> network
+      </Heading>
+    </Center>
+    <SimpleGrid gap="3" mt={2}>
+      <MapChart />
+    </SimpleGrid>
     </>
   );
 }

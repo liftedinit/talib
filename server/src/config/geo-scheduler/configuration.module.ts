@@ -10,10 +10,6 @@ const validationSchema = Joi.object({
     new CronTime(value);
     return value;
   }),
-  GEO_SCHEDULER_STARTDATE_TIMESTAMP: Joi.number(),
-  GEO_SCHEDULER_BATCH_SIZE: Joi.number(),
-  GEO_SCHEDULER_MIN_BATCH_SIZE: Joi.number(),
-  GEO_SCHEDULER_INTERVAL: Joi.number(),
 });
 
 /**

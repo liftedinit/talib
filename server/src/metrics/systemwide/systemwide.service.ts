@@ -99,43 +99,59 @@ export class SystemWideService {
     return values;
   }
 
+  // Save a single SystemWideMetric to the database
+  private async seedSystemWideMetricValue(metric) {
+    this.logger.debug(`seeding system wide metric: ${metric.name}`);
+
+    const metricValue = await this[metric.query]();
+
+    const existingEntity = await this.systemWideMetricRepository.findOne({
+      where: { name: metric.name } as FindOneOptions<SystemWideMetricType>['where'],
+    });
+
+    let entity: SystemWideEntity;
+
+    if (existingEntity) {
+      // If entity with the same name exists, update it by setting the new values
+      let updateSystemWideMetricDto: Partial<CreateSystemWideMetricDto>
+
+      updateSystemWideMetricDto = {
+        name: metric.name,
+        timestamp: new Date(metricValue.timestamp),
+        data: metricValue.data,
+      };
+
+      this.logger.debug(`updating system wide existing metric: ${metric.name} ${metricValue.data}`);
+
+      Object.assign(existingEntity, updateSystemWideMetricDto);
+
+      return this.systemWideMetricRepository.save(existingEntity);
+
+    } else {
+      // If entity doesn't exist, create a new one
+      entity = new SystemWideEntity();
+
+      entity.name = metric.name;
+      entity.timestamp = new Date(metricValue.timestamp);
+      entity.data = metricValue.data;
+
+      this.logger.debug(`creating system wide new metric: ${metric.name} ${metricValue.data}`);
+
+      await this.systemWideMetricRepository.save(entity);
+    }
+  }
+
   // Seed all SystemWideMetrics into the database
-  private async seedSystemWideMetricValues(
+  private async seedSystemWideMetrics(
     metrics: SystemWideMetricType[]
     ) {
     for (let i = 0; i < metrics.length; i++) {
-      this.logger.debug(`seeding system wide metric: ${metrics[i].name}`);
-      const metric = metrics[i];
-      const metricValue = await this[metric.query]();
-
-      const existingEntity = await this.systemWideMetricRepository.findOne({
-        where: { name: metric.name } as FindOneOptions<SystemWideMetricType>['where'],
-      });
-  
-      let entity: SystemWideEntity;
-  
-      if (existingEntity) {
-        // If entity with the same name exists, update it by setting the new values
-        let updateSystemWideMetricDto: Partial<CreateSystemWideMetricDto>
-
-        updateSystemWideMetricDto = {
-          name: metric.name,
-          timestamp: new Date(metricValue.timestamp),
-          data: metricValue.data,
-        };
-
-        Object.assign(existingEntity, updateSystemWideMetricDto);
-
-      } else {
-        // If entity doesn't exist, create a new one
-        entity = new SystemWideEntity();
-
-        entity.name = metric.name;
-        entity.timestamp = new Date(metricValue.timestamp);
-        entity.data = metricValue.data;
-    
-        await this.systemWideMetricRepository.save(entity);
+      try {
+        await this.seedSystemWideMetricValue(metrics[i]);
+      } catch (err) {
+        this.logger.error(`Error during seeding systemwide metric: ${err}`);
       }
+      
     }
   }
 
@@ -146,7 +162,7 @@ export class SystemWideService {
       {name: 'totaltransactions', query: 'getTotalTransactions'}
     ]
 
-    await this.seedSystemWideMetricValues(systemWideMetrics);
+    await this.seedSystemWideMetrics(systemWideMetrics);
   }
 
 }

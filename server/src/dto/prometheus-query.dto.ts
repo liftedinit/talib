@@ -19,6 +19,9 @@ export class PrometheusQueryDto {
   query: string;
 
   @ApiProperty()
+  queryType: string;
+
+  @ApiProperty()
   description: string;
 
   @ApiProperty()
@@ -41,6 +44,10 @@ export class CreatePrometheusQueryDto {
   @IsNotEmpty()
   @ApiProperty()
   query: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  queryType: string;
 
   @IsNotEmpty()
   @ApiProperty()

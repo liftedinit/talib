@@ -121,11 +121,9 @@ export class SystemWideService {
         data: metricValue.data,
       };
 
-      this.logger.debug(`updating system wide existing metric: ${metric.name} ${metricValue.data}`);
-
       Object.assign(existingEntity, updateSystemWideMetricDto);
 
-      return this.systemWideMetricRepository.save(existingEntity);
+      return await this.systemWideMetricRepository.save(existingEntity);
 
     } else {
       // If entity doesn't exist, create a new one
@@ -135,9 +133,7 @@ export class SystemWideService {
       entity.timestamp = new Date(metricValue.timestamp);
       entity.data = metricValue.data;
 
-      this.logger.debug(`creating system wide new metric: ${metric.name} ${metricValue.data}`);
-
-      await this.systemWideMetricRepository.save(entity);
+      return await this.systemWideMetricRepository.save(entity);
     }
   }
 

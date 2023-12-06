@@ -1,7 +1,8 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from "cron";
-import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
+import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { SystemWideService } from "../../metrics/systemwide/systemwide.service";
 import { MetricsSchedulerConfigService } from "../../config/metrics-scheduler/configuration.service";
 import { PrometheusQueryService } from "../../metrics/prometheus-query/query.service";
 import { MetricUpdater } from "../metrics-scheduler/metric-updater/updater";
@@ -15,6 +16,7 @@ export class MetricsSchedulerService {
     private schedulerRegistry: SchedulerRegistry,
     private metricsSchedulerConfig: MetricsSchedulerConfigService,
     private prometheusQuery: PrometheusQueryService,
+    private systemWideService: SystemWideService,
     @Inject("PROMETHEUS_QUERY_FACTORY")
     private readonly updaterFactory: (n: PrometheusQuery) => MetricUpdater,
   ) {
@@ -56,7 +58,7 @@ export class MetricsSchedulerService {
       // Do all prometheusQueries in parallel
       await Promise.all(
         prometheusQueries.map(async (n) => {
-          if (n.enabled) {
+          if (n.enabled && n.queryType === 'prometheus') {
             const i = await this.updaterFactory(n);
             await i.run();
           } else {
@@ -67,6 +69,11 @@ export class MetricsSchedulerService {
         }),
       );
       this.logger.debug(`Done`);
+
+      // Do SystemWide Metrics 
+      this.logger.debug(`Updating SystemWide Metrics...`);
+      this.systemWideService.updateSystemWideMetrics();
+
     } else {
       this.logger.debug("No prometheus queries in database...");
     }

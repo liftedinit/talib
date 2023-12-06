@@ -30,6 +30,8 @@ import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
 import { UsersModule } from "./users/users.module";
 import { Metric } from "./database/entities/metric.entity";
 import { MetricModule } from "./metrics/metrics.module";
+import { SystemWideMetric } from "./database/entities/systemwide-metric.entity";
+import { SystemWideModule } from "./metrics/systemwide/systemwide.module";
 
 @Module({
   controllers: [],
@@ -66,7 +68,17 @@ import { MetricModule } from "./metrics/metrics.module";
       imports: [DatabaseConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (db: DatabaseConfigService) => ({
-        entities: [Neighborhood, Block, Event, Transaction, TransactionDetails, PrometheusQuery, Metric, Location],
+        entities: [
+          Neighborhood, 
+          Block, 
+          Event, 
+          Transaction, 
+          TransactionDetails, 
+          PrometheusQuery, 
+          Metric, 
+          SystemWideMetric, 
+          Location
+        ],
         migrations: [],
         synchronize: true,
         ...db.config,
@@ -82,6 +94,7 @@ import { MetricModule } from "./metrics/metrics.module";
     DataModule,
     NeighborhoodModule,
     MetricModule,
+    SystemWideModule,
     SchedulerModule,
     MetricsSchedulerModule,
     UsersModule,

@@ -63,7 +63,7 @@ export function BlockList({
             {blocks.map((block) => (
               <Tr h={12}>
                 <Td>
-                  <Link to={`/blocks/${block.blockHash}`}>
+                  <Link to={`/blocks/${block.height}`}>
                     <Text m={0} color="brand.teal.500">
                       {block.height.toLocaleString()}
                     </Text>

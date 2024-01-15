@@ -9,7 +9,7 @@ export function useTextColor() {
 }
 
 export function useButtonBg() {
-  return useColorModeValue('lifted.black.800', 'lifted.black.800');
+  return useColorModeValue('lifted.gray.200', 'lifted.black.800');
 }
 
 export function abbr(hash: string) {

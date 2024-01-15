@@ -95,7 +95,7 @@ export function TransactionList({
                   </Tag>
                 </Td>
                 <Td>
-                  <Link to={`/blocks/${txn.blockHash}`}>
+                  <Link to={`/blocks/${txn.blockHeight}`}>
                     <Text color="brand.teal.500">
                       {txn.blockHeight.toLocaleString()}
                     </Text>

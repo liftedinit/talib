@@ -7,11 +7,7 @@ import {
   Logger,
 } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
-import { ApiQuery } from "@nestjs/swagger";
 import { SystemWideService } from "./systemwide.service";
-import { MetricDto } from "../../dto/metric.dto";
-import { MetricsService, SeriesEntity } from "../metrics.service";
-import { Block as BlockEntity } from "../../database/entities/block.entity";
 
 @Controller("metrics/systemwide")
 export class SystemWideController {
@@ -19,16 +15,23 @@ export class SystemWideController {
 
   constructor(
     private systemwide: SystemWideService,
-    private metrics: MetricsService,
   ) {}
 
-  @Get("totalblocks/current")
-  getBlocksTotalCurrent() {
-    return this.systemwide.getTotalBlocks();
-  }
+  @Get(":name/current")
+  @ApiResponse({
+    status: 200,
+    description: "Show info for current systemwide metric value by name",
+  })
+  async getFrames(
+    @Param("name") name: string,
+  ) {
+    const c = await this.systemwide.getCurrent(name);
 
-  @Get("totaltransactions/current")
-  getTransactionsTotalCurrent() {
-    return this.systemwide.getTotalTransactions();
+    this.logger.debug(c);
+    if (!c) {
+      throw new NotFoundException();
+    }
+
+    return c;
   }
 }

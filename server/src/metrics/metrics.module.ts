@@ -11,19 +11,21 @@ import { PrometheusQueryDetailsModule } from "./prometheus-query-details/query-d
 import { PrometheusQueryModule } from "./prometheus-query/query.module";
 import { HttpModule } from "@nestjs/axios";
 import { PrometheusQueryService } from "./prometheus-query/query.service";
-import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
-import { MetricsSchedulerConfigModule } from "src/config/metrics-scheduler/configuration.module";
-import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
+import { PrometheusQuery } from "..//database/entities/prometheus-query.entity";
+import { MetricsSchedulerConfigModule } from "../config/metrics-scheduler/configuration.module";
+import { MetricsSchedulerConfigService } from "../config/metrics-scheduler/configuration.service";
 import { TransformsModule } from "./transform/transforms.module";
 import { TransformsService } from "./transform/transforms.service";
 import { SystemWideModule } from "./systemwide/systemwide.module";
 import { SystemWideService } from "./systemwide/systemwide.service";
+import { SystemWideMetric } from "../database/entities/systemwide-metric.entity";
 import { LocationModule } from "./location/location.module";
 import { LocationService } from "./location/location.service";
 
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Metric, Location, Block, Transaction, PrometheusQuery]),
+    TypeOrmModule.forFeature([Metric, Location, Block, Transaction, SystemWideMetric, PrometheusQuery]),
     HttpModule,
     MetricsSchedulerConfigModule,
     PrometheusQueryModule,

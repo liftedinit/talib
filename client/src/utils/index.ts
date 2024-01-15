@@ -1,7 +1,7 @@
 import { useColorModeValue } from "@liftedinit/ui";
 
 export function useBgColor() {
-  return useColorModeValue('white', 'lifted.gray.700');
+  return useColorModeValue('white', 'lifted.black.800');
 }
 
 export function useTextColor() {
@@ -9,7 +9,7 @@ export function useTextColor() {
 }
 
 export function useButtonBg() {
-  return useColorModeValue('lifted.gray.200', 'lifted.gray.600');
+  return useColorModeValue('lifted.gray.200', 'lifted.black.800');
 }
 
 export function abbr(hash: string) {
@@ -17,15 +17,23 @@ export function abbr(hash: string) {
 }
 
 export function useMapBgColor() {
-  return useColorModeValue('lifted.gray.200', 'lifted.gray.700');
+  return useColorModeValue('lifted.black.900', 'lifted.black.900');
 }
 
 export function useMapStrokeColor() {
-  return useColorModeValue('brand.teal.400', 'brand.teal.400');
+  return useColorModeValue('#2c2c31', '#2c2c31');
 }
 
 export function useMarkerColor() {
-  return useColorModeValue('#22776C', 'white');
+  return useColorModeValue('#80DBCF','#80DBCF');
+}
+
+export function useMarkerStrokeColor() {
+  return useColorModeValue('#80DBCF','#80DBCF');
+}
+
+export function useMapFillColor() {
+  return useColorModeValue('lifted.gray.300','lifted.black.800');
 }
 
 export function ago(date: Date) {

@@ -7,7 +7,7 @@ export function NetworkMetrics() {
   return (
     <>
       <Heading as='h4' size='md' py="5" pl="5" >Blockchain Network Totals</Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+      <SimpleGrid id="blockchain" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Blocks Produced" metric="totalblocks" systemwide />
         </Box>
@@ -19,7 +19,7 @@ export function NetworkMetrics() {
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Nodes</Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+      <SimpleGrid id="nodes" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Nodes" metric="nodecount" from={"now-1d"} to={"now"} />
           <MetricChart label="Total Nodes" type="area" metric="nodecount" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Nodes" />
@@ -34,7 +34,7 @@ export function NetworkMetrics() {
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Web Services</Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+      <SimpleGrid id="web" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Web Requests / Sec" metric="nginxrequestssec" from={"now-1d"} to={"now"} />
           <MetricChart label="Web Requests / Sec" type="area" metric="nginxrequestssec" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests / Sec" />
@@ -49,7 +49,7 @@ export function NetworkMetrics() {
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Decentralized Website Hosting</Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+      <SimpleGrid id="hosting" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Web Requests / Sec" metric="webrequestssec" from={"now-1d"} to={"now"} />
           <MetricChart label="Web Requests / Sec" type="area" metric="webrequestssec" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests / Sec" />
@@ -64,7 +64,7 @@ export function NetworkMetrics() {
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Disk</Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+      <SimpleGrid id="storage" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Disk Space" metric="totaldiskspace" from={"now-1d"} to={"now"} conversion={convertGbToTb} fixedDecimals={5} unit="TB" />
           <MetricChart label="Total Disk Space" type="area" metric="totaldiskspace" conversion={convertGbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
@@ -79,7 +79,7 @@ export function NetworkMetrics() {
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >RAM</Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+      <SimpleGrid id="memory" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Memory" metric="totalmemory" conversion={convertKbToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
           <MetricChart label="Total Memory" type="area" metric="totalmemory" conversion={convertKbToGb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
@@ -94,7 +94,7 @@ export function NetworkMetrics() {
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Network</Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 4 }} gap="6" mt={2}>
+      <SimpleGrid id="network" columns={{ base: 1, sm: 1, md: 2, lg: 4 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total IPv4 Bandwidth Sent" metric="ipv4bandwidthsent" transform="sumtotal" conversion={convertKbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
           <MetricChart label="Total IPv4 Bandwidth Sent" type="area" metric="ipv4bandwidthsent" transform="sumtotal" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
@@ -113,7 +113,7 @@ export function NetworkMetrics() {
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Object Storage</Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+      <SimpleGrid id="object-storage" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Objects" metric="totalobjects" from={"now-1d"} to={"now"} fixedDecimals={5} unit="Objects" />
           <MetricChart label="Total Objects" type="area" metric="totalobjects" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="Objects" />

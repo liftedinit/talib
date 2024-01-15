@@ -1,19 +1,19 @@
-import { FaCircle } from '@react-icons/all-files/fa/FaCircle';
-
 interface LocationProps {
   radius: number;
-  borderColor: string;
   fillColor: string;
+  strokeColor: string;
 }
 
-export function Location ({ radius, borderColor, fillColor}: LocationProps) {
+export function Location ({ radius, fillColor, strokeColor}: LocationProps) {
   
   return (
-    <FaCircle 
-      size={radius}
-      color={fillColor}
-      style={{ position: 'absolute'}}
+    <circle
+      r={radius}
+      fill={fillColor}
+      fillOpacity="0.03"
+      stroke={strokeColor}
+      strokeWidth="0.5"
+      strokeOpacity="0.4"
     />
-      
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import {
   chakra,
   Box,
@@ -17,21 +17,18 @@ import {
 } from "react-simple-maps"
 import { Location } from 'ui';
 import { getLocations} from "api";
-import { useMapBgColor, useMapStrokeColor, useMarkerColor} from 'utils';
+import { useMapBgColor, useMapStrokeColor, useMarkerColor, useMarkerStrokeColor } from 'utils';
 
 export function MapChart() {
 
   const bg = useMapBgColor();
   const stroke = useMapStrokeColor();
   const markerColor = useMarkerColor();
+  const strokeColor = useMarkerStrokeColor();
 
   const [markersCount, setMarkersCount] = useState(0);
   const { data, isError, isLoading } = useQuery(['locations'], getLocations());
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsDataLoaded(true);
-  }, [data]);
+  const [isGeographiesLoaded, setIsGeographiesLoaded] = useState(false);
 
   const ChakraGeography = chakra(Geography)
 
@@ -70,7 +67,7 @@ export function MapChart() {
 
   return (
     <>
-      {isLoading || !isDataLoaded ? (
+      {isLoading && isGeographiesLoaded ? (
         <Box p={4} bg={bg}>
         <Center>
           <Spinner />
@@ -79,41 +76,41 @@ export function MapChart() {
       ) : (
       <Box p={4} mt={10} bg={bg}>
         <ComposableMap 
-        projection="geoMercator" height={350} width={700}>
+        projection="geoMercator" height={350} width={1000}>
           <ZoomableGroup center={[0, 0]} zoom={1}>
-          <Geographies geography="/features.json">
-            {({ geographies }) =>
-              geographies.map((geo) => <ChakraGeography 
-                key={geo.rsmKey} 
-                geography={geo} 
-                stroke={stroke}
-                strokeWidth={0.5}
-                outline="none"
-                style={{
-                  default: {
-                    fill: "#38C7B4",
-                  },
-                  hover: {
-                    fill: "#5CD1C1",
-                  },
-                  pressed: {
-                    fill: "#2D9F90",
-                  },
-                }}
-              />)
-            }
-          </Geographies>
-        {markers.map((marker: any) => (
-          <>
-          <Tooltip label={`${markersCount}`}>
-          <Marker coordinates={marker}
-          onMouseEnter={(event) => handleMouseEnter(event, marker)}
-            onMouseLeave={handleMouseLeave} >
-            <Location radius={2} fillColor={markerColor} borderColor="lifted.gray.200" />
-          </Marker>
-          </Tooltip>
-          </>
-        ))}
+            <Geographies geography="/features.json" onLoad={() => setIsGeographiesLoaded(true)}>
+              {({ geographies }) =>
+                geographies.map((geo) => <ChakraGeography 
+                  key={geo.rsmKey} 
+                  geography={geo} 
+                  stroke={stroke}
+                  strokeWidth={0.5}
+                  outline="none"
+                  style={{
+                    default: {
+                      fill: "#15151a",
+                    },
+                    hover: {
+                      fill: "#2c2c31",
+                    },
+                    pressed: {
+                      fill: "#444448",
+                    },
+                  }}
+                />)
+              }
+            </Geographies>
+            {markers.map((marker: any) => (
+              <>
+              <Tooltip label={`${markersCount}`}>
+              <Marker coordinates={marker}
+              onMouseEnter={(event) => handleMouseEnter(event, marker)}
+                onMouseLeave={handleMouseLeave} >
+                <Location radius={15} fillColor={markerColor} strokeColor={strokeColor} />
+              </Marker>
+              </Tooltip>
+              </>
+            ))}
           </ZoomableGroup>
         </ComposableMap>
       </Box>

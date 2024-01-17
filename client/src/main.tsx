@@ -12,6 +12,7 @@ import {
   Home,
   Layout,
   Metrics,
+  Map,
   Transaction,
   Transactions,
   WideLayout,
@@ -55,6 +56,10 @@ ReactDOM.render(
                 } 
               >
               </Route>
+              <Route path="map" element={
+              <WideLayout><Map /></WideLayout>} 
+              ></Route>
+
             </Routes>
           </HashRouter>
         </NeighborhoodProvider>

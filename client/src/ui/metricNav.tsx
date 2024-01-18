@@ -8,8 +8,8 @@ interface NavItemProps {
   label: string
   icon: IconType
   link?: string
-  onClick: () => void;
-  isActive: boolean;
+  onClick?: () => void;
+  isActive?: boolean;
 }
 
 export function NavItem({ section, link, label, icon, onClick, isActive }: NavItemProps) {
@@ -27,7 +27,9 @@ export function NavItem({ section, link, label, icon, onClick, isActive }: NavIt
           offset={-70}
           duration={500}
           onClick={() => {
-            onClick();
+            if (onClick) {
+              onClick();
+            }
           }}
           className={isActive ? "active" : ""}
         >

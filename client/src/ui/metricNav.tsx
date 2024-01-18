@@ -14,10 +14,6 @@ interface NavItemProps {
 
 export function NavItem({ section, link, label, icon, onClick, isActive }: NavItemProps) {
 
-  if (!section) {
-    return null; 
-  }
-
   if (section) {
       return (
         <ScrollLink 
@@ -81,6 +77,7 @@ export function MetricNav({ navItems }: NavProps) {
         section: item.section,
         label: item.label,
         icon: item.icon,
+        link: item.link,
         onClick: () => handleItemClick(index),
         isActive: index === activeIndex,
       })

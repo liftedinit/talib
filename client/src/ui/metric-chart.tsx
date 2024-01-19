@@ -1,3 +1,4 @@
+import React from "react"
 import Chart from 'react-apexcharts';
 import { useQuery } from "@tanstack/react-query";
 import { getMetricSeries, getMetricTransformSeries } from "api";
@@ -7,8 +8,7 @@ import {
   Box,
   Text 
 } from "@liftedinit/ui";
-import { useBgColor, useTextColor } from 'utils';
-
+import { useBgColor } from 'utils';
 
 interface StatProps {
   label: string;
@@ -57,7 +57,7 @@ export function MetricChart({
     metricQuery = getMetricSeries(metric,{from: from, to: to })
   }
 
-  const { data: queryData, isError, isLoading } = useQuery([metric + "series"], metricQuery);
+  const { data: queryData, isError, isLoading } = useQuery([metric + "series"], metricQuery );
 
   let chartData: ChartData = {
     series: [] ,
@@ -171,3 +171,5 @@ export function MetricChart({
     </>
   );
 }
+
+export const MemoizedMetricChart = React.memo(MetricChart);

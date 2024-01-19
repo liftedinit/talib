@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { HashRouter, Outlet, Route, Routes } from "react-router-dom";
 
-import { NeighborhoodProvider } from "api";
+import { NeighborhoodProvider, TopNavProvider } from "api";
 import {
   Address,
   Block,
@@ -12,6 +12,7 @@ import {
   Home,
   Layout,
   Metrics,
+  Map,
   Transaction,
   Transactions,
   WideLayout,
@@ -24,40 +25,46 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <QueryClientProvider client={queryClient}>
-        <NeighborhoodProvider>
-          <HashRouter>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                }
-              >
-                <Route index element={<Home />} />
-                <Route path="blocks">
-                  <Route index element={<Blocks />} />
-                  <Route path=":hash" element={<Block />} />
-                </Route>
-                <Route path="transactions">
-                  <Route index element={<Transactions />} />
-                  <Route path=":hash" element={<Transaction />} />
-                </Route>
-                <Route path="addresses">
-                  <Route path=":address" element={<Address />} />
-                </Route>
-              </Route>
-              <Route path="metrics" element={
-                <WideLayout>
-                  <Metrics />
-                </WideLayout>
-                } 
-              >
-              </Route>
-            </Routes>
-          </HashRouter>
-        </NeighborhoodProvider>
+          <NeighborhoodProvider>
+            <TopNavProvider>
+              <HashRouter>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    }
+                  >
+                    <Route index element={<Home />} />
+                    <Route path="blocks">
+                      <Route index element={<Blocks />} />
+                      <Route path=":hash" element={<Block />} />
+                    </Route>
+                    <Route path="transactions">
+                      <Route index element={<Transactions />} />
+                      <Route path=":hash" element={<Transaction />} />
+                    </Route>
+                    <Route path="addresses">
+                      <Route path=":address" element={<Address />} />
+                    </Route>
+                  </Route>
+                  <Route path="metrics" element={
+                    <WideLayout>
+                      <Metrics />
+                    </WideLayout>
+                    } 
+                  >
+                  </Route>
+                  <Route path="map" element={
+                  <WideLayout><Map /></WideLayout>} 
+                  ></Route>
+
+                </Routes>
+              </HashRouter>
+            </TopNavProvider>
+          </NeighborhoodProvider>
       </QueryClientProvider>
     </ThemeProvider>
   </React.StrictMode>,

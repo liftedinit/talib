@@ -1,3 +1,4 @@
+import React, { useEffect } from "react"
 import { Stat as BaseStat, StatLabel, StatNumber } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { getMetricCurrent, getMetricTransformCurrent, getMetricSystemWideCurrent } from "api";
@@ -104,3 +105,5 @@ export function MetricStat({
   </>
   );
 }
+
+export const MemoizedMetricStat = React.memo(MetricStat);

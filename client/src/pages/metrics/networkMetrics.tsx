@@ -1,9 +1,9 @@
+import React from "react";
 import { Box, Heading, SimpleGrid } from "@liftedinit/ui";
-import { MetricChart, MetricStat } from "ui";
+import { MemoizedMetricChart as MetricChart, MemoizedMetricStat as MetricStat } from "ui";
 import { convertBytesToMb, convertKbToGb, convertKbToTb, convertGbToTb, convertNumToBil } from "utils";
 
 export function NetworkMetrics() {
-
   return (
     <>
       <Heading as='h4' size='md' py="5" pl="5" >Blockchain Network Totals</Heading>
@@ -130,3 +130,5 @@ export function NetworkMetrics() {
     </>
   );
 }
+
+export const MemoizedNetworkMetrics = React.memo(NetworkMetrics);

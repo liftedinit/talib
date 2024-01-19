@@ -1,9 +1,10 @@
 import {
   Container,
 } from "@liftedinit/ui";
-import { Navbar } from "./navbar"
+import { Navbar } from "./navbar";
 
 export function WideLayout({ children }: React.PropsWithChildren<{}>) {
+
   return (
     <>
       <Navbar />
@@ -13,4 +14,3 @@ export function WideLayout({ children }: React.PropsWithChildren<{}>) {
     </>
   );
 }
-

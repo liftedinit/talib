@@ -3,11 +3,10 @@ import { Box, Heading, Center, Grid, GridItem, useMediaQuery } from "@liftedinit
 import { MetricNav } from "ui";
 import { NetworkMetrics } from "./networkMetrics";
 import { MdMemory, MdStorage, MdDns} from "react-icons/md";
-import { FaHive, FaNetworkWired, FaFile, FaServer, FaGhost, FaMap } from "react-icons/fa6"
+import { FaHive, FaNetworkWired, FaFile, FaServer, FaGhost } from "react-icons/fa6"
 import { debounce } from 'lodash';
 
 const navItems = [
-  { label: "Map", link: "/#/map", icon: FaMap },
   { label: "Neighborhoods", section: "blockchain", icon: FaHive },
   { label: "Nodes", section: "nodes", icon: FaServer },
   { label: "Web", section: "web", icon: MdDns },

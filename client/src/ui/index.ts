@@ -1,8 +1,8 @@
 export * from "./block-list";
 export * from "./error-alert";
-export * from "./metricChart";
-export * from "./metricStat";
-export * from "./metricNav";
+export * from "./metric-chart";
+export * from "./metric-stat";
+export * from "./metric-nav";
 export * from "./object-table";
 export * from "./pager";
 export * from "./query-box";
@@ -13,3 +13,4 @@ export * from "./expand-code";
 export * from "./color-mode";
 export * from "./map";
 export * from "./location";
+export * from "./top-nav";

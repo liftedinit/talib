@@ -3,7 +3,7 @@ import { Box, Heading, Center, Grid, GridItem, useMediaQuery } from "@liftedinit
 import { MetricNav } from "ui";
 import { NetworkMetrics } from "./networkMetrics";
 import { MdMemory, MdStorage, MdDns} from "react-icons/md";
-import { FaHive, FaNetworkWired, FaFile, FaServer, FaGhost } from "react-icons/fa6"
+import { FaHive, FaNetworkWired, FaFile, FaServer, FaGhost, FaRobot } from "react-icons/fa6"
 import { debounce } from 'lodash';
 
 const navItems = [
@@ -11,11 +11,11 @@ const navItems = [
   { label: "Nodes", section: "nodes", icon: FaServer },
   { label: "Web", section: "web", icon: MdDns },
   { label: "Hosting", section: "hosting", icon: FaGhost },
+  { label: "AI", section: "ai", icon: FaRobot },
   { label: "Storage", section: "storage", icon: MdStorage },
   { label: "Memory", section: "memory", icon: MdMemory },
   { label: "Network", section: "network", icon: FaNetworkWired },
   { label: "Object Storage", section: "object-storage", icon: FaFile },
-  // { label: "AI", section: "ai", icon: MdRobot },
 ];
 
 export function Metrics() {

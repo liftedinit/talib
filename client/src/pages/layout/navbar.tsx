@@ -14,7 +14,7 @@ import { useBgColor } from "utils";
 import { NeighborhoodSelector } from "./selector";
 
 const navItems = [
-  { label: "Talib", link: "/" },
+  { label: "Blocks", link: "/" },
   { label: "Metrics", link: "/metrics"},
   { label: "Map", link: "/map" },
 ];

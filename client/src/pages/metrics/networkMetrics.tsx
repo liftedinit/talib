@@ -63,6 +63,21 @@ export function NetworkMetrics() {
           <MetricChart label="Total Web Requests" type="area" metric="totalwebrequests" transform="sumtotal" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests" />
         </Box>
       </SimpleGrid>
+      <Heading as='h4' size='md' py="5" pl="5" >GPU</Heading>
+      <SimpleGrid id="ai" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total GPUs" metric="totalgpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
+          <MetricChart label="Total GPUs" type="area" metric="totalgpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total Nvidia GPUs" metric="totalnvidiagpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
+          <MetricChart label="Total Nvidia GPUs" type="area" metric="totalnvidiagpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total AMD GPUs" metric="totalamdgpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
+          <MetricChart label="Total AMD GPUs" type="area" metric="totalamdgpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
+        </Box>
+      </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Disk</Heading>
       <SimpleGrid id="storage" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">

@@ -48,5 +48,21 @@ export function details(data: any) {
     txn = { ...txn, ...detailFn(data) };
   }
 
+  if (data.argument.memo) {
+    txn = {
+      ...txn,
+      Memo: (
+        <Text>
+          {data.argument.memo.map((m: string) => (
+          <>
+            <Code marginTop={2}>{m}</Code>
+            <br />
+          </>
+          ))}
+        </Text>
+      ),
+    };
+  }
+
   return txn;
 }

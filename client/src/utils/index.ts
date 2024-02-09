@@ -76,7 +76,6 @@ export function get(path: string, params = {}) {
   };
 }
 
-
 export function convertBytesToMb(b: number): number {
   let gbValue = (b / (1000 * 1000));
   return gbValue

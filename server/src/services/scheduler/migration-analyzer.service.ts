@@ -35,8 +35,7 @@ export class MigrationAnalyzerService {
       const query = await this.txDetailsRepository
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "t.id"])
-        .where('td.argument ->> \'memo\' ILIKE \'\%UUID\%\'')
-        // .innerJoin(Transaction, 't', 't.id = td.transactionId')
+        .where("td.argument ->> 'memo' ~* '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'")
         .innerJoinAndSelect('td.transaction', 't')
         .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhood.id });
 

@@ -32,6 +32,7 @@ import { Metric } from "./database/entities/metric.entity";
 import { MetricModule } from "./metrics/metrics.module";
 import { SystemWideMetric } from "./database/entities/systemwide-metric.entity";
 import { SystemWideModule } from "./metrics/systemwide/systemwide.module";
+import { Migration } from "./database/entities/migration.entity";
 
 @Module({
   controllers: [],
@@ -77,7 +78,8 @@ import { SystemWideModule } from "./metrics/systemwide/systemwide.module";
           PrometheusQuery, 
           Metric, 
           SystemWideMetric, 
-          Location
+          Location,
+          Migration,
         ],
         migrations: [],
         synchronize: true,

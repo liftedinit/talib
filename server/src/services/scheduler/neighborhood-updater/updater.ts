@@ -1,11 +1,13 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { MigrationsService } from "../../../neighborhoods/migrations/migrations.service";
 import { Repository } from "typeorm";
 import { SchedulerConfigService } from "../../../config/scheduler/configuration.service";
 import { Event } from "../../../database/entities/event.entity";
 import { Neighborhood } from "../../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../../database/entities/transaction-details.entity";
 import { Transaction } from "../../../database/entities/transaction.entity";
+import { Migration } from "../../../database/entities/migration.entity";
 import { BlockService } from "../../../neighborhoods/blocks/block.service";
 import { EventsService } from "../../../neighborhoods/events/events.service";
 import { NeighborhoodService } from "../../../neighborhoods/neighborhood.service";
@@ -14,6 +16,7 @@ import { getAllAddressesOf } from "../../../utils/cbor-parsers";
 import { bufferToHex } from "../../../utils/convert";
 import { getAnalyzerClass } from "../../../utils/protocol/attributes";
 import { NetworkService } from "../../network.service";
+import { MigrationAnalyzerService } from "../migration-analyzer.service";
 import { TxAnalyzerService } from "../tx-analyzer.service";
 
 @Injectable()
@@ -28,9 +31,13 @@ export class NeighborhoodUpdater {
     private block: BlockService,
     private transaction: TransactionsService,
     private events: EventsService,
+    private migrations: MigrationsService,
     private txAnalyzer: TxAnalyzerService,
+    private migrationAnalyzer: MigrationAnalyzerService,
     @InjectRepository(TransactionDetails)
     private txDetailsRepository: Repository<TransactionDetails>,
+    @InjectRepository(Migration)
+    private migrationRepository: Repository<Migration>,
   ) {}
 
   with(n: Neighborhood) {
@@ -110,6 +117,36 @@ export class NeighborhoodUpdater {
       if (details) {
         await this.txDetailsRepository.upsert(details, ["transaction"]);
       }
+    }
+  }
+
+  private async updateNeighborhoodMissingMigrations(
+    neighborhood: Neighborhood,
+  ) {
+
+    const missingMigrationIds = 
+      await this.migrationAnalyzer.missingMigrationForNeighborhood(
+        neighborhood,
+      );
+
+    this.logger.debug(`missingMigrationIds for neighborhood (${neighborhood.id})`);
+    this.logger.debug(missingMigrationIds)
+
+    if (missingMigrationIds.length === 0) {
+      this.logger.debug(`No migrations for neighborhood (${neighborhood.id}), length 0.`)
+      return;
+    }
+
+    const transactions: Transaction[] = await this.transaction.findManyByIds(
+      neighborhood,
+      missingMigrationIds,
+    );
+
+    this.logger.debug(`Transactions for neighborhood (${neighborhood.id}): ${JSON.stringify(transactions)}`)
+
+    for (const tx of transactions) {
+      const migration = await this.migrationAnalyzer.analyzeMigration(tx);
+
     }
   }
 
@@ -210,6 +247,14 @@ export class NeighborhoodUpdater {
     } catch (e) {
       this.logger.error(
         `Error happened while updating transaction details:\n${e.stack}`,
+      );
+    }
+
+    try {
+      await this.updateNeighborhoodMissingMigrations(n);
+    } catch (e) {
+      this.logger.error(
+        `Error happened while updating migration details:\n${e.stack}`,
       );
     }
   }

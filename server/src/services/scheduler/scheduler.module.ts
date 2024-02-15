@@ -8,6 +8,7 @@ import { Event } from "../../database/entities/event.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
+import { Migration } from "../../database/entities/migration.entity";
 import { BlockModule } from "../../neighborhoods/blocks/block.module";
 import { BlockService } from "../../neighborhoods/blocks/block.service";
 import { EventsService } from "../../neighborhoods/events/events.service";
@@ -17,7 +18,9 @@ import { NetworkService } from "../network.service";
 import { NeighborhoodUpdater } from "./neighborhood-updater/updater";
 import { SchedulerController } from "./scheduler.controller";
 import { SchedulerService } from "./scheduler.service";
+import { MigrationsService } from "../../neighborhoods/migrations/migrations.service";
 import { TxAnalyzerService } from "./tx-analyzer.service";
+import { MigrationAnalyzerService } from "./migration-analyzer.service";
 
 export const myServiceProvider: Provider = {
   provide: "NEIGHBORHOOD_FACTORY",
@@ -35,6 +38,7 @@ export const myServiceProvider: Provider = {
       Event,
       Transaction,
       TransactionDetails,
+      Migration,
     ]),
     BlockModule,
     NeighborhoodModule,
@@ -49,6 +53,8 @@ export const myServiceProvider: Provider = {
     SchedulerService,
     TxAnalyzerService,
     myServiceProvider,
+    MigrationsService,
+    MigrationAnalyzerService,
   ],
   exports: [SchedulerService],
 })

@@ -107,7 +107,7 @@ export class MigrationAnalyzerService {
       migrationEntity.details = transactionDetails;
       migrationEntity.manyHash = transactionDetails.transaction.hash;
       migrationEntity.uuid = uuid;
-      migrationEntity.status = 'created';
+      migrationEntity.status = 1;
 
       // Return null for debug
       // return null

@@ -57,7 +57,7 @@ export class MigrationsController {
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit = 10,
     @Optional() 
-    @Query("status") status?: string,
+    @Query("status") status?: number,
   ): Promise<Pagination<MigrationDto>> {
     limit = limit > 100 ? 100 : limit;
 

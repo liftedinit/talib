@@ -58,7 +58,7 @@ export class MigrationsService {
 
   public async findMany(
     neighborhoodId: number,
-    status: string,
+    status: number,
     options: IPaginationOptions,
   ): Promise<Pagination<Migration>> {
     

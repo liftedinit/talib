@@ -13,7 +13,7 @@ export interface Argument {
 export class MigrationDto {
 
   @ApiProperty({ description: "Migration status" })
-  status: string;
+  status: number;
 
   @ApiProperty()
   uuid: string;
@@ -36,7 +36,7 @@ export class MigrationDto {
 export class MigrationDetailsDto {
 
   @ApiProperty({ description: "Migration status" })
-  status: string;
+  status: number;
 
   @ApiProperty()
   uuid: string;

@@ -18,8 +18,8 @@ export class Migration {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: null })
-  status: string;
+  @Column({ type: 'int', default: null })
+  status: number;
 
   @OneToOne(() => Transaction, {
     onDelete: "CASCADE",
@@ -33,17 +33,17 @@ export class Migration {
   @JoinColumn()
   details: TransactionDetails;
 
-  @Column({ type: "bytea", nullable: true })
+  @Column({ type: "bytea" })
   manyHash: ArrayBuffer;
+
+  @Column() 
+  uuid: string;
 
   @Column({ nullable: true, default: null })
   manifestDatetime: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   manifestHash: string;
-
-  @Column() 
-  uuid: string;
 
   intoDto(): MigrationDto {
     return {

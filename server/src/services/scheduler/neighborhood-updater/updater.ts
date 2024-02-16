@@ -130,11 +130,13 @@ export class NeighborhoodUpdater {
         neighborhood,
       );
 
-    // If no migrations for neighborhood, stop
-    if (potentialMigrations.length === 0) {
-      this.logger.debug(`No migrations for neighborhood (${neighborhood.id}), length 0.`)
-      return;
-    }
+    // For each migration analyze and process up to 10 at a time
+    const migrationQueue = potentialMigrations.slice(0, 10).map(tx => {
+      this.logger.debug(`potentialMigration id for neighborhood (${neighborhood.id}): ${tx.transaction.id}`);
+      return this.migrationAnalyzer.analyzeMigration(neighborhood, tx);
+    });
+
+    await Promise.all(migrationQueue);
 
     // For each migration analyze and process
     for (const tx of potentialMigrations) {

@@ -8,6 +8,8 @@ import { Block } from "../../database/entities/block.entity";
 import { Migration } from "../../database/entities/migration.entity";
 import { bufferToHex } from "../../utils/convert";
 import { TransactionsService } from "../../neighborhoods/transactions/transactions.service";
+import { Argument } from "../../dto/migration.dto";
+
 
 @Injectable()
 export class MigrationAnalyzerService {
@@ -25,71 +27,107 @@ export class MigrationAnalyzerService {
 
   async missingMigrationForNeighborhood(
     neighborhood: Neighborhood,
-    ): Promise<number[]> {
+    ): Promise<TransactionDetails[]> {
 
-      // @TODO get list of all transaction ids from known migrations
 
+      // Filter out transactions that are already in migrations table 
+      const subQuery = this.migrationRepository
+      .createQueryBuilder('m')
+      .select('1')
+      .where('m.transactionId = t.id');
 
       // Check for missing migrations for neighborhood
-      // @TODO filter out transactions that are already in migrations table 
       const query = await this.txDetailsRepository
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "t.id"])
         .where("td.argument ->> 'memo' ~* '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'")
+        .andWhere("td.error IS NULL")
+        .andWhere("td.method = 'ledger.send'")
         .innerJoinAndSelect('td.transaction', 't')
-        .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhood.id });
+        .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhood.id })
+        .andWhere(`NOT EXISTS (${subQuery.getQuery()})`);
+
+      // Set params of main query to be the same as sub query
+      query.setParameters(subQuery.getParameters());
 
       const results = await query.getMany();
-      this.logger.debug(`Missing Migrations for neighborhood (${neighborhood.id}): ${JSON.stringify(results)}`);
 
-      // @TODO filter out UUID fron transaction data
+      return results;
+    }
 
-      return (results.map((x) => x.transaction.id));
-
-      // @TODO compare entries in migrations table to potential results of migrations filtering
+    async analyzeMigration(
+      neighborhood: Neighborhood,
+      transaction: TransactionDetails,
+    ): Promise<Migration | null> {
+      try {
+        return await this.analyzeMigrationImpl(neighborhood, transaction);
+      } catch (e) {
+        this.logger.debug(`MigrationAnalyzer error: ${e}`)
+        if (transaction) {
+          throw new Error(
+            `${e}\nContext: id = ${transaction.transaction.id}, hash = "${bufferToHex(transaction.hash)}"`,
+          );
+        }
+      }
     }
 
   async analyzeMigrationImpl(
-    transaction: Transaction,
+    neighborhood: Neighborhood,
+    transactionDetails: TransactionDetails,
   ): Promise<Migration | null> {
-    if (!transaction.id) {
+
+    if (!transactionDetails) {
       // If the transaction is null, something went wrong already. Don't bother
       // parsing.
+      this.logger.debug(`No transaction found with migration details.`)
       return null;
     }
 
+    const existingMigration = await this.migrationRepository.findOne({ 
+      where: { transaction: transactionDetails.transaction }});
+
+    if (existingMigration) {
+      this.logger.debug(`Migration with transaction ${JSON.stringify(transactionDetails.transaction.id)} already exists. Skipping...`);
+      return existingMigration;
+    }
+
+    // @TODO - check that destination address of transaction was maiyg anonymous address
+
     try {
+
+      // Create the migration 
       const migrationEntity = new Migration();
-      migrationEntity.transaction = transaction 
-      migrationEntity.hash = transaction.hash;
 
-      //@TODO - save migrationEntity.uuid with transaction.argument.memo/UUID 
+      const argument = transactionDetails.argument;
+      this.logger.debug(`transaction argument: ${JSON.stringify(argument)}`);
 
-      return migrationEntity;
+      const uuid = (argument as Argument).memo[0];
+      const manifestaddress = (argument as Argument).memo[1]
+      migrationEntity.transaction = transactionDetails.transaction;
+      migrationEntity.details = transactionDetails;
+      migrationEntity.manyHash = transactionDetails.transaction.hash;
+      migrationEntity.uuid = uuid;
+      migrationEntity.status = 'created';
+
+      // Return null for debug
+      // return null
+
+      return this.saveAndLockMigration(migrationEntity);
     } catch (e) {
-      this.logger.debug(`Error during saving : ${e}`);
+      this.logger.debug(`Error during saving migration: ${e}`);
     }
   } 
-
-  async analyzeMigration(
-    transaction: Transaction,
-  ): Promise<Migration | null> {
-    try {
-      return await this.analyzeMigrationImpl(transaction);
-    } catch (e) {
-      this.logger.debug(`MigrationAnalyzer error: ${e}`)
-      throw new Error(
-        `${e}\nContext: id = ${transaction.id}, hash = "${bufferToHex(transaction.hash)}"`,
-      );
-    }
-  }
 
   async saveAndLockMigration(migration: Migration) {
     this.logger.debug(
       `Save & lock migration for initial save: ${JSON.stringify(bufferToHex(migration.transaction.hash))}`
       )
 
+    // @TODO - check if UUID is already in migrations table
+    // @TODO - save transaction id and UUID in migrations table
+    // @TODO - lock entry in migrations table
+
     // @TODO lock entry in migration table
-    await this.migrationRepository.save(migration);
+    return await this.migrationRepository.save(migration);
   }
 }

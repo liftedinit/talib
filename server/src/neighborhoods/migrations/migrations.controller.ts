@@ -4,11 +4,12 @@ import {
   Get,
   NotFoundException,
   Logger,
+  Optional,
   Param,
   ParseIntPipe,
   Query,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation, ApiResponse, ApiQuery } from "@nestjs/swagger";
 import { Pagination } from "nestjs-typeorm-paginate";
 import {
   MigrationDto,
@@ -35,47 +36,42 @@ export class MigrationsController {
     @Param("nid", ParseIntPipe) nid: number,
     @Param("thash", ParseHashPipe) thash: ArrayBuffer,
   ): Promise<MigrationDetailsDto> {
-    const migration = await this.migrations.findOneByHash(nid, thash, true);
+    const migration = await this.migrations.findOneByHash(nid, thash);
     if (!migration) {
       throw new NotFoundException();
     }
-    return migration.intoDetailsDto();
+
+    return migration;
   }
-
-  // @TODO findMany with pagination options to list all migrations including completed 
-  // @TODO bonus points if you can filter on status column dynamically
   
-  // @Get()
-  // @ApiResponse({
-  //   status: 200,
-  //   type: MigrationDto,
-  //   isArray: true,
-  //   description: "List all migrations for a neighborhood.",
-  // })
-  // async findMany(
-  //   @Param("nid", ParseIntPipe) nid: number,
-  //   @Query("page", new DefaultValuePipe(1), ParseIntPipe) page = 1,
-  //   @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  //   // @Optional() @Query("method") method?: string,
-  // ): Promise<Pagination<MigrationDto>> {
-  //   limit = limit > 100 ? 100 : limit;
+  @Get()
+  @ApiQuery({ name: 'status', required: false, description: 'The status of the migration' })
+  @ApiResponse({
+    status: 200,
+    type: MigrationDto,
+    isArray: true,
+    description: "List all migrations for a neighborhood.",
+  })
+  async findMany(
+    @Param("nid", ParseIntPipe) nid: number,
+    @Query("page", new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+    @Optional() 
+    @Query("status") status?: string,
+  ): Promise<Pagination<MigrationDto>> {
+    limit = limit > 100 ? 100 : limit;
 
-  //   const result = await this.migrations.findMany(
-  //     nid,
-  //     { page, limit },
-  //   );
+    const result = await this.migrations.findMany(
+      nid,
+      status,
+      { page, limit },
+    );
 
-  //   this.logger.debug(`Found ${result.items} migrations.`)
-
-  //   return null 
-  //   // return {
-  //   //   ...result,
-  //   //   // items: result.items.map((t) => t.intoDto()),
-  //   // };
-  // }
-
-  // @TODO GET: find all migrations whose status is false/null
-  // @TODO include pagination options
+    return {
+      ...result,
+      items: result.items.map((m) => m.intoDto()),
+    };
+  }
 
   // @TODO PUT: put migrationDatetime, status, and perhaps related hash from opposing chain to validate completeness
 

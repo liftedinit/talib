@@ -1,30 +1,28 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   IPaginationOptions,
   paginate,
   Pagination,
 } from "nestjs-typeorm-paginate";
-import { DataSource, Repository } from "typeorm";
-import { Neighborhood } from "../../database/entities/neighborhood.entity";
+import { Repository } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
-import { TransactionDetails } from "../../database/entities/transaction-details.entity";
-import { Transaction } from "../../database/entities/transaction.entity";
 import { Migration } from "../../database/entities/migration.entity";
-import { NetworkService } from "../../services/network.service";
+import { Migration as MigrationEntity } from "../../database/entities/migration.entity";
+import { MigrationDto } from "../../dto/migration.dto";
 
 @Injectable()
 export class MigrationsService {
+  private readonly logger = new Logger(MigrationsService.name);
+
   constructor(
-    @InjectRepository(Transaction)
-    private migrationRepository: Repository<Migration>,
-    private network: NetworkService,
-    private dataSource: DataSource,
+    @InjectRepository(MigrationEntity)
+    private migrationRepository: Repository<MigrationEntity>,
   ) {}
 
   async findMigrationByUUID(
     hash: ArrayBuffer,
-  ): Promise<Migration | null> {
+  ): Promise<MigrationEntity | null> {
     let query = this.migrationRepository
       .createQueryBuilder("t")
       .where("t.hash = :hash", { hash })
@@ -35,38 +33,47 @@ export class MigrationsService {
   async findOneByHash(
     neighborhoodId: number,
     hash: ArrayBuffer,
-    details = false,
-  ): Promise<Migration | null> {
-    let query = this.migrationRepository
-      .createQueryBuilder("t")
-      .where("t.hash = :hash", { hash })
-      .leftJoinAndSelect("t.block", "block")
-      .andWhere("block.neighborhoodId = :nid", { nid: neighborhoodId })
-      .addOrderBy("block.height", "DESC");
+  ): Promise<MigrationDto | null> {
 
-    if (details) {
-      query = query.innerJoinAndMapOne(
-        "t.details",
-        TransactionDetails,
-        "details",
-        `"details"."transactionId" = t.id`,
-      );
+    if (!hash) {
+      throw new Error('Hash is undefined');
     }
-    return await query.getOne();
+
+    let migrationQuery = this.migrationRepository
+      .createQueryBuilder("m")
+      .select(["m"])
+      .where("m.manyHash = :hash", { hash })
+      .innerJoin("m.transaction", "t")
+      .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
+
+    const migration = await migrationQuery.getOne()
+    this.logger.debug(`migration query: ${JSON.stringify(migration)}`)
+
+    if (!migration) {
+      return null;
+    }
+
+    return migration.intoDto();
   }
 
-  // @TODO - Find many with pagination options
-  // public async findMany(
-  //   neighborhoodId: number,
-  //   options: IPaginationOptions,
-  // ): Promise<Pagination<Migration>> {
-  //   let query = this.migrationRepository
-  //     .createQueryBuilder("m")
-  //     .select()
-  //     .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId });
+  public async findMany(
+    neighborhoodId: number,
+    status: string,
+    options: IPaginationOptions,
+  ): Promise<Pagination<Migration>> {
+    
+    let query = this.migrationRepository
+      .createQueryBuilder("m")
+      .select(["m"])
+      .innerJoin("m.transaction", "t")
+      .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId });
 
-  //   return await paginate<Migration>(query, options);
-  // }
+    if (status) {
+      query = query.andWhere("m.status = :status", { status });
+    }
+
+    return await paginate<Migration>(query, options);
+  }
 
   // @TODO update on migration entry by UUID
   // async updateOneByUUID

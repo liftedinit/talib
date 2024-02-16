@@ -124,29 +124,22 @@ export class NeighborhoodUpdater {
     neighborhood: Neighborhood,
   ) {
 
-    const missingMigrationIds = 
+    // Find potential migrations for neighborhood
+    const potentialMigrations = 
       await this.migrationAnalyzer.missingMigrationForNeighborhood(
         neighborhood,
       );
 
-    this.logger.debug(`missingMigrationIds for neighborhood (${neighborhood.id})`);
-    this.logger.debug(missingMigrationIds)
-
-    if (missingMigrationIds.length === 0) {
+    // If no migrations for neighborhood, stop
+    if (potentialMigrations.length === 0) {
       this.logger.debug(`No migrations for neighborhood (${neighborhood.id}), length 0.`)
       return;
     }
 
-    const transactions: Transaction[] = await this.transaction.findManyByIds(
-      neighborhood,
-      missingMigrationIds,
-    );
-
-    this.logger.debug(`Transactions for neighborhood (${neighborhood.id}): ${JSON.stringify(transactions)}`)
-
-    for (const tx of transactions) {
-      const migration = await this.migrationAnalyzer.analyzeMigration(tx);
-
+    // For each migration analyze and process
+    for (const tx of potentialMigrations) {
+      this.logger.debug(`potentialMigration id for neighborhood (${neighborhood.id}): ${tx.transaction.id}`);
+      return await this.migrationAnalyzer.analyzeMigration(neighborhood, tx);
     }
   }
 

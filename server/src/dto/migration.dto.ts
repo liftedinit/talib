@@ -10,56 +10,48 @@ export interface Argument {
   memo: string[];
 }
 
-export class UpdateMigrationDto {
-  @ApiProperty({
-    description: oneLine`
-      Datetime this migration was executed (not submitted).
-    `,
-  })
-  migrationDatetime: Date;
-
-  @ApiProperty({ description: "Status of the migration" })
-  status: string;
-}
-
 export class MigrationDto {
-
-  @ApiProperty({ description: "Transaction Hash" })
-  hash: string;
 
   @ApiProperty({ description: "Migration status" })
   status: string;
 
+  @ApiProperty()
+  uuid: string;
+
+  @ApiProperty({ description: "Transaction Hash" })
+  manyHash: string;
+
   @ApiProperty({
     description: oneLine`
       Datetime this migration was executed (not submitted).
     `,
   })
-  migrationDatetime: Date;
+  manifestDatetime: Date;
 
-  @ApiProperty()
-  uuid: string;
+  @ApiProperty({ description: "Transaction Hash" })
+  manifestHash: string;
 
 }
 
 export class MigrationDetailsDto {
-  @ApiProperty({ description: "Transaction Hash" })
-  hash: string;
 
   @ApiProperty({ description: "Migration status" })
   status: string;
+
+  @ApiProperty()
+  uuid: string;
+
+  @ApiProperty({ description: "Transaction Hash" })
+  manyHash: string;
 
   @ApiProperty({
     description: oneLine`
       Datetime this migration was executed (not submitted).
     `,
   })
-  migrationDatetime: Date;
+  manifestDatetime: Date;
 
-  @ApiProperty()
-  uuid: string;
-
-  @ApiProperty() 
-  details: TransactionDetails;
+  @ApiProperty({ description: "Transaction Hash" })
+  manifestHash: string;
 
 }

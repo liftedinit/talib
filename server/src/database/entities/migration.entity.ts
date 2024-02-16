@@ -8,7 +8,8 @@ import {
 } from "typeorm";
 import { Transaction } from "./transaction.entity";
 import { TransactionDetails } from "./transaction-details.entity"
-import { MigrationDto, MigrationDetailsDto, UpdateMigrationDto } from "../../dto/migration.dto";
+
+import { MigrationDto } from "../../dto/migration.dto";
 import { bufferToHex } from "../../utils/convert";
 
 @Entity()
@@ -32,36 +33,25 @@ export class Migration {
   @JoinColumn()
   details: TransactionDetails;
 
-  @Column({ nullable: true, default: null })
-  migrationDatetime: Date;
-
   @Column({ type: "bytea", nullable: true })
-  hash: ArrayBuffer;
+  manyHash: ArrayBuffer;
+
+  @Column({ nullable: true, default: null })
+  manifestDatetime: Date;
+
+  @Column({ nullable: true })
+  manifestHash: string;
 
   @Column() 
   uuid: string;
 
   intoDto(): MigrationDto {
     return {
-      hash: bufferToHex(this.hash),
       status: this.status,
       uuid: this.uuid,
-      migrationDatetime: this.migrationDatetime,
-    };
-  }
-
-  updateMigrationDto(): UpdateMigrationDto {
-    return {
-      ...this.intoDto,
-      status: this.status,
-      migrationDatetime: this.migrationDatetime,
-    }
-  }
-
-  intoDetailsDto(): MigrationDetailsDto {
-    return {
-      ...this.intoDto(),
-      details: this.details
+      manyHash: bufferToHex(this.manyHash),
+      manifestDatetime: this.manifestDatetime,
+      manifestHash: this.manifestHash,
     };
   }
 

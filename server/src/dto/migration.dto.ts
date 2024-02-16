@@ -1,11 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { oneLine } from "common-tags";
-import { TransactionDetailsDto } from "./transaction.dto";
+import { TransactionDetails } from "../database/entities/transaction-details.entity";
 
-export class MigrationDto {
-
-  @ApiProperty({ description: "Transaction Hash" })
-  hash: string;
+export interface Argument {
+  from: string;
+  to: string;
+  amount: number;
+  symbol: string;
+  memo: string[];
 }
 
 export class UpdateMigrationDto {
@@ -17,19 +19,16 @@ export class UpdateMigrationDto {
   migrationDatetime: Date;
 
   @ApiProperty({ description: "Status of the migration" })
-  status: boolean;
+  status: string;
 }
 
-export class MigrationDetailsDto {
-  @ApiProperty({
-    type: TransactionDetailsDto,
-    isArray: true,
-    description: `Transaction details for migration.`,
-  })
-  transaction: TransactionDetailsDto;
+export class MigrationDto {
+
+  @ApiProperty({ description: "Transaction Hash" })
+  hash: string;
 
   @ApiProperty({ description: "Migration status" })
-  status: boolean;
+  status: string;
 
   @ApiProperty({
     description: oneLine`
@@ -37,4 +36,30 @@ export class MigrationDetailsDto {
     `,
   })
   migrationDatetime: Date;
+
+  @ApiProperty()
+  uuid: string;
+
+}
+
+export class MigrationDetailsDto {
+  @ApiProperty({ description: "Transaction Hash" })
+  hash: string;
+
+  @ApiProperty({ description: "Migration status" })
+  status: string;
+
+  @ApiProperty({
+    description: oneLine`
+      Datetime this migration was executed (not submitted).
+    `,
+  })
+  migrationDatetime: Date;
+
+  @ApiProperty()
+  uuid: string;
+
+  @ApiProperty() 
+  details: TransactionDetails;
+
 }

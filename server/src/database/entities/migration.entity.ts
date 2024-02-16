@@ -7,7 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Transaction } from "./transaction.entity";
+import { TransactionDetails } from "./transaction-details.entity"
 import { MigrationDto, MigrationDetailsDto, UpdateMigrationDto } from "../../dto/migration.dto";
+import { bufferToHex } from "../../utils/convert";
 
 @Entity()
 export class Migration {
@@ -16,7 +18,7 @@ export class Migration {
   id: number;
 
   @Column({ default: null })
-  status: boolean;
+  status: string;
 
   @OneToOne(() => Transaction, {
     onDelete: "CASCADE",
@@ -24,20 +26,31 @@ export class Migration {
   @JoinColumn()
   transaction: Transaction;
 
-  @Column({ nullable: true })
+  @OneToOne(() => TransactionDetails, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn()
+  details: TransactionDetails;
+
+  @Column({ nullable: true, default: null })
   migrationDatetime: Date;
 
-  @Column({ type: "bytea" })
+  @Column({ type: "bytea", nullable: true })
   hash: ArrayBuffer;
+
+  @Column() 
+  uuid: string;
 
   intoDto(): MigrationDto {
     return {
-      hash: this.transaction.hash.toString(),
-
+      hash: bufferToHex(this.hash),
+      status: this.status,
+      uuid: this.uuid,
+      migrationDatetime: this.migrationDatetime,
     };
   }
 
-  intoMigratedDto(): UpdateMigrationDto {
+  updateMigrationDto(): UpdateMigrationDto {
     return {
       ...this.intoDto,
       status: this.status,
@@ -47,9 +60,8 @@ export class Migration {
 
   intoDetailsDto(): MigrationDetailsDto {
     return {
-      ...this.intoMigratedDto(),
-      ...this.intoMigratedDto,
-      transaction: this.transaction?.intoDetailsDto()
+      ...this.intoDto(),
+      details: this.details
     };
   }
 

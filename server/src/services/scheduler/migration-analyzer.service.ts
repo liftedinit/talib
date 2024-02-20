@@ -103,6 +103,7 @@ export class MigrationAnalyzerService {
 
       const uuid = (argument as Argument).memo[0];
       const manifestaddress = (argument as Argument).memo[1]
+      migrationEntity.createdDate = new Date();
       migrationEntity.transaction = transactionDetails.transaction;
       migrationEntity.details = transactionDetails;
       migrationEntity.manyHash = transactionDetails.transaction.hash;

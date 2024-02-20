@@ -1,4 +1,8 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { 
+  Injectable, 
+  Logger,
+  NotFoundException
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   IPaginationOptions,
@@ -9,7 +13,7 @@ import { Repository } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { Migration } from "../../database/entities/migration.entity";
 import { Migration as MigrationEntity } from "../../database/entities/migration.entity";
-import { MigrationDto } from "../../dto/migration.dto";
+import { MigrationDto, UpdateMigrationDto } from "../../dto/migration.dto";
 
 @Injectable()
 export class MigrationsService {
@@ -75,8 +79,25 @@ export class MigrationsService {
     return await paginate<Migration>(query, options);
   }
 
-  // @TODO update on migration entry by UUID
-  // async updateOneByUUID
+  public async updateOneByUuid(
+    neighborhoodId: number,
+    uuid: string,
+    updateMigrationDto: Partial<UpdateMigrationDto>
+  ): Promise<MigrationDto> {
+    this.logger.debug(`update migration neighborhoodId: ${neighborhoodId}`)
+    this.logger.debug(`update migration uuid: ${uuid}`)
+    this.logger.debug(`update migration updateQueryDto: ${JSON.stringify(updateMigrationDto)}`)
+
+    await this.migrationRepository.update({uuid: uuid}, updateMigrationDto);
+
+    const updatedMigration = await this.migrationRepository.findOne({ where: { uuid } });
+
+    if (!updatedMigration) {
+        throw new NotFoundException(`Migration record with UUID ${uuid} not found`);
+    }
+
+    return updatedMigration.intoDto();
+  }
 
   // @TODO (maybe) update on migration entry by hash
   // async updateOneByHash 

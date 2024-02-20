@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   DefaultValuePipe,
   Get,
@@ -7,6 +8,7 @@ import {
   Optional,
   Param,
   ParseIntPipe,
+  Put,
   Query,
 } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiQuery } from "@nestjs/swagger";
@@ -14,6 +16,7 @@ import { Pagination } from "nestjs-typeorm-paginate";
 import {
   MigrationDto,
   MigrationDetailsDto,
+  UpdateMigrationDto
 } from "../../dto/migration.dto";
 import { ParseHashPipe } from "../../utils/pipes";
 import { MigrationsService } from "./migrations.service";
@@ -74,5 +77,26 @@ export class MigrationsController {
   }
 
   // @TODO PUT: put migrationDatetime, status, and perhaps related hash from opposing chain to validate completeness
+  @Put(":uuid") 
+  @ApiOperation({
+    description: "Update the status of a migration",
+  })
+  @ApiOkResponse({
+    type: UpdateMigrationDto,
+    isArray: true,
+  })
+  async update(
+    @Param("nid", ParseIntPipe) nid: number,
+    @Param("uuid") uuid: string,
+    @Body() updateMigrationDto: Partial<UpdateMigrationDto>
+  ): Promise<UpdateMigrationDto> {
+    const migration = await this.migrations.updateOneByUuid(nid, uuid, updateMigrationDto);
+    if (!migration) {
+      throw new NotFoundException();
+    }
+
+    return migration;
+  }
+
 
 }

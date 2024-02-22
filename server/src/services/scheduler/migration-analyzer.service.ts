@@ -6,6 +6,7 @@ import { TransactionDetails } from "../../database/entities/transaction-details.
 import { Transaction } from "../../database/entities/transaction.entity";
 import { Block } from "../../database/entities/block.entity";
 import { Migration } from "../../database/entities/migration.entity";
+import { CreateMigrationDto } from "../../dto/migration.dto";
 import { bufferToHex } from "../../utils/convert";
 import { TransactionsService } from "../../neighborhoods/transactions/transactions.service";
 import { Argument } from "../../dto/migration.dto";
@@ -103,21 +104,29 @@ export class MigrationAnalyzerService {
 
       const uuid = (argument as Argument).memo[0];
       const manifestaddress = (argument as Argument).memo[1]
+
+      migrationEntity.status = 1;
       migrationEntity.createdDate = new Date();
+      migrationEntity.uuid = uuid;
       migrationEntity.transaction = transactionDetails.transaction;
       migrationEntity.details = transactionDetails;
       migrationEntity.manyHash = transactionDetails.transaction.hash;
-      migrationEntity.uuid = uuid;
-      migrationEntity.status = 1;
+      migrationEntity.manifestAddress = manifestaddress;
 
-      // Return null for debug
-      // return null
+      // Create a CreateMigrationDto instance from the migration entity
+      const createMigrationDto = migrationEntity.createDto();
 
-      return this.saveAndLockMigration(migrationEntity);
+      // Enforce CreateMigrationDto object on create
+      if (createMigrationDto instanceof CreateMigrationDto) {
+        return this.saveAndLockMigration(migrationEntity);
+      } else {
+        this.logger.debug(`Migration entity does not conform to CreateMigrationDto`)
+      }
     } catch (e) {
       this.logger.debug(`Error during saving migration: ${e}`);
     }
-  } 
+    
+  }
 
   async saveAndLockMigration(migration: Migration) {
     this.logger.debug(
@@ -129,6 +138,13 @@ export class MigrationAnalyzerService {
     // @TODO - lock entry in migrations table
 
     // @TODO lock entry in migration table
-    return await this.migrationRepository.save(migration);
+    try {
+      this.logger.debug(`Saving entity ${JSON.stringify(migration)}`)
+      return await this.migrationRepository.save(migration);
+    } catch (e) {
+      this.logger.error(`Error during saving migration entity: ${e}}`)
+      return e
+    }
+  
   }
 }

@@ -133,13 +133,9 @@ export class MigrationAnalyzerService {
       `Save & lock migration for initial save: ${JSON.stringify(bufferToHex(migration.transaction.hash))}`
       )
 
-    // @TODO - check if UUID is already in migrations table
-    // @TODO - save transaction id and UUID in migrations table
-    // @TODO - lock entry in migrations table
-
-    // @TODO lock entry in migration table
     try {
       this.logger.debug(`Saving entity ${JSON.stringify(migration)}`)
+
       return await this.migrationRepository.save(migration);
     } catch (e) {
       this.logger.error(`Error during saving migration entity: ${e}}`)

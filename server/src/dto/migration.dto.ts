@@ -1,6 +1,6 @@
 import { ApiProperty  } from "@nestjs/swagger";
 import { oneLine } from "common-tags";
-import { TransactionDetails } from "../database/entities/transaction-details.entity";
+import { PaginationMetaDto } from "./pagination.dto";
 
 export interface Argument {
   from: string;
@@ -23,6 +23,9 @@ export class MigrationDto {
 
   @ApiProperty({ description: "Transaction Hash" })
   manyHash: string;
+
+  @ApiProperty({ description: "Manifest address for the migration." })
+  manifestAddress: string;
 
   @ApiProperty({
     description: oneLine`
@@ -50,6 +53,10 @@ export class MigrationDetailsDto {
   @ApiProperty({ description: "Transaction Hash" })
   manyHash: string;
 
+
+  @ApiProperty({ description: "Manifest address for the migration." })
+  manifestAddress: string;
+
   @ApiProperty({
     description: oneLine`
       Datetime this migration was executed (not submitted).
@@ -76,6 +83,15 @@ export class CreateMigrationDto {
   @ApiProperty({ description: "Transaction Hash" })
   manyHash: string;
 
+  @ApiProperty() 
+  manifestAddress: string;
+}
+
+export class UpdateMigrationDto {
+  
+  @ApiProperty({ description: "Migration status" })
+  status: number;
+
   @ApiProperty({
     description: oneLine`
       Datetime this migration was executed (not submitted).
@@ -87,21 +103,10 @@ export class CreateMigrationDto {
   manifestHash: string;
 }
 
-export class UpdateMigrationDto {
-  
-    @ApiProperty({ description: "Migration status" })
-    status: number;
-  
-    @ApiProperty()
-    uuid: string;
+export class MigrationDtoPagination {
+  @ApiProperty({ type: [MigrationDto] })
+  items: MigrationDto[];
 
-    @ApiProperty({
-      description: oneLine`
-        Datetime this migration was executed (not submitted).
-      `,
-    })
-    manifestDatetime: Date;
-  
-    @ApiProperty({ description: "Transaction Hash" })
-    manifestHash: string;
+  @ApiProperty()
+  meta: PaginationMetaDto;
 }

@@ -16,7 +16,8 @@ import { Pagination } from "nestjs-typeorm-paginate";
 import {
   MigrationDto,
   MigrationDetailsDto,
-  UpdateMigrationDto
+  UpdateMigrationDto,
+  MigrationDtoPagination,
 } from "../../dto/migration.dto";
 import { ParseHashPipe } from "../../utils/pipes";
 import { MigrationsService } from "./migrations.service";
@@ -33,7 +34,7 @@ export class MigrationsController {
   })
   @ApiOkResponse({
     type: MigrationDto,
-    isArray: true,
+    isArray: false,
   })
   async findOne(
     @Param("nid", ParseIntPipe) nid: number,
@@ -51,8 +52,8 @@ export class MigrationsController {
   @ApiQuery({ name: 'status', required: false, description: 'The status of the migration' })
   @ApiResponse({
     status: 200,
-    type: MigrationDto,
-    isArray: true,
+    type: MigrationDtoPagination,
+    isArray: false,
     description: "List all migrations for a neighborhood.",
   })
   async findMany(
@@ -83,7 +84,7 @@ export class MigrationsController {
   })
   @ApiOkResponse({
     type: UpdateMigrationDto,
-    isArray: true,
+    isArray: false,
   })
   async update(
     @Param("nid", ParseIntPipe) nid: number,

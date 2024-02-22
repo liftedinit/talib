@@ -45,6 +45,9 @@ export class Migration {
   @Column() 
   uuid: string;
 
+  @Column()
+  manifestAddress: string;
+
   @Column({ nullable: true, default: null })
   manifestDatetime: Date;
 
@@ -57,26 +60,25 @@ export class Migration {
       createdDate: this.createdDate.toISOString(),
       uuid: this.uuid,
       manyHash: bufferToHex(this.manyHash),
+      manifestAddress: this.manifestAddress,
       manifestDatetime: this.manifestDatetime,
       manifestHash: this.manifestHash,
     };
   }
 
   createDto(): CreateMigrationDto {
-    return {
-      status: this.status,
-      createdDate: this.createdDate.toISOString(),
-      uuid: this.uuid,
-      manyHash: bufferToHex(this.manyHash),
-      manifestDatetime: this.manifestDatetime,
-      manifestHash: this.manifestHash,
-    };
+    const dto = new CreateMigrationDto();
+    dto.status = this.status;
+    dto.createdDate = this.createdDate.toISOString();
+    dto.uuid = this.uuid;
+    dto.manyHash = bufferToHex(this.manyHash);
+    dto.manifestAddress = this.manifestAddress;
+    return dto;
   }
 
   updateDto(): UpdateMigrationDto {
     return {
       status: this.status, 
-      uuid: this.uuid,
       manifestDatetime: this.manifestDatetime,
       manifestHash: this.manifestHash
     }

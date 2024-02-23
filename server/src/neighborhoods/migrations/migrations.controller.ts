@@ -28,7 +28,7 @@ export class MigrationsController {
 
   constructor(private migrations: MigrationsService) {}
 
-  @Get(":thash")
+  @Get(":uuid")
   @ApiOperation({
     description: "Show the details of a single migration",
   })
@@ -38,9 +38,9 @@ export class MigrationsController {
   })
   async findOne(
     @Param("nid", ParseIntPipe) nid: number,
-    @Param("thash", ParseHashPipe) thash: ArrayBuffer,
+    @Param("uuid") uuid: string,
   ): Promise<MigrationDetailsDto> {
-    const migration = await this.migrations.findOneByHash(nid, thash);
+    const migration = await this.migrations.findOneByUuid(nid, uuid);
     if (!migration) {
       throw new NotFoundException();
     }

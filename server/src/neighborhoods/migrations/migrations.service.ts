@@ -25,29 +25,19 @@ export class MigrationsService {
     private datasource: DataSource,
   ) {}
 
-  async findMigrationByUUID(
-    hash: ArrayBuffer,
-  ): Promise<MigrationEntity | null> {
-    let query = this.migrationRepository
-      .createQueryBuilder("t")
-      .where("t.hash = :hash", { hash })
-    
-    return await query.getOne();
-  }
-
-  async findOneByHash(
+  async findOneByUuid(
     neighborhoodId: number,
-    hash: ArrayBuffer,
+    uuid: string,
   ): Promise<MigrationDto | null> {
 
-    if (!hash) {
-      throw new Error('Hash is undefined');
+    if (!uuid) {
+      throw new Error('UUID is undefined');
     }
 
     let migrationQuery = this.migrationRepository
       .createQueryBuilder("m")
       .select(["m"])
-      .where("m.manyHash = :hash", { hash })
+      .where("m.uuid = :uuid", { uuid })
       .innerJoin("m.transaction", "t")
       .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
 
@@ -130,8 +120,5 @@ export class MigrationsService {
       await queryRunner.release();
     }
   }
-
-  // @TODO (maybe) update on migration entry by hash
-  // async updateOneByHash 
 
 }

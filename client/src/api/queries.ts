@@ -41,6 +41,17 @@ export function getNeighborhoodAddress(id: number, address: string) {
   return get(`neighborhoods/${id}/addresses/${address}`);
 }
 
+export function getNeighborhoodMigrations(
+  id: number,
+  { page = PAGE, limit = LIMIT} = {},
+) {
+  return get(`neighborhoods/${id}/migrations`, { page, limit })
+}
+
+export function getNeighborhoodMigration(id: number, uuid: string) {
+  return get(`neighborhoods/${id}/migrations/${uuid}`);
+}
+
 export function getMetrics() {
   return get(`prometheusquery`)
 }

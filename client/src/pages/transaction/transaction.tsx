@@ -7,7 +7,7 @@ import { getNeighborhoodTransaction, NeighborhoodContext } from "api";
 import { ObjectTable, QueryBox, TableObject, ExpandCode } from "ui";
 import { basics, details } from ".";
 
-import { useBgColor } from "utils";
+import { useBgColor, useTextColor } from "utils";
 
 export function Transaction() {
   const { id } = useContext(NeighborhoodContext);
@@ -39,6 +39,7 @@ export function Transaction() {
   }, [isError, isSuccess]);
 
   const bg = useBgColor();
+  const textColor = useTextColor();
 
   // Add request and response (in CBOR) at the end
   txn = data
@@ -59,7 +60,7 @@ export function Transaction() {
       </Heading>
       { alertVisible ? (
         <Box bg="white" my={6}>
-            <Alert status='error'>
+            <Alert status='error' textColor={textColor}>
                 <AlertIcon />
                 Transaction not found
             </Alert>

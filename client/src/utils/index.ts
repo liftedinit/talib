@@ -4,8 +4,16 @@ export function useBgColor() {
   return useColorModeValue('white', 'lifted.black.800');
 }
 
+export function useNavBgColor() {
+  return useColorModeValue('white', 'lifted.black.600');
+}
+
 export function useTextColor() {
   return useColorModeValue('black', 'white');
+}
+
+export function useAltTextColor() {
+  return useColorModeValue('black', 'lifted.gray.500');
 }
 
 export function useButtonBg() {

@@ -54,6 +54,9 @@ export class Migration {
   @Column({ nullable: true, default: null })
   manifestHash: string;
 
+  @Column({ nullable: true, length: 255 })
+  error?: string;
+
   intoDto(): MigrationDto {
     return {
       status: this.status,
@@ -63,6 +66,7 @@ export class Migration {
       manifestAddress: this.manifestAddress,
       manifestDatetime: this.manifestDatetime,
       manifestHash: this.manifestHash,
+      error: this.error,
     };
   }
 
@@ -80,7 +84,8 @@ export class Migration {
     return {
       status: this.status, 
       manifestDatetime: this.manifestDatetime,
-      manifestHash: this.manifestHash
+      manifestHash: this.manifestHash,
+      error: this.error,
     }
   }
 

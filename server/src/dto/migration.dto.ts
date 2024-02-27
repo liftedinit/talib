@@ -37,6 +37,9 @@ export class MigrationDto {
   @ApiProperty({ description: "Transaction Hash" })
   manifestHash: string;
 
+  @ApiProperty({ description: "Errors encountered during the migration"})
+  error: string;
+
 }
 
 export class MigrationDetailsDto {
@@ -53,7 +56,6 @@ export class MigrationDetailsDto {
   @ApiProperty({ description: "Transaction Hash" })
   manyHash: string;
 
-
   @ApiProperty({ description: "Manifest address for the migration." })
   manifestAddress: string;
 
@@ -66,6 +68,9 @@ export class MigrationDetailsDto {
 
   @ApiProperty({ description: "Transaction Hash" })
   manifestHash: string;
+
+  @ApiProperty({ description: "Errors encountered during the migration"})
+  error: string;
 
 }
 
@@ -101,6 +106,10 @@ export class UpdateMigrationDto {
 
   @ApiProperty({ description: "Transaction Hash" })
   manifestHash: string;
+
+  @ApiProperty({ description: "Errors encountered during the migration"})
+  error: string;
+
 }
 
 export class MigrationDtoPagination {

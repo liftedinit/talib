@@ -9,3 +9,4 @@ export * from "./account.multisigSubmitTransaction";
 export * from "./account.multisigWithdraw";
 export * from "./account.removeRoles";
 export * from "./account.setDescription";
+export * from "./account.addFeatures";

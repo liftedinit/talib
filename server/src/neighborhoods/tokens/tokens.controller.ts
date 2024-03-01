@@ -1,8 +1,10 @@
+import { Address } from "@liftedinit/many-js";
 import {
   Controller,
   DefaultValuePipe,
   Get,
   Param,
+  Logger,
   ParseIntPipe,
   Query,
 } from "@nestjs/common";
@@ -10,12 +12,15 @@ import { ApiOkResponse, ApiOperation, ApiResponse, ApiQuery } from "@nestjs/swag
 import { isArray } from "class-validator";
 import { Pagination, IPaginationMeta } from "nestjs-typeorm-paginate";
 import { EventDto } from "../../dto/event.dto";
-import { TokenDto } from "../../dto/token.dto";
+import { TokenDto, TokenDetailsDto } from "../../dto/token.dto";
 import { TransactionDto } from "../../dto/transaction.dto";
 import { TokensService } from "./tokens.service";
+import { ParseAddressPipe, ParseHashPipe } from "../../utils/pipes";
 
 @Controller("neighborhoods/:nid/tokens")
 export class TokensController {
+  private logger: Logger;
+
   constructor(
     private tokens: TokensService,
     ) {}
@@ -66,9 +71,31 @@ export class TokensController {
   ): Promise<Pagination<TokenDto>> {
     limit = limit > 100 ? 100 : limit;
 
-    const result = await this.tokens.findMany(nid, { page, limit });
+    const tokens = await this.tokens.findMany(nid, { page, limit });
 
-    return result
+    return {
+      ...tokens, 
+      items: tokens.items.map((t) => t.intoDto()),
+    }
+  }
+
+  @Get(":address")
+  @ApiOperation({
+    description: "Show the details of a single token",
+  })
+  @ApiOkResponse({
+    type: TokenDto,
+    isArray: false,
+  })
+  async findOne(
+    @Param("nid", ParseIntPipe) nid: number,
+    @Param("address", ParseAddressPipe) address: Address,
+    // @Param("address", ParseHashPipe) address: ArrayBuffer,
+  ): Promise<TokenDetailsDto> {
+
+    console.log(`address: ${address}`)
+    const token = await this.tokens.getTokenDetails(nid, address);
+    return token;
   }
 
 }

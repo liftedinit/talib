@@ -23,8 +23,6 @@ export class NetworkService {
 
   async forUrl(url: string, networkType?: string): Promise<N | NL> {
 
-    console.log(`networkType in forUrl: ${networkType}`)
-
     // const maybeNetwork = this.cache.get(url);
     // if (maybeNetwork) {
     //   console.log(`maybeNetwork: ${maybeNetwork}`)
@@ -35,7 +33,6 @@ export class NetworkService {
       const networkWithLedger = new ManyNetwork(url);
       networkWithLedger.apply([Base, Blockchain, Events, Ledger]);
       this.cache.set(url, networkWithLedger as NL);
-      console.log(`networkType Ledger NL`)
       return networkWithLedger as NL;
     }
 

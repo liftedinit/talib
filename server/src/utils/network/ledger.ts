@@ -21,33 +21,30 @@ export interface Balances {
 
 export interface Ledger extends NetworkModule {
   info(): Promise<LedgerInfo>;
-  // balance: (address?: string, symbols?: string[]) => Promise<Balances>;
+  balance: (address?: string, symbols?: string[]) => Promise<Balances>;
 }
 
-export const Ledger: any = {
+export const Ledger: Ledger = {
   _namespace_: "ledger",
 
   async info() {
     const param = new Map();
     const msg = await this.call("ledger.info", param)
 
-    const result = parseLedgerInfo(msg)
-    console.log(`result: ${result}`)
-
-    return result 
+    return parseLedgerInfo(msg)
   },
-  // async balance(address?: string, symbols?: string[]): Promise<Balances> {
-  //   const m = new Map<number, unknown>([[1, symbols ?? []]])
-  //   address && m.set(0, address)
-  //   const res = await this.call("ledger.balance", m)
-  //   return parseBalance(res)
-  // },
+  async balance(address?: string, symbols?: string[]): Promise<Balances> {
+    const m = new Map<number, unknown>([[1, symbols ?? []]])
+    address && m.set(0, address)
+    const res = await this.call("ledger.balance", m)
+    return parseBalance(res)
+  },
 }
 
 function parseLedgerInfo(msg: Message): any {
   const result: any = { symbols: new Array() }
   const decodedContent = msg.getPayload()
-  console.log(`decodedContent: ${decodedContent}`)
+
   if (decodedContent) {
     if (decodedContent.has(5)) {
       const symbols = decodedContent.get(5)
@@ -59,16 +56,6 @@ function parseLedgerInfo(msg: Message): any {
 
     }
   }
-  // if (decodedContent) {
-  //   const symbols = decodedContent.get(5);
-  
-  //   if (symbols instanceof Map) {
-  //     for (const [address, info] of symbols.entries()) {
-  //       const symbolInfo = parseSymbol(info);
-  //       result.symbols.push({ address: address.toString(), symbolInfo });
-  //     }
-  //   }
-  // }
   return result
 }
 

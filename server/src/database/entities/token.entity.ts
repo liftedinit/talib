@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TokenDto } from "../../dto/token.dto";
-import { bufferToHex } from "../../utils/convert";
 import { Neighborhood } from "./neighborhood.entity";
 
 @Entity()
+@Index(['neighborhood', 'address'], { unique: true })
 export class Token {
   @PrimaryGeneratedColumn()
   id: number;
@@ -13,14 +13,14 @@ export class Token {
   })
   neighborhood: Neighborhood;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
 
-  @Column()
+  @Column({ })
   symbol: string;
 
-  @Column({ unique: true })
-  address: string;
+  @Column({ type: "bytea" })
+  address: ArrayBuffer;
 
   @Column({ nullable: true })
   precision: number;
@@ -30,7 +30,7 @@ export class Token {
       id: this.id,
       name: this.name,
       symbol: this.symbol,
-      address: this.address,
+      address: this.address.toString(),
       precision: this.precision,
     };
   }

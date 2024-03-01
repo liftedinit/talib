@@ -27,6 +27,9 @@ export function migrationDetails(data: any) {
           <Code>{new Date(data.manifestDatetime).toISOString()}</Code>)
         </Text>
       ),
+    } : {}),
+    ...( data.error ! == null ? {
+      Error: <Code>{data.error}</Code>
     } : {})
   };
 }

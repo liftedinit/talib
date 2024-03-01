@@ -16,6 +16,7 @@ import { Block } from "./database/entities/block.entity";
 import { Event } from "./database/entities/event.entity";
 import { Location } from "./database/entities/location.entity";
 import { Neighborhood } from "./database/entities/neighborhood.entity";
+import { Token } from "./database/entities/token.entity";
 import { TransactionDetails } from "./database/entities/transaction-details.entity";
 import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
@@ -74,7 +75,8 @@ import { Migration } from "./database/entities/migration.entity";
           Block, 
           Event, 
           Transaction, 
-          TransactionDetails, 
+          TransactionDetails,
+          Token,
           PrometheusQuery, 
           Metric, 
           SystemWideMetric, 

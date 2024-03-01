@@ -17,6 +17,7 @@ import {
 import { Link } from "react-router-dom";
 
 import { ErrorAlert } from "ui";
+import { status } from "pages"
 import { abbr, ago, by, useBgColor } from "utils";
 
 interface MigrationSummary {
@@ -54,29 +55,42 @@ export function MigrationList({
         <Table size="sm" className="talib-table">
           <Thead>
             <Th>UUID</Th>
+            <Th>Status</Th>
             <Th>Hash</Th>
             <Th>Time</Th>
           </Thead>
           <Tbody>
-            {migrations.sort(by("createdDate")).map((migration) => (
-              <Tr h={12}>
-                <Td>
-                  <Link to={`/migrations/${migration.uuid}`}>
-                    <Text color="brand.teal.500">
-                      <pre>{abbr(migration.uuid)}</pre>
-                    </Text>
-                  </Link>
-                </Td>
-                <Td>
-                  <Link to={`/transactions/${migration.manyHash}`}>
-                    <Text color="brand.teal.500">
-                      <pre>{abbr(migration.manyHash)}</pre>
-                    </Text>
-                  </Link>
-                </Td>
-                <Td>{ago(new Date(migration.createdDate))}</Td>
-              </Tr>
-            ))}
+            {migrations.sort(by("createdDate")).map((migration) => {
+              // Add status if populated and expand details
+              if (migration.status) {
+                migration = { ...status(migration), ...migration };
+              }
+
+              console.log(migration)
+
+              return (
+                <Tr h={12}>
+                  <Td>
+                    <Link to={`/migrations/${migration.uuid}`}>
+                      <Text color="brand.teal.500">
+                        <pre>{abbr(migration.uuid)}</pre>
+                      </Text>
+                    </Link>
+                  </Td>
+                  <Td>
+                  {status(migration).Status}
+                  </Td>
+                  <Td>
+                    <Link to={`/transactions/${migration.manyHash}`}>
+                      <Text color="brand.teal.500">
+                        <pre>{abbr(migration.manyHash)}</pre>
+                      </Text>
+                    </Link>
+                  </Td>
+                  <Td>{ago(new Date(migration.createdDate))}</Td>
+                </Tr>
+              )
+              })}
           </Tbody>
         </Table>
       )}

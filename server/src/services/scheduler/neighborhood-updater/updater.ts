@@ -238,23 +238,19 @@ export class NeighborhoodUpdater {
     networkType?: string) {
 
     try { 
-      const existingTokens = await this.tokens.getTokens(neighborhood);
-
-      // const network = await this.network.forUrl(neighborhood.url, networkType ? networkType : undefined);
+      const existingTokens = await this.tokens.getAllTokens(neighborhood);
       const network = await this.network.forUrl(neighborhood.url, networkType);
       const ledgerInfo = await network.ledger.info();
 
       // Locate missing tokens 
-      const missingTokens = ledgerInfo.symbols.filter(
-        (t) => {
-          return !existingTokens.items.find((et) => et.address.toString() === t.address);
-        }
+      const missingTokens = ledgerInfo.symbols.filter(symbol => 
+        !existingTokens.some(existingToken => existingToken.address.toString() === symbol.address)
       );
+
+      this.logger.debug(`missingTokens: ${JSON.stringify(missingTokens)}`)
 
       // Create token entities for missing tokens
       if (missingTokens.length > 0) {
-        this.logger.debug(`missingTokens: ${JSON.stringify(missingTokens)}`)
-
         this.logger.debug(
           `Adding ${missingTokens.length} tokens to neighborhood ${neighborhood.id}`,
         );
@@ -276,16 +272,52 @@ export class NeighborhoodUpdater {
 
     // If we can't check if neighborhood has been reset, we probably won't be
     // able to check anything, so just skip blocks too.
+    // try {
+    //   await this.checkIfNeighborhoodHasBeenReset(n);
+    //   await this.updateNeighborhoodEarliestMissingBlocks(n);
+    //   await this.updateNeighborhoodMissingEvents(n);
+    //   if (nType == "ledger") {
+    //     await this.updateNeighborhoodMissingTokens(n, nType);
+    //   }
+    // } catch (e) {
+    //   this.logger.log(
+    //     `Error happened while updating neighborhood blocks for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+    //   );
+    // }
+
     try {
       await this.checkIfNeighborhoodHasBeenReset(n);
+    } catch (e) {
+      this.logger.error(
+        `Error happened while checking if neighborhood has been reset for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+      );
+    }
+
+    // If we can't check if neighborhood has been reset, we probably won't be
+    // able to check anything, so just skip blocks too.
+    try {
       await this.updateNeighborhoodEarliestMissingBlocks(n);
+    } catch (e) {
+      this.logger.error(
+        `Error happened while updating neighborhood blocks for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+      );
+    }
+
+    try {
       await this.updateNeighborhoodMissingEvents(n);
+    } catch (e) {
+      this.logger.error(
+        `Error happened while updating neighborhood events for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+      );
+    }
+
+    try {
       if (nType == "ledger") {
         await this.updateNeighborhoodMissingTokens(n, nType);
       }
     } catch (e) {
-      this.logger.log(
-        `Error happened while updating neighborhood blocks for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+      this.logger.error(
+        `Error happened while updating neighborhood tokens for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
       );
     }
 

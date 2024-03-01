@@ -7,9 +7,8 @@ import {
   Pagination,
 } from "nestjs-typeorm-paginate";
 import { Neighborhood } from "src/database/entities/neighborhood.entity";
-import { Brackets, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { Token as TokenEntity } from "../../database/entities/token.entity";
-import { Event as EventEntity } from "../../database/entities/event.entity";
 import { TokenDetailsDto } from "../../dto/token.dto";
 
 @Injectable()
@@ -19,8 +18,6 @@ export class TokensService {
     constructor(
       @InjectRepository(TokenEntity)
       private tokenRepository: Repository<TokenEntity>,
-      @InjectRepository(EventEntity)
-      private eventRepository: Repository<EventEntity>,
     ) {}
 
     public async findMany(
@@ -33,20 +30,6 @@ export class TokensService {
         .orderBy("t.id", "DESC");
 
       this.logger.debug(`findMany: ${query.getQuery()}`);
-      return await paginate(query, options);
-    }
-
-    public async findManyTokenEvents(
-      neighborhoodId: number,
-      options: IPaginationOptions,
-    ): Promise<Pagination<EventEntity>> {
-      const query = this.eventRepository
-        .createQueryBuilder("e")
-        .where("e.neighborhoodId = :nid", { nid: neighborhoodId })
-        .andWhere("e.method = 'tokens.create'")
-        .orderBy("e.eventId", "DESC");
-  
-      this.logger.debug(`findMany events(${neighborhoodId}: ${query.getQuery()}`);
       return await paginate(query, options);
     }
 

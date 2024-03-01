@@ -80,21 +80,17 @@ export class TokensController {
   }
 
   @Get(":address")
-  @ApiOperation({
-    description: "Show the details of a single token",
-  })
   @ApiOkResponse({
     type: TokenDto,
     isArray: false,
+    description: "Show the details of a single token",
   })
   async findOne(
     @Param("nid", ParseIntPipe) nid: number,
     @Param("address", ParseAddressPipe) address: Address,
-    // @Param("address", ParseHashPipe) address: ArrayBuffer,
   ): Promise<TokenDetailsDto> {
-
-    console.log(`address: ${address}`)
     const token = await this.tokens.getTokenDetails(nid, address);
+
     return token;
   }
 

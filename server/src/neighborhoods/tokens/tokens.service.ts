@@ -67,11 +67,10 @@ export class TokensService {
       neighborhoodId: number,
       address: Address,
     ): Promise<TokenDetailsDto> {
-      const a = address;
       const token = await this.tokenRepository
         .createQueryBuilder("t")
-        .where("t.address = :address", { address: a })
-        .where("t.neighborhoodId = :nid", { nid: neighborhoodId })
+        .where("t.address = :address", { address: address.toString() })
+        .andWhere("t.neighborhoodId = :nid", { nid: neighborhoodId })
         .getOne();
 
       if (!token) {

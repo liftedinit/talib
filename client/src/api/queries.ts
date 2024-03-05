@@ -52,6 +52,17 @@ export function getNeighborhoodMigration(id: number, uuid: string) {
   return get(`neighborhoods/${id}/migrations/${uuid}`);
 }
 
+export function getNeighborhoodTokens(
+  id: number,
+  { page = PAGE, limit = LIMIT} = {},
+) {
+  return get(`neighborhoods/${id}/tokens`, { page, limit })
+}
+
+export function getNeighborhoodToken(id: number, address: string) {
+  return get(`neighborhoods/${id}/tokens/${address}`);
+}
+
 export function getMetrics() {
   return get(`prometheusquery`)
 }

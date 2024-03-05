@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useState, useEffect } from "react";
 import { useQuery  } from "@tanstack/react-query";
 import { getNeighborhoodTokens } from "./queries";
+import localforage from "localforage";
 
 const ID = import.meta.env.PROD ? 6 : 1; // Default to Manifest Ledger Alpha 2 (current) in production
 
@@ -11,7 +12,21 @@ export const NeighborhoodContext = createContext({
 });
 
 export function NeighborhoodProvider({ children }: { children: ReactNode }) {
-  const [id, setId] = useState(ID);
+  const [id, setIdState] = useState(ID);
+
+  const setId = (newId: number) => {
+    setIdState(newId);
+    localforage.setItem("neighborhoodId", newId); // Store the id in localforage
+  };
+
+  // Retrieve the id from localforage during component mount
+  useEffect(() => {
+    localforage.getItem("neighborhoodId").then((storedId) => {
+      if (typeof storedId === 'number') {
+        setIdState(storedId);
+      }
+    });
+  }, []);
 
   const tokensQuery = useQuery(
     ["neighborhoods", id, "tokens"],

@@ -77,7 +77,6 @@ export class MigrationsController {
     };
   }
 
-  // @TODO PUT: put migrationDatetime, status, and perhaps related hash from opposing chain to validate completeness
   @Put(":uuid") 
   @ApiOperation({
     description: "Update the status of a migration",

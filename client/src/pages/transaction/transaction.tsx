@@ -1,8 +1,7 @@
-import { Alert, AlertIcon, Box, Code,Center, Spinner, Heading, Text } from "@liftedinit/ui";
+import { Alert, AlertIcon, Box, Heading, Text } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
 import { getNeighborhoodTransaction, NeighborhoodContext } from "api";
 import { ObjectTable, QueryBox, TableObject, ExpandCode } from "ui";
 import { basics, details } from ".";

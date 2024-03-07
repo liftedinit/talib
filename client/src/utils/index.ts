@@ -119,5 +119,5 @@ export function convertNumToBil(b: number): number {
   return bilValue
 }
 
-export const STALE_INTERVAL = 60000;
-export const REFRESH_INTERVAL = 10000;
+export const STALE_INTERVAL = 600000;
+export const REFRESH_INTERVAL = 300000;

@@ -1,11 +1,12 @@
 import { Address } from "@liftedinit/many-js";
 import { parseAddress, parseMemo } from "../../../cbor-parsers";
 import { Analyzer } from "../../analyzer";
+import { Big } from "big.js";
 
 interface ArgumentT {
   from: string;
   to: string;
-  amount: number;
+  amount: Big;
   symbol: string;
   memo?: string[];
 }
@@ -24,11 +25,13 @@ export class LedgerSendAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
   static method = "ledger.send";
   static eventType = [6, 0];
 
+
   parseArgs(sender: Address, payload: Map<any, any>): ArgumentT {
+
     return {
       from: (parseAddress(payload.get(0), true) || sender).toString(),
       to: parseAddress(payload.get(1)).toString(),
-      amount: Number(payload.get(2)),
+      amount: Big(payload.get(2)),
       symbol: parseAddress(payload.get(3)).toString(),
       memo: parseMemo(payload.get(4), true),
     };

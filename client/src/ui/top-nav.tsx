@@ -1,17 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  Center,
-  Collapse,
   SlideFade,
   Heading,
   HStack,
   Icon,
   Link as ChakraLink,
-  StackDivider,
-  LinkProps,
-  Text,
-  Stack,
-  
+  Text,  
   Box,
   VStack,
 } from "@liftedinit/ui";
@@ -26,7 +20,7 @@ interface NavItemProps {
   link?: string;
   onClick?: () => void;
   isActive?: boolean;
-  dropdownItems?: NavItemProps[]; // Add dropdownItems property
+  dropdownItems?: NavItemProps[]; 
 }
 
 export function TopNavItem({
@@ -133,7 +127,7 @@ export function TopNav({ navItems }: NavProps) {
           link: item.link,
           onClick: () => handleItemClick(index),
           isActive: index === activeIndex,
-          dropdownItems: item.dropdownItems, // Pass dropdownItems to TopNavItem
+          dropdownItems: item.dropdownItems,
         })
       )}
     </HStack>

@@ -28,7 +28,7 @@ export function migrationDetails(data: any) {
         </Text>
       ),
     } : {}),
-    ...( data.error ! == null ? {
+    ...( data.error != null ? {
       Error: <Code>{data.error}</Code>
     } : {})
   };

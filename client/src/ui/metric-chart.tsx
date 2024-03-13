@@ -8,7 +8,7 @@ import {
   Box,
   Text 
 } from "@liftedinit/ui";
-import { useBgColor, STALE_INTERVAL, REFRESH_INTERVAL } from "utils";
+import { useBgColor, LONG_STALE_INTERVAL, LONG_REFRESH_INTERVAL } from "utils";
 
 interface StatProps {
   label: string;
@@ -58,8 +58,8 @@ export function MetricChart({
   }
 
   const { data: queryData, isError, isLoading } = useQuery([metric + "series"], metricQuery, {
-    staleTime: STALE_INTERVAL,
-    refetchInterval: REFRESH_INTERVAL,
+    staleTime: LONG_STALE_INTERVAL,
+    refetchInterval: LONG_REFRESH_INTERVAL,
   });
 
   let chartData: ChartData = {

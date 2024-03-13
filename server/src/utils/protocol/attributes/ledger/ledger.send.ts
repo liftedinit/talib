@@ -6,7 +6,7 @@ import { Big } from "big.js";
 interface ArgumentT {
   from: string;
   to: string;
-  amount: Big;
+  amount: string;
   symbol: string;
   memo?: string[];
 }
@@ -31,7 +31,7 @@ export class LedgerSendAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
     return {
       from: (parseAddress(payload.get(0), true) || sender).toString(),
       to: parseAddress(payload.get(1)).toString(),
-      amount: Big(payload.get(2)),
+      amount: Big(payload.get(2)).toFixed(),
       symbol: parseAddress(payload.get(3)).toString(),
       memo: parseMemo(payload.get(4), true),
     };
@@ -51,3 +51,4 @@ export class LedgerSendAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
     };
   }
 }
+

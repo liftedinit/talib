@@ -92,7 +92,7 @@ export class MetricUpdater {
     let seedMetricTimestamp = seedMetricStartDate;
     // If there are less than 10 metrics to collect, skip this scheduled job
     if (maxBatch < minBatchSize) {
-      this.logger.debug(`Batch Size less than ${minBatchSize}...skipping job.`);
+      this.logger.debug(`Batch Size less than ${minBatchSize} for ${p.name}...skipping job.`);
     } else {
       for (let i = 0; i < maxBatch; i++) {
         try {

@@ -3,12 +3,14 @@ import { Box, Heading, Center, Grid, GridItem, useMediaQuery } from "@liftedinit
 import { MetricNav } from "ui";
 import { NetworkMetrics } from "./networkMetrics";
 import { MdMemory, MdStorage, MdDns} from "react-icons/md";
+import { SiKubernetes } from "react-icons/si";
 import { FaHive, FaNetworkWired, FaFile, FaServer, FaGhost, FaRobot } from "react-icons/fa6"
 import { debounce } from 'lodash';
 
 const navItems = [
   { label: "Neighborhoods", section: "blockchain", icon: FaHive },
   { label: "Nodes", section: "nodes", icon: FaServer },
+  { label: "Kubernetes", section: "kubernetes", icon: SiKubernetes },
   { label: "Web", section: "web", icon: MdDns },
   { label: "Hosting", section: "hosting", icon: FaGhost },
   { label: "AI", section: "ai", icon: FaRobot },

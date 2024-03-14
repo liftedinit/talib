@@ -25,9 +25,7 @@ export class LedgerSendAnalyzer extends Analyzer<ArgumentT, ResultT, EventT> {
   static method = "ledger.send";
   static eventType = [6, 0];
 
-
   parseArgs(sender: Address, payload: Map<any, any>): ArgumentT {
-
     return {
       from: (parseAddress(payload.get(0), true) || sender).toString(),
       to: parseAddress(payload.get(1)).toString(),

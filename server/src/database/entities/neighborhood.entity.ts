@@ -1,6 +1,6 @@
 import { Address, NetworkAttributes } from "@liftedinit/many-js";
 import { NetworkStatusInfo } from "@liftedinit/many-js/dist/network/modules/base/base";
-import { bufferToHex } from "src/utils/convert";
+import { bufferToHex } from "../../utils/convert";
 import {
   Column,
   Entity,

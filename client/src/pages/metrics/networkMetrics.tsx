@@ -33,6 +33,25 @@ export function NetworkMetrics() {
           <MetricChart label="Total Processes" type="area" metric="totalprocesses" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Processes" />
         </Box>
       </SimpleGrid>
+      <Heading as='h4' size='md' py="5" pl="5" >Kubernetes</Heading>
+      <SimpleGrid id="kubernetes" columns={{ base: 1, sm: 1, md: 2, lg: 4 }} gap="6" mt={2}>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total K8s Nodes" metric="kubenodecount" from={"now-1d"} to={"now"} />
+          <MetricChart label="Total K8s Nodes" type="area" metric="kubenodecount" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Nodes" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total K8s Pods" metric="kubepodcount" from={"now-1h"} to={"now"} />
+          <MetricChart label="Total K8s Pods" type="area" metric="kubepodcount" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Pods" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total K8s CPU Cores" metric="totalkubecpus" from={"now-1d"} to={"now"} />
+          <MetricChart label="Total K8s CPU Cores" type="area" metric="totalkubecpus" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Cores" />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="Total K8s Memory" metric="totalkubememory" conversion={convertKbToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
+          <MetricChart label="Total K8s Memory" type="area" metric="totalkubememory" conversion={convertKbToGb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+        </Box>
+      </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Web Services</Heading>
       <SimpleGrid id="web" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">

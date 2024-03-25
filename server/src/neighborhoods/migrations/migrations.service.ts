@@ -89,6 +89,7 @@ export class MigrationsService {
         .select()
         .from(Migration, 'm')
         .where('uuid = :uuid', { uuid })
+        .andWhere("status != " + updateMigrationDto.status)
         .innerJoin("m.transaction", "t")
         .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
         .execute()

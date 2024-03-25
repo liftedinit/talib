@@ -3,7 +3,7 @@ import { Stat as BaseStat, StatLabel, StatNumber } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { getMetricCurrent, getMetricTransformCurrent, getMetricSystemWideCurrent } from "api";
 import { Box, Center, Spinner } from "@liftedinit/ui";
-import { useBgColor, STALE_INTERVAL, REFRESH_INTERVAL } from "utils";
+import { useBgColor, LONG_STALE_INTERVAL, LONG_REFRESH_INTERVAL } from "utils";
 
 interface StatProps {
   label: string;
@@ -58,8 +58,8 @@ export function MetricStat({
   }
 
   const { data: queryData, isLoading } =  useQuery([metric + "current"], metricQuery,{
-    staleTime: STALE_INTERVAL,
-    refetchInterval: REFRESH_INTERVAL,
+    staleTime: LONG_STALE_INTERVAL,
+    refetchInterval: LONG_REFRESH_INTERVAL,
   });
 
   let metricValues = [];

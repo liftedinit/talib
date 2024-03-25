@@ -7,7 +7,7 @@ import {
   ParseIntPipe,
   Query,
 } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiResponse, ApiParam } from "@nestjs/swagger";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { BlockDetailsDto, BlockDto } from "../../dto/block.dto";
 import { ParseHashOrHeightPipe } from "../../utils/pipes";
@@ -39,6 +39,7 @@ export class BlockController {
     status: 200,
     type: BlockDetailsDto,
   })
+  @ApiParam({ name: 'bhash', type: 'string', description: 'Block hash' })
   async findOne(
     @Param("nid", ParseIntPipe) nid: number,
     @Param("bhash", ParseHashOrHeightPipe)

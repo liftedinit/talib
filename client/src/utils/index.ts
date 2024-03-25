@@ -4,8 +4,16 @@ export function useBgColor() {
   return useColorModeValue('white', 'lifted.black.800');
 }
 
+export function useNavBgColor() {
+  return useColorModeValue('white', 'lifted.black.600');
+}
+
 export function useTextColor() {
   return useColorModeValue('black', 'white');
+}
+
+export function useAltTextColor() {
+  return useColorModeValue('black', 'lifted.gray.500');
 }
 
 export function useButtonBg() {
@@ -112,4 +120,6 @@ export function convertNumToBil(b: number): number {
 }
 
 export const STALE_INTERVAL = 60000;
-export const REFRESH_INTERVAL = 10000;
+export const REFRESH_INTERVAL = 15000;
+export const LONG_STALE_INTERVAL = 600000;
+export const LONG_REFRESH_INTERVAL = 300000;

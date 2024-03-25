@@ -1,0 +1,13 @@
+**/node_modules
+**/server/.env
+**/dist
+reset.sh 
+build.txt 
+**/*.txt 
+**/*.bak
+**/*.sh 
+.git 
+.github
+.gitignore
+.circleci
+

@@ -13,6 +13,8 @@ import {
   Layout,
   Metrics,
   Map,
+  Migration,
+  Migrations,
   Transaction,
   Transactions,
   WideLayout,
@@ -48,6 +50,11 @@ ReactDOM.render(
                     </Route>
                     <Route path="addresses">
                       <Route path=":address" element={<Address />} />
+                      <Route path=":hash" element={<Transaction />} />
+                    </Route>
+                    <Route path="migrations">
+                      <Route index element={<Migrations />} />
+                      <Route path=":hash" element={<Migration />} />
                     </Route>
                   </Route>
                   <Route path="metrics" element={

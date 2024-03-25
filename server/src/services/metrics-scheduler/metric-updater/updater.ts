@@ -92,7 +92,7 @@ export class MetricUpdater {
     let seedMetricTimestamp = seedMetricStartDate;
     // If there are less than 10 metrics to collect, skip this scheduled job
     if (maxBatch < minBatchSize) {
-      this.logger.debug(`Batch Size less than ${minBatchSize}...skipping job.`);
+      this.logger.debug(`Batch Size less than ${minBatchSize} for ${p.name}...skipping job.`);
     } else {
       for (let i = 0; i < maxBatch; i++) {
         try {
@@ -100,6 +100,7 @@ export class MetricUpdater {
           // This will use the incremented value from below to collect the next
           // data point from Grafana/Prometheus and store in the metrics table
           await this.updateMetricNewValues(p, seedMetricTimestamp);
+          this.logger.debug(`Done running updateMetricNewValues: ${p.name}.`)
         } catch (error) {
           if (
             error instanceof QueryFailedError &&
@@ -117,6 +118,7 @@ export class MetricUpdater {
       }
     }
 
+    this.logger.log(`Done running seedMetricValues: ${p.name}.`)
     return null;
   }
 
@@ -126,7 +128,7 @@ export class MetricUpdater {
       this.logger.debug(`seeding metric: ${p.name}`);
       await this.seedMetricValues(p);
     } catch (e) {
-      this.logger.log(`Error happened while updating metrics:\n${e.stack}`);
+      this.logger.error(`Error happened while updating metrics:\n${e.stack}`);
     }
   }
 }

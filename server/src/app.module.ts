@@ -16,6 +16,7 @@ import { Block } from "./database/entities/block.entity";
 import { Event } from "./database/entities/event.entity";
 import { Location } from "./database/entities/location.entity";
 import { Neighborhood } from "./database/entities/neighborhood.entity";
+import { Token } from "./database/entities/token.entity";
 import { TransactionDetails } from "./database/entities/transaction-details.entity";
 import { Transaction } from "./database/entities/transaction.entity";
 import { NeighborhoodModule } from "./neighborhoods/neighborhood.module";
@@ -32,6 +33,7 @@ import { Metric } from "./database/entities/metric.entity";
 import { MetricModule } from "./metrics/metrics.module";
 import { SystemWideMetric } from "./database/entities/systemwide-metric.entity";
 import { SystemWideModule } from "./metrics/systemwide/systemwide.module";
+import { Migration } from "./database/entities/migration.entity";
 
 @Module({
   controllers: [],
@@ -73,11 +75,13 @@ import { SystemWideModule } from "./metrics/systemwide/systemwide.module";
           Block, 
           Event, 
           Transaction, 
-          TransactionDetails, 
+          TransactionDetails,
+          Token,
           PrometheusQuery, 
           Metric, 
           SystemWideMetric, 
-          Location
+          Location,
+          Migration,
         ],
         migrations: [],
         synchronize: true,

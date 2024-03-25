@@ -1,9 +1,10 @@
 import { Code } from "@liftedinit/ui";
 import { Link } from "react-router-dom";
-import { findToken } from "./tokens";
+import { useFindToken } from "./tokens";
 
-export function ledgerSend(data: any) {
-  const token = findToken(data.argument.symbol);
+export function useLedgerSend(data: any) {
+  const token = useFindToken(data.argument.symbol);
+
   return {
     From: (
       <Code
@@ -26,6 +27,6 @@ export function ledgerSend(data: any) {
     Amount: `${(
       data.argument.amount /
       10 ** token.precision
-    ).toLocaleString()} ${token.ticker}`,
+    ).toLocaleString()} ${token.symbol}`,
   };
 }

@@ -5,9 +5,11 @@ import { SchedulerConfigModule } from "../../config/scheduler/configuration.modu
 import { SchedulerConfigService } from "../../config/scheduler/configuration.service";
 import { Block } from "../../database/entities/block.entity";
 import { Event } from "../../database/entities/event.entity";
+import { Token } from "../../database/entities/token.entity";
 import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
+import { Migration } from "../../database/entities/migration.entity";
 import { BlockModule } from "../../neighborhoods/blocks/block.module";
 import { BlockService } from "../../neighborhoods/blocks/block.service";
 import { EventsService } from "../../neighborhoods/events/events.service";
@@ -17,9 +19,13 @@ import { NetworkService } from "../network.service";
 import { NeighborhoodUpdater } from "./neighborhood-updater/updater";
 import { SchedulerController } from "./scheduler.controller";
 import { SchedulerService } from "./scheduler.service";
+import { MigrationsService } from "../../neighborhoods/migrations/migrations.service";
 import { TxAnalyzerService } from "./tx-analyzer.service";
+import { MigrationAnalyzerService } from "./migration-analyzer.service";
+import { TokensModule } from "../../neighborhoods/tokens/tokens.module";
+import { TokensService } from "../../neighborhoods/tokens/tokens.service";
 
-export const myServiceProvider: Provider = {
+export const neighborhoodServiceProvider: Provider = {
   provide: "NEIGHBORHOOD_FACTORY",
   inject: [ModuleRef],
   useFactory: (m: ModuleRef) => async (n: Neighborhood) =>
@@ -35,11 +41,14 @@ export const myServiceProvider: Provider = {
       Event,
       Transaction,
       TransactionDetails,
+      Migration,
+      Token,
     ]),
     BlockModule,
     NeighborhoodModule,
     SchedulerConfigModule,
     TransactionsModule,
+    TokensModule,
   ],
   providers: [
     SchedulerConfigService,
@@ -48,7 +57,10 @@ export const myServiceProvider: Provider = {
     NetworkService,
     SchedulerService,
     TxAnalyzerService,
-    myServiceProvider,
+    neighborhoodServiceProvider,
+    MigrationsService,
+    MigrationAnalyzerService,
+    TokensService,
   ],
   exports: [SchedulerService],
 })

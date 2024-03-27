@@ -54,7 +54,7 @@ export class Migration {
   @Column({ nullable: true, default: null })
   manifestHash: string;
 
-  @Column({ nullable: true, length: 255 })
+  @Column({ nullable: true, length: 8192 })
   error?: string;
 
   intoDto(): MigrationDto {

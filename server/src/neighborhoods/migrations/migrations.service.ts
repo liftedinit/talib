@@ -9,7 +9,7 @@ import {
   paginate,
   Pagination,
 } from "nestjs-typeorm-paginate";
-import { Repository, DataSource } from "typeorm";
+import { Repository, DataSource, In } from "typeorm";
 import { Block } from "../../database/entities/block.entity";
 import { Migration } from "../../database/entities/migration.entity";
 import { Migration as MigrationEntity } from "../../database/entities/migration.entity";
@@ -70,6 +70,57 @@ export class MigrationsService {
     return await paginate<Migration>(query, options);
   }
 
+  public async claimMany(
+    neighborhoodId: number,
+  ): Promise<MigrationDto[]> {
+    const queryRunner = this.datasource.createQueryRunner();
+    let updatedMigrations = [];
+
+    try {
+      await queryRunner.startTransaction();
+
+      const lockedMigration = await queryRunner.manager
+        .createQueryBuilder()
+        .setLock('pessimistic_write')
+        .setOnLocked('skip_locked')
+        .limit(10) // Limit to 10 rows
+        .select()
+        .from(Migration, 'm')
+        .where('m.status = 1') // Created
+        .innerJoin("m.transaction", "t")
+        .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
+        .execute()
+
+      this.logger.debug(`Locked migrations: ${JSON.stringify(lockedMigration)}`);
+
+       let updatedMigrationsUuid = [];
+      // Claim all affected rows
+      for (const migration of lockedMigration) {
+        await queryRunner.manager.update(Migration, { uuid: migration.uuid }, { status: 2 }); // Claimed
+        updatedMigrationsUuid.push(migration.uuid);
+      }
+
+      // Commit the transaction, release the lock
+      await queryRunner.commitTransaction();
+
+      // Fetch and return the updated migrations
+      if (updatedMigrationsUuid.length > 0) {
+        updatedMigrations = await this.migrationRepository.findBy({ uuid: In(updatedMigrationsUuid) });
+        updatedMigrations = updatedMigrations.map((m) => m.intoDto());
+      }
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.debug(`Error during saveAndLockMigration: ${error.message}`);
+      throw error;
+
+    } finally {
+      await queryRunner.release();
+    }
+
+    return updatedMigrations
+  }
+
+
   public async updateOneByUuid(
     neighborhoodId: number,
     uuid: string,
@@ -93,14 +144,12 @@ export class MigrationsService {
         .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
         .execute()
 
-      // this.logger.debug(`lockedMigration: ${JSON.stringify(lockedMigration)}`);
-
       // Verify lock was obtained
       const affectedRows = lockedMigration.length ?? 0;
       if (affectedRows === 0) {
         throw new Error(`Could not acquire lock for migration with UUID: ${uuid}`);
       }
-  
+
       // Update the locked row
       this.logger.debug("Updating locked migration row with UUID ${uuid}.")
       await queryRunner.manager.update(Migration, { uuid: uuid }, updateMigrationDto);
@@ -108,7 +157,7 @@ export class MigrationsService {
       // Commit the transaction, release the lock
       await queryRunner.commitTransaction();
   
-      // Fetch the updated migration outside of the transaction with lock release
+      // Fetch the updated migration outside the transaction with lock release
       const updatedMigration = await this.migrationRepository.findOne({ where: { uuid } });
   
       return updatedMigration.intoDto();
@@ -122,5 +171,4 @@ export class MigrationsService {
       await queryRunner.release();
     }
   }
-
 }

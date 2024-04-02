@@ -77,6 +77,20 @@ export class MigrationsController {
     };
   }
 
+  @Put('claim')
+  @ApiOperation({
+    description: "Claim migrations for a neighborhood",
+  })
+  @ApiOkResponse({
+    type: MigrationDto,
+    isArray: true,
+  })
+  async claimMany(
+    @Param("nid", ParseIntPipe) nid: number,
+  ): Promise<MigrationDto[]> {
+    return await this.migrations.claimMany(nid);
+  }
+
   @Put(":uuid") 
   @ApiOperation({
     description: "Update the status of a migration",
@@ -97,6 +111,4 @@ export class MigrationsController {
 
     return migration;
   }
-
-
 }

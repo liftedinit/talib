@@ -144,7 +144,7 @@ export class MigrationsService {
       // Verify lock was obtained
       const affectedRows = lockedMigration.length ?? 0;
       if (affectedRows === 0) {
-        throw new Error(`Could not acquire lock for migration with UUID ${uuid}`);
+        return null
       }
 
       // Update the locked row
@@ -194,11 +194,10 @@ export class MigrationsService {
       // Verify lock was obtained
       const affectedRows = lockedMigration.length ?? 0;
       if (affectedRows === 0) {
-        throw new Error(`Could not acquire lock for migration with UUID: ${uuid}`);
+        return null
       }
 
       // Update the locked row
-      this.logger.debug("Updating locked migration row with UUID ${uuid}.")
       await queryRunner.manager.update(Migration, { uuid: uuid }, updateMigrationDto);
   
       // Commit the transaction, release the lock

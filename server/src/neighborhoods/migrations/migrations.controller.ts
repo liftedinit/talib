@@ -103,7 +103,11 @@ export class MigrationsController {
     @Param("nid", ParseIntPipe) nid: number,
     @Param("uuid") uuid: string,
   ): Promise<MigrationDto> {
-    return await this.migrations.claimOneByUuid(nid, uuid);
+    const migration = await this.migrations.claimOneByUuid(nid, uuid);
+    if (!migration) {
+      throw new NotFoundException(`Could not claim migration with UUID ${uuid}`);
+    }
+    return migration
   }
 
   @Put(":uuid") 
@@ -121,7 +125,7 @@ export class MigrationsController {
   ): Promise<UpdateMigrationDto> {
     const migration = await this.migrations.updateOneByUuid(nid, uuid, updateMigrationDto);
     if (!migration) {
-      throw new NotFoundException();
+      throw new NotFoundException(`Could not update migration with UUID ${uuid}`);
     }
 
     return migration;

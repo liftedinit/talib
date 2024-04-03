@@ -40,9 +40,6 @@ export class MigrationDto {
   @ApiProperty({ description: "Errors encountered during the migration"})
   error: string;
 
-  @ApiProperty({ description: "Migration claim session" })
-  session: string;
-
 }
 
 export class MigrationDetailsDto {
@@ -112,9 +109,6 @@ export class UpdateMigrationDto {
 
   @ApiProperty({ description: "Errors encountered during the migration"})
   error: string;
-
-  @ApiProperty({ description: "Migration claim session" })
-  session: string;
 
 }
 

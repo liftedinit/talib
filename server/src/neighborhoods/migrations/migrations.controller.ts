@@ -91,6 +91,21 @@ export class MigrationsController {
     return await this.migrations.claimMany(nid);
   }
 
+  @Put('claim/:uuid')
+  @ApiOperation({
+    description: "Claim a single migration for a neighborhood",
+  })
+  @ApiOkResponse({
+    type: MigrationDto,
+    isArray: false,
+  })
+  async claimOne(
+    @Param("nid", ParseIntPipe) nid: number,
+    @Param("uuid") uuid: string,
+  ): Promise<MigrationDto> {
+    return await this.migrations.claimOneByUuid(nid, uuid);
+  }
+
   @Put(":uuid") 
   @ApiOperation({
     description: "Update the status of a migration",

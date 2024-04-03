@@ -91,8 +91,6 @@ export class MigrationsService {
         .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
         .execute()
 
-      this.logger.debug(`Locked migrations: ${JSON.stringify(lockedMigration)}`);
-
        let updatedMigrationsUuid = [];
       // Claim all affected rows
       for (const migration of lockedMigration) {
@@ -120,6 +118,55 @@ export class MigrationsService {
     return updatedMigrations
   }
 
+  public async claimOneByUuid(
+    neighborhoodId: number,
+    uuid: string
+  ): Promise<MigrationDto> {
+    const queryRunner = this.datasource.createQueryRunner();
+
+    try {
+      // Start transaction
+      await queryRunner.startTransaction();
+
+      // Acquire pessimistic write lock
+      const lockedMigration = await queryRunner.manager
+        .createQueryBuilder()
+        .setLock('pessimistic_write')
+        .select()
+        .limit(1)
+        .from(Migration, 'm')
+        .where('uuid = :uuid', { uuid })
+        .andWhere('status = 1') // Created
+        .innerJoin("m.transaction", "t")
+        .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
+        .execute()
+
+      // Verify lock was obtained
+      const affectedRows = lockedMigration.length ?? 0;
+      if (affectedRows === 0) {
+        throw new Error(`Could not acquire lock for migration with UUID ${uuid}`);
+      }
+
+      // Update the locked row
+      await queryRunner.manager.update(Migration, { uuid: uuid }, { status: 2 }); // Claimed
+
+      // Commit the transaction, release the lock
+      await queryRunner.commitTransaction();
+
+      // Fetch the updated migration outside the transaction with lock release
+      const updatedMigration = await this.migrationRepository.findOne({ where: { uuid } });
+
+      return updatedMigration.intoDto();
+    } catch (error) {
+      // Rollback the transaction in case of an error
+      await queryRunner.rollbackTransaction();
+      this.logger.debug(`Error during saveAndLockMigration: ${error.message}`);
+      throw error;
+    } finally {
+      // Release the query runner
+      await queryRunner.release();
+    }
+  }
 
   public async updateOneByUuid(
     neighborhoodId: number,

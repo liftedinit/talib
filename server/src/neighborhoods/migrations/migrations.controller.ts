@@ -87,8 +87,10 @@ export class MigrationsController {
   })
   async claimMany(
     @Param("nid", ParseIntPipe) nid: number,
+    @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<MigrationDto[]> {
-    return await this.migrations.claimMany(nid);
+    limit = limit > 100 ? 100 : limit;
+    return await this.migrations.claimMany(nid, limit);
   }
 
   @Put('claim/:uuid')

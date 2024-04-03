@@ -72,6 +72,7 @@ export class MigrationsService {
 
   public async claimMany(
     neighborhoodId: number,
+    limit: number,
   ): Promise<MigrationDto[]> {
     const queryRunner = this.datasource.createQueryRunner();
     let updatedMigrations = [];
@@ -83,7 +84,7 @@ export class MigrationsService {
         .createQueryBuilder()
         .setLock('pessimistic_write')
         .setOnLocked('skip_locked')
-        .limit(10) // Limit to 10 rows
+        .limit(limit) // Limit the number of rows to claim
         .select()
         .from(Migration, 'm')
         .where('m.status = 1') // Created

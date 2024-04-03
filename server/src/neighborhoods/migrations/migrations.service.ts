@@ -120,7 +120,8 @@ export class MigrationsService {
 
   public async claimOneByUuid(
     neighborhoodId: number,
-    uuid: string
+    uuid: string,
+    force: boolean = false
   ): Promise<MigrationDto> {
     const queryRunner = this.datasource.createQueryRunner();
 
@@ -129,17 +130,22 @@ export class MigrationsService {
       await queryRunner.startTransaction();
 
       // Acquire pessimistic write lock
-      const lockedMigration = await queryRunner.manager
+      let lockedMigrationQuery = queryRunner.manager
         .createQueryBuilder()
         .setLock('pessimistic_write')
         .select()
         .limit(1)
         .from(Migration, 'm')
         .where('uuid = :uuid', { uuid })
-        .andWhere('status = 1') // Created
         .innerJoin("m.transaction", "t")
         .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
-        .execute()
+
+      // If force is false, only claim migrations that are in the Created status
+      if (!force) {
+        lockedMigrationQuery = lockedMigrationQuery.andWhere('status = 1') // Created
+      }
+
+      const lockedMigration = await lockedMigrationQuery.execute()
 
       // Verify lock was obtained
       const affectedRows = lockedMigration.length ?? 0;

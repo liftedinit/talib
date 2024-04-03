@@ -102,8 +102,9 @@ export class MigrationsController {
   async claimOne(
     @Param("nid", ParseIntPipe) nid: number,
     @Param("uuid") uuid: string,
+    @Query("force") force?: boolean,
   ): Promise<MigrationDto> {
-    const migration = await this.migrations.claimOneByUuid(nid, uuid);
+    const migration = await this.migrations.claimOneByUuid(nid, uuid, force);
     if (!migration) {
       throw new NotFoundException(`Could not claim migration with UUID ${uuid}`);
     }

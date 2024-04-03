@@ -85,7 +85,6 @@ export class MigrationsService {
       const lockedMigration = await queryRunner.manager
         .createQueryBuilder()
         .setLock('pessimistic_write')
-        .setOnLocked("nowait")
         .select()
         .from(Migration, 'm')
         .where('uuid = :uuid', { uuid })
@@ -94,6 +93,8 @@ export class MigrationsService {
         .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
         .execute()
 
+      // this.logger.debug(`lockedMigration: ${JSON.stringify(lockedMigration)}`);
+
       // Verify lock was obtained
       const affectedRows = lockedMigration.length ?? 0;
       if (affectedRows === 0) {
@@ -101,7 +102,7 @@ export class MigrationsService {
       }
   
       // Update the locked row
-      this.logger.debug(`Updating locked migration row with UUID: ${uuid}`)
+      this.logger.debug("Updating locked migration row with UUID ${uuid}.")
       await queryRunner.manager.update(Migration, { uuid: uuid }, updateMigrationDto);
   
       // Commit the transaction, release the lock

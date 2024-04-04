@@ -77,6 +77,42 @@ export class MigrationsController {
     };
   }
 
+  @Put('claim')
+  @ApiOperation({
+    description: "Claim migrations for a neighborhood",
+  })
+  @ApiOkResponse({
+    type: MigrationDto,
+    isArray: true,
+  })
+  async claimMany(
+    @Param("nid", ParseIntPipe) nid: number,
+    @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<MigrationDto[]> {
+    limit = limit > 100 ? 100 : limit;
+    return await this.migrations.claimMany(nid, limit);
+  }
+
+  @Put('claim/:uuid')
+  @ApiOperation({
+    description: "Claim a single migration for a neighborhood",
+  })
+  @ApiOkResponse({
+    type: MigrationDto,
+    isArray: false,
+  })
+  async claimOne(
+    @Param("nid", ParseIntPipe) nid: number,
+    @Param("uuid") uuid: string,
+    @Query("force") force?: boolean,
+  ): Promise<MigrationDto> {
+    const migration = await this.migrations.claimOneByUuid(nid, uuid, force);
+    if (!migration) {
+      throw new NotFoundException(`Could not claim migration with UUID ${uuid}`);
+    }
+    return migration
+  }
+
   @Put(":uuid") 
   @ApiOperation({
     description: "Update the status of a migration",
@@ -92,11 +128,9 @@ export class MigrationsController {
   ): Promise<UpdateMigrationDto> {
     const migration = await this.migrations.updateOneByUuid(nid, uuid, updateMigrationDto);
     if (!migration) {
-      throw new NotFoundException();
+      throw new NotFoundException(`Could not update migration with UUID ${uuid}`);
     }
 
     return migration;
   }
-
-
 }

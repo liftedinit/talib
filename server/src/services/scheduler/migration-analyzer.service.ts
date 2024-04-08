@@ -55,7 +55,20 @@ export class MigrationAnalyzerService {
 
       this.logger.debug(`Missing migrations for neighborhood ${JSON.stringify(results)}`)
 
-      return results;
+      const q2 = this.txDetailsRepository
+        .createQueryBuilder('td')
+        .select(["td.id", "td.argument", "t.id"])
+        .where("td.method = 'account.multisigExecute'")
+        .andWhere("td.error IS NULL")
+
+      q2.setParameters(subQuery.getParameters());
+
+      const r2 = await q2.getMany();
+
+      this.logger.debug(`Missing migrations for neighborhood 2 ${JSON.stringify(r2)}`)
+
+
+    return results;
     }
 
     async analyzeMigration(

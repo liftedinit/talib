@@ -38,7 +38,7 @@ export class MigrationAnalyzerService {
       .where('m.transactionId = t.id');
 
       // Check for missing migrations for neighborhood
-      const query = await this.txDetailsRepository
+      const query = this.txDetailsRepository
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "t.id"])
         .where("td.argument ->> 'memo' ~* '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'")
@@ -52,6 +52,8 @@ export class MigrationAnalyzerService {
       query.setParameters(subQuery.getParameters());
 
       const results = await query.getMany();
+
+      this.logger.debug(`Missing migrations for neighborhood ${JSON.stringify(results)}`)
 
       return results;
     }

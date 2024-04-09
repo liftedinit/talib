@@ -41,7 +41,8 @@ export class MigrationAnalyzerService {
       const query = this.txDetailsRepository
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "t.id"])
-        .where("td.argument ->> 'memo' ~* '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'")
+        .where("td.argument ->> 'to' = 'maiyg'") // The migration destination address is 'maiyg'
+        .where("td.argument ->> 'memo' ~* :uuidPattern") // The migration transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
         .andWhere("td.method = 'ledger.send'")
         .innerJoinAndSelect('td.transaction', 't')
@@ -61,13 +62,14 @@ export class MigrationAnalyzerService {
         .select('1')
         .where("td2.method = 'account.multisigExecute'")
         .andWhere("td2.error IS NULL")
-        .andWhere("td.result->>'token' = td2.argument->>'token'")
-        .andWhere("td2.transactionId != td.transactionId")
+        .andWhere("td.result->>'token' = td2.argument->>'token'") // Match the token of the multisig submit transaction with the token of the multisig execute transaction
+        .andWhere("td2.transactionId != td.transactionId") // Exclude the same transaction
 
       // Get executed multisig transactions
       const multisigQuery = this.txDetailsRepository
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "td.result"])
+        .where("td.argument ->> 'to' = 'maiyg'") // The migration destination address is 'maiyg'
         .where("td.argument ->> 'memo' ~* :uuidPattern") // The multisig submit transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
         .andWhere("td.method = 'account.multisigSubmitTransaction'")
@@ -125,8 +127,6 @@ export class MigrationAnalyzerService {
       this.logger.debug(`Migration with transaction ${JSON.stringify(transactionDetails.transaction.id)} already exists. Skipping...`);
       return existingMigration;
     }
-
-    // @TODO - check that destination address of transaction was maiyg anonymous address
 
     try {
 

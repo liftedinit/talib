@@ -55,20 +55,39 @@ export class MigrationAnalyzerService {
 
       this.logger.debug(`Missing migrations for neighborhood ${JSON.stringify(results)}`)
 
+      // Subquery to get multisigExecute transactions matching the token of a multisigSubmit transaction
+      const sub2 = this.txDetailsRepository
+        .createQueryBuilder('td2')
+        .select('1')
+        .innerJoin('td2.transaction', 't2')
+        .where("td2.method = 'account.multisigExecute'")
+        .andWhere("td2.error IS NULL")
+        .andWhere("td.result->>'token' = td2.argument->>'token'")
+        .andWhere("td2.transactionId != td.transactionId")
+
+      // Get executed multisig transactions
       const q2 = this.txDetailsRepository
         .createQueryBuilder('td')
-        .select(["td.id", "td.argument", "t.id"])
-        .where("td.method = 'account.multisigExecute'")
+        .select(["td.id", "td.argument", "td.result", "t.id"])
+        .where("td.argument ->> 'memo' ~* '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'") // The multisig submit transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
+        .andWhere("td.method = 'account.multisigSubmitTransaction'")
+        .innerJoinAndSelect('td.transaction', 't')
+        .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhood.id })
+        .andWhere(`EXISTS (${sub2.getQuery()})`) // Return only transactions that have a corresponding multisigExecute transaction that matches the multisig submit token
+        .andWhere(`NOT EXISTS (${subQuery.getQuery()})`);
 
       q2.setParameters(subQuery.getParameters());
+      q2.setParameters(sub2.getParameters());
 
       const r2 = await q2.getMany();
 
-      this.logger.debug(`Missing migrations for neighborhood 2 ${JSON.stringify(r2)}`)
+      this.logger.debug(`Missing migrations for neighborhood (multisig) ${JSON.stringify(r2)}`)
 
+      // Append the results of the second query to the first query
+      results.push(...r2);
 
-    return results;
+      return results;
     }
 
     async analyzeMigration(

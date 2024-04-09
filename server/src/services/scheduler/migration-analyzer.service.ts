@@ -42,7 +42,7 @@ export class MigrationAnalyzerService {
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "t.id"])
         .where("td.argument ->> 'to' = 'maiyg'") // The migration destination address is 'maiyg'
-        .where("td.argument ->> 'memo' ~* :uuidPattern") // The migration transaction has a memo that is a UUID
+        .andWhere("td.argument ->> 'memo' ~* :uuidPattern") // The migration transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
         .andWhere("td.method = 'ledger.send'")
         .innerJoinAndSelect('td.transaction', 't')
@@ -70,7 +70,7 @@ export class MigrationAnalyzerService {
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "td.result"])
         .where("td.argument ->> 'to' = 'maiyg'") // The migration destination address is 'maiyg'
-        .where("td.argument ->> 'memo' ~* :uuidPattern") // The multisig submit transaction has a memo that is a UUID
+        .andWhere("td.argument ->> 'memo' ~* :uuidPattern") // The multisig submit transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
         .andWhere("td.method = 'account.multisigSubmitTransaction'")
         .innerJoinAndSelect('td.transaction', 't')

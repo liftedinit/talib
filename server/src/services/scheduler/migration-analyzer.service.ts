@@ -30,6 +30,8 @@ export class MigrationAnalyzerService {
     neighborhood: Neighborhood,
     ): Promise<TransactionDetails[]> {
 
+      const uuidPattern = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+      const illegalAddress = 'maiyg'
 
       // Filter out transactions that are already in migrations table 
       const subQuery = this.migrationRepository
@@ -41,7 +43,7 @@ export class MigrationAnalyzerService {
       const query = this.txDetailsRepository
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "t.id"])
-        .where("td.argument ->> 'to' = 'maiyg'") // The migration destination address is 'maiyg'
+        .where("td.argument ->> 'to' = :illegalAddress") // The migration destination address is the illeral address
         .andWhere("td.argument ->> 'memo' ~* :uuidPattern") // The migration transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
         .andWhere("td.method = 'ledger.send'")
@@ -50,7 +52,7 @@ export class MigrationAnalyzerService {
         .andWhere(`NOT EXISTS (${subQuery.getQuery()})`);
 
       // Set params of main query to be the same as sub query
-      query.setParameters(subQuery.getParameters());
+      query.setParameters({...subQuery.getParameters(), uuidPattern, illegalAddress });
 
       const results = await query.getMany();
 
@@ -69,7 +71,7 @@ export class MigrationAnalyzerService {
       const multisigQuery = this.txDetailsRepository
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "td.result"])
-        .where("td.argument ->> 'to' = 'maiyg'") // The migration destination address is 'maiyg'
+        .where("td.argument -> 'transaction' -> 'argument' ->> 'to' = :illegalAddress") // The migration destination address the illegal address (inner transaction)
         .andWhere("td.argument ->> 'memo' ~* :uuidPattern") // The multisig submit transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
         .andWhere("td.method = 'account.multisigSubmitTransaction'")
@@ -80,7 +82,8 @@ export class MigrationAnalyzerService {
 
       multisigQuery.setParameters({ ...subQuery.getParameters(),
         ...multisigExecSubQuery.getParameters(),
-        uuidPattern: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' });
+        uuidPattern,
+        illegalAddress});
 
       const r2 = await multisigQuery.getMany();
 

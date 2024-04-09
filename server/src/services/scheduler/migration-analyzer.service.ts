@@ -72,6 +72,8 @@ export class MigrationAnalyzerService {
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "td.result"])
         .where("td.argument -> 'transaction' -> 'argument' ->> 'to' = :illegalAddress") // The migration destination address the illegal address (inner transaction)
+        .andWhere("td.argument -> 'transaction' ->> 'method' = 'ledger.send'") // The migration inner transaction is a ledger send
+        .andWhere("td.argument -> 'transaction' -> 'argument' ->> 'memo' ~* :uuidPattern") // The migration inner transaction has a memo that is a UUID
         .andWhere("td.argument ->> 'memo' ~* :uuidPattern") // The multisig submit transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
         .andWhere("td.method = 'account.multisigSubmitTransaction'")

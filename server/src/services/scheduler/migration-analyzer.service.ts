@@ -30,6 +30,8 @@ export class MigrationAnalyzerService {
     neighborhood: Neighborhood,
     ): Promise<TransactionDetails[]> {
 
+      const uuidPattern = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+      const illegalAddress = 'maiyg'
 
       // Filter out transactions that are already in migrations table 
       const subQuery = this.migrationRepository
@@ -38,10 +40,11 @@ export class MigrationAnalyzerService {
       .where('m.transactionId = t.id');
 
       // Check for missing migrations for neighborhood
-      const query = await this.txDetailsRepository
+      const query = this.txDetailsRepository
         .createQueryBuilder('td')
         .select(["td.id", "td.argument", "t.id"])
-        .where("td.argument ->> 'memo' ~* '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'")
+        .where("td.argument ->> 'to' = :illegalAddress") // The migration destination address is the illeral address
+        .andWhere("td.argument ->> 'memo' ~* :uuidPattern") // The migration transaction has a memo that is a UUID
         .andWhere("td.error IS NULL")
         .andWhere("td.method = 'ledger.send'")
         .innerJoinAndSelect('td.transaction', 't')
@@ -49,9 +52,47 @@ export class MigrationAnalyzerService {
         .andWhere(`NOT EXISTS (${subQuery.getQuery()})`);
 
       // Set params of main query to be the same as sub query
-      query.setParameters(subQuery.getParameters());
+      query.setParameters({...subQuery.getParameters(), uuidPattern, illegalAddress });
 
       const results = await query.getMany();
+
+      this.logger.debug(`Missing migrations for neighborhood ${JSON.stringify(results)}`)
+
+      // Subquery to get multisigExecute transactions matching the token of a multisigSubmit transaction
+      const multisigExecSubQuery = this.txDetailsRepository
+        .createQueryBuilder('td2')
+        .select('1')
+        .where("td2.method = 'account.multisigExecute'")
+        .andWhere("td2.error IS NULL")
+        .andWhere("td.result->>'token' = td2.argument->>'token'") // Match the token of the multisig submit transaction with the token of the multisig execute transaction
+        .andWhere("td2.transactionId != td.transactionId") // Exclude the same transaction
+
+      // Get executed multisig transactions
+      const multisigQuery = this.txDetailsRepository
+        .createQueryBuilder('td')
+        .select(["td.id", "td.argument", "td.result"])
+        .where("td.argument -> 'transaction' -> 'argument' ->> 'to' = :illegalAddress") // The migration destination address the illegal address (inner transaction)
+        .andWhere("td.argument -> 'transaction' ->> 'method' = 'ledger.send'") // The migration inner transaction is a ledger send
+        .andWhere("td.argument -> 'transaction' -> 'argument' ->> 'memo' ~* :uuidPattern") // The migration inner transaction has a memo that is a UUID
+        .andWhere("td.argument ->> 'memo' ~* :uuidPattern") // The multisig submit transaction has a memo that is a UUID
+        .andWhere("td.error IS NULL")
+        .andWhere("td.method = 'account.multisigSubmitTransaction'")
+        .innerJoinAndSelect('td.transaction', 't')
+        .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhood.id })
+        .andWhere(`EXISTS (${multisigExecSubQuery.getQuery()})`) // Return only transactions that have a corresponding multisigExecute transaction that matches the multisig submit token
+        .andWhere(`NOT EXISTS (${subQuery.getQuery()})`);
+
+      multisigQuery.setParameters({ ...subQuery.getParameters(),
+        ...multisigExecSubQuery.getParameters(),
+        uuidPattern,
+        illegalAddress});
+
+      const r2 = await multisigQuery.getMany();
+
+      this.logger.debug(`Missing migrations for neighborhood (multisig) ${JSON.stringify(r2)}`)
+
+      // Append the results of the second query to the first query
+      results.push(...r2);
 
       return results;
     }
@@ -91,8 +132,6 @@ export class MigrationAnalyzerService {
       this.logger.debug(`Migration with transaction ${JSON.stringify(transactionDetails.transaction.id)} already exists. Skipping...`);
       return existingMigration;
     }
-
-    // @TODO - check that destination address of transaction was maiyg anonymous address
 
     try {
 

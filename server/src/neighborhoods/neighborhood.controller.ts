@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -19,6 +20,8 @@ import { NeighborhoodService } from "./neighborhood.service";
 
 @Controller("neighborhoods")
 export class NeighborhoodController {
+  private readonly logger = new Logger(NeighborhoodController.name);
+
   constructor(private neighborhood: NeighborhoodService) {}
 
   @Public()
@@ -59,5 +62,12 @@ export class NeighborhoodController {
   @Delete(":nid")
   async remove(@Param("nid", ParseIntPipe) nid: number): Promise<void> {
     await this.neighborhood.removeById(nid);
+  }
+
+  @Delete("reset/:nid")
+  async reset(@Param("nid", ParseIntPipe) nid: number): Promise<void> {
+    const n = await this.neighborhood.get(nid)
+
+    await this.neighborhood.resetNeighborhood(nid, n);
   }
 }

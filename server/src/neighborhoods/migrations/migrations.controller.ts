@@ -126,6 +126,10 @@ export class MigrationsController {
     @Param("uuid") uuid: string,
     @Body() updateMigrationDto: Partial<UpdateMigrationDto>
   ): Promise<UpdateMigrationDto> {
+
+    // const promises = Array.from({ length: 10 }, () => this.migrations.updateOneByUuid(nid, uuid, updateMigrationDto));
+    // const migrations = await Promise.all(promises);
+
     const migration = await this.migrations.updateOneByUuid(nid, uuid, updateMigrationDto);
     if (!migration) {
       throw new NotFoundException(`Could not update migration with UUID ${uuid}`);

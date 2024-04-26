@@ -155,7 +155,7 @@ export class MigrationsService {
       }
 
       // Update the locked row
-      await queryRunner.manager.update(Migration, { uuid: uuid }, { status: 2, error: undefined }); // Claimed
+      await queryRunner.manager.update(Migration, { uuid: uuid }, { status: 2, error: null }); // Claimed
 
       // Commit the transaction, release the lock
       await queryRunner.commitTransaction();

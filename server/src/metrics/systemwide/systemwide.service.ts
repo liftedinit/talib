@@ -63,6 +63,42 @@ export class SystemWideService {
     return sumTotal;
   }
 
+  // Get the total addresses produced from all networks
+  async getTotalAddresses(): Promise<Current> { 
+    const query = `
+    SELECT COUNT(DISTINCT address) AS unique_addresses_count
+    FROM (
+      SELECT json_data.argument->>'address' AS address
+      FROM public.transaction_details AS json_data
+      
+      UNION
+      
+      SELECT json_data.argument->>'account' AS address
+      FROM public.transaction_details AS json_data
+      
+      UNION
+      
+      SELECT json_data.argument->>'from' AS address
+      FROM public.transaction_details AS json_data
+    ) AS addresses
+    WHERE address IS NOT NULL
+    `;
+
+    const values = await this.dataSource.query(query);
+
+    if (!values) {
+      return null;
+    }
+
+    const addressesTotal = {
+      name: "totaladdresses",
+      timestamp: new Date().toISOString(),
+      data: values[0].unique_addresses_count,
+    };
+
+    return addressesTotal;
+  }
+
   // Get the total transactions from all networks
   async getTotalTransactions(): Promise<Current> {
     const query = this.transactionRepository
@@ -133,6 +169,8 @@ export class SystemWideService {
       entity.timestamp = new Date(metricValue.timestamp);
       entity.data = metricValue.data;
 
+      this.logger.debug(`seeding system wide metric: ${entity.name}`);
+
       return await this.systemWideMetricRepository.save(entity);
     }
   }
@@ -153,9 +191,13 @@ export class SystemWideService {
 
   // Update all SystemWideMetrics
   async updateSystemWideMetrics() {
+
+    this.logger.debug(`updating system wide metrics`);
+
     const systemWideMetrics: SystemWideMetricType[] = [
       {name: 'totalblocks', query: 'getTotalBlocks'},
-      {name: 'totaltransactions', query: 'getTotalTransactions'}
+      {name: 'totaltransactions', query: 'getTotalTransactions'},
+      {name: 'totaladdresses', query: 'getTotalAddresses'},
     ]
 
     await this.seedSystemWideMetrics(systemWideMetrics);

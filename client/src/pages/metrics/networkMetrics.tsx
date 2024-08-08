@@ -174,8 +174,8 @@ export function NetworkMetrics() {
           <MetricChart label="Total Objects" type="area" metric="totalobjects" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="Objects" />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Used Object Storage" metric="usedobjectstorage" conversion={convertBytesToMb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="MB" />
-          <MetricChart label="Used Object Storage" type="area" metric="usedobjectstorage" conversion={convertBytesToMb} from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="MB" />
+          <MetricStat label="Used Object Storage" metric="usedobjectstorage" conversion={convertBytesToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="GB" />
+          <MetricChart label="Used Object Storage" type="area" metric="usedobjectstorage" conversion={convertBytesToGb} from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Buckets" metric="totalbuckets" from={"now-1d"} to={"now"} fixedDecimals={5} unit="Buckets" />

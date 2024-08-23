@@ -86,7 +86,7 @@ export function NetworkMetrics() {
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >GPU</Heading>
-      <SimpleGrid id="ai" columns={{ base: 1, sm: 1, md: 2, lg: 4 }} gap="6" mt={2}>
+      <SimpleGrid id="ai" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total GPUs" metric="totalgpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
           <MetricChart label="Total GPUs" type="area" metric="totalgpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
@@ -95,10 +95,10 @@ export function NetworkMetrics() {
           <MetricStat label="Total Nvidia GPUs" metric="totalnvidiagpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
           <MetricChart label="Total Nvidia GPUs" type="area" metric="totalnvidiagpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
         </Box>
-        <Box backgroundColor="transparent">
+        {/* <Box backgroundColor="transparent">
           <MetricStat label="Total CUDA Cores" metric="totalcudacores" from={"now-1d"} to={"now"} fixedDecimals={5} unit="Cores" />
           <MetricChart label="Total CUDA Cores" type="area" metric="totalcudacores" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="Cores" />
-        </Box>
+        </Box> */}
         <Box backgroundColor="transparent">
           <MetricStat label="Total AMD GPUs" metric="totalamdgpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
           <MetricChart label="Total AMD GPUs" type="area" metric="totalamdgpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />

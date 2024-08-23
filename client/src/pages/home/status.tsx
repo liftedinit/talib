@@ -13,9 +13,10 @@ export function NeighborhoodStatus({ id }: { id: number }) {
     },
   );
 
+  const name = query.data?.name;
   const height = query.data?.latestBlockHeight.toLocaleString();
   const txnCount = query.data?.totalTransactionCount.toLocaleString();
-  const status = query.isError ? "Unavailable" : "Available";
+  const status = query.isError || (name && name.includes("Legacy")) ? "Inactive" : "Available";
 
   return (
     <>

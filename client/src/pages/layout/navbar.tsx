@@ -13,8 +13,12 @@ import { Search, DarkModeToggle, TopNav } from "ui";
 import { useBgColor } from "utils";
 import { NeighborhoodSelector } from "./selector";
 
-const navItems = [
-  { label: "Blocks", link: "/" },
+const navItems = [  
+  { label: "Blocks", link: "/", dropdownItems: [
+    { label: "Transactions", link: "/transactions" },
+    { label: "Migrations", link: "/migrations" },
+  ],
+  },
   { label: "Metrics", link: "/metrics"},
   { label: "Map", link: "/map" },
 ];

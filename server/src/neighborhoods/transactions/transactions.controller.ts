@@ -8,7 +8,7 @@ import {
   ParseIntPipe,
   Query,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation, ApiResponse, ApiParam } from "@nestjs/swagger";
 import { Pagination } from "nestjs-typeorm-paginate";
 import {
   TransactionDetailsDto,
@@ -51,6 +51,7 @@ export class TransactionsController {
   @ApiOperation({
     description: "Show the details of a single transaction.",
   })
+  @ApiParam({ name: 'thash', type: 'string', description: 'Transaction hash' })
   @ApiOkResponse({
     type: TransactionDetailsDto,
     isArray: true,

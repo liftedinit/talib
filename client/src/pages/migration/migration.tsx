@@ -1,31 +1,32 @@
-import { Alert, AlertIcon, Box, Heading, Text } from "@liftedinit/ui";
+import { Alert, AlertIcon, Box, Code, Center, Spinner, Heading, Text } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getNeighborhoodTransaction, NeighborhoodContext } from "api";
+
+import { getNeighborhoodMigration, NeighborhoodContext } from "api";
 import { ObjectTable, QueryBox, TableObject, ExpandCode } from "ui";
-import { basics, details } from ".";
+import { migrationDetails as details, status } from ".";
 
-import { useBgColor, useTextColor } from "utils";
+import { useBgColor, useAltTextColor } from "utils";
 
-export function Transaction() {
+export function Migration() {
   const { id } = useContext(NeighborhoodContext);
   const { hash } = useParams();
 
   const [alertVisible, setAlertVisible] = useState(false);
 
   const query = useQuery(
-    ["neighborhoods", id, "transactions", hash],
-    getNeighborhoodTransaction(id, hash as string),
+    ["neighborhoods", id, "migrations", hash],
+    getNeighborhoodMigration(id, hash as string),
   );
   const { data, isError, isSuccess } = query;
 
-  // Start with transaction basics
-  let txn: TableObject = data ? basics(data) : {};
+  // Start with migration basics
+  let migration: TableObject = data ? data : {};
 
-  // Add details if they're populated
-  if (data?.argument) {
-    txn = { ...txn, ...details(data) };
+  // Add status if populated and expand details
+  if (data?.status) {
+    migration = { ...status(data), ...details(data) };
   }
 
   useEffect(() => {
@@ -38,16 +39,7 @@ export function Transaction() {
   }, [isError, isSuccess]);
 
   const bg = useBgColor();
-  const textColor = useTextColor();
-
-  // Add request and response (in CBOR) at the end
-  txn = data
-    ? {
-        ...txn,
-        Request: <ExpandCode content={data.request} />,
-        Response: <ExpandCode content={data.response} />,
-      }
-    : txn;
+  const textColor = useAltTextColor();
 
   return (
     <Box my={6} bg={bg} p={6}>
@@ -55,18 +47,20 @@ export function Transaction() {
         <Text as={Link} color="brand.teal.500" to="/">
           Home
         </Text>{" "}
-        / Transaction Details
+        / Migration Details
       </Heading>
       { alertVisible ? (
         <Box bg="white" my={6}>
-            <Alert status='error' textColor={textColor}>
+            <Alert status='warning'>
                 <AlertIcon />
-                Transaction not found
+                <Text color={textColor}>
+                Migration not found
+                </Text>
             </Alert>
         </Box>
       ) : (
       <QueryBox query={query}>
-        <ObjectTable obj={txn} />
+        <ObjectTable obj={migration} />
       </QueryBox>
       )}
     </Box>

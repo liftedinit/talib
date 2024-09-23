@@ -8,7 +8,7 @@ import {
   ParseIntPipe,
   Query,
 } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiResponse, ApiParam } from "@nestjs/swagger";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { AddressDto } from "../../dto/address.dto";
 import { EventDto } from "../../dto/event.dto";
@@ -40,6 +40,7 @@ export class AddressesController {
     status: 200,
     type: AddressDto,
   })
+  @ApiParam({ name: 'address', type: 'string', description: 'Address' })
   async findOne(
     @Param("nid", ParseIntPipe) nid: number,
     @Param("address", ParseAddressPipe) address: Address,
@@ -59,6 +60,7 @@ export class AddressesController {
     type: TransactionDto,
     isArray: true,
   })
+  @ApiParam({ name: 'address', type: 'string', description: 'Address' })
   async findTransactions(
     @Param("nid", ParseIntPipe) nid: number,
     @Param("address", ParseAddressPipe) address: Address,
@@ -83,6 +85,7 @@ export class AddressesController {
     type: EventDto,
     isArray: true,
   })
+  @ApiParam({ name: 'address', type: 'string', description: 'Address' })
   async findEvents(
     @Param("nid", ParseIntPipe) nid: number,
     @Param("address", ParseAddressPipe) address: Address,
@@ -107,6 +110,7 @@ export class AddressesController {
     type: Number,
     isArray: true,
   })
+  @ApiParam({ name: 'address', type: 'string', description: 'Address' })
   async findBalances(
     @Param("nid", ParseIntPipe) nid: number,
     @Param("address", ParseAddressPipe) address: Address,

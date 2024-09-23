@@ -1,5 +1,17 @@
 # Talib Blockchain Explorer for MANY Protocol
 
+# Development 
+
+To start the instance for local dev simply run docker-compose:
+`docker-compose up`
+
+### Development Config: 
+- You will need a many ledger or kvstore chain to sync blocks.
+- Follow the login steps below and add a network to sync.
+
+### Documentation
+Swagger REST API documentation is availabe at /api. 
+
 # Login
 All modifying endpoints to the Talib server are protected by a password. Currently, there is no update frontend that would allow you to login and make modifications, so a user would have to login manually via the command line and use the JWT token to make requests.
 

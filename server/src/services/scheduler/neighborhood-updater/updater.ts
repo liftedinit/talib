@@ -1,19 +1,23 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { MigrationsService } from "../../../neighborhoods/migrations/migrations.service";
 import { Repository } from "typeorm";
 import { SchedulerConfigService } from "../../../config/scheduler/configuration.service";
 import { Event } from "../../../database/entities/event.entity";
 import { Neighborhood } from "../../../database/entities/neighborhood.entity";
 import { TransactionDetails } from "../../../database/entities/transaction-details.entity";
 import { Transaction } from "../../../database/entities/transaction.entity";
+import { Migration } from "../../../database/entities/migration.entity";
 import { BlockService } from "../../../neighborhoods/blocks/block.service";
 import { EventsService } from "../../../neighborhoods/events/events.service";
+import { TokensService } from "../../../neighborhoods/tokens/tokens.service";
 import { NeighborhoodService } from "../../../neighborhoods/neighborhood.service";
 import { TransactionsService } from "../../../neighborhoods/transactions/transactions.service";
 import { getAllAddressesOf } from "../../../utils/cbor-parsers";
 import { bufferToHex } from "../../../utils/convert";
 import { getAnalyzerClass } from "../../../utils/protocol/attributes";
-import { NetworkService } from "../../network.service";
+import { NetworkService, NetworkType } from "../../network.service";
+import { MigrationAnalyzerService } from "../migration-analyzer.service";
 import { TxAnalyzerService } from "../tx-analyzer.service";
 
 @Injectable()
@@ -28,9 +32,14 @@ export class NeighborhoodUpdater {
     private block: BlockService,
     private transaction: TransactionsService,
     private events: EventsService,
+    private tokens: TokensService,
+    private migrations: MigrationsService,
     private txAnalyzer: TxAnalyzerService,
+    private migrationAnalyzer: MigrationAnalyzerService,
     @InjectRepository(TransactionDetails)
     private txDetailsRepository: Repository<TransactionDetails>,
+    @InjectRepository(Migration)
+    private migrationRepository: Repository<Migration>,
   ) {}
 
   with(n: Neighborhood) {
@@ -113,6 +122,31 @@ export class NeighborhoodUpdater {
     }
   }
 
+  private async updateNeighborhoodMissingMigrations(
+    neighborhood: Neighborhood,
+  ) {
+
+    // Find potential migrations for neighborhood
+    const potentialMigrations = 
+      await this.migrationAnalyzer.missingMigrationForNeighborhood(
+        neighborhood,
+      );
+
+    // For each migration analyze and process up to 10 at a time
+    const migrationQueue = potentialMigrations.slice(0, 10).map(tx => {
+      this.logger.debug(`potentialMigration id for neighborhood (${neighborhood.id}): ${tx.transaction.id}`);
+      return this.migrationAnalyzer.analyzeMigration(neighborhood, tx);
+    });
+
+    await Promise.all(migrationQueue);
+
+    // For each migration analyze and process
+    for (const tx of potentialMigrations) {
+      this.logger.debug(`potentialMigration id for neighborhood (${neighborhood.id}): ${tx.transaction.id}`);
+      return await this.migrationAnalyzer.analyzeMigration(neighborhood, tx);
+    }
+  }
+
   private async checkIfNeighborhoodHasBeenReset(neighborhood: Neighborhood) {
     const genesisHash = await this.block.getGenesisBlockHash(neighborhood);
     if (!genesisHash) {
@@ -174,6 +208,7 @@ export class NeighborhoodUpdater {
       await Promise.all(
         batch.map(async (height) => {
           const blockInfo = await network.blockchain.blockByHeight(height);
+          this.logger.debug(`blockInfo: ${JSON.stringify(blockInfo)}`)
           await this.block.createFromManyBlock(neighborhood, blockInfo);
         }),
       );
@@ -188,18 +223,101 @@ export class NeighborhoodUpdater {
     );
   }
 
+  private async getNetworkType(neighborhoodType: string): Promise<NetworkType> {
+    if (neighborhoodType.includes("many-ledger")) {
+      return "ledger"
+    } else if (neighborhoodType.includes("many-kvstore")) {
+      return "kvstore"
+    } else {
+      return undefined
+    }
+  }
+
+  private async updateNeighborhoodMissingTokens(
+    neighborhood: Neighborhood,
+    networkType?: string) {
+
+    try { 
+      const existingTokens = await this.tokens.getAllTokens(neighborhood);
+      const network = await this.network.forUrl(neighborhood.url, networkType);
+      const ledgerInfo = await network.ledger.info();
+
+      // Locate missing tokens 
+      const missingTokens = ledgerInfo.symbols.filter(symbol => 
+        !existingTokens.some(existingToken => existingToken.address.toString() === symbol.address)
+      );
+
+      this.logger.debug(`missingTokens: ${JSON.stringify(missingTokens)}`)
+
+      // Create token entities for missing tokens
+      if (missingTokens.length > 0) {
+        this.logger.debug(
+          `Adding ${missingTokens.length} tokens to neighborhood ${neighborhood.id}`,
+        );
+        for (const t of missingTokens) {
+          await this.tokens.addToken(neighborhood, t);
+        }
+      }
+
+    } catch (error) {
+      this.logger.error(`Error: ${error.message}`);
+    }
+  }
+
   async run() {
     const n = this.n;
+
+    // Retrieve network type
+    const nType = await this.getNetworkType(n.serverName);
+
+    // If we can't check if neighborhood has been reset, we probably won't be
+    // able to check anything, so just skip blocks too.
+    // try {
+    //   await this.checkIfNeighborhoodHasBeenReset(n);
+    //   await this.updateNeighborhoodEarliestMissingBlocks(n);
+    //   await this.updateNeighborhoodMissingEvents(n);
+    //   if (nType == "ledger") {
+    //     await this.updateNeighborhoodMissingTokens(n, nType);
+    //   }
+    // } catch (e) {
+    //   this.logger.log(
+    //     `Error happened while updating neighborhood blocks for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+    //   );
+    // }
+
+    try {
+      await this.checkIfNeighborhoodHasBeenReset(n);
+    } catch (e) {
+      this.logger.error(
+        `Error happened while checking if neighborhood has been reset for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+      );
+    }
 
     // If we can't check if neighborhood has been reset, we probably won't be
     // able to check anything, so just skip blocks too.
     try {
-      await this.checkIfNeighborhoodHasBeenReset(n);
       await this.updateNeighborhoodEarliestMissingBlocks(n);
+    } catch (e) {
+      this.logger.error(
+        `Error happened while updating neighborhood blocks for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+      );
+    }
+
+    try {
       await this.updateNeighborhoodMissingEvents(n);
     } catch (e) {
-      this.logger.log(
-        `Error happened while updating neighborhood blocks for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+      this.logger.error(
+        `Error happened while updating neighborhood events for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
+      );
+    }
+
+    try {
+      if (nType == "ledger") {
+        await this.updateNeighborhoodMissingTokens(n, nType);
+      }
+    } catch (e) {
+      this.logger.error(
+        `Error happened while updating neighborhood tokens for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
       );
     }
 
@@ -211,6 +329,16 @@ export class NeighborhoodUpdater {
       this.logger.error(
         `Error happened while updating transaction details:\n${e.stack}`,
       );
+    }
+
+    if (nType == "ledger") {
+      try {
+        await this.updateNeighborhoodMissingMigrations(n);
+      } catch (e) {
+        this.logger.error(
+          `Error happened while updating migration details:\n${e.stack}`,
+        );
+      }
     }
   }
 }

@@ -13,9 +13,24 @@ import { Event } from "../../database/entities/event.entity";
 import { TransactionDetails } from "../../database/entities/transaction-details.entity";
 import { Transaction } from "../../database/entities/transaction.entity";
 import { AddressDto } from "../../dto/address.dto";
+import { TransactionDto } from "../../dto/transaction.dto";
+import { EventDto } from "../../dto/event.dto";
 import { NetworkService } from "../../services/network.service";
 import { TxAnalyzerService } from "../../services/scheduler/tx-analyzer.service";
 import { EventsService } from "../events/events.service";
+
+export interface PaginatedAddressDto {
+  address: string;
+  transactions: {
+    items: TransactionDto[];
+    meta: any;
+  };
+  events: {
+    items: EventDto[];
+    meta: any;
+  };
+}
+
 
 @Injectable()
 export class AddressesService {
@@ -81,15 +96,21 @@ export class AddressesService {
     nid: number,
     address: Address,
     txOptions: IPaginationOptions,
-    evOptions = txOptions,
-  ): Promise<AddressDto> {
+    evOptions: IPaginationOptions = txOptions,
+  ): Promise<PaginatedAddressDto> {
     const transactions = await this.findTransactions(nid, address, txOptions);
     const events = await this.findEvents(nid, address, evOptions);
-
+  
     return {
       address: address.toString(),
-      transactions: transactions.items.map((t) => t.intoDto()),
-      events: events.items.map((e) => e.intoDto()),
+      transactions: {
+        items: transactions.items.map((t) => t.intoDto()),
+        meta: transactions.meta,
+      },
+      events: {
+        items: events.items.map((e) => e.intoDto() as EventDto),
+        meta: events.meta,
+      },
     };
   }
 

@@ -15,6 +15,7 @@ import { EventDto } from "../../dto/event.dto";
 import { TransactionDto } from "../../dto/transaction.dto";
 import { ParseAddressPipe } from "../../utils/pipes";
 import { AddressesService } from "./addresses.service";
+import { PaginatedAddressDto } from "./addresses.service";
 
 const maxLimit = 1000;
 
@@ -44,8 +45,10 @@ export class AddressesController {
   async findOne(
     @Param("nid", ParseIntPipe) nid: number,
     @Param("address", ParseAddressPipe) address: Address,
-  ): Promise<AddressDto> {
-    const a = await this.address.findOne(nid, address, { page: 1, limit: 100 });
+    @Query("page", new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query("limit", new DefaultValuePipe(100), ParseIntPipe) limit = 100,
+  ): Promise<PaginatedAddressDto> {
+    const a = await this.address.findOne(nid, address, { page, limit });
 
     if (!a) {
       throw new NotFoundException();

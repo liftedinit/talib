@@ -61,7 +61,9 @@ export class MigrationsService {
       .createQueryBuilder("m")
       .select(["m"])
       .innerJoin("m.transaction", "t")
-      .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId });
+      .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
+      .orderBy("m.createdDate", "DESC");
+      
 
     if (status) {
       query = query.andWhere("m.status = :status", { status });

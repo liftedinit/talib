@@ -30,7 +30,7 @@ export function NeighborhoodProvider({ children }: { children: ReactNode }) {
 
   const tokensQuery = useQuery(
     ["neighborhoods", id, "tokens"],
-    getNeighborhoodTokens(id),
+    getNeighborhoodTokens(id, {page: 1, limit: 100}),
   );
 
   const { data, isError, isSuccess} = tokensQuery;

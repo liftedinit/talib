@@ -45,7 +45,15 @@ export class EventsService {
   }
 
   public async save(entities: EventEntity[]): Promise<void> {
-    await this.eventRepository.save(entities);
+    await Promise.all(
+      entities.map(async (entity) => {
+        try {
+          await this.eventRepository.save(entity);
+        } catch (error) {
+          this.logger.error(`Error occurred while saving event: ${JSON.stringify(entity)}, ${error}, eventId: ${JSON.stringify(entity.eventId)}`);
+        }
+      })
+    );
   }
 
   async findWithAddress(

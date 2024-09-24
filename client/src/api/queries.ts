@@ -37,8 +37,12 @@ export function getNeighborhoodTransaction(id: number, hash: string) {
   return get(`neighborhoods/${id}/transactions/${hash}`);
 }
 
-export function getNeighborhoodAddress(id: number, address: string) {
-  return get(`neighborhoods/${id}/addresses/${address}`);
+export function getNeighborhoodAddress(
+  id: number, 
+  address: string,
+  { page = PAGE, limit = LIMIT } = {}
+) {
+  return get(`neighborhoods/${id}/addresses/${address}`, { page, limit });
 }
 
 export function getNeighborhoodMigrations(

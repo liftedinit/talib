@@ -6,7 +6,6 @@ interface token  {
   symbol: string,
   address: string,
   precision: number
-
 }
 
 export const MFX_TOKEN = {
@@ -28,12 +27,14 @@ export function useFindToken(address: string) {
 
   let KNOWN_TOKENS: token[] = context.tokens
 
+  console.log(`context.tokens: ${JSON.stringify(context.tokens)}`);
+
   // Check if there are tokens otherwise configure default to MFX 
   if (KNOWN_TOKENS === undefined || KNOWN_TOKENS.length === 0) {
     KNOWN_TOKENS = [MFX_TOKEN];
-} else {
+  } else {
     KNOWN_TOKENS = context.tokens;
-}
+  }
 
   return KNOWN_TOKENS?.find((t) => t.address === address) ?? UNKNOWN_TOKEN;
 }

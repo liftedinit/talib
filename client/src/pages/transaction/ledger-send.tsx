@@ -24,9 +24,9 @@ export function useLedgerSend(data: any) {
         {data.argument.to}
       </Code>
     ),
-    Amount: `${(
+    Amount: `${parseFloat((
       data.argument.amount /
       10 ** token.precision
-    ).toLocaleString()} ${token.symbol}`,
+    ).toFixed(token.precision).toLocaleString())} ${token.symbol}`,
   };
 }

@@ -4,16 +4,17 @@ import { useFindToken } from "./tokens";
 
 export function useTokensMintBurn(data: any) {
   const token = useFindToken(data.argument.symbol);
+
   return {
     Token: (
       <Code as={Link} to={`/addresses/${token.address}`} color="brand.teal.500">
-        {data.argument.symbol}
+        {data.argument.symbol} 
       </Code>
     ),
     Amounts: (
       <Table variant="unstyled">
         <Tbody>
-          {Object.entries(data.argument.amounts).map(([address, amount]) => (
+        {Object.entries(data.argument.amounts).map(([address, amount]) => (
             <Tr mt="5px" mb="5px">
               <Td pt="5px" pb="5px" pl="0" ps="0">
                 <Code
@@ -28,8 +29,7 @@ export function useTokensMintBurn(data: any) {
                 {(
                   parseInt(amount as string) /
                   10 ** token.precision
-                ).toLocaleString()}{" "}
-                {token.symbol}
+                ).toLocaleString()} {token.symbol}
               </Td>
             </Tr>
           ))}

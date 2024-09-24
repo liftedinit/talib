@@ -60,6 +60,7 @@ export class NeighborhoodUpdater {
       // Lower bound on eventID exclusive.
       new Map([[3, new Map([[0, [1, latestEventId]]])]]),
     );
+    this.logger.debug(`Got ${events.events.length} events`);
 
     await this.events.save(
       events.events.map((ev) => {
@@ -77,21 +78,6 @@ export class NeighborhoodUpdater {
       }),
     );
 
-    console.log(
-      JSON.stringify(
-        events.events
-          .map((ev) => {
-            return {
-              ...ev,
-              id: bufferToHex(ev.id),
-              time: ev.time.toISOString(),
-            };
-          })
-          .filter((ev) => ev.info === null),
-        null,
-        2,
-      ),
-    );
   }
 
   private async updateNeighborhoodMissingTransactionDetails(

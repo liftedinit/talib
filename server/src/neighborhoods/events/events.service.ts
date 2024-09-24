@@ -48,10 +48,9 @@ export class EventsService {
     await Promise.all(
       entities.map(async (entity) => {
         try {
-          this.logger.debug(`Saving event: ${JSON.stringify(entity)}`);
           await this.eventRepository.save(entity);
         } catch (error) {
-          this.logger.error(`Error occurred while saving event: ${JSON.stringify(entity)}, ${error}`);
+          this.logger.error(`Error occurred while saving event: ${JSON.stringify(entity)}, ${error}, eventId: ${JSON.stringify(entity.eventId)}`);
         }
       })
     );

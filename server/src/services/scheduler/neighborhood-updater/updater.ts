@@ -60,7 +60,7 @@ export class NeighborhoodUpdater {
       // Lower bound on eventID exclusive.
       new Map([[3, new Map([[0, [1, latestEventId]]])]]),
     );
-    this.logger.debug(`Got ${events.events.length} events`);
+    this.logger.debug(`Got ${events.events.length} events for neighborhood ${neighborhood.name}`);
 
     await this.events.save(
       events.events.map((ev) => {

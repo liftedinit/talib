@@ -16,6 +16,12 @@ export class TokenDto {
 
   @ApiProperty({ description: "Token Precision" })
   precision: number;
+
+  @ApiProperty({ description: "Total supply" })
+  totalSupply: string;
+
+  @ApiProperty({ description: "Circulating supply" })
+  circulatingSupply: string;
 }
 
 export class TokenDetailsDto {
@@ -28,6 +34,12 @@ export class TokenDetailsDto {
   @ApiProperty({ description: "Token address" })
   address: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: "Token Precision" })
   precision: number;
+
+  @ApiProperty({ description: "Total supply" })
+  totalSupply: string;
+
+  @ApiProperty({ description: "Circulating supply" })
+  circulatingSupply: string;
 }

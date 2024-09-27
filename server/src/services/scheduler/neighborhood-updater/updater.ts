@@ -230,9 +230,8 @@ export class NeighborhoodUpdater {
 
       this.logger.debug(`ledgerInfo: ${JSON.stringify(ledgerInfo)}`);
 
-      // call .supply() for each token to get total supply
+      // Retrieve total supply for each token
       for (const token of ledgerInfo.symbols) {
-        this.logger.debug(`token: ${JSON.stringify(token)}`);
 
         const supply = await network.ledger.supply(token.address);
         this.logger.debug(`total supply: ${JSON.stringify(supply.supply.total)}`);

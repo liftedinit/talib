@@ -194,7 +194,7 @@ export class NeighborhoodUpdater {
       await Promise.all(
         batch.map(async (height) => {
           const blockInfo = await network.blockchain.blockByHeight(height);
-          this.logger.debug(`blockInfo: ${JSON.stringify(blockInfo)}`)
+          // this.logger.debug(`blockInfo: ${JSON.stringify(blockInfo)}`)
           await this.block.createFromManyBlock(neighborhood, blockInfo);
         }),
       );
@@ -227,6 +227,16 @@ export class NeighborhoodUpdater {
       const existingTokens = await this.tokens.getAllTokens(neighborhood);
       const network = await this.network.forUrl(neighborhood.url, networkType);
       const ledgerInfo = await network.ledger.info();
+
+      this.logger.debug(`ledgerInfo: ${JSON.stringify(ledgerInfo)}`);
+
+      // call .supply() for each token to get total supply
+      for (const token of ledgerInfo.symbols) {
+        this.logger.debug(`token: ${JSON.stringify(token)}`);
+
+        const supply = await network.ledger.supply(token.address);
+        this.logger.debug(`total supply: ${JSON.stringify(supply.supply.total)}`);
+      }
 
       // Locate missing tokens 
       const missingTokens = ledgerInfo.symbols.filter(symbol => 

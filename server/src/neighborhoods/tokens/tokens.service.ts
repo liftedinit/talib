@@ -63,6 +63,10 @@ export class TokensService {
       return token.intoDto();
     }
 
+    async save(token: TokenEntity): Promise<TokenEntity> {
+      return this.tokenRepository.save(token);
+    }
+
     async addToken(
       neighborhood: Neighborhood, 
       tokenInfo: any ) {

@@ -231,31 +231,34 @@ export class NeighborhoodUpdater {
 
       // Locate missing token supply for existing tokens
       for (const token of existingTokens) {
-        const supply = await network.ledger.supply(token.address.toString());
+        const tokensInfo = await network.ledger.supply(token.address.toString());
 
         // Check if token has supply column filled in the database and save if null
         if (token?.totalSupply == null || token?.circulatingSupply == null) {
-          token.totalSupply = supply.supply.total;
-          token.circulatingSupply = supply.supply.circulating;
-          this.logger.debug(`updating missing supply for ${token.name} in neighborhood ${neighborhood.id} to total: ${token.totalSupply} circulating: ${token.circulatingSupply}`);
+          token.totalSupply = tokensInfo.supply.total;
+          token.circulatingSupply = tokensInfo.supply.circulating;
+          this.logger.debug(`updating missing supply for ${token.name} in neighborhood ${neighborhood.id} 
+            to total: ${token.totalSupply} circulating: ${token.circulatingSupply}`);
 
           await this.tokens.save(token);
         }
 
         // Compare total supply in the database with the network and update if different
-        if (token?.totalSupply !== null && supply?.supply?.total !== null || 
-            token?.circulatingSupply !== null && supply?.supply?.circulating !== null
+        if (token?.totalSupply !== null && tokensInfo?.supply?.total !== null || 
+            token?.circulatingSupply !== null && tokensInfo?.supply?.circulating !== null
         ) {
-          if (BigInt(token?.totalSupply) !== BigInt(supply?.supply.total)) {
-            token.totalSupply = supply.supply.total;
-            this.logger.debug(`total supply changed for ${token.name} in neighborhood ${neighborhood.id} to ${supply.supply.totalSupply}`);
+          if (BigInt(token?.totalSupply) !== BigInt(tokensInfo?.supply.total)) {
+            token.totalSupply = tokensInfo.supply.total;
+            this.logger.debug(`total supply changed for ${token.name} in neighborhood 
+              ${neighborhood.id} to $(tokensInfo?.supply.total}`);
 
             await this.tokens.save(token);
           }
 
-          if (BigInt(token?.circulatingSupply) !== BigInt(supply?.supply.circulating)) {
-            token.circulatingSupply = supply.supply.circulating;
-            this.logger.debug(`circulating supply changed for ${token.name} in neighborhood ${neighborhood.id} to ${supply.supply.circulating}`);
+          if (BigInt(token?.circulatingSupply) !== BigInt(tokensInfo?.supply.circulating)) {
+            token.circulatingSupply = tokensInfo.supply.circulating;
+            this.logger.debug(`circulating supply changed for ${token.name} in neighborhood 
+              ${neighborhood.id} to $(tokensInfo?.supply.circulating}`);
 
             await this.tokens.save(token);
           }

@@ -25,6 +25,12 @@ export class Token {
   @Column({ nullable: true })
   precision: number;
 
+  @Column({ nullable: true })
+  totalSupply: string;
+
+  @Column({ nullable: true })
+  circulatingSupply: string;
+
   intoDto(): TokenDto {
     return {
       id: this.id,
@@ -32,6 +38,8 @@ export class Token {
       symbol: this.symbol,
       address: this.address.toString(),
       precision: this.precision,
+      totalSupply: this.totalSupply,
+      circulatingSupply: this.circulatingSupply
     };
   }
 }

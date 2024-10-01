@@ -63,6 +63,10 @@ export class TokensService {
       return token.intoDto();
     }
 
+    async save(token: TokenEntity): Promise<TokenEntity> {
+      return this.tokenRepository.save(token);
+    }
+
     async addToken(
       neighborhood: Neighborhood, 
       tokenInfo: any ) {
@@ -84,7 +88,7 @@ export class TokensService {
 
 
     async getAllTokens(neighborhood: Neighborhood): Promise<TokenEntity[]> {
-      const limit = 10;
+      const limit = 100;
       let page = 1;
     
       // Get the initial response to get the total number of items

@@ -19,6 +19,7 @@ import { getAnalyzerClass } from "../../../utils/protocol/attributes";
 import { NetworkService, NetworkType } from "../../network.service";
 import { MigrationAnalyzerService } from "../migration-analyzer.service";
 import { TxAnalyzerService } from "../tx-analyzer.service";
+import { LedgerInfo, Supply } from "../../../utils/network/ledger";
 
 @Injectable()
 export class NeighborhoodUpdater {
@@ -194,7 +195,6 @@ export class NeighborhoodUpdater {
       await Promise.all(
         batch.map(async (height) => {
           const blockInfo = await network.blockchain.blockByHeight(height);
-          this.logger.debug(`blockInfo: ${JSON.stringify(blockInfo)}`)
           await this.block.createFromManyBlock(neighborhood, blockInfo);
         }),
       );
@@ -228,6 +228,41 @@ export class NeighborhoodUpdater {
       const network = await this.network.forUrl(neighborhood.url, networkType);
       const ledgerInfo = await network.ledger.info();
 
+      // Locate missing token supply for existing tokens
+      for (const token of existingTokens) {
+        const tokensInfo = await network.ledger.supply(token.address.toString());
+
+        // Check if token has supply column filled in the database and save if null
+        if (token?.totalSupply == null || token?.circulatingSupply == null) {
+          token.totalSupply = tokensInfo.supply.total;
+          token.circulatingSupply = tokensInfo.supply.circulating;
+          this.logger.debug(`updating missing supply for ${token.name} in neighborhood ${neighborhood.id} 
+            to total: ${token.totalSupply} circulating: ${token.circulatingSupply}`);
+
+          await this.tokens.save(token);
+        }
+
+        // Compare total supply in the database with the network and update if different
+        if ((token?.totalSupply !== null && tokensInfo?.supply?.total !== null) || 
+            (token?.circulatingSupply !== null && tokensInfo?.supply?.circulating !== null)) {
+          if (BigInt(token?.totalSupply) !== BigInt(tokensInfo?.supply.total)) {
+            token.totalSupply = tokensInfo.supply.total;
+            this.logger.debug(`total supply changed for ${token.name} in neighborhood 
+              ${neighborhood.id} to $(tokensInfo?.supply.total}`);
+
+            await this.tokens.save(token);
+          }
+
+          if (BigInt(token?.circulatingSupply) !== BigInt(tokensInfo?.supply.circulating)) {
+            token.circulatingSupply = tokensInfo.supply.circulating;
+            this.logger.debug(`circulating supply changed for ${token.name} in neighborhood 
+              ${neighborhood.id} to $(tokensInfo?.supply.circulating}`);
+
+            await this.tokens.save(token);
+          }
+        }
+      }
+
       // Locate missing tokens 
       const missingTokens = ledgerInfo.symbols.filter(symbol => 
         !existingTokens.some(existingToken => existingToken.address.toString() === symbol.address)
@@ -241,6 +276,7 @@ export class NeighborhoodUpdater {
           `Adding ${missingTokens.length} tokens to neighborhood ${neighborhood.id}`,
         );
         for (const t of missingTokens) {
+          this.logger.debug(`Adding token ${t.address.toString()} to neighborhood ${neighborhood.id}`);
           await this.tokens.addToken(neighborhood, t);
         }
       }
@@ -255,21 +291,6 @@ export class NeighborhoodUpdater {
 
     // Retrieve network type
     const nType = await this.getNetworkType(n.serverName);
-
-    // If we can't check if neighborhood has been reset, we probably won't be
-    // able to check anything, so just skip blocks too.
-    // try {
-    //   await this.checkIfNeighborhoodHasBeenReset(n);
-    //   await this.updateNeighborhoodEarliestMissingBlocks(n);
-    //   await this.updateNeighborhoodMissingEvents(n);
-    //   if (nType == "ledger") {
-    //     await this.updateNeighborhoodMissingTokens(n, nType);
-    //   }
-    // } catch (e) {
-    //   this.logger.log(
-    //     `Error happened while updating neighborhood blocks for neighborhood ${n.id} ${n.name}:\n${e.stack}`,
-    //   );
-    // }
 
     try {
       await this.checkIfNeighborhoodHasBeenReset(n);

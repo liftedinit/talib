@@ -1,4 +1,4 @@
-import { Message, NetworkModule,  } from "@liftedinit/many-js";
+import { Address, Message, NetworkModule,  } from "@liftedinit/many-js";
 
 export interface Symbol {
   name: string; 
@@ -19,9 +19,16 @@ export interface Balances {
   balances: Map<string, bigint>;
 }
 
+export interface Supply {
+  total: string;
+  circulating: string;
+  maximum: string;
+}
+
 export interface Ledger extends NetworkModule {
   info(): Promise<LedgerInfo>;
   balance: (address?: string, symbols?: string[]) => Promise<Balances>;
+  supply: (address: string) => Promise<Supply>;
 }
 
 export const Ledger: Ledger = {
@@ -39,6 +46,32 @@ export const Ledger: Ledger = {
     const res = await this.call("ledger.balance", m)
     return parseBalance(res)
   },
+
+  async supply(address: string): Promise<Supply> {
+    const m = new Map<number, unknown>([[0, Address.fromString(address)]])
+    const res = await this.call("tokens.info", m)
+
+    return parseTokenInfoSupply(res)
+  }
+}
+
+export function parseSymbol(symbol: any) {
+
+  return {
+    name: symbol.get(0)?.toString(),
+    symbol: symbol.get(1)?.toString(),
+    decimals: symbol.get(2)
+  }
+}
+
+
+export function parseSupply(token: any) {
+
+  return {
+    total: token.get(0)?.toString(),
+    circulating: token.get(1)?.toString(),
+    maximum: token.get(2)?.toString()
+  }
 }
 
 function parseLedgerInfo(msg: Message): any {
@@ -59,14 +92,6 @@ function parseLedgerInfo(msg: Message): any {
   return result
 }
 
-export function parseSymbol(symbol: any) {
-  return {
-    name: symbol.get(0)?.toString(),
-    symbol: symbol.get(1)?.toString(),
-    decimals: symbol.get(2)
-  }
-}
-
 export function parseBalance(message: Message): Balances {
   const result = { balances: new Map() }
   const messageContent = message.getPayload()
@@ -80,4 +105,29 @@ export function parseBalance(message: Message): Balances {
     }
   }
   return result
+}
+
+function parseTokenInfoSupply(message: Message): Supply {
+  const result: any = {};
+  const decodedContent = message.getPayload();
+
+  if (decodedContent) {
+    // Log the address and its type
+    const tokenMap = decodedContent.get(0);
+    if (tokenMap instanceof Map) {
+
+      const tokenInfo = tokenMap.get(1);
+      if (tokenInfo instanceof Map) {
+        result.info = parseSymbol(tokenInfo);
+      }
+  
+      const tokenSupply = tokenMap.get(2);
+      if (tokenSupply instanceof Map) {
+        result.supply = parseSupply(tokenSupply);
+      }
+
+    }
+  }
+
+  return result;
 }

@@ -195,7 +195,6 @@ export class NeighborhoodUpdater {
       await Promise.all(
         batch.map(async (height) => {
           const blockInfo = await network.blockchain.blockByHeight(height);
-          // this.logger.debug(`blockInfo: ${JSON.stringify(blockInfo)}`)
           await this.block.createFromManyBlock(neighborhood, blockInfo);
         }),
       );
@@ -244,9 +243,8 @@ export class NeighborhoodUpdater {
         }
 
         // Compare total supply in the database with the network and update if different
-        if (token?.totalSupply !== null && tokensInfo?.supply?.total !== null || 
-            token?.circulatingSupply !== null && tokensInfo?.supply?.circulating !== null
-        ) {
+        if ((token?.totalSupply !== null && tokensInfo?.supply?.total !== null) || 
+            (token?.circulatingSupply !== null && tokensInfo?.supply?.circulating !== null)) {
           if (BigInt(token?.totalSupply) !== BigInt(tokensInfo?.supply.total)) {
             token.totalSupply = tokensInfo.supply.total;
             this.logger.debug(`total supply changed for ${token.name} in neighborhood 

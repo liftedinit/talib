@@ -39,7 +39,22 @@ export class TransactionDetails {
   })
   sender?: Address;
 
-  @Column({ type: "json", nullable: true })
+  @Column({
+    type: 'json',
+    nullable: true,
+    transformer: {
+      from: (value) => {
+        // Ensure amount is a string
+        if (value?.amount) {
+          value.amount = value.amount.toString();
+        }
+        return value;
+      },
+      to: (value) => {
+        return value;
+      },
+    },
+  })
   argument?: object;
 
   @Column({ type: "json", nullable: true })

@@ -7,9 +7,12 @@ export function NetworkMetrics() {
   return (
     <>
       <Heading as='h4' size='md' py="5" pl="5" >Blockchain Network Totals</Heading>
-      <SimpleGrid id="blockchain" columns={{ base: 1, sm: 1, md: 2, lg: 4 }} gap="6" mt={2}>
+      <SimpleGrid id="blockchain" columns={{ base: 1, sm: 1, md: 2, lg: 5 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Blocks Produced" metric="totalblocks" systemwide />
+        </Box>
+        <Box backgroundColor="transparent">
+          <MetricStat label="MFX to Power Conversion" metric="mfxpowerconversion" fixedDecimals={2} />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Transactions" metric="totaltransactions" systemwide />

@@ -121,4 +121,3 @@ export function getMetricSystemWideSeries(
 export function getLocations() {
   return get("location");
 }
-

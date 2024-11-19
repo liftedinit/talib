@@ -40,3 +40,4 @@ export class CreateMetricDto {
   @ApiProperty()
   data: string;
 }
+

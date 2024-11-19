@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   DefaultValuePipe,
   Get,
@@ -7,11 +8,13 @@ import {
   ParseIntPipe,
   Query,
   Logger,
+  Put,
 } from "@nestjs/common";
-import { ApiOkResponse } from "@nestjs/swagger";
-import { MetricDto } from "../dto/metric.dto";
+import { ApiBody, ApiOkResponse } from "@nestjs/swagger";
+import { CreateMetricDto, MetricDto } from "../dto/metric.dto";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { MetricsService, SeriesEntity } from "./metrics.service";
+import { Metric } from "../database/entities/metric.entity";
 import { ApiQuery } from "@nestjs/swagger";
 
 @Controller("metrics")
@@ -78,6 +81,21 @@ export class MetricsController {
     }
 
     return this.metrics.getSeries(name, currentDate, previousDate);
+  }
+
+  @Put(":name")
+  @ApiBody({
+    description: 'Update metric data',
+    type: CreateMetricDto,
+  })
+  async update(
+    @Param("name") name: string,
+    @Body() createMetricDto:Partial<CreateMetricDto>,
+  ): Promise<Metric> {
+    this.logger.debug(`Updating metric by API for ${name} with ${createMetricDto}`);
+
+    await this.metrics.updateMetricByName(name, createMetricDto);
+    return this.metrics.getCurrent(name);
   }
 
   @Delete(":name")

@@ -7,8 +7,10 @@ import {
 } from "nestjs-typeorm-paginate";
 import { Repository } from "typeorm";
 import { Metric as MetricEntity } from "../database/entities/metric.entity";
+import { PrometheusQuery } from "../database/entities/prometheus-query.entity";
 import { PrometheusQueryService } from "./prometheus-query/query.service";
 import { MetricsSchedulerConfigService } from "../config/metrics-scheduler/configuration.service"
+import { CreateMetricDto } from "../dto/metric.dto";
 
 export interface SeriesEntity {
   data: number[] | string[];
@@ -22,6 +24,8 @@ export class MetricsService {
   constructor(
     @InjectRepository(MetricEntity)
     private metricRepository: Repository<MetricEntity>,
+    @InjectRepository(PrometheusQuery)
+    private prometheusQueryRepository: Repository<PrometheusQuery>,
     private prometheusQuery: PrometheusQueryService,
     private schedulerConfig: MetricsSchedulerConfigService,
   ) {}
@@ -200,6 +204,28 @@ export class MetricsService {
 
   public async save(entities: MetricEntity[]): Promise<void> {
     await this.metricRepository.save(entities);
+  }
+
+  async updateMetricByName(
+    name: string,
+    createMetricDto: Partial<CreateMetricDto>,
+  ): Promise<MetricEntity> {
+    const query = await this.prometheusQueryRepository.findOne({ where: { name } });
+
+    if (!query) {
+      return undefined;
+    }
+
+    this.logger.debug(`createMetricDto: ${JSON.stringify(createMetricDto)}`); 
+
+    const metric = new MetricEntity();
+    metric.prometheusQueryId = query;
+    metric.timestamp = new Date();
+    metric.data = createMetricDto.data;
+
+    this.logger.debug(`Updating metric ${name} with ${JSON.stringify(metric)}`);
+
+    return this.metricRepository.save(metric);
   }
 
   async removeByPrometheusQueryName(name: string): Promise<void> {

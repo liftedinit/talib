@@ -10,12 +10,11 @@ import {
   Logger,
   Put,
 } from "@nestjs/common";
-import { ApiBody, ApiOkResponse } from "@nestjs/swagger";
+import { ApiBody, ApiQuery , ApiOkResponse } from "@nestjs/swagger";
 import { CreateMetricDto, MetricDto } from "../dto/metric.dto";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { MetricsService, SeriesEntity } from "./metrics.service";
 import { Metric } from "../database/entities/metric.entity";
-import { ApiQuery } from "@nestjs/swagger";
 
 @Controller("metrics")
 export class MetricsController {

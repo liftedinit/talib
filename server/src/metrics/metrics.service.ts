@@ -227,7 +227,11 @@ export class MetricsService {
 
     const metric = new MetricEntity();
     metric.prometheusQueryId = query;
-    metric.timestamp = new Date();
+    if (createMetricDto.timestamp) {
+      metric.timestamp = createMetricDto.timestamp;
+    } else {
+      metric.timestamp = new Date();
+    }
     metric.data = createMetricDto.data;
 
     this.logger.debug(`Updating metric ${name} with ${JSON.stringify(metric)}`);

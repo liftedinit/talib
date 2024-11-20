@@ -121,14 +121,15 @@ export class MetricsService {
     name: string,
     from: Date,
     to: Date,
+    smoothed: boolean
   ): Promise<SeriesEntity[] | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
     const query = this.metricRepository
       .createQueryBuilder("m")
       .where("m.timestamp BETWEEN :to AND :from", {
-        to,
         from,
+        to,
       })
       .andWhere("m.prometheusQueryId = :prometheusQuery", {
         prometheusQuery: prometheusQuery.id,
@@ -147,15 +148,21 @@ export class MetricsService {
       timestamps.push(series.timestamp);
     });
 
-    // Filter outliers and normalize the data
-    const windowSize = 18;
-    const filteredData = this.filterOutliers(data);
-    const smoothedData = this.simpleMovingAverage(filteredData, windowSize);
+    let processedData: number[];
+
+    if (smoothed) {
+      // Filter outliers and normalize the data
+      const windowSize = 18;
+      const filteredData = this.filterOutliers(data);
+      processedData = this.simpleMovingAverage(filteredData, windowSize);
+    } else {
+      processedData = data;
+    }
 
     // Populate return object
     seriesData.push({
       timestamps: timestamps,
-      data: smoothedData,
+      data: processedData,
     });
 
     return seriesData;

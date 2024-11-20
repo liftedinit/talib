@@ -27,7 +27,6 @@ export class SystemWideController {
   ) {
     const c = await this.systemwide.getCurrent(name);
 
-    this.logger.debug(c);
     if (!c) {
       throw new NotFoundException();
     }

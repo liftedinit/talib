@@ -1,15 +1,10 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { SystemWideMetric as SystemWideEntity } from "../../database/entities/systemwide-metric.entity";
-import { CreateSystemWideMetricDto } from "../../dto/systemwide-metric.dto";
 import { DataSource, Repository } from "typeorm";
-import { Transaction as TransactionEntity } from "../../database/entities/transaction.entity";
-import { FindOneOptions } from 'typeorm';
-import { MetricsService, SeriesEntity } from "../metrics.service";
+import { MetricsService } from "../metrics.service";
 import { Metric as MetricEntity } from "../../database/entities/metric.entity";
 import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
-
-const INTERVALMS = 600000;
+import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 
 @Injectable()
 export class SystemWideService {
@@ -22,6 +17,7 @@ export class SystemWideService {
     private prometheusQueryRepository: Repository<PrometheusQuery>,
     private metricService: MetricsService,
     private dataSource: DataSource,
+    private schedulerConfig: MetricsSchedulerConfigService
   ) {}
 
   async updateMetricByQuery(metricQuery: PrometheusQuery): Promise<MetricEntity> {
@@ -61,9 +57,8 @@ export class SystemWideService {
           const lastUpdateDate = new Date(lastUpdate.timestamp);
           const diff = now.getTime() - lastUpdateDate.getTime();
 
-          this.logger.debug(`Last update for ${metrics[i].name} was ${diff}ms ago`);
-          if (diff < INTERVALMS) {
-            this.logger.debug(`Skipping systemwide metric ${metrics[i].name}, updated less than ${(INTERVALMS / 1000 / 60)} minutes ago`);
+          if (diff < this.schedulerConfig.interval) {
+            this.logger.debug(`Skipping systemwide metric ${metrics[i].name}, updated less than ${(this.schedulerConfig.interval / 1000 / 60)} minutes ago`);
             continue;
           } else {
             await this.updateMetricByQuery(metrics[i]);

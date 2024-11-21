@@ -9,8 +9,8 @@ export function NetworkMetrics() {
       <Heading as='h4' size='md' py="5" pl="5" >Blockchain Network Totals</Heading>
       <SimpleGrid id="blockchain" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
-          <MetricStat label="POWER:MFX" metric="mfxpowerconversion" fixedDecimals={2}  />
-          <MetricChart label="POWER:MFX" type="area" metric="mfxpowerconversion" from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="POWER:MFX" smoothed={false} />
+          <MetricStat label="POWER : MFX Conversion Rate" metric="mfxpowerconversion" unit=": 1" fixedDecimals={2}  />
+          <MetricChart label="POWER:MFX" type="area" metric="mfxpowerconversion" from={"now-60d"} to={"now"} fixedDecimals={2} smoothed={false} />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Addresses" metric="totaladdresses" />

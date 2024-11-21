@@ -44,12 +44,12 @@ export class SystemWideService {
 
   // Seed all SystemWideMetrics into the database
   private async seedSystemWideMetrics(
-    metrics: PrometheusQuery[],
+    query: PrometheusQuery,
     ) {
-    for (let i = 0; i < metrics.length; i++) {
+
       try {
         // Check if the metric has a last update less than the update interval
-        const lastUpdate = await this.metricService.getCurrent(metrics[i].name);
+        const lastUpdate = await this.metricService.getCurrent(query.name);
 
         // If the metric was updated less than the update interval, skip it
         if (lastUpdate) {
@@ -58,33 +58,20 @@ export class SystemWideService {
           const diff = now.getTime() - lastUpdateDate.getTime();
 
           if (diff < this.schedulerConfig.interval) {
-            this.logger.debug(`Skipping systemwide metric ${metrics[i].name}, updated less than ${(this.schedulerConfig.interval / 1000 / 60)} minutes ago`);
-            continue;
+            this.logger.debug(`Skipping systemwide metric ${query.name}, updated less than ${(this.schedulerConfig.interval / 1000 / 60)} minutes ago`);
           } else {
-            await this.updateMetricByQuery(metrics[i]);
-            this.logger.log(`Done running seedSystemwideMetrics: ${metrics[i].name}`);
+            await this.updateMetricByQuery(query);
+            this.logger.log(`Done running seedSystemwideMetrics: ${query.name}`);
           }
         }
         
       } catch (err) {
         this.logger.error(`Error during seeding systemwide metric: ${err}`);
       }
-      
-    }
-  }
-
-  // Get all metrics in the prometheusQueryRepository that have queryType database
-  private async getSystemWideMetrics() {
-    const metrics = await this.prometheusQueryRepository.find({ where: { queryType: 'database' } });
-
-    return metrics;
   }
 
   // Update all SystemWideMetrics
-  async updateSystemWideMetrics() {
-    const metrics = await this.getSystemWideMetrics();
-
-    await this.seedSystemWideMetrics(metrics);
+  async updateSystemWideMetrics(query: PrometheusQuery) {
+    await this.seedSystemWideMetrics(query);
   }
-
 }

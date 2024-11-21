@@ -53,7 +53,7 @@ export class MetricsSchedulerService {
     if (prometheusQueries.length > 0) {
       const enabled = prometheusQueries.filter((n) => n.enabled);
 
-      this.logger.debug(`Updating ${enabled.length} prometheusQueries.`);
+      this.logger.log(`Updating ${enabled.length} prometheusQueries.`);
 
       try {
         this.logger.debug('Starting to update prometheusQueries...');
@@ -75,14 +75,36 @@ export class MetricsSchedulerService {
             }
           }),
         );
-        this.logger.debug('Done updating prometheusQueries.');
+        this.logger.log('Done updating prometheusQueries.');
       } catch (error) {
         this.logger.error('Error in Promise.all for prometheusQueries', error);
       }
 
-      // Do SystemWide Metrics 
-      this.logger.debug(`Updating SystemWide Metrics...`);
-      this.systemWideService.updateSystemWideMetrics();
+      this.logger.log(`Updating SystemWide Metrics...`);
+      try {
+        this.logger.debug('Starting to update prometheusQueries for database queryType...');
+        await Promise.all(
+          prometheusQueries.map(async (d) => {
+            if (d.enabled && d.queryType === 'database') {
+              try {
+                this.logger.debug(`Running updater for metric database query id: ${d.id} name: ${d.name}.`);
+                await this.systemWideService.updateSystemWideMetrics(d);
+                this.logger.debug(`Successfully ran updater for metric database query id: ${d.id} name: ${d.name}.`);
+              } catch (error) {
+                this.logger.error(`Error running updater for metric database query id: ${d.id} name: ${d.name}.`, error);
+              }
+            } else {
+              this.logger.debug(
+                `Skipping disabled database query id:: ${d.id} name: ${d.name}.`,
+              );
+            }
+          }),
+        );
+        this.logger.log('Done updating metric database queries.');
+      } catch (error) {
+        this.logger.error('Error in updating metric database queries', error);
+      }
+
 
     } else {
       this.logger.debug("No prometheus queries in database...");

@@ -22,7 +22,6 @@ import { SystemWideMetric } from "../database/entities/systemwide-metric.entity"
 import { LocationModule } from "./location/location.module";
 import { LocationService } from "./location/location.service";
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([Metric, Location, Block, Transaction, SystemWideMetric, PrometheusQuery]),

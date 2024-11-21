@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Stat as BaseStat, StatLabel, StatNumber } from "@liftedinit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { getMetricCurrent, getMetricTransformCurrent, getMetricSystemWideCurrent } from "api";
+import { getMetricCurrent, getMetricTransformCurrent } from "api";
 import { Box, Center, Spinner } from "@liftedinit/ui";
 import { useBgColor, LONG_STALE_INTERVAL, LONG_REFRESH_INTERVAL } from "utils";
 
@@ -14,7 +14,6 @@ interface StatProps {
   unit?: string;
   fixedDecimals?: number;
   transform?: string;
-  systemwide?: boolean;
 }
 
 interface QueryData {
@@ -38,7 +37,6 @@ export function MetricStat({
   fixedDecimals,
   unit,
   transform,
-  systemwide,
 }: StatProps) {
 
   const bg = useBgColor();
@@ -50,9 +48,6 @@ export function MetricStat({
   if (transform) {
     metricQuery = getMetricTransformCurrent(metric, transform, {from: from, to: to })
     }
-  else if (systemwide) {
-    metricQuery = getMetricSystemWideCurrent(metric)
-  }
   else {
     metricQuery = getMetricCurrent(metric, {from: from, to: to })
   }

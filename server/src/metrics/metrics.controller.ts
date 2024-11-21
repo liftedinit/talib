@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   DefaultValuePipe,
   Get,
@@ -7,12 +8,13 @@ import {
   ParseIntPipe,
   Query,
   Logger,
+  Put,
 } from "@nestjs/common";
-import { ApiOkResponse } from "@nestjs/swagger";
-import { MetricDto } from "../dto/metric.dto";
+import { ApiBody, ApiQuery , ApiOkResponse } from "@nestjs/swagger";
+import { CreateMetricDto, MetricDto } from "../dto/metric.dto";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { MetricsService, SeriesEntity } from "./metrics.service";
-import { ApiQuery } from "@nestjs/swagger";
+import { Metric } from "../database/entities/metric.entity";
 
 @Controller("metrics")
 export class MetricsController {
@@ -49,11 +51,13 @@ export class MetricsController {
   @ApiQuery({ name: "from", required: false })
   @ApiQuery({ name: "to", required: false })
   @ApiQuery({ name: "hours", required: false })
+  @ApiQuery({ name: "smoothed", required: false })
   getPrometheusQuerySeries(
     @Param("name") name: string,
     @Query("from") from?: string,
     @Query("to") to?: string,
     @Query("hours") hours?: number,
+    @Query("smoothed") smoothed?: boolean,
   ): Promise<SeriesEntity[]> {
     if (!hours) {
       hours = 24;
@@ -77,7 +81,22 @@ export class MetricsController {
       previousDate.setHours(previousDate.getHours() - fromHours);
     }
 
-    return this.metrics.getSeries(name, currentDate, previousDate);
+    return this.metrics.getSeries(name, currentDate, previousDate, smoothed);
+  }
+
+  @Put(":name")
+  @ApiBody({
+    description: 'Update metric data',
+    type: CreateMetricDto,
+  })
+  async update(
+    @Param("name") name: string,
+    @Body() createMetricDto:Partial<CreateMetricDto>,
+  ): Promise<Metric> {
+    this.logger.debug(`Updating metric by API for ${name} with ${createMetricDto}`);
+
+    await this.metrics.updateMetricByName(name, createMetricDto);
+    return this.metrics.getCurrent(name);
   }
 
   @Delete(":name")

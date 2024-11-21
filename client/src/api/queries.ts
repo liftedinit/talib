@@ -84,9 +84,10 @@ export function getMetricCurrent(
 
 export function getMetricSeries(
   stat?: string, 
-  {from = FROM, to = TO } = {}
+  smoothed?: boolean,
+  {from = FROM, to = TO } = {},
 ) {
-    return get(`metrics/${stat}/series`, { from, to });
+    return get(`metrics/${stat}/series`, { from, to, smoothed });
 }
 
 export function getMetricTransformCurrent(
@@ -105,20 +106,6 @@ export function getMetricTransformSeries(
     return get(`metrics/transforms/${stat}/${transform}/series`, { from, to });
 }
 
-export function getMetricSystemWideCurrent(
-  metric?: string,
-) {
-  return get(`metrics/systemwide/${metric}/current`);
-}
-
-export function getMetricSystemWideSeries(
-  metric?: string,
-  {from = FROM, to = TO } = {}
-) {
-    return get(`metrics/systemwide/${metric}/series`, { from, to });
-}
-
 export function getLocations() {
   return get("location");
 }
-

@@ -53,36 +53,39 @@ export class MetricsSchedulerService {
     if (prometheusQueries.length > 0) {
       const enabled = prometheusQueries.filter((n) => n.enabled);
 
-      this.logger.debug(`Updating ${enabled.length} prometheusQueries.`);
-
+      this.logger.log(`Updating ${enabled.length} prometheusQueries.`);
+      
       try {
-        this.logger.debug('Starting to update prometheusQueries...');
-        await Promise.all(
-          prometheusQueries.map(async (n) => {
-            if (n.enabled && n.queryType === 'prometheus') {
-              try {
-                this.logger.debug(`Running updater for prometheusquery id: ${n.id} name: ${n.name}.`);
-                const i = await this.updaterFactory(n);
-                await i.run();
-                this.logger.debug(`Successfully ran updater for prometheusquery id: ${n.id} name: ${n.name}.`);
-              } catch (error) {
-                this.logger.error(`Error running updater for prometheusquery id: ${n.id} name: ${n.name}.`, error);
-              }
-            } else {
-              this.logger.debug(
-                `Skipping disabled prometheusquery id: ${n.id} name: ${n.name}.`,
-              );
-            }
-          }),
-        );
-        this.logger.debug('Done updating prometheusQueries.');
+          this.logger.debug('Starting to update prometheusQueries...');
+          await Promise.all(
+              enabled.map(async (n) => {
+                  if (n.queryType === 'prometheus') {
+                      try {
+                          this.logger.debug(`Running updater for prometheusquery id: ${n.id} name: ${n.name}.`);
+                          const i = await this.updaterFactory(n);
+                          await i.run();
+                          this.logger.debug(`Successfully ran updater for prometheusquery id: ${n.id} name: ${n.name}.`);
+                      } catch (error) {
+                          this.logger.error(`Error running updater for prometheusquery id: ${n.id} name: ${n.name}.`, error);
+                      }
+                  } else if (n.queryType === 'database') {
+                      try {
+                          this.logger.debug(`Running updater for metric database query id: ${n.id} name: ${n.name}.`);
+                          await this.systemWideService.updateSystemWideMetrics(n);
+                          this.logger.debug(`Successfully ran updater for metric database query id: ${n.id} name: ${n.name}.`);
+                      } catch (error) {
+                          this.logger.error(`Error running updater for metric database query id: ${n.id} name: ${n.name}.`, error);
+                      }
+                  } else {
+                      this.logger.debug(`Skipping query id: ${n.id} name: ${n.name} with unknown queryType: ${n.queryType}.`);
+                  }
+              }),
+          );
+          this.logger.log('Done updating prometheusQueries and metric database queries.');
       } catch (error) {
-        this.logger.error('Error in Promise.all for prometheusQueries', error);
+          this.logger.error('Error in Promise.all for prometheusQueries and metric database queries', error);
       }
 
-      // Do SystemWide Metrics 
-      this.logger.debug(`Updating SystemWide Metrics...`);
-      this.systemWideService.updateSystemWideMetrics();
 
     } else {
       this.logger.debug("No prometheus queries in database...");

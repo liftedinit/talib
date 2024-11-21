@@ -1,206 +1,80 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { SystemWideMetric as SystemWideEntity } from "../../database/entities/systemwide-metric.entity";
-import { CreateSystemWideMetricDto } from "../../dto/systemwide-metric.dto";
 import { DataSource, Repository } from "typeorm";
-import { Transaction as TransactionEntity } from "../../database/entities/transaction.entity";
-import { FindOneOptions } from 'typeorm';
-import { create } from "axios";
-
-type Current = {
-  name: string;
-  timestamp: string;
-  data: string;
-};
-
-export type Blocks = {
-  neighborhoodId: string;
-  highest_value: number;
-};
-
-export type SystemWideMetricType = {
-  name: string; 
-  query: string;
-}
+import { MetricsService } from "../metrics.service";
+import { Metric as MetricEntity } from "../../database/entities/metric.entity";
+import { PrometheusQuery } from "../../database/entities/prometheus-query.entity";
+import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 
 @Injectable()
 export class SystemWideService {
   private readonly logger = new Logger(SystemWideService.name);
 
   constructor(
-    @InjectRepository(TransactionEntity)
-    private transactionRepository: Repository<TransactionEntity>,
-    @InjectRepository(SystemWideEntity)
-    private systemWideMetricRepository: Repository<SystemWideEntity>,
+    @InjectRepository(MetricEntity)
+    private metricRepository: Repository<MetricEntity>,
+    @InjectRepository(PrometheusQuery)
+    private prometheusQueryRepository: Repository<PrometheusQuery>,
+    private metricService: MetricsService,
     private dataSource: DataSource,
+    private schedulerConfig: MetricsSchedulerConfigService
   ) {}
 
-  // Get the total blocks produced from all networks
-  async getTotalBlocks(): Promise<Current> {
-    const query = `
-      SELECT "neighborhoodId", MAX(height) AS highest_value
-      FROM block
-      GROUP BY "neighborhoodId"
-    `;
+  async updateMetricByQuery(metricQuery: PrometheusQuery): Promise<MetricEntity> {
+    const query = await this.prometheusQueryRepository.findOne({ where: { id: metricQuery.id } });
 
-    const values = await this.dataSource.query(query);
-
-    if (!values) {
-      return null;
+    if (!query) {
+      throw new Error(`PrometheusQuery with name ${query.name} not found`);
     }
 
-    const blocksum = values.reduce(
-      (accumulator, item) => accumulator + Number(item.highest_value),
-      0,
-    );
+    const result = await this.dataSource.query(query.query);
 
-    const sumTotal = {
-      name: "totalblocks",
-      timestamp: new Date().toISOString(),
-      data: blocksum,
-    };
-
-    return sumTotal;
-  }
-
-  // Get the total addresses produced from all networks
-  async getTotalAddresses(): Promise<Current> { 
-    const query = `
-    SELECT COUNT(DISTINCT address) AS unique_addresses_count
-    FROM (
-      SELECT json_data.argument->>'address' AS address
-      FROM public.transaction_details AS json_data
-      
-      UNION
-      
-      SELECT json_data.argument->>'account' AS address
-      FROM public.transaction_details AS json_data
-      
-      UNION
-      
-      SELECT json_data.argument->>'from' AS address
-      FROM public.transaction_details AS json_data
-    ) AS addresses
-    WHERE address IS NOT NULL
-    `;
-
-    const values = await this.dataSource.query(query);
-
-    if (!values) {
-      return null;
+    if (!result || result.length === 0) {
+      throw new Error('Query returned no results');
     }
 
-    const addressesTotal = {
-      name: "totaladdresses",
-      timestamp: new Date().toISOString(),
-      data: values[0].unique_addresses_count,
-    };
+    const metric = new MetricEntity();
+    metric.prometheusQueryId = query;
+    metric.timestamp = new Date();
+    metric.data = String(Object.values(result[0])[0]);
 
-    return addressesTotal;
-  }
+    return this.metricRepository.save(metric);
 
-  // Get the total transactions from all networks
-  async getTotalTransactions(): Promise<Current> {
-    const query = this.transactionRepository
-      .createQueryBuilder("t")
-      .select("COUNT(t.id)", "count");
-
-    const transactions = await query.getRawOne();
-
-    if (!transactions) {
-      return null;
-    }
-
-    const transactionsTotal = {
-      name: "totaltransactions",
-      timestamp: new Date().toISOString(),
-      data: transactions.count,
-    };
-
-    return transactionsTotal;
-  }
-
-  // Get a SystemWideMetric from the database
-  async getCurrent(name: string): Promise<SystemWideEntity>{
-
-    const q = await this.systemWideMetricRepository.createQueryBuilder("b")
-    .where("b.name = :name", { name })
-
-    const values = await q.getOne();
-
-    if (!values) {
-      return null;
-    }
-
-    return values;
-  }
-
-  // Save a single SystemWideMetric to the database
-  private async seedSystemWideMetricValue(metric) {
-    this.logger.debug(`seeding system wide metric: ${metric.name}`);
-
-    const metricValue = await this[metric.query]();
-
-    const existingEntity = await this.systemWideMetricRepository.findOne({
-      where: { name: metric.name } as FindOneOptions<SystemWideMetricType>['where'],
-    });
-
-    let entity: SystemWideEntity;
-
-    if (existingEntity) {
-      // If entity with the same name exists, update it by setting the new values
-      let updateSystemWideMetricDto: Partial<CreateSystemWideMetricDto>
-
-      updateSystemWideMetricDto = {
-        name: metric.name,
-        timestamp: new Date(metricValue.timestamp),
-        data: metricValue.data,
-      };
-
-      Object.assign(existingEntity, updateSystemWideMetricDto);
-
-      return await this.systemWideMetricRepository.save(existingEntity);
-
-    } else {
-      // If entity doesn't exist, create a new one
-      entity = new SystemWideEntity();
-
-      entity.name = metric.name;
-      entity.timestamp = new Date(metricValue.timestamp);
-      entity.data = metricValue.data;
-
-      this.logger.debug(`seeding system wide metric: ${entity.name}`);
-
-      return await this.systemWideMetricRepository.save(entity);
-    }
   }
 
   // Seed all SystemWideMetrics into the database
   private async seedSystemWideMetrics(
-    metrics: SystemWideMetricType[]
+    query: PrometheusQuery,
     ) {
-    for (let i = 0; i < metrics.length; i++) {
+
       try {
-        await this.seedSystemWideMetricValue(metrics[i]);
+        // Check if the metric has a last update less than the update interval
+        const lastUpdate = await this.metricService.getCurrent(query.name);
+
+        // If there is no last update, proceed to update the metric
+        if (!lastUpdate) {
+          await this.updateMetricByQuery(query);
+          this.logger.log(`Initial seed of database metric in seedSystemwideMetrics for: ${query.name}`);
+        } else {
+          const now = new Date();
+          const lastUpdateDate = new Date(lastUpdate.timestamp);
+          const diff = now.getTime() - lastUpdateDate.getTime();
+
+          if (diff < this.schedulerConfig.interval) {
+            this.logger.debug(`Skipping systemwide metric ${query.name}, updated less than ${(this.schedulerConfig.interval / 1000 / 60)} minutes ago`);
+          } else {
+            await this.updateMetricByQuery(query);
+            this.logger.log(`Done running seedSystemwideMetrics: ${query.name}`);
+          }
+        }
+        
       } catch (err) {
         this.logger.error(`Error during seeding systemwide metric: ${err}`);
       }
-      
-    }
   }
 
   // Update all SystemWideMetrics
-  async updateSystemWideMetrics() {
-
-    this.logger.debug(`updating system wide metrics`);
-
-    const systemWideMetrics: SystemWideMetricType[] = [
-      {name: 'totalblocks', query: 'getTotalBlocks'},
-      {name: 'totaltransactions', query: 'getTotalTransactions'},
-      {name: 'totaladdresses', query: 'getTotalAddresses'},
-    ]
-
-    await this.seedSystemWideMetrics(systemWideMetrics);
+  async updateSystemWideMetrics(query: PrometheusQuery) {
+    await this.seedSystemWideMetrics(query);
   }
-
 }

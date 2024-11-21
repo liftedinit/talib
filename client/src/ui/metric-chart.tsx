@@ -19,6 +19,7 @@ interface StatProps {
   conversion?: Function;
   from?: string;
   to?: string;
+  smoothed?: boolean;
   fixedDecimals?: number;
   transform?: string;
 }
@@ -40,6 +41,7 @@ export function MetricChart({
   conversion, 
   from, 
   to, 
+  smoothed = true,
   xtitle, 
   ytitle, 
   fixedDecimals,
@@ -54,7 +56,7 @@ export function MetricChart({
     metricQuery = getMetricTransformSeries(metric, transform, {from: from, to: to })
     }
   else {
-    metricQuery = getMetricSeries(metric,{from: from, to: to })
+    metricQuery = getMetricSeries(metric, smoothed, {from: from, to: to })
   }
 
   const { data: queryData, isError, isLoading } = useQuery([metric + "series"], metricQuery, {

@@ -51,8 +51,11 @@ export class SystemWideService {
         // Check if the metric has a last update less than the update interval
         const lastUpdate = await this.metricService.getCurrent(query.name);
 
-        // If the metric was updated less than the update interval, skip it
-        if (lastUpdate) {
+        // If there is no last update, proceed to update the metric
+        if (!lastUpdate) {
+          await this.updateMetricByQuery(query);
+          this.logger.log(`Initial seed of database metric in seedSystemwideMetrics for: ${query.name}`);
+        } else {
           const now = new Date();
           const lastUpdateDate = new Date(lastUpdate.timestamp);
           const diff = now.getTime() - lastUpdateDate.getTime();

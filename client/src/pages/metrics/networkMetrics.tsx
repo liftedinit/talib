@@ -9,19 +9,24 @@ export function NetworkMetrics() {
       <Heading as='h4' size='md' py="5" pl="5" >Blockchain Network Totals</Heading>
       <SimpleGrid id="blockchain" columns={{ base: 1, sm: 1, md: 2, lg: 5 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
-          <MetricStat label="Total Blocks Produced" metric="totalblocks" systemwide />
+          <MetricStat label="Total Blocks Produced" metric="totalnetworkblocks" />
+          <MetricChart label="Total Blocks Produced" type="area" metric="totalnetworkblocks" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Blocks" smoothed={false} />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="MFX to Power Conversion" metric="mfxpowerconversion" fixedDecimals={2} />
+          <MetricStat label="POWER:MFX" metric="mfxpowerconversion" fixedDecimals={2}  />
+          <MetricChart label="POWER:MFX" type="area" metric="mfxpowerconversion" from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="POWER:MFX" smoothed={false} />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Total Transactions" metric="totaltransactions" systemwide />
+          <MetricStat label="Total Transactions" metric="totaltransactions" />
+          <MetricChart label="Total Transactions" type="area" metric="totaltransactions" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Transactions" smoothed={false} />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Total Addresses" metric="totaladdresses" systemwide />
+          <MetricStat label="Total Addresses" metric="totaladdresses" />
+          <MetricChart label="Total Addresses" type="area" metric="totaladdresses" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Addresses" smoothed={false} />
         </Box>
         <Box backgroundColor="transparent">
-          <MetricStat label="Total Tokens" metric="totaltokens" from={"now-1d"} to={"now"} />
+          <MetricStat label="Total Tokens" metric="totaltokens" />
+          <MetricChart label="Total Tokens" type="area" metric="totaltokens" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Tokens" smoothed={false} />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Nodes</Heading>

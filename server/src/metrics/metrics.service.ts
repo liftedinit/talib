@@ -50,23 +50,28 @@ export class MetricsService {
 
   // Get the current value for a metric
   async getCurrent(name: string): Promise<MetricEntity | null> {
-    const prometheusQuery = await this.prometheusQuery.get(name);
-
-    const query = this.metricRepository
-      .createQueryBuilder("m")
-      .where("m.prometheusQueryId = :prometheusQuery", {
-        prometheusQuery: prometheusQuery.id,
-      })
-      .orderBy("m.timestamp", "DESC")
-      .limit(1);
-
-    const one = await query.getOne();
-
-    if (!one) {
+    try {
+      const prometheusQuery = await this.prometheusQuery.get(name);
+  
+      const query = this.metricRepository
+        .createQueryBuilder("m")
+        .where("m.prometheusQueryId = :prometheusQuery", {
+          prometheusQuery: prometheusQuery.id,
+        })
+        .orderBy("m.timestamp", "DESC")
+        .limit(1);
+  
+      const one = await query.getOne();
+  
+      if (!one) {
+        return null;
+      }
+  
+      return one;
+    } catch (error) {
+      this.logger.error(`Error fetching metrics for query: ${name}`);
       return null;
     }
-
-    return one;
   }
 
   // Lookback and remove the 95th percent difference of outliers
@@ -123,49 +128,54 @@ export class MetricsService {
     to: Date,
     smoothed: boolean
   ): Promise<SeriesEntity[] | null> {
-    const prometheusQuery = await this.prometheusQuery.get(name);
+    try {
+      const prometheusQuery = await this.prometheusQuery.get(name);
 
-    const query = this.metricRepository
-      .createQueryBuilder("m")
-      .where("m.timestamp BETWEEN :to AND :from", {
-        from,
-        to,
-      })
-      .andWhere("m.prometheusQueryId = :prometheusQuery", {
-        prometheusQuery: prometheusQuery.id,
-      })
-      .orderBy("m.timestamp", "DESC");
+      const query = this.metricRepository
+        .createQueryBuilder("m")
+        .where("m.timestamp BETWEEN :to AND :from", {
+          from,
+          to,
+        })
+        .andWhere("m.prometheusQueryId = :prometheusQuery", {
+          prometheusQuery: prometheusQuery.id,
+        })
+        .orderBy("m.timestamp", "DESC");
 
-    const result: MetricEntity[] | null = await query.getMany();
+      const result: MetricEntity[] | null = await query.getMany();
 
-    // Initialize arrays for data processing
-    const seriesData: SeriesEntity[] = [];
-    const data: number[] = [];
-    const timestamps: Date[] = [];
+      // Initialize arrays for data processing
+      const seriesData: SeriesEntity[] = [];
+      const data: number[] = [];
+      const timestamps: Date[] = [];
 
-    result.forEach((series) => {
-      data.push(Number(series.data));
-      timestamps.push(series.timestamp);
-    });
+      result.forEach((series) => {
+        data.push(Number(series.data));
+        timestamps.push(series.timestamp);
+      });
 
-    let processedData: number[];
+      let processedData: number[];
 
-    if (smoothed) {
-      // Filter outliers and normalize the data
-      const windowSize = 18;
-      const filteredData = this.filterOutliers(data);
-      processedData = this.simpleMovingAverage(filteredData, windowSize);
-    } else {
-      processedData = data;
+      if (smoothed) {
+        // Filter outliers and normalize the data
+        const windowSize = 18;
+        const filteredData = this.filterOutliers(data);
+        processedData = this.simpleMovingAverage(filteredData, windowSize);
+      } else {
+        processedData = data;
+      }
+
+      // Populate return object
+      seriesData.push({
+        timestamps: timestamps,
+        data: processedData,
+      });
+
+      return seriesData;
+    } catch (error) {
+      this.logger.error(`Error fetching metrics for query: ${name}`);
+      return null;
     }
-
-    // Populate return object
-    seriesData.push({
-      timestamps: timestamps,
-      data: processedData,
-    });
-
-    return seriesData;
   }
 
   // Returns the startdate of the metric being tracked from

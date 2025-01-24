@@ -9,19 +9,19 @@ export function NetworkMetrics() {
       <Heading as='h4' size='md' py="5" pl="5" >Tokenomics</Heading>
       <SimpleGrid id="tokenomics" columns={{ base: 1, sm: 1, md: 2, lg: 2 }} gap="6" mt={2}>
         <Box backgroundColor="transparent" >
-          <MetricStat label="POWER : MFX Conversion Rate" metric="mfxpowerconversion" unit=": 1" fixedDecimals={2}  />
-          <MetricChart label="POWER:MFX" type="area" metric="mfxpowerconversion" from={"now-180d"} to={"now"} fixedDecimals={2} smoothed={false}  height={["200px", "300px", "400px"]} />
+          <MetricStat label="POWER : MFX Conversion Rate" metric="mfxpowerconversion" unit=": 1" fixedDecimals={2} />
+          <MetricChart label="POWER:MFX" type="area" metric="mfxpowerconversion" from={"now-180d"} to={"now"} fixedDecimals={2} smoothed={false}  height={["200px", "300px", "400px"]}/>
         </Box>
         <Box backgroundColor="transparent" h={["100px", "200px", "300px"]} >
           <MetricStat label="Total Tokens" metric="totaltokens" />
-          <MetricChart label="Total Tokens" type="area" metric="totaltokens" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Tokens" smoothed={false} height={["200px", "300px", "400px"]} />
+          <MetricChart label="Total Tokens" type="area" metric="totaltokens" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Tokens" smoothed={false} height={["200px", "300px", "400px"]} />
         </Box>
-      </SimpleGrid>
+      </SimpleGrid> 
       <Heading as='h4' size='md' py="5" pl="5" >Blockchain Network Totals</Heading>
       <SimpleGrid id="blockchain" columns={{ base: 1, sm: 1, md: 3, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Addresses" metric="totaladdresses" />
-          <MetricChart label="Total Addresses" type="area" metric="totaladdresses" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Addresses" smoothed={false} />
+          <MetricChart label="Total Addresses" type="area" metric="totaladdresses" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Addresses" smoothed={false} />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Blocks Produced" metric="totalnetworkblocks" />
@@ -44,7 +44,7 @@ export function NetworkMetrics() {
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Processes" metric="totalprocesses" from={"now-1d"} to={"now"} />
-          <MetricChart label="Total Processes" type="area" metric="totalprocesses" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Processes" stroke="monotoneCubic" smoothed={true} />
+          <MetricChart label="Total Processes" type="area" metric="totalprocesses" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Processes" stroke="monotoneCubic" smoothed={true} />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Kubernetes</Heading>
@@ -66,37 +66,37 @@ export function NetworkMetrics() {
       <SimpleGrid id="web" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Web Requests / Sec" metric="nginxrequestssec" from={"now-1d"} to={"now"} />
-          <MetricChart label="Web Requests / Sec" type="area" metric="nginxrequestssec" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests / Sec" />
+          <MetricChart label="Web Requests / Sec" type="area" metric="nginxrequestssec" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Requests / Sec" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Web Servers" metric="totalwebservers" from={"now-1d"} to={"now"} />
-          <MetricChart label="Total Web Servers" type="area" metric="totalwebservers" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Servers" />
+          <MetricChart label="Total Web Servers" type="area" metric="totalwebservers" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Servers" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Web Requests" metric="totalnginxrequests" transform="sumtotal" from={"now-1d"} to={"now"} />
-          <MetricChart label="Total Web Requests" type="area" metric="totalnginxrequests" transform="sumtotal" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests" />
+          <MetricChart label="Total Web Requests" type="area" metric="totalnginxrequests" transform="sumtotal" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Requests" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Decentralized Website Hosting</Heading>
       <SimpleGrid id="hosting" columns={{ base: 1, sm: 1, md: 2, lg: 2 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Sites" metric="totalsitecount" from={"now-1d"} to={"now"} />
-          <MetricChart label="Total Sites" type="area" metric="totalsitecount" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Sites" />
+          <MetricChart label="Total Sites" type="area" metric="totalsitecount" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Sites" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Web Requests" metric="totalwebrequests" transform="sumtotal" from={"now-1d"} to={"now"} />
-          <MetricChart label="Total Web Requests" type="area" metric="totalwebrequests" transform="sumtotal" from={"now-60d"} to={"now"} fixedDecimals={0} ytitle="Requests" />
+          <MetricChart label="Total Web Requests" type="area" metric="totalwebrequests" transform="sumtotal" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Requests" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >GPU</Heading>
       <SimpleGrid id="ai" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total GPUs" metric="totalgpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
-          <MetricChart label="Total GPUs" type="area" metric="totalgpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
+          <MetricChart label="Total GPUs" type="area" metric="totalgpus" from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Nvidia GPUs" metric="totalnvidiagpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
-          <MetricChart label="Total Nvidia GPUs" type="area" metric="totalnvidiagpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
+          <MetricChart label="Total Nvidia GPUs" type="area" metric="totalnvidiagpus" from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
         </Box>
         {/* <Box backgroundColor="transparent">
           <MetricStat label="Total CUDA Cores" metric="totalcudacores" from={"now-1d"} to={"now"} fixedDecimals={5} unit="Cores" />
@@ -104,77 +104,77 @@ export function NetworkMetrics() {
         </Box> */}
         <Box backgroundColor="transparent">
           <MetricStat label="Total AMD GPUs" metric="totalamdgpus" from={"now-1d"} to={"now"} fixedDecimals={5} unit="GPUs" />
-          <MetricChart label="Total AMD GPUs" type="area" metric="totalamdgpus" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
+          <MetricChart label="Total AMD GPUs" type="area" metric="totalamdgpus" from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="GPUs" />
         </Box>
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total GPU Memory" metric="totalgpumemory" conversion={convertBytesToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="GB" />
-          <MetricChart label="Total GPU Memory" type="area" metric="totalgpumemory" conversion={convertBytesToGb} from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
+          <MetricChart label="Total GPU Memory" type="area" metric="totalgpumemory" conversion={convertBytesToGb} from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total NVIDIA Memory" metric="totalnvidiamemory" conversion={convertBytesToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="GB" />
-          <MetricChart label="Total NVIDIA Memory" type="area" metric="totalnvidiamemory" conversion={convertBytesToGb} from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
+          <MetricChart label="Total NVIDIA Memory" type="area" metric="totalnvidiamemory" conversion={convertBytesToGb} from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total AMD Memory" metric="totalamdmemory" conversion={convertBytesToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="GB" />
-          <MetricChart label="Total AMD Memory" type="area" metric="totalamdmemory" conversion={convertBytesToGb} from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
+          <MetricChart label="Total AMD Memory" type="area" metric="totalamdmemory" conversion={convertBytesToGb} from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Network</Heading>
       <SimpleGrid id="network" columns={{ base: 1, sm: 1, md: 2, lg: 4 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total IPv4 Bandwidth Sent" metric="ipv4bandwidthsent" transform="sumtotal" conversion={convertKbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
-          <MetricChart label="Total IPv4 Bandwidth Sent" type="area" metric="ipv4bandwidthsent" transform="sumtotal" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricChart label="Total IPv4 Bandwidth Sent" type="area" metric="ipv4bandwidthsent" transform="sumtotal" conversion={convertKbToTb} from={"now-90d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total IPv4 Bandwidth Received" metric="ipv4bandwidthreceived" transform="sumtotal" conversion={convertKbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
-          <MetricChart label="Total IPv4 Bandwidth Received" type="area" metric="ipv4bandwidthreceived" transform="sumtotal" conversion={convertKbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricChart label="Total IPv4 Bandwidth Received" type="area" metric="ipv4bandwidthreceived" transform="sumtotal" conversion={convertKbToTb} from={"now-90d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Ipv4 Packets Sent" metric="ipv4packetssent" transform="sumtotal" conversion={convertNumToBil} from={"now-1d"} to={"now"} fixedDecimals={5} unit="Bil. Packets" />
-          <MetricChart label="Total IPv4 Packets Sent" type="area" metric="ipv4packetssent" transform="sumtotal" conversion={convertNumToBil} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="Billion" />
+          <MetricChart label="Total IPv4 Packets Sent" type="area" metric="ipv4packetssent" transform="sumtotal" conversion={convertNumToBil} from={"now-90d"} to={"now"} fixedDecimals={2} ytitle="Billion" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Ipv4 Packets Received" metric="ipv4packetsreceived" transform="sumtotal" conversion={convertNumToBil} from={"now-1d"} to={"now"} fixedDecimals={5} unit="Bil. Packets" />
-          <MetricChart label="Total IPv4 Packets Received" type="area" metric="ipv4packetsreceived" transform="sumtotal" conversion={convertNumToBil} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="Billion" />
+          <MetricChart label="Total IPv4 Packets Received" type="area" metric="ipv4packetsreceived" transform="sumtotal" conversion={convertNumToBil} from={"now-90d"} to={"now"} fixedDecimals={2} ytitle="Billion" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Disk</Heading>
       <SimpleGrid id="storage" columns={{ base: 1, sm: 1, md: 2, lg: 2 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Disk Space" metric="totaldiskspace" from={"now-1d"} to={"now"} conversion={convertGbToPb} fixedDecimals={5} unit="PB" />
-          <MetricChart label="Total Disk Space" type="area" metric="totaldiskspace" conversion={convertGbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricChart label="Total Disk Space" type="area" metric="totaldiskspace" conversion={convertGbToTb} from={"now-90d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Used Disk Space" metric="useddiskspace" conversion={convertGbToTb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
-          <MetricChart label="Used Disk Space" type="area" metric="useddiskspace" conversion={convertGbToTb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricChart label="Used Disk Space" type="area" metric="useddiskspace" conversion={convertGbToTb} from={"now-90d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >RAM</Heading>
       <SimpleGrid id="memory" columns={{ base: 1, sm: 1, md: 2, lg: 2 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Memory" metric="totalmemory" conversion={convertKbToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
-          <MetricChart label="Total Memory" type="area" metric="totalmemory" conversion={convertKbToGb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricChart label="Total Memory" type="area" metric="totalmemory" conversion={convertKbToGb} from={"now-90d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Used Memory" metric="usedmemory" conversion={convertKbToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="TB" />
-          <MetricChart label="Used Memory" type="area" metric="usedmemory" conversion={convertKbToGb} from={"now-60d"} to={"now"} fixedDecimals={2} ytitle="TB" />
+          <MetricChart label="Used Memory" type="area" metric="usedmemory" conversion={convertKbToGb} from={"now-90d"} to={"now"} fixedDecimals={2} ytitle="TB" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Object Storage</Heading>
       <SimpleGrid id="object-storage" columns={{ base: 1, sm: 1, md: 2, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Objects" metric="totalobjects" from={"now-1d"} to={"now"} fixedDecimals={5} unit="Objects" />
-          <MetricChart label="Total Objects" type="area" metric="totalobjects" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="Objects" />
+          <MetricChart label="Total Objects" type="area" metric="totalobjects" from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="Objects" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Used Object Storage" metric="usedobjectstorage" conversion={convertBytesToGb} from={"now-1d"} to={"now"} fixedDecimals={5} unit="GB" />
-          <MetricChart label="Used Object Storage" type="area" metric="usedobjectstorage" conversion={convertBytesToGb} from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
+          <MetricChart label="Used Object Storage" type="area" metric="usedobjectstorage" conversion={convertBytesToGb} from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="GB" />
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Buckets" metric="totalbuckets" from={"now-1d"} to={"now"} fixedDecimals={5} unit="Buckets" />
-          <MetricChart label="Total Buckets" type="area" metric="totalbuckets" from={"now-60d"} to={"now"} fixedDecimals={2}  ytitle="Buckets" />
+          <MetricChart label="Total Buckets" type="area" metric="totalbuckets" from={"now-90d"} to={"now"} fixedDecimals={2}  ytitle="Buckets" />
         </Box>
       </SimpleGrid>
     </>

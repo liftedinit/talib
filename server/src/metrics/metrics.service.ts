@@ -127,11 +127,11 @@ export class MetricsService {
     from: Date,
     to: Date,
     smoothed: boolean,
-    windowsize?: number
+    windowSize?: number,
   ): Promise<SeriesEntity[] | null> {
     try {
-      let windowsize = 18;
       const prometheusQuery = await this.prometheusQuery.get(name);
+
       const query = this.metricRepository
         .createQueryBuilder("m")
         .where("m.timestamp BETWEEN :to AND :from", {
@@ -158,15 +158,12 @@ export class MetricsService {
       let processedData: number[];
 
       if (smoothed) {
-        // Set default window size if not provided
-
-        if (windowsize === undefined) {
-          windowsize = 18;
+        if (!windowSize) {
+          windowSize = 18;
         }
-
         // Filter outliers and normalize the data
         const filteredData = this.filterOutliers(data);
-        processedData = this.simpleMovingAverage(filteredData, windowsize);
+        processedData = this.simpleMovingAverage(filteredData, windowSize);
       } else {
         processedData = data;
       }

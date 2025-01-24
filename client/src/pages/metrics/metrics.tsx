@@ -8,6 +8,7 @@ import { FaHive, FaNetworkWired, FaFile, FaServer, FaGhost, FaRobot } from "reac
 import { debounce } from 'lodash';
 
 const navItems = [
+  { label: "Tokenomics", section: "tokenomics", icon: FaHive },
   { label: "Neighborhoods", section: "blockchain", icon: FaHive },
   { label: "Nodes", section: "nodes", icon: FaServer },
   { label: "Kubernetes", section: "kubernetes", icon: SiKubernetes },
@@ -16,8 +17,8 @@ const navItems = [
   { label: "AI", section: "ai", icon: FaRobot },
   { label: "Storage", section: "storage", icon: MdStorage },
   { label: "Memory", section: "memory", icon: MdMemory },
-  { label: "Network", section: "network", icon: FaNetworkWired },
   { label: "Object Storage", section: "object-storage", icon: FaFile },
+  { label: "Network", section: "network", icon: FaNetworkWired },
 ];
 
 export function Metrics() {

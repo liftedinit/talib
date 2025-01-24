@@ -20,8 +20,11 @@ interface StatProps {
   from?: string;
   to?: string;
   smoothed?: boolean;
+  windowsize?: number;
   fixedDecimals?: number;
   transform?: string;
+  stroke?: string;
+  height?: string | string[];
 }
 
 interface ChartData {
@@ -42,10 +45,13 @@ export function MetricChart({
   from, 
   to, 
   smoothed = true,
+  windowsize,
   xtitle, 
   ytitle, 
   fixedDecimals,
   transform,
+  stroke,
+  height,
 }: StatProps) {
 
   type metricQueryFunction = () => void;
@@ -56,7 +62,7 @@ export function MetricChart({
     metricQuery = getMetricTransformSeries(metric, transform, {from: from, to: to })
     }
   else {
-    metricQuery = getMetricSeries(metric, smoothed, {from: from, to: to })
+    metricQuery = getMetricSeries(metric, smoothed, windowsize, {from: from, to: to })
   }
 
   const { data: queryData, isError, isLoading } = useQuery([metric + "series"], metricQuery, {
@@ -79,6 +85,11 @@ export function MetricChart({
   }
 
   const bg = useBgColor();
+
+  // Define default height if not provided
+  if (!height) {
+    height=["200px", "300px", "400px"]
+  }
 
   if (!isLoading && queryData) {
 
@@ -112,7 +123,7 @@ export function MetricChart({
           animations: { enabled: false },
         },
         stroke: {
-          curve: 'smooth',
+          curve: stroke ? stroke : 'smooth',
         },
         xaxis: {
           title: { 
@@ -162,8 +173,8 @@ export function MetricChart({
       </Center>
     </Box>
     ) : ( 
-    <Box p={4} bg={bg}>
-      <Chart type={type} series={chartData.series} options={chartData.options} className="talib-chart" />
+    <Box p={4} bg={bg} h={height}>
+      <Chart height="100%" type={type} series={chartData.series} options={chartData.options} className="talib-chart" />
     </Box>
     )}
     {isError && (

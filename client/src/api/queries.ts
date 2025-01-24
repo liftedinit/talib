@@ -85,9 +85,10 @@ export function getMetricCurrent(
 export function getMetricSeries(
   stat?: string, 
   smoothed?: boolean,
+  windowsize?: number,
   {from = FROM, to = TO } = {},
 ) {
-    return get(`metrics/${stat}/series`, { from, to, smoothed });
+    return get(`metrics/${stat}/series`, { from, to, smoothed, windowsize });
 }
 
 export function getMetricTransformCurrent(

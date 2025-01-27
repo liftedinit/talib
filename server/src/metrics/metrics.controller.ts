@@ -52,13 +52,16 @@ export class MetricsController {
   @ApiQuery({ name: "to", required: false })
   @ApiQuery({ name: "hours", required: false })
   @ApiQuery({ name: "smoothed", required: false })
+  @ApiQuery({ name: "windowsize", required: false })
   getPrometheusQuerySeries(
     @Param("name") name: string,
     @Query("from") from?: string,
     @Query("to") to?: string,
     @Query("hours") hours?: number,
     @Query("smoothed") smoothed?: boolean,
+    @Query("windowsize") windowsize?: number,
   ): Promise<SeriesEntity[]> {
+
     if (!hours) {
       hours = 24;
     }
@@ -81,7 +84,7 @@ export class MetricsController {
       previousDate.setHours(previousDate.getHours() - fromHours);
     }
 
-    return this.metrics.getSeries(name, currentDate, previousDate, smoothed);
+    return this.metrics.getSeries(name, currentDate, previousDate, smoothed, windowsize);
   }
 
   @Put(":name")

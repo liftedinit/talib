@@ -74,38 +74,38 @@ export class MetricsService {
     }
   }
 
-  // Lookback and remove the 95th percent difference of outliers
   filterOutliers(data: number[]): number[] {
     const filteredData: number[] = [];
-
-    let max = 0;
-    // look back 144 datapoints and get
-    // the recent maximum value
-    const lookback = 72;
-    const percentDiff = 0.90;
+    const lookback = 72; // Look back 72 data points
+    const percentDiff = 0.90; // Acceptable deviation (90% difference)
+  
     for (let i = 0; i < data.length; i++) {
       const previousValues = data.slice(Math.max(i - lookback, 0), i);
       const currentValue = data[i];
-
-      let previousMaxValue: number;
-      // Check if previousValues has any entries
-      // prevents -infinity error
-      if (previousValues.length > 0) {
-        previousMaxValue = Math.max(...previousValues);
-      } else {
-        previousMaxValue = data[i];
-      }
-
-      // Compare currentValue to the maxValue relative to the
-      // acceptable percent difference
-      if (currentValue < previousMaxValue * percentDiff) {
-        max = previousMaxValue;
-        filteredData.push(max);
-      } else {
+  
+      if (previousValues.length === 0) {
+        // No previous values, include the first data point as-is
         filteredData.push(currentValue);
+        continue;
+      }
+  
+      // Calculate average of previous values
+      const averageValue =
+        previousValues.reduce((sum, val) => sum + val, 0) / previousValues.length;
+  
+      // Calculate acceptable bounds
+      const lowerBound = averageValue * (1 - percentDiff);
+      const upperBound = averageValue * (1 + percentDiff);
+  
+      // Include the value only if it falls within bounds
+      if (currentValue >= lowerBound && currentValue <= upperBound) {
+        filteredData.push(currentValue);
+      } else {
+        // Use the average value as a fallback
+        filteredData.push(averageValue);
       }
     }
-
+  
     return filteredData;
   }
 
@@ -126,7 +126,8 @@ export class MetricsService {
     name: string,
     from: Date,
     to: Date,
-    smoothed: boolean
+    smoothed: boolean,
+    windowSize?: number,
   ): Promise<SeriesEntity[] | null> {
     try {
       const prometheusQuery = await this.prometheusQuery.get(name);
@@ -157,8 +158,10 @@ export class MetricsService {
       let processedData: number[];
 
       if (smoothed) {
+        if (!windowSize) {
+          windowSize = 18;
+        }
         // Filter outliers and normalize the data
-        const windowSize = 18;
         const filteredData = this.filterOutliers(data);
         processedData = this.simpleMovingAverage(filteredData, windowSize);
       } else {
@@ -173,7 +176,7 @@ export class MetricsService {
 
       return seriesData;
     } catch (error) {
-      this.logger.error(`Error fetching metrics for query: ${name}`);
+      this.logger.error(`Error fetching metrics for query: ${name} ${error}`);
       return null;
     }
   }

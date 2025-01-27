@@ -109,6 +109,11 @@ export function convertGbToTb(b: number): number {
   return gbValue
 }
 
+export function convertGbToPb(b: number): number {
+  let gbValue = (b / (1000 * 1000));
+  return gbValue
+}
+
 export function convertTbToPb(b: number): number {
   let gbValue = (b / (1000 * 1000 ));
   return gbValue

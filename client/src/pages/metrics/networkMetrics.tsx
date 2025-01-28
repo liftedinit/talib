@@ -10,7 +10,7 @@ export function NetworkMetrics() {
       <SimpleGrid id="tokenomics" columns={{ base: 1, sm: 1, md: 2, lg: 2 }} gap="6" mt={2}>
         <Box backgroundColor="transparent" >
           <MetricStat label="POWER : MFX Conversion Rate" metric="mfxpowerconversion" unit=": 1" fixedDecimals={2} />
-          <MetricChart label="POWER:MFX" type="area" metric="mfxpowerconversion" from={"now-180d"} to={"now"} fixedDecimals={2} smoothed={false}  height={["200px", "300px", "400px"]}/>
+          <MetricChart label="POWER:MFX" type="area" metric="mfxpowerconversion" from={"now-180d"} to={"now"} fixedDecimals={2} smoothed={false} stroke="straight" height={["200px", "300px", "400px"]}/>
         </Box>
         <Box backgroundColor="transparent" h={["100px", "200px", "300px"]} >
           <MetricStat label="Total Tokens" metric="totaltokens" />

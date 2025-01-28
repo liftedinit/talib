@@ -4,21 +4,22 @@ import { MetricNav } from "ui";
 import { NetworkMetrics } from "./networkMetrics";
 import { MdMemory, MdStorage, MdDns} from "react-icons/md";
 import { SiKubernetes } from "react-icons/si";
-import { FaHive, FaNetworkWired, FaFile, FaServer, FaGhost, FaRobot } from "react-icons/fa6"
+import { FaHive, FaNetworkWired, FaFile, FaServer, FaGhost, FaRobot, FaWallet } from "react-icons/fa6"
 import { debounce } from 'lodash';
 
 const navItems = [
-  { label: "Tokenomics", section: "tokenomics", icon: FaHive },
+  { label: "Tokenomics", section: "tokenomics", icon: FaWallet },
   { label: "Neighborhoods", section: "blockchain", icon: FaHive },
   { label: "Nodes", section: "nodes", icon: FaServer },
   { label: "Kubernetes", section: "kubernetes", icon: SiKubernetes },
   { label: "Web", section: "web", icon: MdDns },
   { label: "Hosting", section: "hosting", icon: FaGhost },
   { label: "AI", section: "ai", icon: FaRobot },
+  { label: "Network", section: "network", icon: FaNetworkWired },
   { label: "Storage", section: "storage", icon: MdStorage },
   { label: "Memory", section: "memory", icon: MdMemory },
   { label: "Object Storage", section: "object-storage", icon: FaFile },
-  { label: "Network", section: "network", icon: FaNetworkWired },
+
 ];
 
 export function Metrics() {

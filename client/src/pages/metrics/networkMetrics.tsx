@@ -44,7 +44,7 @@ export function NetworkMetrics() {
         </Box>
         <Box backgroundColor="transparent">
           <MetricStat label="Total Processes" metric="totalprocesses" from={"now-1d"} to={"now"} />
-          <MetricChart label="Total Processes" type="area" metric="totalprocesses" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Processes" stroke="monotoneCubic" smoothed={true} />
+          <MetricChart label="Total Processes" type="area" metric="totalprocesses" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Processes" />
         </Box>
       </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Kubernetes</Heading>

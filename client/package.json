@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@liftedinit/ui": "github:jgryffindor/lifted-ui#feat/color-mode",
-    "@tanstack/react-query": "^4.3.4",
+    "@tanstack/react-query": "^5.66.9",
     "apexcharts": "3.45.1",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",

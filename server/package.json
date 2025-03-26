@@ -32,7 +32,7 @@
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/typeorm": "^9.0.1",
     "@types/cron": "^2.0.0",
-    "axios": "^1.4.0",
+    "axios": "^1.8.2",
     "big.js": "^6.2.1",
     "cbor": "^8.1.0",
     "change-case": "^4.1.2",

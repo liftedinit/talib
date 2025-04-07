@@ -14,12 +14,13 @@ export class MigrationWhitelistController {
     description: "Get the complete migrations whitelist"
   })
   @ApiOkResponse({
-    type: MigrationWhitelistDto,
+    type: String,
     isArray: true,
     description: "The complete list of whitelisted manifest addresses"
   })
-  async getWhitelist(): Promise<MigrationWhitelistDto[]> {
-    return this.whitelistService.findAll();
+  async getWhitelist(): Promise<string[]> {
+    const whitelist = await this.whitelistService.findAll();
+    return whitelist.map((item) => item.manifestAddress);
   }
 
   @Post()

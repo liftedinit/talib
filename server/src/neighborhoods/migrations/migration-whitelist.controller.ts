@@ -1,9 +1,7 @@
-import { Controller, Get, Post, Body, Logger, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Logger } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiCreatedResponse } from "@nestjs/swagger";
 import { MigrationWhitelistDto } from "../../dto/migration-whitelist.dto";
 import { MigrationWhitelistService } from "./migration-whitelist.service";
-import { AuthRequired } from "../../utils/decorators";
-import { AuthGuard } from "@nestjs/passport";
 
 @Controller("migrations-whitelist")
 export class MigrationWhitelistController {
@@ -25,8 +23,6 @@ export class MigrationWhitelistController {
   }
 
   @Post()
-  @AuthRequired()
-  @UseGuards(AuthGuard)
   @ApiOperation({
     description: "Add a new address to the migration whitelist"
   })

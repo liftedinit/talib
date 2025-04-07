@@ -6,6 +6,6 @@ export class MigrationWhitelist {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   manifestAddress: string;
 }

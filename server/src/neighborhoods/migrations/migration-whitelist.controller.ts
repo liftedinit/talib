@@ -31,7 +31,7 @@ export class MigrationWhitelistController {
     description: "The address was successfully added to the whitelist"
   })
   async addToWhitelist(@Body() dto: MigrationWhitelistDto): Promise<MigrationWhitelistDto> {
-    console.log(`Adding address to whitelist: ${dto}`);
+    console.log(`Adding address to whitelist: ${JSON.stringify(dto)}`);
     const bech32Pattern = /^manifest1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{1,58}$/i;
 
     if (!bech32Pattern.test(dto.manifestAddress)) {

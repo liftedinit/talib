@@ -20,7 +20,7 @@ export class MigrationWhitelistController {
   })
   async getWhitelist(): Promise<string[]> {
     const whitelist = await this.whitelistService.findAll();
-    return whitelist.map((item) => item.manifestAddress);
+    return whitelist.map((item) => item.manyAddress);
   }
 
   @Post()
@@ -33,9 +33,9 @@ export class MigrationWhitelistController {
   })
   async addToWhitelist(@Body() dto: MigrationWhitelistDto): Promise<MigrationWhitelistDto> {
     console.log(`Adding address to whitelist: ${JSON.stringify(dto)}`);
-    if (!dto || !dto.manifestAddress) {
+    if (!dto || !dto.manyAddress) {
       throw new Error(`Invalid request body: ${JSON.stringify(dto)}`);
     }
-    return this.whitelistService.addAddress(dto.manifestAddress);
+    return this.whitelistService.addAddress(dto.manyAddress);
   }
 }

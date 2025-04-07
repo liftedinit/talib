@@ -19,22 +19,22 @@ export class MigrationWhitelistService {
     return whitelist.map((item) => (item.intoDto()));
   }
 
-  async addAddress(manifestAddress: string): Promise<MigrationWhitelistDto> {
-    this.logger.debug(`Adding address to whitelist: ${manifestAddress}`);
+  async addAddress(manyAddress: string): Promise<MigrationWhitelistDto> {
+    this.logger.debug(`Adding address to whitelist: ${manyAddress}`);
 
     // Check if address already exists
     const existing = await this.whitelistRepository.findOne({
-      where: { manifestAddress }
+      where: { manyAddress }
     });
 
     if (existing) {
-      throw new ConflictException(`Address ${manifestAddress} is already in the whitelist`);
+      throw new ConflictException(`Address ${manyAddress} is already in the whitelist`);
     }
 
     // Create new whitelist entry
-    const newEntry = this.whitelistRepository.create({ manifestAddress });
+    const newEntry = this.whitelistRepository.create({ manyAddress });
     await this.whitelistRepository.save(newEntry);
 
-    return { manifestAddress: newEntry.manifestAddress };
+    return { manyAddress: newEntry.manyAddress };
   }
 }

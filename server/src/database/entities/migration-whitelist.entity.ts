@@ -8,11 +8,11 @@ export class MigrationWhitelist {
   id: number;
 
   @Column({ unique: true })
-  manifestAddress: string;
+  manyAddress: string;
 
   intoDto(): MigrationWhitelistDto {
     return {
-      manifestAddress: this.manifestAddress,
+      manyAddress: this.manyAddress,
     };
   }
 }

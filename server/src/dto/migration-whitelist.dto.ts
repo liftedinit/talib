@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNotEmpty, Matches } from "class-validator";
+import { IsString, IsNotEmpty } from "class-validator";
 
 export class MigrationWhitelistDto {
   @ApiProperty({
@@ -7,6 +7,5 @@ export class MigrationWhitelistDto {
   })
   @IsString()
   @IsNotEmpty()
-  @Matches(/^manifest1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{1,58}$/i)
-  manifestAddress: string;
+  manyAddress: string;
 }

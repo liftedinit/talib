@@ -14,6 +14,6 @@ import { MigrationWhitelistController } from "./migration-whitelist.controller";
   imports: [TypeOrmModule.forFeature([Migration, Transaction, TransactionDetails, MigrationWhitelist])],
   providers: [MigrationsService, NetworkService, MigrationWhitelistService],
   controllers: [MigrationsController, MigrationWhitelistController],
-  exports: [MigrationsService],
+  exports: [MigrationsService, MigrationWhitelistService],
 })
 export class MigrationsModule {}

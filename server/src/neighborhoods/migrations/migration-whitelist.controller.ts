@@ -32,13 +32,9 @@ export class MigrationWhitelistController {
   })
   async addToWhitelist(@Body() dto: MigrationWhitelistDto): Promise<MigrationWhitelistDto> {
     console.log(`Adding address to whitelist: ${JSON.stringify(dto)}`);
-    const bech32Pattern = /^manifest1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{1,58}$/i;
-
-    if (!bech32Pattern.test(dto.manifestAddress)) {
-      this.logger.debug(`Invalid bech32 address format: ${dto.manifestAddress}`);
-      throw new Error("Invalid bech32 address format");
+    if (!dto || !dto.manifestAddress) {
+      throw new Error(`Invalid request body: ${JSON.stringify(dto)}`);
     }
-
     return this.whitelistService.addAddress(dto.manifestAddress);
   }
 }

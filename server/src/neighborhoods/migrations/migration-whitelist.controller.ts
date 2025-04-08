@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Logger } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiCreatedResponse } from "@nestjs/swagger";
+import { Body, Controller, Get, Logger, Param, Post } from "@nestjs/common";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { MigrationWhitelistDto } from "../../dto/migration-whitelist.dto";
 import { MigrationWhitelistService } from "./migration-whitelist.service";
 
@@ -21,6 +21,19 @@ export class MigrationWhitelistController {
   async getWhitelist(): Promise<string[]> {
     const whitelist = await this.whitelistService.findAll();
     return whitelist.map((item) => item.manyAddress);
+  }
+
+  @Get(":address")
+  @ApiOperation({
+    description: "Check if an address is in the migration whitelist"
+  })
+  @ApiOkResponse({
+    type: Boolean,
+    description: "The address is in the whitelist"
+  })
+  async isInWhitelist(@Param("address") address: string): Promise<boolean> {
+    const whitelist = await this.whitelistService.findAll();
+    return whitelist.some((item) => item.manyAddress === address);
   }
 
   @Post()

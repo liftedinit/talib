@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty } from "class-validator";
 
 export class MigrationWhitelistDto {
   @ApiProperty({
-    description: "The manifest address for the whitelist entry"
+    description: "The many address for the whitelist entry"
   })
   @IsString()
   @IsNotEmpty()

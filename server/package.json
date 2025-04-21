@@ -26,7 +26,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.3",
     "@nestjs/passport": "^9.0.3",
-    "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/platform-express": "^11.0.20",
     "@nestjs/schedule": "^2.2.0",
     "@nestjs/serve-static": "^3.0.0",
     "@nestjs/swagger": "^6.1.4",

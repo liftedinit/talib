@@ -34,6 +34,7 @@ import { MetricModule } from "./metrics/metrics.module";
 import { SystemWideMetric } from "./database/entities/systemwide-metric.entity";
 import { SystemWideModule } from "./metrics/systemwide/systemwide.module";
 import { Migration } from "./database/entities/migration.entity";
+import { MigrationWhitelist } from "./database/entities/migration-whitelist.entity";
 
 @Module({
   controllers: [],
@@ -82,6 +83,7 @@ import { Migration } from "./database/entities/migration.entity";
           SystemWideMetric, 
           Location,
           Migration,
+          MigrationWhitelist,
         ],
         migrations: [],
         synchronize: true,

@@ -36,6 +36,7 @@ import { SystemWideMetric } from "./database/entities/systemwide-metric.entity";
 import { SystemWideModule } from "./metrics/systemwide/systemwide.module";
 import { Migration } from "./database/entities/migration.entity";
 import { MigrationWhitelist } from "./database/entities/migration-whitelist.entity";
+import { MonitoringModule } from "./metrics/monitoring/monitoring.module";
 
 @Module({
   controllers: [],
@@ -49,11 +50,6 @@ import { MigrationWhitelist } from "./database/entities/migration-whitelist.enti
     GeoSchedulerConfigModule,
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
-    PrometheusModule.register({
-      defaultMetrics: {
-        enabled: true, 
-      },
-    }),
     ServeStaticModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [AppConfigService],
@@ -97,6 +93,7 @@ import { MigrationWhitelist } from "./database/entities/migration-whitelist.enti
       }),
     }),
     TypeOrmModule.forFeature([Event, Transaction, TransactionDetails, PrometheusQuery, Metric]),
+    MonitoringModule,
     AdminConfigModule,
     AppConfigModule,
     SchedulerConfigModule,
@@ -113,6 +110,7 @@ import { MigrationWhitelist } from "./database/entities/migration-whitelist.enti
     GeoSchedulerModule,
   ],
 })
+
 export class AppModule {
   constructor(private dataSource: DataSource) {}
 }

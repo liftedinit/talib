@@ -7,6 +7,8 @@ import {
 } from 'prom-client';
 import { MetricsService } from '../metrics.service';
 
+export const METRIC_PREFIX = 'talib_';
+
 type MetricType = 'gauge' | 'counter';
 
 type MetricInstance =
@@ -59,18 +61,19 @@ export class MonitoringService {
   private registerMetrics(): void {
     for (const def of this.metricDefinitions) {
       let metric: MetricInstance;
+      const metricName = METRIC_PREFIX + def.name; // Apply prefix
 
     switch (def.type) {
       case 'gauge':
         metric = new Gauge({
-          name: def.name,
+          name: metricName,
           help: def.help,
           labelNames: def.labels || [], // 👈 This is required
         });
         break;
       case 'counter':
         metric = new Counter({
-          name: def.name,
+          name: metricName,
           help: def.help,
           labelNames: def.labels || [],
         });
@@ -110,8 +113,6 @@ export class MonitoringService {
             }
             break;
         }
-
-        this.logger.debug(`Updated metric ${def.name}`);
       } catch (err) {
         this.logger.error(`Error updating metric ${def.name}:`, err);
       }

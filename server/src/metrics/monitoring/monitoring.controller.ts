@@ -1,6 +1,7 @@
 import { Controller, Get, Logger, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { Registry, collectDefaultMetrics, register } from 'prom-client';
+import { METRIC_PREFIX } from './monitoring.service';
 
 @Controller('monitoring')
 export class MonitoringController {
@@ -8,7 +9,7 @@ export class MonitoringController {
 
   constructor() {
     // Initialie the Prometheus registry
-    collectDefaultMetrics({ register }); // Collect default metrics
+    collectDefaultMetrics({ register, prefix: METRIC_PREFIX  });
   }
 
   @Get('metrics')
@@ -16,6 +17,5 @@ export class MonitoringController {
     const metrics = await register.metrics(); 
     res.set('Content-Type', register.contentType);
     res.send(metrics);
-    this.logger.log('Metrics endpoint hit');
   }
 }

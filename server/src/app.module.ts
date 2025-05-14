@@ -28,7 +28,6 @@ import { GeoSchedulerModule } from "./services/geo-scheduler/geo-scheduler.modul
 import { GeoSchedulerConfigModule } from "./config/geo-scheduler/configuration.module";
 import { PrometheusQuery } from "./database/entities/prometheus-query.entity";
 import { PrometheusQueryModule } from "./metrics/prometheus-query/query.module";
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { UsersModule } from "./users/users.module";
 import { Metric } from "./database/entities/metric.entity";
 import { MetricModule } from "./metrics/metrics.module";

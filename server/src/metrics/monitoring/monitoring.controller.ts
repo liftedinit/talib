@@ -8,7 +8,7 @@ export class MonitoringController {
   private readonly logger = new Logger(MonitoringController.name);
 
   constructor() {
-    // Initialie the Prometheus registry
+    // Initialize the Prometheus registry
     collectDefaultMetrics({ register, prefix: METRIC_PREFIX  });
   }
 

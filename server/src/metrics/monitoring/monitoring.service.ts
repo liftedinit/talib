@@ -33,9 +33,10 @@ function isValueMetric(val: MetricValue): val is { value: number; labels?: Recor
 @Injectable()
 export class MonitoringService {
   private readonly logger = new Logger(MonitoringService.name);
-
   private readonly metrics: Record<string, MetricInstance> = {};
 
+  // Define the metrics to be monitored
+  // Each metric has a type, name, help text, optional labels, and a function to get its value
   private readonly metricDefinitions: MetricDefinition[] = [
     {
       type: 'gauge',
@@ -52,23 +53,25 @@ export class MonitoringService {
   ];
 
   constructor(private readonly metricsService: MetricsService) {
+    // Initialize the Prometheus registry
     register.clear();
     register.setDefaultLabels({ app: 'talib' });
     this.registerMetrics();
     this.logger.log('MonitoringService initialized');
   }
 
+  // Register metrics with Prometheus
   private registerMetrics(): void {
     for (const def of this.metricDefinitions) {
       let metric: MetricInstance;
-      const metricName = METRIC_PREFIX + def.name; // Apply prefix
+      const metricName = METRIC_PREFIX + def.name;
 
     switch (def.type) {
       case 'gauge':
         metric = new Gauge({
           name: metricName,
           help: def.help,
-          labelNames: def.labels || [], // 👈 This is required
+          labelNames: def.labels || [],
         });
         break;
       case 'counter':
@@ -87,6 +90,7 @@ export class MonitoringService {
     this.logger.log(`Registered ${this.metricDefinitions.length} metrics`);
   }
 
+  // Update metrics
   async updateMetrics(): Promise<void> {
     for (const def of this.metricDefinitions) {
       const metric = this.metrics[def.name];

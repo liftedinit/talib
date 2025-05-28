@@ -14,7 +14,7 @@ export class MonitoringMiddleware implements NestMiddleware {
     if (req.originalUrl.includes('/monitoring/metrics')) {
 
       // Update all custom metrics before serving the metrics endpoint
-      this.monitoringService.updateMetrics();
+      await this.monitoringService.updateMetrics();
     }
     next();
   }

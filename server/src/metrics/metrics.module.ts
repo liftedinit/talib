@@ -21,10 +21,12 @@ import { SystemWideService } from "./systemwide/systemwide.service";
 import { SystemWideMetric } from "../database/entities/systemwide-metric.entity";
 import { LocationModule } from "./location/location.module";
 import { LocationService } from "./location/location.service";
+import { MonitoringModule } from "./monitoring/monitoring.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Metric, Location, Block, Transaction, SystemWideMetric, PrometheusQuery]),
+    MonitoringModule,
     HttpModule,
     MetricsSchedulerConfigModule,
     PrometheusQueryModule,

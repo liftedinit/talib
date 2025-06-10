@@ -10,6 +10,12 @@ async function bootstrap() {
   });
   const appConfig: AppConfigService = app.get(AppConfigService);
 
+  app.enableCors({
+    origin: appConfig.corsOrigin,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type, Accept, Authorization"
+  });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.setGlobalPrefix("/api/v1");
   app.useLogger([

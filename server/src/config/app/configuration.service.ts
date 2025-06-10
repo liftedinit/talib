@@ -22,6 +22,9 @@ export class AppConfigService {
   get port() {
     return Number(this.configService.get<number>("app.port"));
   }
+  get corsOrigin() {
+    return this.configService.get<string | string[]>("app.corsOrigin");
+  }
 
   get staticRootPath() {
     return this.configService.get<string | undefined>("app.staticRoot");

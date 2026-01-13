@@ -34,31 +34,23 @@ export class TransformsService {
   async getSumTotal(name: string): Promise<Current> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
-    const query = this.metricRepository
+    const result = await this.metricRepository
       .createQueryBuilder("m")
+      .select("SUM(CAST(m.data AS NUMERIC))", "sum")
       .where("m.prometheusQueryId = :prometheusQuery", {
         prometheusQuery: prometheusQuery.id,
       })
-      .orderBy("m.timestamp", "DESC");
+      .getRawOne();
 
-    const values: MetricEntity[] = await query.getMany();
-
-    if (!values) {
+    if (!result || result.sum === null) {
       return null;
     }
 
-    const sum = values.reduce(
-      (accumulator, item) => accumulator + Number(item.data),
-      0,
-    );
-
-    const sumTotal = {
+    return {
       id: Math.floor(Math.random() * 900000) + 100000,
       timestamp: new Date().toISOString(),
-      data: sum.toString(),
+      data: result.sum.toString(),
     };
-
-    return sumTotal;
   }
 
   async getSeriesSumTotal(
@@ -68,18 +60,21 @@ export class TransformsService {
   ): Promise<SeriesEntity[] | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
-    // Get all values for a metric from the database from all time
-    const query = this.metricRepository
+    // Filter by date range in SQL, not in JS
+    const result: MetricEntity[] = await this.metricRepository
       .createQueryBuilder("m")
       .where("m.prometheusQueryId = :prometheusQuery", {
         prometheusQuery: prometheusQuery.id,
       })
-      .orderBy("m.timestamp", "DESC");
+      .andWhere("m.timestamp >= :from", { from })
+      .andWhere("m.timestamp < :to", { to })
+      .orderBy("m.timestamp", "DESC")
+      .getMany();
 
-    const result: MetricEntity[] | null = await query.getMany();
+    if (!result || result.length === 0) {
+      return null;
+    }
 
-    // Initialize arrays for data processing
-    const seriesData: SeriesEntity[] = [];
     const data: number[] = [];
     const timestamps: Date[] = [];
 
@@ -88,27 +83,14 @@ export class TransformsService {
       timestamps.push(series.timestamp);
     });
 
-    // Generate the cumulative sum of the data and insert it into the data array
-    data.reduceRight((accumulator, currentValue, currentIndex) => {
-      data[currentIndex] = accumulator + currentValue;
-      return data[currentIndex];
-    });
+    // Cumulative sum from right to left
+    for (let i = data.length - 2; i >= 0; i--) {
+      data[i] = data[i] + data[i + 1];
+    }
 
-    // Find the index of the first timestamp that is before the "to" date
-    const filterStartIndex = timestamps.findIndex(
-      (timestamp) => new Date(timestamp) < to,
-    );
-
-    // Filter data based on a range of timestamps
-    const filteredData = data.slice(0, filterStartIndex);
-    const filteredTimestamps = timestamps.slice(0, filterStartIndex);
-
-    // Populate return object with filtered data
-    seriesData.push({
-      timestamps: filteredTimestamps,
-      data: filteredData,
-    });
-
-    return seriesData;
+    return [{
+      timestamps,
+      data,
+    }];
   }
 }

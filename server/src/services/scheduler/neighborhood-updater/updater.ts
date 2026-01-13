@@ -25,6 +25,15 @@ import { LedgerInfo, Supply } from "../../../utils/network/ledger";
 export class NeighborhoodUpdater {
   private logger: Logger;
   private n: Neighborhood;
+  private pLimitFn: any = null;
+
+  private async getPLimit() {
+    if (!this.pLimitFn) {
+      const { default: pLimit } = await import('p-limit');
+      this.pLimitFn = pLimit as any;
+    }
+    return this.pLimitFn;
+  }
 
   constructor(
     private schedulerConfig: SchedulerConfigService,
@@ -101,7 +110,26 @@ export class NeighborhoodUpdater {
     this.logger.debug(
       `Updating transaction details for [${missingTxDetailsIds}]`,
     );
+
+    const network = await this.network.forUrl(neighborhood.url);
+
     for (const tx of transactions) {
+      // Fetch request/response if missing (retry from failed block sync)
+      if (!tx.request || !tx.response) {
+        try {
+          const [request, response] = await Promise.all([
+            tx.request ?? network.blockchain.request(tx.hash),
+            tx.response ?? network.blockchain.response(tx.hash),
+          ]);
+          tx.request = request;
+          tx.response = response;
+          await this.transaction.save(tx);
+        } catch (e) {
+          this.logger.warn(`Failed to fetch request/response for tx ${tx.id}: ${e.message}`);
+          continue;  // Skip this tx, retry next run
+        }
+      }
+
       const details = await this.txAnalyzer.analyzeTransaction(tx);
       if (details) {
         await this.txDetailsRepository.upsert(details, ["transaction"]);
@@ -114,7 +142,7 @@ export class NeighborhoodUpdater {
   ) {
 
     // Find potential migrations for neighborhood
-    const potentialMigrations = 
+    const potentialMigrations =
       await this.migrationAnalyzer.missingMigrationForNeighborhood(
         neighborhood,
       );
@@ -125,7 +153,14 @@ export class NeighborhoodUpdater {
       return this.migrationAnalyzer.analyzeMigration(neighborhood, tx);
     });
 
-    await Promise.all(migrationQueue);
+    const results = await Promise.allSettled(migrationQueue);
+
+    // Log any failures but continue processing
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        this.logger.warn(`Failed to analyze migration: ${result.reason}`);
+      }
+    }
   }
 
   private async checkIfNeighborhoodHasBeenReset(neighborhood: Neighborhood) {
@@ -186,12 +221,20 @@ export class NeighborhoodUpdater {
     }
 
     for (const batch of schedule) {
-      await Promise.all(
+      const results = await Promise.allSettled(
         batch.map(async (height) => {
           const blockInfo = await network.blockchain.blockByHeight(height);
           await this.block.createFromManyBlock(neighborhood, blockInfo);
+          return height;
         }),
       );
+
+      // Log any failures but continue processing
+      for (const result of results) {
+        if (result.status === 'rejected') {
+          this.logger.warn(`Failed to fetch/save block: ${result.reason}`);
+        }
+      }
 
       // Sleep a bit.
       await new Promise((res) => setTimeout(res, parallelSleep * 1000));
@@ -217,16 +260,34 @@ export class NeighborhoodUpdater {
     neighborhood: Neighborhood,
     networkType?: string) {
 
-    try { 
+    try {
+      const pLimit = await this.getPLimit();
+      const limit = pLimit(10);  // Max 10 concurrent network requests
+
       const existingTokens = await this.tokens.getAllTokens(neighborhood);
       const network = await this.network.forUrl(neighborhood.url, networkType);
       const ledgerInfo = await network.ledger.info();
 
-      // Locate missing token supply for existing tokens
+      // Fetch all token supplies in parallel (with concurrency limit)
+      const supplyResults = await Promise.allSettled(
+        existingTokens.map((token) =>
+          limit(async () => {
+            const supply = await network.ledger.supply(token.address.toString());
+            return { token, supply };
+          })
+        )
+      );
+
+      // Process results and collect tokens to save
       const tokensToSave: typeof existingTokens = [];
 
-      for (const token of existingTokens) {
-        const tokensInfo = await network.ledger.supply(token.address.toString());
+      for (const result of supplyResults) {
+        if (result.status === 'rejected') {
+          this.logger.warn(`Failed to fetch token supply: ${result.reason}`);
+          continue;
+        }
+
+        const { token, supply: tokensInfo } = result.value;
         let needsSave = false;
 
         // Check if token has supply column filled in the database and save if null
@@ -267,21 +328,31 @@ export class NeighborhoodUpdater {
         await this.tokens.saveMany(tokensToSave);
       }
 
-      // Locate missing tokens 
-      const missingTokens = ledgerInfo.symbols.filter(symbol => 
+      // Locate missing tokens
+      const missingTokens = ledgerInfo.symbols.filter(symbol =>
         !existingTokens.some(existingToken => existingToken.address.toString() === symbol.address)
       );
 
       this.logger.debug(`missingTokens: ${JSON.stringify(missingTokens)}`)
 
-      // Create token entities for missing tokens
+      // Create token entities for missing tokens (with concurrency limit)
       if (missingTokens.length > 0) {
         this.logger.debug(
           `Adding ${missingTokens.length} tokens to neighborhood ${neighborhood.id}`,
         );
-        for (const t of missingTokens) {
-          this.logger.debug(`Adding token ${t.address.toString()} to neighborhood ${neighborhood.id}`);
-          await this.tokens.addToken(neighborhood, t);
+        const addResults = await Promise.allSettled(
+          missingTokens.map((t) =>
+            limit(async () => {
+              this.logger.debug(`Adding token ${t.address.toString()} to neighborhood ${neighborhood.id}`);
+              await this.tokens.addToken(neighborhood, t);
+            })
+          )
+        );
+
+        for (const result of addResults) {
+          if (result.status === 'rejected') {
+            this.logger.warn(`Failed to add token: ${result.reason}`);
+          }
         }
       }
 

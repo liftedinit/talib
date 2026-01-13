@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, QueryFailedError } from "typeorm";
+import { Repository } from "typeorm";
 import { MetricsSchedulerConfigService } from "src/config/metrics-scheduler/configuration.service";
 import { Metric } from "../../../database/entities/metric.entity";
 import { PrometheusQuery } from "src/database/entities/prometheus-query.entity";
@@ -41,14 +41,18 @@ export class MetricUpdater {
         MAXDATAPOINTS,
       );
 
-    // Construct the metric
-    const entity = new Metric();
-    entity.prometheusQueryId = p;
-    entity.timestamp = new Date(latestMetric[0]);
-
-    entity.data = latestMetric[1];
-
-    const result = await this.metricRepository.save(entity);
+    // Insert metric with ON CONFLICT DO NOTHING to avoid duplicate key errors
+    const result = await this.metricRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Metric)
+      .values({
+        prometheusQueryId: p,
+        timestamp: new Date(latestMetric[0]),
+        data: latestMetric[1],
+      })
+      .orIgnore()
+      .execute();
 
     return result;
   }
@@ -102,16 +106,9 @@ export class MetricUpdater {
           await this.updateMetricNewValues(p, seedMetricTimestamp);
           this.logger.debug(`Done running updateMetricNewValues: ${p.name}.`)
         } catch (error) {
-          if (
-            error instanceof QueryFailedError &&
-            error.message.includes("unique constraint")
-          ) {
-          } else if (error.message.includes("undefined")) {
-          } else {
-            this.logger.debug(
-              `Error Cause ${error.message} for query ${p.name} ${seedMetricTimestamp}`,
-            );
-          }
+          this.logger.debug(
+            `Error: ${error.message} for query ${p.name} ${seedMetricTimestamp}`,
+          );
         }
         // Inccrement timestamp by the interval (e.g. 10mins)
         seedMetricTimestamp += this.schedulerConfig.interval;

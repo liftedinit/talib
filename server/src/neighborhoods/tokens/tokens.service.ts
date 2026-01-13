@@ -103,7 +103,7 @@ export class TokensService {
       // Get the remaining pages
       for (page = 2; page <= totalPages; page++) {
         const response = await this.getTokens(neighborhood, { page, limit} );
-        allTokens = allTokens.concat(response.items);
+        allTokens.push(...response.items);
       }
     
       return allTokens;

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Location } from "../../../database/entities/location.entity";
 import { PrometheusQueryService } from "../../../metrics/prometheus-query/query.service";
 import { PrometheusQueryDetailsService } from "../../../metrics/prometheus-query-details/query-details.service";
@@ -163,44 +163,37 @@ export class GeoUpdater {
         }
       });
 
-    // Iterate over the combined locations and insert into the database
-    for (const instanceName in combinedLocations) {
+    // Get all instance names we need to check
+    const instanceNames = Object.keys(combinedLocations);
 
-      // Check if the database has an entry for the instance name
-      const instanceExists = await this.locationRepository.findOne({
-        where: { instance: instanceName },
-      });
+    // Single query to get all existing locations (fixes N+1 pattern)
+    const existingLocations = await this.locationRepository.find({
+      where: { instance: In(instanceNames) }
+    });
 
-      // if the instance doesn't exist, create a new entry
+    // Create a Map for O(1) lookup
+    const existingMap = new Map(existingLocations.map(loc => [loc.instance, loc]));
+
+    // Iterate over the combined locations and insert/update
+    for (const instanceName of instanceNames) {
+      const location = combinedLocations[instanceName];
+
+      // Skip if missing lat or long
+      if (location.latitude === undefined || location.longitude === undefined) {
+        continue;
+      }
+
+      const instanceExists = existingMap.get(instanceName);
+
       if (!instanceExists) {
-        // Check if the instance has both a latitude and longitude value
-        if (
-          combinedLocations[instanceName].latitude !== undefined &&
-          combinedLocations[instanceName].longitude !== undefined
-        ) {
-          // If it does, insert the location into the database
-          await this.updateLocationNewValues(
-            instanceName,
-            combinedLocations[instanceName].latitude,
-            combinedLocations[instanceName].longitude,
-          );
-        }
-      } else {
-        // if the instance already exists check that the latitude and longitude values
-        // are not null or aren't the same 
-        if (
-          (instanceExists.latitude !== combinedLocations[instanceName].latitude ||
-            instanceExists.longitude !== combinedLocations[instanceName].longitude) &&
-          combinedLocations[instanceName].latitude !== undefined &&
-          combinedLocations[instanceName].longitude !== undefined
-        ) {
-          // If they are different, update the location in the database
-          await this.updateLocationNewValues(
-            instanceName,
-            combinedLocations[instanceName].latitude,
-            combinedLocations[instanceName].longitude,
-          );
-        }
+        // Insert new location
+        await this.updateLocationNewValues(instanceName, location.latitude, location.longitude);
+      } else if (
+        instanceExists.latitude !== location.latitude ||
+        instanceExists.longitude !== location.longitude
+      ) {
+        // Update existing location if changed
+        await this.updateLocationNewValues(instanceName, location.latitude, location.longitude);
       }
     }
 

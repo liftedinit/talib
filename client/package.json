@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@liftedinit/ui": "github:jgryffindor/lifted-ui#feat/color-mode",
+    "@liftedinit/ui": "github:liftedinit/lifted-ui#feat/color-mode",
     "@tanstack/react-query": "^4.3.4",
     "apexcharts": "^4.0.0",
     "localforage": "^1.10.0",

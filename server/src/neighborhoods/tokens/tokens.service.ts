@@ -67,6 +67,11 @@ export class TokensService {
       return this.tokenRepository.save(token);
     }
 
+    async saveMany(tokens: TokenEntity[]): Promise<TokenEntity[]> {
+      if (tokens.length === 0) return [];
+      return this.tokenRepository.save(tokens);
+    }
+
     async addToken(
       neighborhood: Neighborhood, 
       tokenInfo: any ) {

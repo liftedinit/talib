@@ -207,29 +207,26 @@ export class BlockService {
     entity.time = block.time;
     entity.neighborhood = neighborhood;
 
-    const results = await Promise.allSettled(
+    const transactions = await Promise.all(
       block.transactions.map(async (tx, i) => {
         const transaction = new Transaction();
-        await this.populateTransaction(neighborhood, entity, tx);
         transaction.block = entity;
         transaction.hash = tx.hash;
-        transaction.request = tx.request;
-        transaction.response = tx.response;
         transaction.block_index = i;
+
+        // Try to populate request/response, but save tx even if it fails
+        try {
+          await this.populateTransaction(neighborhood, entity, tx);
+          transaction.request = tx.request;
+          transaction.response = tx.response;
+        } catch (e) {
+          // Save with null request/response - updateNeighborhoodMissingTransactionDetails will retry
+          this.logger.warn(`Failed to populate transaction ${i} in block ${block.identifier.height}, will retry later: ${e.message}`);
+        }
 
         return transaction;
       }),
     );
-
-    // Collect successful transactions, log failures
-    const transactions: Transaction[] = [];
-    for (const result of results) {
-      if (result.status === 'fulfilled') {
-        transactions.push(result.value);
-      } else {
-        this.logger.warn(`Failed to populate transaction: ${result.reason}`);
-      }
-    }
     entity.transactions = transactions;
 
     const result = await this.blockRepository.save(entity);

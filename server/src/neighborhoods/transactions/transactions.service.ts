@@ -86,4 +86,8 @@ export class TransactionsService {
 
     return await query.getMany();
   }
+
+  async save(tx: Transaction): Promise<Transaction> {
+    return await this.transactionRepository.save(tx);
+  }
 }

@@ -101,7 +101,26 @@ export class NeighborhoodUpdater {
     this.logger.debug(
       `Updating transaction details for [${missingTxDetailsIds}]`,
     );
+
+    const network = await this.network.forUrl(neighborhood.url);
+
     for (const tx of transactions) {
+      // Fetch request/response if missing (retry from failed block sync)
+      if (!tx.request || !tx.response) {
+        try {
+          const [request, response] = await Promise.all([
+            tx.request ?? network.blockchain.request(tx.hash),
+            tx.response ?? network.blockchain.response(tx.hash),
+          ]);
+          tx.request = request;
+          tx.response = response;
+          await this.transaction.save(tx);
+        } catch (e) {
+          this.logger.warn(`Failed to fetch request/response for tx ${tx.id}: ${e.message}`);
+          continue;  // Skip this tx, retry next run
+        }
+      }
+
       const details = await this.txAnalyzer.analyzeTransaction(tx);
       if (details) {
         await this.txDetailsRepository.upsert(details, ["transaction"]);

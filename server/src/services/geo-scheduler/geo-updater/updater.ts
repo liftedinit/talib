@@ -43,20 +43,6 @@ export class GeoUpdater {
     return this;
   }
 
-  // Insert a new location into the locations table
-  private async updateLocationNewValues(instance: string, latitude: number, longitude: number) {
-    // Construct the location
-    const entity = new Location();
-
-    entity.latitude = latitude;
-    entity.longitude  = longitude;
-    entity.instance = instance;
-
-    const result = await this.locationRepository.save(entity);
-
-    return result;
-  }
-
   private async getLocations(queryNames: LocationQueryNames, timestamp: number): Promise<LocationData> {
 
     // Retrieve the metric value from Grafana
@@ -174,7 +160,9 @@ export class GeoUpdater {
     // Create a Map for O(1) lookup
     const existingMap = new Map(existingLocations.map(loc => [loc.instance, loc]));
 
-    // Iterate over the combined locations and insert/update
+    // Collect locations to save (batch instead of individual saves)
+    const locationsToSave: Location[] = [];
+
     for (const instanceName of instanceNames) {
       const location = combinedLocations[instanceName];
 
@@ -183,18 +171,30 @@ export class GeoUpdater {
         continue;
       }
 
-      const instanceExists = existingMap.get(instanceName);
+      const existingLocation = existingMap.get(instanceName);
 
-      if (!instanceExists) {
-        // Insert new location
-        await this.updateLocationNewValues(instanceName, location.latitude, location.longitude);
+      if (!existingLocation) {
+        // New location - create entity
+        const entity = new Location();
+        entity.instance = instanceName;
+        entity.latitude = location.latitude;
+        entity.longitude = location.longitude;
+        locationsToSave.push(entity);
       } else if (
-        instanceExists.latitude !== location.latitude ||
-        instanceExists.longitude !== location.longitude
+        existingLocation.latitude !== location.latitude ||
+        existingLocation.longitude !== location.longitude
       ) {
-        // Update existing location if changed
-        await this.updateLocationNewValues(instanceName, location.latitude, location.longitude);
+        // Existing location changed - update it
+        existingLocation.latitude = location.latitude;
+        existingLocation.longitude = location.longitude;
+        locationsToSave.push(existingLocation);
       }
+    }
+
+    // Batch save all new/updated locations
+    if (locationsToSave.length > 0) {
+      this.logger.debug(`Batch saving ${locationsToSave.length} locations`);
+      await this.locationRepository.save(locationsToSave);
     }
 
     return null;

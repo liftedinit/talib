@@ -22,7 +22,8 @@ export class NetworkService {
   private cache = new Map<string, N | NL>();
 
   async forUrl(url: string, networkType?: string): Promise<N | NL> {
-    const maybeNetwork = this.cache.get(url);
+    const cacheKey = `${url}:${networkType || 'default'}`;
+    const maybeNetwork = this.cache.get(cacheKey);
     if (maybeNetwork) {
       return maybeNetwork;
     }
@@ -30,14 +31,14 @@ export class NetworkService {
     if (networkType === 'ledger') {
       const networkWithLedger = new ManyNetwork(url);
       networkWithLedger.apply([Base, Blockchain, Events, Ledger]);
-      this.cache.set(url, networkWithLedger as NL);
+      this.cache.set(cacheKey, networkWithLedger as NL);
       return networkWithLedger as NL;
     }
 
     // Default case or other network types
     const network = new ManyNetwork(url);
     network.apply([Base, Blockchain, Events]);
-    this.cache.set(url, network as N);
+    this.cache.set(cacheKey, network as N);
     return network as N;
   }
 }

@@ -223,38 +223,48 @@ export class NeighborhoodUpdater {
       const ledgerInfo = await network.ledger.info();
 
       // Locate missing token supply for existing tokens
+      const tokensToSave: typeof existingTokens = [];
+
       for (const token of existingTokens) {
         const tokensInfo = await network.ledger.supply(token.address.toString());
+        let needsSave = false;
 
         // Check if token has supply column filled in the database and save if null
         if (token?.totalSupply == null || token?.circulatingSupply == null) {
           token.totalSupply = tokensInfo.supply.total;
           token.circulatingSupply = tokensInfo.supply.circulating;
-          this.logger.debug(`updating missing supply for ${token.name} in neighborhood ${neighborhood.id} 
+          this.logger.debug(`updating missing supply for ${token.name} in neighborhood ${neighborhood.id}
             to total: ${token.totalSupply} circulating: ${token.circulatingSupply}`);
-
-          await this.tokens.save(token);
+          needsSave = true;
         }
 
         // Compare total supply in the database with the network and update if different
-        if ((token?.totalSupply !== null && tokensInfo?.supply?.total !== null) || 
+        if ((token?.totalSupply !== null && tokensInfo?.supply?.total !== null) ||
             (token?.circulatingSupply !== null && tokensInfo?.supply?.circulating !== null)) {
           if (BigInt(token?.totalSupply) !== BigInt(tokensInfo?.supply.total)) {
             token.totalSupply = tokensInfo.supply.total;
-            this.logger.debug(`total supply changed for ${token.name} in neighborhood 
+            this.logger.debug(`total supply changed for ${token.name} in neighborhood
               ${neighborhood.id} to $(tokensInfo?.supply.total}`);
-
-            await this.tokens.save(token);
+            needsSave = true;
           }
 
           if (BigInt(token?.circulatingSupply) !== BigInt(tokensInfo?.supply.circulating)) {
             token.circulatingSupply = tokensInfo.supply.circulating;
-            this.logger.debug(`circulating supply changed for ${token.name} in neighborhood 
+            this.logger.debug(`circulating supply changed for ${token.name} in neighborhood
               ${neighborhood.id} to $(tokensInfo?.supply.circulating}`);
-
-            await this.tokens.save(token);
+            needsSave = true;
           }
         }
+
+        if (needsSave) {
+          tokensToSave.push(token);
+        }
+      }
+
+      // Batch save all modified tokens
+      if (tokensToSave.length > 0) {
+        this.logger.debug(`Batch saving ${tokensToSave.length} tokens for neighborhood ${neighborhood.id}`);
+        await this.tokens.saveMany(tokensToSave);
       }
 
       // Locate missing tokens 

@@ -305,14 +305,14 @@ export class NeighborhoodUpdater {
           if (BigInt(token?.totalSupply) !== BigInt(tokensInfo?.supply.total)) {
             token.totalSupply = tokensInfo.supply.total;
             this.logger.debug(`total supply changed for ${token.name} in neighborhood
-              ${neighborhood.id} to $(tokensInfo?.supply.total}`);
+              ${neighborhood.id} to ${tokensInfo?.supply.total}`);
             needsSave = true;
           }
 
           if (BigInt(token?.circulatingSupply) !== BigInt(tokensInfo?.supply.circulating)) {
             token.circulatingSupply = tokensInfo.supply.circulating;
             this.logger.debug(`circulating supply changed for ${token.name} in neighborhood
-              ${neighborhood.id} to $(tokensInfo?.supply.circulating}`);
+              ${neighborhood.id} to ${tokensInfo?.supply.circulating}`);
             needsSave = true;
           }
         }

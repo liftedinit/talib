@@ -57,8 +57,8 @@ export class SchedulerService {
 
       this.logger.debug(`Updating ${enabled.length} neighborhoods.`);
 
-      // Do all neighborhoods in parallel.
-      await Promise.all(
+      // Do all neighborhoods in parallel. Use allSettled so one stuck neighborhood doesn't block others.
+      const results = await Promise.allSettled(
         neighborhoods.map(async (n) => {
           if (n.enabled) {
             const i = await this.updaterFactory(n);
@@ -70,6 +70,14 @@ export class SchedulerService {
           }
         }),
       );
+
+      // Log any failures
+      for (const result of results) {
+        if (result.status === 'rejected') {
+          this.logger.error(`Neighborhood update failed: ${result.reason}`);
+        }
+      }
+
       this.logger.debug(`Done`);
     } else {
       this.logger.debug("No neighborhoods in database...");

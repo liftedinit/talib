@@ -114,7 +114,7 @@ export class NeighborhoodUpdater {
   ) {
 
     // Find potential migrations for neighborhood
-    const potentialMigrations = 
+    const potentialMigrations =
       await this.migrationAnalyzer.missingMigrationForNeighborhood(
         neighborhood,
       );
@@ -125,7 +125,14 @@ export class NeighborhoodUpdater {
       return this.migrationAnalyzer.analyzeMigration(neighborhood, tx);
     });
 
-    await Promise.all(migrationQueue);
+    const results = await Promise.allSettled(migrationQueue);
+
+    // Log any failures but continue processing
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        this.logger.warn(`Failed to analyze migration: ${result.reason}`);
+      }
+    }
   }
 
   private async checkIfNeighborhoodHasBeenReset(neighborhood: Neighborhood) {
@@ -186,12 +193,20 @@ export class NeighborhoodUpdater {
     }
 
     for (const batch of schedule) {
-      await Promise.all(
+      const results = await Promise.allSettled(
         batch.map(async (height) => {
           const blockInfo = await network.blockchain.blockByHeight(height);
           await this.block.createFromManyBlock(neighborhood, blockInfo);
+          return height;
         }),
       );
+
+      // Log any failures but continue processing
+      for (const result of results) {
+        if (result.status === 'rejected') {
+          this.logger.warn(`Failed to fetch/save block: ${result.reason}`);
+        }
+      }
 
       // Sleep a bit.
       await new Promise((res) => setTimeout(res, parallelSleep * 1000));

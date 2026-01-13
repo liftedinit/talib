@@ -167,19 +167,12 @@ export class MigrationAnalyzerService {
     
   }
 
-  async saveAndLockMigration(migration: Migration) {
+  async saveAndLockMigration(migration: Migration): Promise<Migration> {
     this.logger.debug(
       `Save & lock migration for initial save: ${JSON.stringify(bufferToHex(migration.transaction.hash))}`
       )
 
-    try {
-      this.logger.debug(`Saving entity ${JSON.stringify(migration)}`)
-
-      return await this.migrationRepository.save(migration);
-    } catch (e) {
-      this.logger.error(`Error during saving migration entity: ${e}}`)
-      return e
-    }
-  
+    this.logger.debug(`Saving entity ${JSON.stringify(migration)}`)
+    return await this.migrationRepository.save(migration);
   }
 }

@@ -57,8 +57,11 @@ export class MetricsSchedulerService {
       
       try {
           this.logger.debug('Starting to update prometheusQueries...');
+          const { default: pLimit } = await import('p-limit');
+          const limit = pLimit(3); // Max 3 concurrent query updaters
+
           await Promise.all(
-              enabled.map(async (n) => {
+              enabled.map((n) => limit(async () => {
                   if (n.queryType === 'prometheus') {
                       try {
                           this.logger.debug(`Running updater for prometheusquery id: ${n.id} name: ${n.name}.`);
@@ -79,7 +82,7 @@ export class MetricsSchedulerService {
                   } else {
                       this.logger.debug(`Skipping query id: ${n.id} name: ${n.name} with unknown queryType: ${n.queryType}.`);
                   }
-              }),
+              })),
           );
           this.logger.log('Done updating prometheusQueries and metric database queries.');
       } catch (error) {

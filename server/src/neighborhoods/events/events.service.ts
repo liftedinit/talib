@@ -6,7 +6,7 @@ import {
   paginate,
   Pagination,
 } from "nestjs-typeorm-paginate";
-import { Brackets, Repository } from "typeorm";
+import { Brackets, DataSource, Repository } from "typeorm";
 import { Event as EventEntity } from "../../database/entities/event.entity";
 
 @Injectable()
@@ -16,6 +16,7 @@ export class EventsService {
   constructor(
     @InjectRepository(EventEntity)
     private eventRepository: Repository<EventEntity>,
+    private dataSource: DataSource,
   ) {}
 
   public async findMany(
@@ -45,12 +46,12 @@ export class EventsService {
   }
 
   public async save(entities: EventEntity[]): Promise<void> {
-    try {
-      // Batch save all entities in a single transaction
-      await this.eventRepository.save(entities);
-    } catch (error) {
-      this.logger.error(`Error occurred while saving events: ${error}`);
-    }
+    if (entities.length === 0) return;
+
+    // Use transaction to ensure all-or-nothing save (no gaps on partial failure)
+    await this.dataSource.transaction(async (manager) => {
+      await manager.save(EventEntity, entities);
+    });
   }
 
   async findWithAddress(

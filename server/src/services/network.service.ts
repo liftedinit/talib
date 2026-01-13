@@ -22,12 +22,10 @@ export class NetworkService {
   private cache = new Map<string, N | NL>();
 
   async forUrl(url: string, networkType?: string): Promise<N | NL> {
-
-    // const maybeNetwork = this.cache.get(url);
-    // if (maybeNetwork) {
-    //   console.log(`maybeNetwork: ${maybeNetwork}`)
-    //   return maybeNetwork;
-    // }
+    const maybeNetwork = this.cache.get(url);
+    if (maybeNetwork) {
+      return maybeNetwork;
+    }
 
     if (networkType === 'ledger') {
       const networkWithLedger = new ManyNetwork(url);

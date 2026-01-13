@@ -126,12 +126,6 @@ export class NeighborhoodUpdater {
     });
 
     await Promise.all(migrationQueue);
-
-    // For each migration analyze and process
-    for (const tx of potentialMigrations) {
-      this.logger.debug(`potentialMigration id for neighborhood (${neighborhood.id}): ${tx.transaction.id}`);
-      return await this.migrationAnalyzer.analyzeMigration(neighborhood, tx);
-    }
   }
 
   private async checkIfNeighborhoodHasBeenReset(neighborhood: Neighborhood) {

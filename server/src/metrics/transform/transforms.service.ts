@@ -34,9 +34,10 @@ export class TransformsService {
   async getSumTotal(name: string): Promise<Current> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
+    // Use DOUBLE PRECISION to match JS Number() behavior exactly
     const result = await this.metricRepository
       .createQueryBuilder("m")
-      .select("SUM(CAST(m.data AS NUMERIC))", "sum")
+      .select("SUM(m.data::DOUBLE PRECISION)", "sum")
       .where("m.prometheusQueryId = :prometheusQuery", {
         prometheusQuery: prometheusQuery.id,
       })
@@ -60,19 +61,23 @@ export class TransformsService {
   ): Promise<SeriesEntity[] | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
-    // Compute cumulative sum in DB using window function
+    // Compute cumulative sum on ALL data, then filter
     // Uses DOUBLE PRECISION to match JS Number() behavior exactly
-    const result = await this.metricRepository
-      .createQueryBuilder("m")
-      .select("m.timestamp", "timestamp")
-      .addSelect(
-        "SUM(m.data::DOUBLE PRECISION) OVER (ORDER BY m.timestamp ASC)",
-        "cumulative"
-      )
-      .where("m.prometheusQueryId = :id", { id: prometheusQuery.id })
-      .andWhere("m.timestamp < :to", { to })
-      .orderBy("m.timestamp", "DESC")
-      .getRawMany();
+    // Subquery computes cumulative on full dataset, outer query filters
+    // Original logic: keep timestamps >= to (slice before first timestamp < to)
+    const result = await this.dataSource.query(
+      `SELECT timestamp, cumulative
+       FROM (
+         SELECT
+           timestamp,
+           SUM(data::DOUBLE PRECISION) OVER (ORDER BY timestamp ASC) as cumulative
+         FROM metric
+         WHERE "prometheusQueryId" = $1
+       ) sub
+       WHERE timestamp >= $2
+       ORDER BY timestamp DESC`,
+      [prometheusQuery.id, to]
+    );
 
     if (!result || result.length === 0) {
       return null;

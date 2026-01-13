@@ -14,6 +14,8 @@ import { MigrationDto, CreateMigrationDto, UpdateMigrationDto } from "../../dto/
 import { bufferToHex } from "../../utils/convert";
 
 @Entity()
+@Index(['status'])  // For filtering by migration status
+@Index(['uuid'])    // For lookups by uuid
 export class Migration {
 
   @PrimaryGeneratedColumn()

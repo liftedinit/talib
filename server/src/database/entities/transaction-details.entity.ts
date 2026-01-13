@@ -2,6 +2,7 @@ import { Address } from "@liftedinit/many-js";
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -9,6 +10,8 @@ import {
 import { Transaction } from "./transaction.entity";
 
 @Entity()
+@Index(['transaction'])  // For JOIN queries on transaction
+@Index(['method'])       // For filtering by method
 export class TransactionDetails {
   @PrimaryGeneratedColumn()
   id: number;

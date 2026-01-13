@@ -1,9 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { EventDto } from "../../dto/event.dto";
 import { bufferToHex } from "../../utils/convert";
 import { Neighborhood } from "./neighborhood.entity";
 
 @Entity()
+@Index(['neighborhood', 'id'])  // For queries: WHERE neighborhoodId = X ORDER BY id DESC
 export class Event {
   @PrimaryGeneratedColumn()
   id: number;

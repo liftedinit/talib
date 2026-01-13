@@ -232,16 +232,34 @@ export class NeighborhoodUpdater {
     neighborhood: Neighborhood,
     networkType?: string) {
 
-    try { 
+    try {
+      const { default: pLimit } = await import('p-limit');
+      const limit = pLimit(10);  // Max 10 concurrent network requests
+
       const existingTokens = await this.tokens.getAllTokens(neighborhood);
       const network = await this.network.forUrl(neighborhood.url, networkType);
       const ledgerInfo = await network.ledger.info();
 
-      // Locate missing token supply for existing tokens
+      // Fetch all token supplies in parallel (with concurrency limit)
+      const supplyResults = await Promise.allSettled(
+        existingTokens.map((token) =>
+          limit(async () => {
+            const supply = await network.ledger.supply(token.address.toString());
+            return { token, supply };
+          })
+        )
+      );
+
+      // Process results and collect tokens to save
       const tokensToSave: typeof existingTokens = [];
 
-      for (const token of existingTokens) {
-        const tokensInfo = await network.ledger.supply(token.address.toString());
+      for (const result of supplyResults) {
+        if (result.status === 'rejected') {
+          this.logger.warn(`Failed to fetch token supply: ${result.reason}`);
+          continue;
+        }
+
+        const { token, supply: tokensInfo } = result.value;
         let needsSave = false;
 
         // Check if token has supply column filled in the database and save if null
@@ -282,21 +300,31 @@ export class NeighborhoodUpdater {
         await this.tokens.saveMany(tokensToSave);
       }
 
-      // Locate missing tokens 
-      const missingTokens = ledgerInfo.symbols.filter(symbol => 
+      // Locate missing tokens
+      const missingTokens = ledgerInfo.symbols.filter(symbol =>
         !existingTokens.some(existingToken => existingToken.address.toString() === symbol.address)
       );
 
       this.logger.debug(`missingTokens: ${JSON.stringify(missingTokens)}`)
 
-      // Create token entities for missing tokens
+      // Create token entities for missing tokens (with concurrency limit)
       if (missingTokens.length > 0) {
         this.logger.debug(
           `Adding ${missingTokens.length} tokens to neighborhood ${neighborhood.id}`,
         );
-        for (const t of missingTokens) {
-          this.logger.debug(`Adding token ${t.address.toString()} to neighborhood ${neighborhood.id}`);
-          await this.tokens.addToken(neighborhood, t);
+        const addResults = await Promise.allSettled(
+          missingTokens.map((t) =>
+            limit(async () => {
+              this.logger.debug(`Adding token ${t.address.toString()} to neighborhood ${neighborhood.id}`);
+              await this.tokens.addToken(neighborhood, t);
+            })
+          )
+        );
+
+        for (const result of addResults) {
+          if (result.status === 'rejected') {
+            this.logger.warn(`Failed to add token: ${result.reason}`);
+          }
         }
       }
 

@@ -1,0 +1,34 @@
+# .github/workflows/docker-image.yml
+name: Build and push Docker image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build image
+        run: env | base64 
+ 
+      - name: Build image
+        run: docker build -t lifted/talib:${GITHUB_SHA} .
+
+      - name: Tag for latest
+        run: docker tag lifted/talib:${GITHUB_SHA}   lifted/talib:latest
+
+      - name: Push image
+        run: |
+          docker push lifted/talib:${GITHUB_SHA} 
+          docker push lifted/talib:latest

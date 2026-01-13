@@ -11,6 +11,15 @@ import { MetricUpdater } from "../metrics-scheduler/metric-updater/updater";
 export class MetricsSchedulerService {
   private readonly logger = new Logger(MetricsSchedulerService.name);
   private done = true;
+  private pLimitFn: any = null;
+
+  private async getPLimit() {
+    if (!this.pLimitFn) {
+      const { default: pLimit } = await import('p-limit');
+      this.pLimitFn = pLimit;
+    }
+    return this.pLimitFn;
+  }
 
   constructor(
     private schedulerRegistry: SchedulerRegistry,
@@ -57,7 +66,7 @@ export class MetricsSchedulerService {
       
       try {
           this.logger.debug('Starting to update prometheusQueries...');
-          const { default: pLimit } = await import('p-limit');
+          const pLimit = await this.getPLimit();
           const limit = pLimit(3); // Max 3 concurrent query updaters
 
           await Promise.all(

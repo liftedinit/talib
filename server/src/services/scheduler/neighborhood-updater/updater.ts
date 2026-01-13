@@ -25,6 +25,15 @@ import { LedgerInfo, Supply } from "../../../utils/network/ledger";
 export class NeighborhoodUpdater {
   private logger: Logger;
   private n: Neighborhood;
+  private pLimitFn: any = null;
+
+  private async getPLimit() {
+    if (!this.pLimitFn) {
+      const { default: pLimit } = await import('p-limit');
+      this.pLimitFn = pLimit as any;
+    }
+    return this.pLimitFn;
+  }
 
   constructor(
     private schedulerConfig: SchedulerConfigService,
@@ -252,7 +261,7 @@ export class NeighborhoodUpdater {
     networkType?: string) {
 
     try {
-      const { default: pLimit } = await import('p-limit');
+      const pLimit = await this.getPLimit();
       const limit = pLimit(10);  // Max 10 concurrent network requests
 
       const existingTokens = await this.tokens.getAllTokens(neighborhood);

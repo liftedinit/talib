@@ -60,37 +60,27 @@ export class TransformsService {
   ): Promise<SeriesEntity[] | null> {
     const prometheusQuery = await this.prometheusQuery.get(name);
 
-    // Filter by date range in SQL, not in JS
-    const result: MetricEntity[] = await this.metricRepository
+    // Compute cumulative sum in DB using window function
+    // Uses DOUBLE PRECISION to match JS Number() behavior exactly
+    const result = await this.metricRepository
       .createQueryBuilder("m")
-      .where("m.prometheusQueryId = :prometheusQuery", {
-        prometheusQuery: prometheusQuery.id,
-      })
-      .andWhere("m.timestamp >= :from", { from })
+      .select("m.timestamp", "timestamp")
+      .addSelect(
+        "SUM(m.data::DOUBLE PRECISION) OVER (ORDER BY m.timestamp ASC)",
+        "cumulative"
+      )
+      .where("m.prometheusQueryId = :id", { id: prometheusQuery.id })
       .andWhere("m.timestamp < :to", { to })
       .orderBy("m.timestamp", "DESC")
-      .getMany();
+      .getRawMany();
 
     if (!result || result.length === 0) {
       return null;
     }
 
-    const data: number[] = [];
-    const timestamps: Date[] = [];
-
-    result.forEach((series) => {
-      data.push(Number(series.data));
-      timestamps.push(series.timestamp);
-    });
-
-    // Cumulative sum from right to left
-    for (let i = data.length - 2; i >= 0; i--) {
-      data[i] = data[i] + data[i + 1];
-    }
-
     return [{
-      timestamps,
-      data,
+      timestamps: result.map(r => r.timestamp),
+      data: result.map(r => Number(r.cumulative)),
     }];
   }
 }

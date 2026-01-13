@@ -72,7 +72,7 @@ export class TransformsService {
            timestamp,
            SUM(data::DOUBLE PRECISION) OVER (ORDER BY timestamp ASC) as cumulative
          FROM metric
-         WHERE "prometheusQueryId" = $1
+         WHERE prometheus_query_id = $1
        ) sub
        WHERE timestamp >= $2
        ORDER BY timestamp DESC`,

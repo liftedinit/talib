@@ -21,8 +21,7 @@ export class SchedulerService {
     const jobFn = () => this.run();
 
     if (schedulerConfig.cron !== undefined) {
-      // Do not rerun the cron job if the previous one was done.
-      const job = new CronJob(schedulerConfig.cron, jobFn);
+      const job = CronJob.from({ cronTime: schedulerConfig.cron, onTick: jobFn });
       this.logger.log(`Cron scheduled: ${schedulerConfig.cron}`);
       this.schedulerRegistry.addCronJob("updateNeighborhood", job);
       job.start();

@@ -25,9 +25,8 @@ export class GeoSchedulerService {
   ) {
     const jobFn = () => this.run();
 
-    if ( this.geoSchedulerConfig.cron !== undefined) {
-      // Do not rerun the cron job if the previous one was done.
-      const job = new CronJob(this.geoSchedulerConfig.cron, jobFn);
+    if (this.geoSchedulerConfig.cron !== undefined) {
+      const job = CronJob.from({ cronTime: this.geoSchedulerConfig.cron, onTick: jobFn });
       this.logger.log(`Cron scheduled: ${this.geoSchedulerConfig.cron}`);
       this.schedulerRegistry.addCronJob("updateLocations", job);
       job.start();

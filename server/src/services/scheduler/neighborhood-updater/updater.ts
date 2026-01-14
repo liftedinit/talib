@@ -13,6 +13,7 @@ import { EventsService } from "../../../neighborhoods/events/events.service";
 import { TokensService } from "../../../neighborhoods/tokens/tokens.service";
 import { NeighborhoodService } from "../../../neighborhoods/neighborhood.service";
 import { TransactionsService } from "../../../neighborhoods/transactions/transactions.service";
+import { buffersEqual } from "../../../utils/buffer";
 import { getAllAddressesOf } from "../../../utils/cbor-parsers";
 import { bufferToHex } from "../../../utils/convert";
 import { getAnalyzerClass } from "../../../utils/protocol/attributes";
@@ -21,16 +22,33 @@ import { MigrationAnalyzerService } from "../migration-analyzer.service";
 import { TxAnalyzerService } from "../tx-analyzer.service";
 import { LedgerInfo, Supply } from "../../../utils/network/ledger";
 
+/**
+ * Type for a concurrency limiter function returned by p-limit.
+ * This wraps async functions to limit concurrent executions.
+ */
+interface LimitFunction {
+  <Arguments extends unknown[], ReturnType>(
+    fn: (...args: Arguments) => PromiseLike<ReturnType> | ReturnType,
+    ...args: Arguments
+  ): Promise<ReturnType>;
+  readonly activeCount: number;
+  readonly pendingCount: number;
+  clearQueue: () => void;
+}
+
+/** Factory function type for creating a limiter with given concurrency */
+type PLimit = (concurrency: number) => LimitFunction;
+
 @Injectable()
 export class NeighborhoodUpdater {
   private logger: Logger;
   private n: Neighborhood;
-  private pLimitFn: any = null;
+  private pLimitFn: PLimit | null = null;
 
-  private async getPLimit() {
+  private async getPLimit(): Promise<PLimit> {
     if (!this.pLimitFn) {
       const { default: pLimit } = await import('p-limit');
-      this.pLimitFn = pLimit as any;
+      this.pLimitFn = pLimit as PLimit;
     }
     return this.pLimitFn;
   }
@@ -177,7 +195,7 @@ export class NeighborhoodUpdater {
       return;
     }
 
-    if (Buffer.from(genesisHash).compare(Buffer.from(block.hash)) == 0) {
+    if (buffersEqual(genesisHash, block.hash)) {
       return;
     }
 

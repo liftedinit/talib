@@ -42,7 +42,7 @@ export class Migration {
   details: TransactionDetails;
 
   @Column({ type: "bytea" })
-  manyHash: ArrayBuffer;
+  manyHash: ArrayBuffer | Buffer | Uint8Array;
 
   @Column() 
   uuid: string;

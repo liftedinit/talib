@@ -8,8 +8,8 @@ import {
 import { hexToBuffer } from "./convert";
 
 @Injectable()
-export class ParseHashPipe implements PipeTransform<string, ArrayBuffer> {
-  transform(value: string, _metadata: ArgumentMetadata): ArrayBuffer {
+export class ParseHashPipe implements PipeTransform<string, Buffer> {
+  transform(value: string, _metadata: ArgumentMetadata): Buffer {
     try {
       return hexToBuffer(value);
     } catch (e) {
@@ -35,9 +35,9 @@ export class ParseAddressPipe implements PipeTransform<string, Address> {
 
 @Injectable()
 export class ParseHashOrHeightPipe
-  implements PipeTransform<string, ArrayBuffer | number>
+  implements PipeTransform<string, Buffer | number>
 {
-  transform(value: string, metadata: ArgumentMetadata): ArrayBuffer | number {
+  transform(value: string, metadata: ArgumentMetadata): Buffer | number {
     if (Number.isFinite(+value)) {
       return Number(value);
     }

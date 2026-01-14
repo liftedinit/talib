@@ -21,7 +21,7 @@ export class TransactionDetails {
   id: number;
 
   @Column({ type: "bytea" })
-  hash: ArrayBuffer;
+  hash: ArrayBuffer | Buffer | Uint8Array;
 
   @OneToOne(() => Transaction, (tx) => tx.details, {
     onDelete: "CASCADE",

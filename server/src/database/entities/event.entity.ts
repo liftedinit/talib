@@ -15,7 +15,7 @@ export class Event {
   neighborhood: Neighborhood;
 
   @Column({ type: "bytea", unique: true })
-  eventId: ArrayBuffer;
+  eventId: ArrayBuffer | Buffer;
 
   @Column()
   timestamp: Date;

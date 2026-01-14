@@ -1,37 +1,38 @@
 import { Message, NetworkModule } from "@liftedinit/many-js";
+import { BufferLike } from "../buffer";
 import { parseDateTime } from "../cbor-parsers";
 
 export interface BlockIdentifier {
-  hash: ArrayBuffer;
+  hash: BufferLike;
   height: number;
 }
 
 export interface BlockchainInfo {
   latestBlock: BlockIdentifier;
-  appHash: ArrayBuffer;
+  appHash: BufferLike;
   retainedHeight: number | undefined;
 }
 
 export interface Block {
   identifier: BlockIdentifier;
   parent: BlockIdentifier | null;
-  appHash: ArrayBuffer;
+  appHash: BufferLike;
   time: Date;
   txCount: number;
   transactions: Transaction[];
 }
 
 export interface Transaction {
-  hash: ArrayBuffer;
-  request?: ArrayBuffer;
-  response?: ArrayBuffer;
+  hash: BufferLike;
+  request?: BufferLike;
+  response?: BufferLike;
 }
 
 export interface Blockchain extends NetworkModule {
   info(): Promise<BlockchainInfo>;
   blockByHeight(height: number): Promise<Block>;
-  request(txHash: ArrayBuffer): any;
-  response(txHash: ArrayBuffer): any;
+  request(txHash: BufferLike): Promise<BufferLike>;
+  response(txHash: BufferLike): Promise<BufferLike>;
 }
 
 export const Blockchain: Blockchain = {
@@ -48,24 +49,24 @@ export const Blockchain: Blockchain = {
     return parseBlock(msg);
   },
 
-  async request(txHash: ArrayBuffer) {
+  async request(txHash: BufferLike): Promise<BufferLike> {
     const param = new Map([[0, new Map([[0, txHash]])]]);
     const msg = await this.call("blockchain.request", param);
     const payload = msg.getPayload();
     if (!(payload instanceof Map)) {
       throw new Error("Invalid message");
     }
-    return payload.get(0);
+    return payload.get(0) as BufferLike;
   },
 
-  async response(txHash: ArrayBuffer) {
+  async response(txHash: BufferLike): Promise<BufferLike> {
     const param = new Map([[0, new Map([[0, txHash]])]]);
     const msg = await this.call("blockchain.response", param);
     const payload = msg.getPayload();
     if (!(payload instanceof Map)) {
       throw new Error("Invalid message");
     }
-    return payload.get(0);
+    return payload.get(0) as BufferLike;
   },
 };
 

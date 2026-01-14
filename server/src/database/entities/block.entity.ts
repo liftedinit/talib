@@ -29,10 +29,10 @@ export class Block {
   time: Date;
 
   @Column({ type: "bytea" })
-  hash: ArrayBuffer;
+  hash: ArrayBuffer | Buffer | Uint8Array;
 
   @Column({ type: "bytea" })
-  appHash?: ArrayBuffer;
+  appHash?: ArrayBuffer | Buffer | Uint8Array;
 
   @OneToMany(() => Transaction, (tx) => tx.block, {
     onDelete: "CASCADE",

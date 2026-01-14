@@ -37,19 +37,7 @@ export class NeighborhoodService {
         "block",
         "n.id = block.neighborhoodId",
       )
-      .andWhere(
-        (qb) =>
-          "block.height = " +
-          qb
-            .subQuery()
-            .select("MAX(height)")
-            .from(Block, "block")
-            .where({
-              neighborhood: { id: nid },
-            })
-            .getQuery(),
-      )
-      .groupBy("n.id, block.id")
+      .orderBy("block.height", "DESC")
       .limit(1);
 
     this.logger.debug(`get(${nid}): \`${query.getQuery()}\``);

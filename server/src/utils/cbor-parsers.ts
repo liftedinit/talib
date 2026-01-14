@@ -12,6 +12,8 @@ export function parseAddress(
     return Address.fromString(content);
   } else if (Buffer.isBuffer(content)) {
     return new Address(content);
+  } else if (content instanceof Uint8Array) {
+    return new Address(Buffer.from(content));
   } else if (content === undefined || content === null) {
     if (optional) {
       return undefined;

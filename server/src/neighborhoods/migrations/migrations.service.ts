@@ -94,11 +94,10 @@ export class MigrationsService {
         .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
         .execute()
 
-       let updatedMigrationsUuid = [];
-      // Claim all affected rows
-      for (const migration of lockedMigration) {
-        await queryRunner.manager.update(Migration, { uuid: migration.uuid }, { status: 2 }); // Claimed
-        updatedMigrationsUuid.push(migration.uuid);
+      // Collect UUIDs and bulk update
+      const updatedMigrationsUuid = lockedMigration.map(m => m.uuid);
+      if (updatedMigrationsUuid.length > 0) {
+        await queryRunner.manager.update(Migration, { uuid: In(updatedMigrationsUuid) }, { status: 2 }); // Claimed
       }
 
       // Commit the transaction, release the lock
@@ -195,7 +194,7 @@ export class MigrationsService {
         .select()
         .from(Migration, 'm')
         .where('uuid = :uuid', { uuid })
-        .andWhere("status != " + updateMigrationDto.status)
+        .andWhere("status != :excludeStatus", { excludeStatus: updateMigrationDto.status })
         .innerJoin("m.transaction", "t")
         .innerJoin(Block, 'b', 'b.id = t.blockId AND b.neighborhoodId = :neighborhoodId', { neighborhoodId: neighborhoodId })
         .execute()

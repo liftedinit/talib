@@ -37,36 +37,29 @@ export class NeighborhoodService {
         "block",
         "n.id = block.neighborhoodId",
       )
-      .andWhere(
-        (qb) =>
-          "block.height = " +
-          qb
-            .subQuery()
-            .select("MAX(height)")
-            .from(Block, "block")
-            .where({
-              neighborhood: { id: nid },
-            })
-            .getQuery(),
-      )
-      .groupBy("n.id, block.id")
+      .orderBy("block.height", "DESC")
       .limit(1);
 
     this.logger.debug(`get(${nid}): \`${query.getQuery()}\``);
 
-    const one = await query.getOne();
-    if (!one) {
-      return null;
-    }
-
-    // Separately do the transaction count.
+    // Build transaction count query
     const txCountQuery = this.transactionRepository
       .createQueryBuilder("t")
       .leftJoin("t.block", "block")
       .where("block.neighborhoodId = :nid", { nid });
     this.logger.debug(`txCount(${nid}): \`${txCountQuery.getQuery()}\``);
-    one.txCount = Number(await txCountQuery.getCount());
 
+    // Run both queries in parallel
+    const [one, txCount] = await Promise.all([
+      query.getOne(),
+      txCountQuery.getCount(),
+    ]);
+
+    if (!one) {
+      return null;
+    }
+
+    one.txCount = Number(txCount);
     return one;
   }
 

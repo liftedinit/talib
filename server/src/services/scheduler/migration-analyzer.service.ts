@@ -28,6 +28,7 @@ export class MigrationAnalyzerService {
 
   async missingMigrationForNeighborhood(
     neighborhood: Neighborhood,
+    limit = 100,
     ): Promise<TransactionDetails[]> {
 
       const uuidPattern = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
@@ -54,7 +55,7 @@ export class MigrationAnalyzerService {
       // Set params of main query to be the same as sub query
       query.setParameters({...subQuery.getParameters(), uuidPattern, illegalAddress });
 
-      const results = await query.getMany();
+      const results = await query.limit(limit).getMany();
 
       this.logger.debug(`Missing migrations for neighborhood ${JSON.stringify(results)}`)
 
@@ -87,7 +88,7 @@ export class MigrationAnalyzerService {
         uuidPattern,
         illegalAddress});
 
-      const r2 = await multisigQuery.getMany();
+      const r2 = await multisigQuery.limit(limit).getMany();
 
       this.logger.debug(`Missing migrations for neighborhood (multisig) ${JSON.stringify(r2)}`)
 

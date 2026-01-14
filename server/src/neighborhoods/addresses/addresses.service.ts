@@ -70,9 +70,6 @@ export class AddressesService {
           qb.orWhere(":address = details.sender", {
             address: address.toString(),
           });
-          qb.orWhere(":address = details.sender", {
-            address: address.toString(),
-          });
           qb.orWhere("details.argument->'amounts'->> :address IS NOT NULL", {
             address: address.toString(),
           });

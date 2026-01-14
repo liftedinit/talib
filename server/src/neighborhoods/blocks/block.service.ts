@@ -170,17 +170,41 @@ export class BlockService {
   }
 
   private missingBlockHeightsQueryForPostgres(
-    neighborhood: Neighborhood,
-    latestHeight: number,
     max?: number,
-  ) {
+  ): string {
+    // Optimized: find gaps using window functions, only generate_series for gaps
+    // Much faster than generate_series(1, millions) EXCEPT
+    // Uses parameterized queries: $1 = neighborhoodId, $2 = latestHeight, $3 = max (if provided)
     return `
-        SELECT all_ids AS missnum
-        FROM generate_series(1, ${latestHeight}) all_ids
-        EXCEPT
-        SELECT height FROM block WHERE "neighborhoodId" = ${neighborhood.id}
-        ORDER BY missnum
-        ${max !== undefined ? "LIMIT " + max : ""}
+      WITH existing AS (
+        SELECT height, LEAD(height) OVER (ORDER BY height) as next_height
+        FROM block
+        WHERE "neighborhoodId" = $1
+      ),
+      max_existing AS (
+        SELECT COALESCE(MAX(height), 0) as max_h FROM block WHERE "neighborhoodId" = $1
+      ),
+      gap_ranges AS (
+        -- Gaps between existing blocks
+        SELECT height + 1 as gap_start, next_height - 1 as gap_end
+        FROM existing
+        WHERE next_height IS NOT NULL AND next_height > height + 1
+        UNION ALL
+        -- Starting gap (if blocks don't start at 1)
+        SELECT 1 as gap_start, MIN(height) - 1 as gap_end
+        FROM block WHERE "neighborhoodId" = $1
+        HAVING MIN(height) > 1
+        UNION ALL
+        -- Ending gap (new blocks at the end)
+        SELECT max_h + 1 as gap_start, $2 as gap_end
+        FROM max_existing
+        WHERE max_h < $2
+      )
+      SELECT generate_series(gap_start, gap_end) as missnum
+      FROM gap_ranges
+      WHERE gap_end >= gap_start
+      ORDER BY missnum
+      ${max !== undefined ? "LIMIT $3" : ""}
     `;
   }
 
@@ -189,13 +213,10 @@ export class BlockService {
     maxHeight: number,
     count = 500,
   ): Promise<number[]> {
-    const query = this.missingBlockHeightsQueryForPostgres(
-      neighborhood,
-      maxHeight,
-      count,
-    );
+    const query = this.missingBlockHeightsQueryForPostgres(count);
+    const params = [neighborhood.id, maxHeight, count];
 
-    const result = await this.dataSource.query(query);
+    const result = await this.dataSource.query(query, params);
     return result.map((r) => Number(r.missnum)) as number[];
   }
 

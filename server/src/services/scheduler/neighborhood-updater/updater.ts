@@ -141,14 +141,15 @@ export class NeighborhoodUpdater {
     neighborhood: Neighborhood,
   ) {
 
-    // Find potential migrations for neighborhood
+    // Find potential migrations for neighborhood (limit to 10)
     const potentialMigrations =
       await this.migrationAnalyzer.missingMigrationForNeighborhood(
         neighborhood,
+        10,
       );
 
-    // For each migration analyze and process up to 10 at a time
-    const migrationQueue = potentialMigrations.slice(0, 10).map(tx => {
+    // For each migration analyze and process
+    const migrationQueue = potentialMigrations.map(tx => {
       this.logger.debug(`potentialMigration id for neighborhood (${neighborhood.id}): ${tx.transaction.id}`);
       return this.migrationAnalyzer.analyzeMigration(neighborhood, tx);
     });

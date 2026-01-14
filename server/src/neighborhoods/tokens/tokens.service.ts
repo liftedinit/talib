@@ -93,25 +93,11 @@ export class TokensService {
 
 
     async getAllTokens(neighborhood: Neighborhood): Promise<TokenEntity[]> {
-      const limit = 100;
-      let page = 1;
-    
-      // Get the initial response to get the total number of items
-      const initialResponse = await this.getTokens(neighborhood, { page, limit });
-      const totalItems = initialResponse.meta.totalItems;
-    
-      let allTokens = initialResponse.items;
-    
-      // Calculate the total number of pages
-      const totalPages = Math.ceil(totalItems / limit);
-    
-      // Get the remaining pages
-      for (page = 2; page <= totalPages; page++) {
-        const response = await this.getTokens(neighborhood, { page, limit} );
-        allTokens.push(...response.items);
-      }
-    
-      return allTokens;
+      return this.tokenRepository
+        .createQueryBuilder("t")
+        .where("t.neighborhoodId = :nid", { nid: neighborhood.id })
+        .orderBy("t.id", "DESC")
+        .getMany();
     }
 
 }

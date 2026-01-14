@@ -214,9 +214,7 @@ export class BlockService {
     count = 500,
   ): Promise<number[]> {
     const query = this.missingBlockHeightsQueryForPostgres(count);
-    const params = count !== undefined
-      ? [neighborhood.id, maxHeight, count]
-      : [neighborhood.id, maxHeight];
+    const params = [neighborhood.id, maxHeight, count];
 
     const result = await this.dataSource.query(query, params);
     return result.map((r) => Number(r.missnum)) as number[];

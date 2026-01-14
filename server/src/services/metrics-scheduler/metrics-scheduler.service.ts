@@ -8,6 +8,13 @@ import { PrometheusQueryService } from "../../metrics/prometheus-query/query.ser
 import { MetricUpdater } from "../metrics-scheduler/metric-updater/updater";
 
 /**
+ * Type alias for CronJob compatible with SchedulerRegistry.
+ * Due to npm hoisting, @nestjs/schedule may have a nested cron package with
+ * slightly different types. This alias documents the intentional type coercion.
+ */
+type SchedulerRegistryCronJob = Parameters<SchedulerRegistry["addCronJob"]>[1];
+
+/**
  * Type for a concurrency limiter function returned by p-limit.
  */
 interface LimitFunction {
@@ -49,7 +56,10 @@ export class MetricsSchedulerService {
     if (this.metricsSchedulerConfig.cron !== undefined) {
       const job = CronJob.from({ cronTime: this.metricsSchedulerConfig.cron, onTick: jobFn });
       this.logger.log(`Cron scheduled: ${this.metricsSchedulerConfig.cron}`);
-      this.schedulerRegistry.addCronJob("updateMetrics", job);
+      this.schedulerRegistry.addCronJob(
+        "updateMetrics",
+        job as unknown as SchedulerRegistryCronJob,
+      );
       job.start();
     } else {
       this.logger.log(`Scheduler disabled.`);

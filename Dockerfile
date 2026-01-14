@@ -1,5 +1,5 @@
-# Use Node.js v16.17.1 as the base image
-FROM node:18.17.1-alpine
+# Use Node.js 20 LTS as the base image (required for NestJS 11)
+FROM node:20-alpine
 
 # Set the working directory in the container to /app
 WORKDIR /app

@@ -6,6 +6,13 @@ import { Neighborhood } from "../../database/entities/neighborhood.entity";
 import { NeighborhoodService } from "../../neighborhoods/neighborhood.service";
 import { NeighborhoodUpdater } from "./neighborhood-updater/updater";
 
+/**
+ * Type alias for CronJob compatible with SchedulerRegistry.
+ * Due to npm hoisting, @nestjs/schedule may have a nested cron package with
+ * slightly different types. This alias documents the intentional type coercion.
+ */
+type SchedulerRegistryCronJob = Parameters<SchedulerRegistry["addCronJob"]>[1];
+
 @Injectable()
 export class SchedulerService {
   private readonly logger = new Logger(SchedulerService.name);
@@ -23,7 +30,10 @@ export class SchedulerService {
     if (schedulerConfig.cron !== undefined) {
       const job = CronJob.from({ cronTime: schedulerConfig.cron, onTick: jobFn });
       this.logger.log(`Cron scheduled: ${schedulerConfig.cron}`);
-      this.schedulerRegistry.addCronJob("updateNeighborhood", job);
+      this.schedulerRegistry.addCronJob(
+        "updateNeighborhood",
+        job as unknown as SchedulerRegistryCronJob,
+      );
       job.start();
     } else if (schedulerConfig.seconds !== undefined) {
       const id = setInterval(jobFn, schedulerConfig.seconds * 1000);

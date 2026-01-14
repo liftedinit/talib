@@ -19,6 +19,7 @@ import { TransactionDetails } from "./transaction-details.entity";
 @Entity()
 @Index(["block", "block_index"], { unique: true })
 @Index(["block", "hash"], { unique: true })
+@Index(["block"])  // For fast JOINs on foreign key
 export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;

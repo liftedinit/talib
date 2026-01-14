@@ -174,13 +174,38 @@ export class BlockService {
     latestHeight: number,
     max?: number,
   ) {
+    // Optimized: find gaps using window functions, only generate_series for gaps
+    // Much faster than generate_series(1, millions) EXCEPT
     return `
-        SELECT all_ids AS missnum
-        FROM generate_series(1, ${latestHeight}) all_ids
-        EXCEPT
-        SELECT height FROM block WHERE "neighborhoodId" = ${neighborhood.id}
-        ORDER BY missnum
-        ${max !== undefined ? "LIMIT " + max : ""}
+      WITH existing AS (
+        SELECT height, LEAD(height) OVER (ORDER BY height) as next_height
+        FROM block
+        WHERE "neighborhoodId" = ${neighborhood.id}
+      ),
+      max_existing AS (
+        SELECT COALESCE(MAX(height), 0) as max_h FROM block WHERE "neighborhoodId" = ${neighborhood.id}
+      ),
+      gap_ranges AS (
+        -- Gaps between existing blocks
+        SELECT height + 1 as gap_start, next_height - 1 as gap_end
+        FROM existing
+        WHERE next_height IS NOT NULL AND next_height > height + 1
+        UNION ALL
+        -- Starting gap (if blocks don't start at 1)
+        SELECT 1 as gap_start, MIN(height) - 1 as gap_end
+        FROM block WHERE "neighborhoodId" = ${neighborhood.id}
+        HAVING MIN(height) > 1
+        UNION ALL
+        -- Ending gap (new blocks at the end)
+        SELECT max_h + 1 as gap_start, ${latestHeight} as gap_end
+        FROM max_existing
+        WHERE max_h < ${latestHeight}
+      )
+      SELECT generate_series(gap_start, gap_end) as missnum
+      FROM gap_ranges
+      WHERE gap_end >= gap_start
+      ORDER BY missnum
+      ${max !== undefined ? "LIMIT " + max : ""}
     `;
   }
 

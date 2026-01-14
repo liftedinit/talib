@@ -12,6 +12,9 @@ import { Transaction } from "./transaction.entity";
 @Entity()
 @Index(['transaction'])  // For JOIN queries on transaction
 @Index(['method'])       // For filtering by method
+@Index('idx_td_has_details', ['transaction'], {
+  where: '"argument" IS NOT NULL OR "result" IS NOT NULL OR "error" IS NOT NULL'
+})  // Partial index for finding transactions with details (used by NOT EXISTS query)
 export class TransactionDetails {
   @PrimaryGeneratedColumn()
   id: number;

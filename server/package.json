@@ -29,7 +29,7 @@
     "@nestjs/platform-express": "10.4.22",
     "@nestjs/schedule": "4.1.2",
     "@nestjs/serve-static": "4.0.2",
-    "@nestjs/swagger": "7.4.2",
+    "@nestjs/swagger": "8.1.1",
     "@nestjs/typeorm": "10.0.2",
     "axios": "1.13.2",
     "big.js": "6.2.2",
@@ -79,7 +79,8 @@
   },
   "overrides": {
     "reflect-metadata": "0.2.2",
-    "cron": "3.2.1"
+    "cron": "3.2.1",
+    "js-yaml": "4.1.1"
   },
   "jest": {
     "moduleFileExtensions": [

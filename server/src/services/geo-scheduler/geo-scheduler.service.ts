@@ -6,6 +6,13 @@ import { GeoSchedulerConfigService } from "../../config/geo-scheduler/configurat
 import { PrometheusQueryService } from "../../metrics/prometheus-query/query.service";
 import { GeoUpdater } from "../geo-scheduler/geo-updater/updater";
 
+/**
+ * Type alias for CronJob compatible with SchedulerRegistry.
+ * Due to npm hoisting, @nestjs/schedule may have a nested cron package with
+ * slightly different types. This alias documents the intentional type coercion.
+ */
+type SchedulerRegistryCronJob = Parameters<SchedulerRegistry["addCronJob"]>[1];
+
 export interface PrometheusQueries {
   latitude: PrometheusQuery;
   longitude: PrometheusQuery;
@@ -25,11 +32,13 @@ export class GeoSchedulerService {
   ) {
     const jobFn = () => this.run();
 
-    if ( this.geoSchedulerConfig.cron !== undefined) {
-      // Do not rerun the cron job if the previous one was done.
-      const job = new CronJob(this.geoSchedulerConfig.cron, jobFn);
+    if (this.geoSchedulerConfig.cron !== undefined) {
+      const job = CronJob.from({ cronTime: this.geoSchedulerConfig.cron, onTick: jobFn });
       this.logger.log(`Cron scheduled: ${this.geoSchedulerConfig.cron}`);
-      this.schedulerRegistry.addCronJob("updateLocations", job);
+      this.schedulerRegistry.addCronJob(
+        "updateLocations",
+        job as unknown as SchedulerRegistryCronJob,
+      );
       job.start();
     } else {
       this.logger.log(`Scheduler disabled.`);

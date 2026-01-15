@@ -163,7 +163,7 @@ export class BlockService {
 
   async getGenesisBlockHash(
     neighborhood: Neighborhood,
-  ): Promise<ArrayBuffer | null> {
+  ): Promise<ArrayBuffer | Buffer | Uint8Array | null> {
     const n = await this.network.forUrl(neighborhood.url);
     const blockInfo = await n.blockchain.blockByHeight(1);
     return blockInfo?.identifier.hash;

@@ -60,7 +60,7 @@ export function Home() {
             error={blocksError as Error}
             isLoading={blocksLoading}
           />
-          <Button as={Link} to="blocks" isFullWidth bg={buttonBg}>
+          <Button as={Link} to="blocks" width="full" bg={buttonBg}>
             More
           </Button>
         </Box>
@@ -70,7 +70,7 @@ export function Home() {
             error={txnError as Error}
             isLoading={txnLoading}
           />
-          <Button as={Link} to="transactions" isFullWidth bg={buttonBg}>
+          <Button as={Link} to="transactions" width="full" bg={buttonBg}>
             More
           </Button>
         </Box>

@@ -28,13 +28,13 @@ export class Transaction {
   block_index: number;
 
   @Column({ type: "bytea" })
-  hash: ArrayBuffer;
+  hash: ArrayBuffer | Buffer | Uint8Array;
 
   @Column({ type: "bytea" })
-  request?: ArrayBuffer;
+  request?: ArrayBuffer | Buffer | Uint8Array;
 
   @Column({ type: "bytea" })
-  response?: ArrayBuffer;
+  response?: ArrayBuffer | Buffer | Uint8Array;
 
   @ManyToOne(() => Block, (block) => block.transactions, {
     onDelete: "CASCADE",

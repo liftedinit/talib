@@ -61,7 +61,7 @@ import { MonitoringModule } from "./metrics/monitoring/monitoring.module";
           ? [
               {
                 rootPath,
-                exclude: ["/api/(.*)"],
+                exclude: ["/api/{*path}"],
               },
             ]
           : [];

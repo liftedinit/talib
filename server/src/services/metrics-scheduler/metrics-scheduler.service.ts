@@ -7,16 +7,38 @@ import { MetricsSchedulerConfigService } from "../../config/metrics-scheduler/co
 import { PrometheusQueryService } from "../../metrics/prometheus-query/query.service";
 import { MetricUpdater } from "../metrics-scheduler/metric-updater/updater";
 
+/**
+ * Type alias for CronJob compatible with SchedulerRegistry.
+ * Due to npm hoisting, @nestjs/schedule may have a nested cron package with
+ * slightly different types. This alias documents the intentional type coercion.
+ */
+type SchedulerRegistryCronJob = Parameters<SchedulerRegistry["addCronJob"]>[1];
+
+/**
+ * Type for a concurrency limiter function returned by p-limit.
+ */
+interface LimitFunction {
+  <Arguments extends unknown[], ReturnType>(
+    fn: (...args: Arguments) => PromiseLike<ReturnType> | ReturnType,
+    ...args: Arguments
+  ): Promise<ReturnType>;
+  readonly activeCount: number;
+  readonly pendingCount: number;
+  clearQueue: () => void;
+}
+
+type PLimit = (concurrency: number) => LimitFunction;
+
 @Injectable()
 export class MetricsSchedulerService {
   private readonly logger = new Logger(MetricsSchedulerService.name);
   private done = true;
-  private pLimitFn: any = null;
+  private pLimitFn: PLimit | null = null;
 
-  private async getPLimit() {
+  private async getPLimit(): Promise<PLimit> {
     if (!this.pLimitFn) {
       const { default: pLimit } = await import('p-limit');
-      this.pLimitFn = pLimit;
+      this.pLimitFn = pLimit as PLimit;
     }
     return this.pLimitFn;
   }
@@ -32,10 +54,12 @@ export class MetricsSchedulerService {
     const jobFn = () => this.run();
 
     if (this.metricsSchedulerConfig.cron !== undefined) {
-      // Do not rerun the cron job if the previous one was done.
-      const job = new CronJob(this.metricsSchedulerConfig.cron, jobFn);
+      const job = CronJob.from({ cronTime: this.metricsSchedulerConfig.cron, onTick: jobFn });
       this.logger.log(`Cron scheduled: ${this.metricsSchedulerConfig.cron}`);
-      this.schedulerRegistry.addCronJob("updateMetrics", job);
+      this.schedulerRegistry.addCronJob(
+        "updateMetrics",
+        job as unknown as SchedulerRegistryCronJob,
+      );
       job.start();
     } else {
       this.logger.log(`Scheduler disabled.`);

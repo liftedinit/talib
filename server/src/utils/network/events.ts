@@ -3,7 +3,7 @@ import { parseBuffer, parseDateTime } from "../cbor-parsers";
 import { getAnalyzerClass } from "../protocol/attributes";
 
 export interface EventLog {
-  id: ArrayBuffer;
+  id: ArrayBuffer | Buffer;
   time: Date;
   type: any;
   info: any;

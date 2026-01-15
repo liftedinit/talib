@@ -5,9 +5,7 @@ import {
   GridItem,
   Heading,
   Image,
-  logoSvg,
   HStack,
-  DarkMode,
 } from "@liftedinit/ui";
 import { Search, DarkModeToggle, TopNav } from "ui";
 import { useBgColor } from "utils";
@@ -39,7 +37,7 @@ export function Navbar() {
     >
     <GridItem>
       <HStack direction="row">
-        <Image src={logoSvg} h="67px" mr={3} alt="Lifted Logo" />
+        <Image src="/logo192.png" h="67px" mr={3} alt="Lifted Logo" />
         <TopNav navItems={navItems} />
       </HStack>
     </GridItem>

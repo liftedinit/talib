@@ -1,7 +1,7 @@
 import { theme, ThemeProvider, ColorModeScript } from "@liftedinit/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { HashRouter, Outlet, Route, Routes } from "react-router-dom";
 
 import { NeighborhoodProvider, TopNavProvider } from "api";
@@ -22,7 +22,9 @@ import {
 
 const queryClient = new QueryClient();
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container!);
+root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
@@ -61,11 +63,11 @@ ReactDOM.render(
                     <WideLayout>
                       <Metrics />
                     </WideLayout>
-                    } 
+                    }
                   >
                   </Route>
                   <Route path="map" element={
-                  <WideLayout><Map /></WideLayout>} 
+                  <WideLayout><Map /></WideLayout>}
                   ></Route>
 
                 </Routes>
@@ -74,6 +76,5 @@ ReactDOM.render(
           </NeighborhoodProvider>
       </QueryClientProvider>
     </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById("root"),
+  </React.StrictMode>
 );

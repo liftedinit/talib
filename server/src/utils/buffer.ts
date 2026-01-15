@@ -54,24 +54,12 @@ export function toBuffer(data: BufferLike): Buffer {
 
 /**
  * Compares two BufferLike values for equality.
+ * Uses Node.js Buffer's native equals() method for optimal performance.
  *
  * @param a - First buffer
  * @param b - Second buffer
  * @returns true if the buffers contain the same bytes
  */
 export function buffersEqual(a: BufferLike, b: BufferLike): boolean {
-  const bufA = toUint8Array(a);
-  const bufB = toUint8Array(b);
-
-  if (bufA.length !== bufB.length) {
-    return false;
-  }
-
-  for (let i = 0; i < bufA.length; i++) {
-    if (bufA[i] !== bufB[i]) {
-      return false;
-    }
-  }
-
-  return true;
+  return toBuffer(a).equals(toBuffer(b));
 }

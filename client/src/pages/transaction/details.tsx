@@ -30,8 +30,9 @@ const methodDetails: {
 };
 
 export function details(data: any) {
-  const detailFn = methodDetails[data.method];
-  const prettyMethod = PrettyMethods[data.method] || "Unknown";
+  const method = data.method || data._method;
+  const detailFn = methodDetails[method];
+  const prettyMethod = PrettyMethods[method] || "Unknown";
 
   let txn: TableObject = {
     Type: (
@@ -39,7 +40,7 @@ export function details(data: any) {
         <Tag variant="outline" size="sm">
           {prettyMethod}
         </Tag>{" "}
-        (<Code>{data.method}</Code>)
+        (<Code>{method}</Code>)
       </Text>
     ),
   };
@@ -48,7 +49,7 @@ export function details(data: any) {
     txn = { ...txn, ...detailFn(data) };
   }
 
-  if (data.argument.memo) {
+  if (data.argument && data.argument.memo) {
     txn = {
       ...txn,
       Memo: (

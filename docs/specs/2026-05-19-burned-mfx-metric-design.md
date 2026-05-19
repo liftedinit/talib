@@ -143,7 +143,7 @@ Gated on profiling — not shipped by default.
 
 - `client/src/ui/burned-mfx-cumulative-chart.tsx` — Apex area chart (~80 LOC). Converts uMFX → MFX (`/ 1e6`) for display, formats large numbers (K / M / B). Hardcoded label `"Burned MFX"`, y-axis title `"MFX"`.
 - `client/src/ui/burned-mfx-rate-chart.tsx` — Apex area chart + `<Select>` for rate unit. Uses the same React Query result as the cumulative chart (same query key) → no double-fetch.
-- `client/src/utils/burn-rate.ts` — pure function `calculateRates(series, rateUnit)`, ported from `manifest-dashboard/src/lib/utils/rateCalculation.ts` (two-pointer O(n) over the sorted cumulative series; uses native `BigInt`).
+- `client/src/utils/burn-rate.ts` — pure function `calculateRates(series, rateUnit)`, ported from `manifest-dashboard/src/lib/utils/rateCalculation.ts` (two-pointer O(n) over the sorted cumulative series; uses `bignumber.js`).
 
 ### API helper
 
@@ -181,7 +181,7 @@ Options: `Per Hour`, `Per Day` (default), `Per Week`, `Per Month`. Selected unit
 - New Vite env var `VITE_MFX_NEIGHBORHOOD_ID` (string parsed to number). Added to `client/.env` (which currently holds `VITE_API_PATH`) and documented in `client/README.md` under a new "Environment variables" section.
 - Read once in `networkMetrics.tsx`: `const MFX_NEIGHBORHOOD_ID = Number(import.meta.env.VITE_MFX_NEIGHBORHOOD_ID);`.
 - If missing or `NaN`, both chart cells render an `<ErrorAlert>` ("Burned MFX chart not configured") instead of mounting.
-- No new runtime deps: `calculateRates` uses native `BigInt` (subtract, sign-check, stringify is all we need over integer uMFX strings).
+- New runtime dep: `bignumber.js` added to `client/package.json`.
 - New module exports added in `client/src/ui/index.ts` for both chart components.
 
 ### Error handling (client)

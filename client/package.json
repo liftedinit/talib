@@ -7,7 +7,6 @@
     "@liftedinit/ui": "github:liftedinit/lifted-ui",
     "@tanstack/react-query": "^4.36.0",
     "apexcharts": "^4.0.0",
-    "bignumber.js": "^11.1.1",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",

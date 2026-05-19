@@ -28,6 +28,16 @@ export class MigrationsController {
 
   constructor(private migrations: MigrationsService) {}
 
+  @Get("burned-mfx/series")
+  @ApiOperation({
+    description: "Cumulative day-bucketed series of MFX burned via migrations.",
+  })
+  async getBurnedMfxSeries(
+    @Param("nid", ParseIntPipe) nid: number,
+  ) {
+    return this.migrations.getBurnedMfxSeries(nid);
+  }
+
   @Get(":uuid")
   @ApiOperation({
     description: "Show the details of a single migration",

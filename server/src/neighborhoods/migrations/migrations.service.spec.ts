@@ -65,6 +65,28 @@ describe("MigrationsService.getBurnedMfxSeries", () => {
     expect(params).toEqual([42, mfxAddrStr]);
   });
 
+  it("emits SQL that COALESCEs symbol/amount across direct and multisig argument shapes", async () => {
+    const mfxAddrBytes = Buffer.from([0x00, 0x01, 0x02, 0x03]);
+
+    tokenRepo.findOne.mockResolvedValueOnce({ address: mfxAddrBytes });
+    migrationRepo.manager.query.mockResolvedValueOnce([]);
+
+    await service.getBurnedMfxSeries(42);
+
+    const [sql] = migrationRepo.manager.query.mock.calls[0];
+
+    // Symbol filter must cover both the direct (ledger.send) and the
+    // multisig (ledger.send wrapped inside `transaction.argument`) shapes.
+    expect(sql).toMatch(
+      /COALESCE\(\s*td\.argument ->> 'symbol',\s*td\.argument -> 'transaction' -> 'argument' ->> 'symbol'\s*\)/i,
+    );
+
+    // Same for amount inside the daily aggregation.
+    expect(sql).toMatch(
+      /COALESCE\(\s*td\.argument ->> 'amount',\s*td\.argument -> 'transaction' -> 'argument' ->> 'amount'\s*\)/i,
+    );
+  });
+
   it("warns only once when MFX token is missing across multiple calls", async () => {
     tokenRepo.findOne.mockResolvedValue(null);
     const warnSpy = jest.spyOn(service["logger"], "warn").mockImplementation(() => {});

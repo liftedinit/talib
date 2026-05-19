@@ -81,14 +81,20 @@ export class MigrationsService {
         WITH daily AS (
           SELECT
             date_trunc('day', m."manifestDatetime") AS day,
-            SUM((td.argument ->> 'amount')::numeric) AS amount
+            SUM((COALESCE(
+              td.argument ->> 'amount',
+              td.argument -> 'transaction' -> 'argument' ->> 'amount'
+            ))::numeric) AS amount
           FROM migration m
           INNER JOIN transaction_details td ON td.id = m."detailsId"
           INNER JOIN transaction t          ON t.id  = m."transactionId"
           INNER JOIN block b                ON b.id  = t."blockId"
                                              AND b."neighborhoodId" = $1
           WHERE m."manifestDatetime" IS NOT NULL
-            AND td.argument ->> 'symbol' = $2
+            AND COALESCE(
+              td.argument ->> 'symbol',
+              td.argument -> 'transaction' -> 'argument' ->> 'symbol'
+            ) = $2
           GROUP BY date_trunc('day', m."manifestDatetime")
         )
         SELECT

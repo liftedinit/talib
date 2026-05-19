@@ -10,18 +10,24 @@ import {
   Pagination,
 } from "nestjs-typeorm-paginate";
 import { Repository, DataSource, In } from "typeorm";
+import { Address } from "@liftedinit/many-js";
 import { Block } from "../../database/entities/block.entity";
 import { Migration } from "../../database/entities/migration.entity";
 import { Migration as MigrationEntity } from "../../database/entities/migration.entity";
+import { Token } from "../../database/entities/token.entity";
 import { MigrationDto, UpdateMigrationDto } from "../../dto/migration.dto";
+import { SeriesEntity } from "../../metrics/metrics.service";
 
 @Injectable()
 export class MigrationsService {
   private readonly logger = new Logger(MigrationsService.name);
+  private mfxTokenMissingWarned = false;
 
   constructor(
     @InjectRepository(MigrationEntity)
     private migrationRepository: Repository<MigrationEntity>,
+    @InjectRepository(Token)
+    private tokenRepository: Repository<Token>,
     private datasource: DataSource,
   ) {}
 
@@ -49,6 +55,55 @@ export class MigrationsService {
     }
 
     return migration.intoDto();
+  }
+
+  async getBurnedMfxSeries(neighborhoodId: number): Promise<SeriesEntity> {
+    const tokenRow = await this.tokenRepository.findOne({
+      where: { neighborhood: { id: neighborhoodId }, symbol: "MFX" },
+    });
+
+    if (!tokenRow) {
+      if (!this.mfxTokenMissingWarned) {
+        this.logger.warn(
+          `No MFX token row for neighborhood ${neighborhoodId}; returning empty burned-MFX series.`,
+        );
+        this.mfxTokenMissingWarned = true;
+      }
+      return { timestamps: [], data: [] };
+    }
+
+    const mfxAddressStr = new Address(
+      Buffer.from(tokenRow.address as ArrayBuffer),
+    ).toString();
+
+    const rows = await this.migrationRepository.manager.query(
+      `
+        WITH daily AS (
+          SELECT
+            date_trunc('day', m."manifestDatetime") AS day,
+            SUM((td.argument ->> 'amount')::numeric) AS amount
+          FROM migration m
+          INNER JOIN transaction_details td ON td.id = m."detailsId"
+          INNER JOIN transaction t          ON t.id  = m."transactionId"
+          INNER JOIN block b                ON b.id  = t."blockId"
+                                             AND b."neighborhoodId" = $1
+          WHERE m."manifestDatetime" IS NOT NULL
+            AND td.argument ->> 'symbol' = $2
+          GROUP BY date_trunc('day', m."manifestDatetime")
+        )
+        SELECT
+          day AS timestamp,
+          SUM(amount) OVER (ORDER BY day) AS cumulative
+        FROM daily
+        ORDER BY day ASC
+      `,
+      [neighborhoodId, mfxAddressStr],
+    );
+
+    return {
+      timestamps: rows.map((r: { timestamp: Date }) => r.timestamp),
+      data: rows.map((r: { cumulative: string }) => r.cumulative),
+    };
   }
 
   public async findMany(

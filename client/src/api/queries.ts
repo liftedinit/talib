@@ -56,6 +56,10 @@ export function getNeighborhoodMigration(id: number, uuid: string) {
   return get(`neighborhoods/${id}/migrations/${uuid}`);
 }
 
+export function getBurnedMfxSeries(nid: number) {
+  return get(`neighborhoods/${nid}/migrations/burned-mfx/series`);
+}
+
 export function getNeighborhoodTokens(
   id: number,
   { page = PAGE, limit = LIMIT} = {},

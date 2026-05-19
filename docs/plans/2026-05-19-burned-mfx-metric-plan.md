@@ -1108,17 +1108,19 @@ git commit -m "feat(client): BurnedMfxRateChart with rate-unit dropdown"
 
 - [ ] **Step 1: Add imports**
 
-At the top of `client/src/pages/metrics/networkMetrics.tsx`, alongside the existing imports from `"ui"`, extend the import to also pull in the new components and `ErrorAlert` (already exported from `client/src/ui/index.ts`):
+At the top of `client/src/pages/metrics/networkMetrics.tsx`, extend the import from `"ui"` with the two new memoized chart components, and ensure `Box`, `Center`, and `Text` are pulled from `@liftedinit/ui` (add the line if it isn't already there — the file likely uses `Box` already):
 
 ```ts
+import { Box, Center, Text } from "@liftedinit/ui";  // add if not present
 import {
   MemoizedMetricChart as MetricChart,
   MemoizedMetricStat as MetricStat,
   MemoizedBurnedMfxCumulativeChart as BurnedMfxCumulativeChart,
   MemoizedBurnedMfxRateChart as BurnedMfxRateChart,
-  ErrorAlert,
 } from "ui";
 ```
+
+Note: we deliberately do NOT import `ErrorAlert` here — the env-guard fallback uses an inline centered teal-text block matching the chart's own empty/error UI (see Step 3).
 
 - [ ] **Step 2: Resolve and validate `VITE_MFX_NEIGHBORHOOD_ID`**
 
@@ -1126,9 +1128,12 @@ Immediately above the `NetworkMetrics` function, add:
 
 ```ts
 const RAW_MFX_NID = import.meta.env.VITE_MFX_NEIGHBORHOOD_ID;
-const MFX_NEIGHBORHOOD_ID = RAW_MFX_NID !== undefined ? Number(RAW_MFX_NID) : NaN;
-const MFX_CONFIG_OK = Number.isFinite(MFX_NEIGHBORHOOD_ID);
+const MFX_NEIGHBORHOOD_ID =
+  RAW_MFX_NID !== undefined && RAW_MFX_NID !== "" ? Number(RAW_MFX_NID) : NaN;
+const MFX_CONFIG_OK = Number.isFinite(MFX_NEIGHBORHOOD_ID) && MFX_NEIGHBORHOOD_ID > 0;
 ```
+
+The `!== ""` and `> 0` checks harden the guard against an empty-string env var or a `0` / negative neighborhood id — both would otherwise pass `Number.isFinite` but are non-sensical here.
 
 - [ ] **Step 3: Render the two cells inside the Tokenomics SimpleGrid**
 
@@ -1139,17 +1144,27 @@ In `networkMetrics.tsx`, inside the `id="tokenomics"` `SimpleGrid`, immediately 
   {MFX_CONFIG_OK ? (
     <BurnedMfxCumulativeChart nid={MFX_NEIGHBORHOOD_ID} />
   ) : (
-    <ErrorAlert error={new Error("Burned MFX chart not configured (VITE_MFX_NEIGHBORHOOD_ID missing)")} />
+    <Box p={4} h={["200px", "300px", "400px"]}>
+      <Center h="100%">
+        <Text color="brand.teal">Burned MFX chart not configured</Text>
+      </Center>
+    </Box>
   )}
 </Box>
 <Box backgroundColor="transparent">
   {MFX_CONFIG_OK ? (
     <BurnedMfxRateChart nid={MFX_NEIGHBORHOOD_ID} />
   ) : (
-    <ErrorAlert error={new Error("Burned MFX chart not configured (VITE_MFX_NEIGHBORHOOD_ID missing)")} />
+    <Box p={4} h={["200px", "300px", "400px"]}>
+      <Center h="100%">
+        <Text color="brand.teal">Burned MFX chart not configured</Text>
+      </Center>
+    </Box>
   )}
 </Box>
 ```
+
+The fallback intentionally matches the chart's own empty-state UI (centered teal text inside a same-height box) so the layout doesn't jump between misconfigured and configured rendering.
 
 - [ ] **Step 4: Confirm the client builds**
 

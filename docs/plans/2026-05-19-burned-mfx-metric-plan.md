@@ -1217,7 +1217,7 @@ Browse to the metrics page in your browser. Confirm:
 - [ ] **Step 5: Verify the env-guard**
 
 Comment out `VITE_MFX_NEIGHBORHOOD_ID` in `client/.env`, restart the client (`docker-compose restart client` or `npm start`), reload the metrics page.
-Expected: both burned-MFX cells render the `ErrorAlert` ("Burned MFX chart not configured").
+Expected: both burned-MFX cells render the centered teal-text "Burned MFX chart not configured" placeholder (same shape as the chart's own empty state — no layout jump).
 
 Restore the env var after this check.
 

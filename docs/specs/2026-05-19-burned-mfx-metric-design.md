@@ -180,7 +180,7 @@ Options: `Per Hour`, `Per Day` (default), `Per Week`, `Per Month`. Selected unit
 
 - New Vite env var `VITE_MFX_NEIGHBORHOOD_ID` (string parsed to number). Added to `client/.env` (which currently holds `VITE_API_PATH`) and documented in `client/README.md` under a new "Environment variables" section.
 - Read once in `networkMetrics.tsx`: `const MFX_NEIGHBORHOOD_ID = Number(import.meta.env.VITE_MFX_NEIGHBORHOOD_ID);`.
-- If missing or `NaN`, both chart cells render an `<ErrorAlert>` ("Burned MFX chart not configured") instead of mounting.
+- If missing, empty, or non-positive, both chart cells render an inline centered teal-text fallback ("Burned MFX chart not configured") shaped like the chart's own empty/error states — same `<Box p={4} h={["200px","300px","400px"]}>` shell, `<Center>`, `<Text color="brand.teal">` — so no layout jump between configured and misconfigured rendering.
 - No new runtime deps: `calculateRates` uses native `BigInt` (subtract, sign-check, stringify is all we need over integer uMFX strings).
 - New module exports added in `client/src/ui/index.ts` for both chart components.
 
@@ -188,7 +188,7 @@ Options: `Per Hour`, `Per Day` (default), `Per Week`, `Per Month`. Selected unit
 
 | Case | Behavior |
 |---|---|
-| `VITE_MFX_NEIGHBORHOOD_ID` missing / NaN | Both cells render `<ErrorAlert>`. |
+| `VITE_MFX_NEIGHBORHOOD_ID` missing, empty, or non-positive | Both cells render a centered teal-text "Burned MFX chart not configured" placeholder, same shape as the chart's own empty state. |
 | Network or HTTP error | React Query `isError` branch → centered `"Error loading chart data"` (same pattern as `metric-chart.tsx`). |
 | Empty series (length 0) | Cumulative: centered `"No migrations yet"`. Rate: same (`calculateRates` returns `[]` for length < 2). |
 | Single data point | Cumulative renders fine. Rate: centered `"Insufficient data"` (mirrors `manifest-dashboard`'s `<RateChartCard>` fallback). |
@@ -211,7 +211,7 @@ Options: `Per Hour`, `Per Day` (default), `Per Week`, `Per Month`. Selected unit
 - **Unit — `calculateRates`:** empty input → `[]`; one point → `[]`; monotonic input → correct per-day / per-week diffs; window larger than span → entries skipped; non-monotonic → negative clamped to 0.
 - **Component — `<BurnedMfxRateChart>`:** mock React Query with a fixed cumulative series; switching the dropdown changes the rendered series length and re-runs `calculateRates`.
 - **Component — `<BurnedMfxCumulativeChart>`:** mock query → snapshot the Apex `series` + `options` values (not full Apex render).
-- **Env-guard test:** unset `VITE_MFX_NEIGHBORHOOD_ID` → both components render `<ErrorAlert>`.
+- **Env-guard test:** unset `VITE_MFX_NEIGHBORHOOD_ID` → both cells render the centered teal-text "Burned MFX chart not configured" placeholder.
 
 ### Manual verification
 

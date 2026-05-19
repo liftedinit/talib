@@ -33,7 +33,7 @@
 - `client/vitest.config.ts` — vitest config (also wires the existing `setupTests.ts`).
 
 **Client (modified):**
-- `client/package.json` — add `bignumber.js`, `vitest`, `jsdom`, and a `test` script.
+- `client/package.json` — add `vitest`, `jsdom`, and a `test` script.
 - `client/src/api/queries.ts` — add `getBurnedMfxSeries`.
 - `client/src/ui/index.ts` — re-export the two new components.
 - `client/src/pages/metrics/networkMetrics.tsx` — render the two new cells inside Tokenomics, with env-guard.
@@ -441,19 +441,15 @@ git commit -m "feat(server): GET /neighborhoods/:nid/migrations/burned-mfx/serie
 
 ---
 
-## Task 4: Client config — `bignumber.js`, env var, README
+## Task 4: Client config — env var + README
 
 **Files:**
-- Modify: `client/package.json`
 - Modify: `client/.env`
 - Modify: `client/README.md`
 
-- [ ] **Step 1: Install `bignumber.js`**
+> `calculateRates` uses native `BigInt`, so no `bignumber.js` install is needed.
 
-Run: `cd client && npm install --save bignumber.js`
-Expected: `bignumber.js` added under `dependencies` in `package.json`.
-
-- [ ] **Step 2: Add the env var to `client/.env`**
+- [ ] **Step 1: Add the env var to `client/.env`**
 
 Append to `client/.env`:
 ```
@@ -461,7 +457,7 @@ VITE_MFX_NEIGHBORHOOD_ID=1
 ```
 (`1` is a placeholder for local dev — the real mainnet id is set per environment.)
 
-- [ ] **Step 3: Document the env var in `client/README.md`**
+- [ ] **Step 2: Document the env var in `client/README.md`**
 
 At the very bottom of `client/README.md`, append:
 
@@ -472,11 +468,11 @@ At the very bottom of `client/README.md`, append:
 - `VITE_MFX_NEIGHBORHOOD_ID` — numeric id of the neighborhood whose MFX migrations feed the "Burned MFX" charts on the metrics page.
 ```
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
-git add client/package.json client/package-lock.json client/.env client/README.md
-git commit -m "chore(client): add bignumber.js and VITE_MFX_NEIGHBORHOOD_ID config"
+git add client/.env client/README.md
+git commit -m "chore(client): add VITE_MFX_NEIGHBORHOOD_ID config"
 ```
 
 ---
@@ -564,8 +560,6 @@ Expected: FAIL — module `./burn-rate` not found.
 Create `client/src/utils/burn-rate.ts`:
 
 ```ts
-import { BigNumber } from "bignumber.js";
-
 export type RateUnit = "per_hour" | "per_day" | "per_week" | "per_month";
 
 export interface CumulativePoint {
@@ -600,7 +594,8 @@ export const RATE_UNIT_OPTIONS: RateUnit[] = [
  * Differencing over a sorted (ASC) cumulative series.
  * For each point i, find the latest point j < i with date <= date[i] - windowMs
  * and emit (value[i] - value[j]). Two-pointer, O(n).
- * Negative diffs clamped to 0.
+ * Negative diffs clamped to 0. Uses native BigInt — values are integer
+ * uMFX strings so subtraction is exact and zero-dep.
  */
 export function calculateRates(
   data: CumulativePoint[],
@@ -626,10 +621,10 @@ export function calculateRates(
       continue;
     }
 
-    const diff = new BigNumber(current.value).minus(data[j].value);
-    const rate = diff.isNegative() ? new BigNumber(0) : diff;
+    const diff = BigInt(current.value) - BigInt(data[j].value);
+    const rate = diff < 0n ? 0n : diff;
 
-    out.push({ date: current.date, value: rate.toFixed() });
+    out.push({ date: current.date, value: rate.toString() });
   }
 
   return out;

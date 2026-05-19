@@ -308,14 +308,20 @@ async getBurnedMfxSeries(neighborhoodId: number): Promise<SeriesEntity> {
       WITH daily AS (
         SELECT
           date_trunc('day', m."manifestDatetime") AS day,
-          SUM((td.argument ->> 'amount')::numeric) AS amount
+          SUM((COALESCE(
+            td.argument ->> 'amount',
+            td.argument -> 'transaction' -> 'argument' ->> 'amount'
+          ))::numeric) AS amount
         FROM migration m
         INNER JOIN transaction_details td ON td.id = m."detailsId"
         INNER JOIN transaction t          ON t.id  = m."transactionId"
         INNER JOIN block b                ON b.id  = t."blockId"
                                            AND b."neighborhoodId" = $1
         WHERE m."manifestDatetime" IS NOT NULL
-          AND td.argument ->> 'symbol' = $2
+          AND COALESCE(
+            td.argument ->> 'symbol',
+            td.argument -> 'transaction' -> 'argument' ->> 'symbol'
+          ) = $2
         GROUP BY date_trunc('day', m."manifestDatetime")
       )
       SELECT
@@ -1212,13 +1218,19 @@ If the dataset is large, attach to postgres and run:
 EXPLAIN ANALYZE
 WITH daily AS (
   SELECT date_trunc('day', m."manifestDatetime") AS day,
-         SUM((td.argument ->> 'amount')::numeric) AS amount
+         SUM((COALESCE(
+           td.argument ->> 'amount',
+           td.argument -> 'transaction' -> 'argument' ->> 'amount'
+         ))::numeric) AS amount
   FROM migration m
   INNER JOIN transaction_details td ON td.id = m."detailsId"
   INNER JOIN transaction t          ON t.id  = m."transactionId"
   INNER JOIN block b                ON b.id  = t."blockId" AND b."neighborhoodId" = 1
   WHERE m."manifestDatetime" IS NOT NULL
-    AND td.argument ->> 'symbol' = '<MFX address string>'
+    AND COALESCE(
+      td.argument ->> 'symbol',
+      td.argument -> 'transaction' -> 'argument' ->> 'symbol'
+    ) = '<MFX address string>'
   GROUP BY date_trunc('day', m."manifestDatetime")
 )
 SELECT day, SUM(amount) OVER (ORDER BY day) FROM daily ORDER BY day ASC;

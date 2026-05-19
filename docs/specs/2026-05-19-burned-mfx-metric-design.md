@@ -79,14 +79,20 @@ Two SQL statements per request — both bounded, neither N+1. First, resolve the
 WITH daily AS (
   SELECT
     date_trunc('day', m."manifestDatetime") AS day,
-    SUM((td.argument ->> 'amount')::numeric) AS amount
+    SUM((COALESCE(
+      td.argument ->> 'amount',
+      td.argument -> 'transaction' -> 'argument' ->> 'amount'
+    ))::numeric) AS amount
   FROM migration m
   INNER JOIN transaction_details td ON td.id = m."detailsId"
   INNER JOIN transaction t          ON t.id  = m."transactionId"
   INNER JOIN block b                ON b.id  = t."blockId"
                                      AND b."neighborhoodId" = $1
   WHERE m."manifestDatetime" IS NOT NULL
-    AND td.argument ->> 'symbol' = $2
+    AND COALESCE(
+      td.argument ->> 'symbol',
+      td.argument -> 'transaction' -> 'argument' ->> 'symbol'
+    ) = $2
   GROUP BY date_trunc('day', m."manifestDatetime")
 )
 SELECT
@@ -96,7 +102,9 @@ FROM daily
 ORDER BY day ASC;
 ```
 
-`$2` is the MFX token's string-form address, resolved once at the start of the call by a separate cheap lookup against the unique `(neighborhood_id, symbol)` index on `Token`. Resolution is **one extra SQL statement per request, not per row** — the address is then passed as a literal parameter into the main query.
+`MigrationAnalyzerService` writes two `transaction_details.argument` shapes for completed migrations: a direct `ledger.send` (where `amount`/`symbol` are at the top level), and a multisig submit (where the real send is nested under `transaction.argument`). The `COALESCE` over both paths covers both shapes — without it, multisig migrations are silently dropped from the metric.
+
+`$2` is the MFX token's string-form address, resolved once at the start of the call by a separate cheap lookup against the `Token` table (unique key `(neighborhood, address)`; we filter by `(neighborhood_id, symbol='MFX')`, which is not index-backed but the table is tiny so the cost is negligible). Resolution is **one extra SQL statement per request, not per row** — the address is then passed as a literal parameter into the main query.
 
 **Why this is N+1-free:**
 

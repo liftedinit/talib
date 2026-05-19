@@ -9,9 +9,10 @@ import { MigrationsService } from "./migrations.service";
 import { MigrationWhitelist } from "../../database/entities/migration-whitelist.entity";
 import { MigrationWhitelistService } from "./migration-whitelist.service";
 import { MigrationWhitelistController } from "./migration-whitelist.controller";
+import { Token } from "../../database/entities/token.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Migration, Transaction, TransactionDetails, MigrationWhitelist])],
+  imports: [TypeOrmModule.forFeature([Migration, Transaction, TransactionDetails, MigrationWhitelist, Token])],
   providers: [MigrationsService, NetworkService, MigrationWhitelistService],
   controllers: [MigrationsController, MigrationWhitelistController],
   exports: [MigrationsService, MigrationWhitelistService],

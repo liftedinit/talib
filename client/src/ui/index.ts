@@ -15,3 +15,4 @@ export * from "./map";
 export * from "./location";
 export * from "./top-nav";
 export * from "./migration-list";
+export { BurnedMfxCumulativeChart, MemoizedBurnedMfxCumulativeChart } from "./burned-mfx-cumulative-chart";

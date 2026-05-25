@@ -11,11 +11,14 @@
     "start": "npm run start:prod --workspace=server"
   },
   "devDependencies": {
-    "prettier-plugin-organize-imports": "^3.2.2"
+    "prettier-plugin-organize-imports": "3.2.4"
   },
   "overrides": {
     "reflect-metadata": "0.2.2",
     "cron": "3.5.0",
-    "d3-color": "3.1.0"
+    "d3-color": "3.1.0",
+    "@liftedinit/many-js": {
+      "uuid": "11.1.1"
+    }
   }
 }

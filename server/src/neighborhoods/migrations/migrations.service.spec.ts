@@ -1,7 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
-import { Address } from "@liftedinit/many-js";
 
 import { MigrationsService } from "./migrations.service";
 import { Migration } from "../../database/entities/migration.entity";
@@ -38,8 +37,11 @@ describe("MigrationsService.getBurnedMfxSeries", () => {
   });
 
   it("returns cumulative day-bucketed series in ASC order", async () => {
-    const mfxAddrBytes = Buffer.from([0x00, 0x01, 0x02, 0x03]);
-    const mfxAddrStr = new Address(mfxAddrBytes).toString();
+    // Token.address is bytea containing the UTF-8 of the canonical textual
+    // address. The service decodes it as UTF-8 and passes the string to SQL.
+    const mfxAddrStr =
+      "mqbh742x4s356ddaryrxaowt4wxtlocekzpufodvowrirfrqaaaaa3l";
+    const mfxAddrBytes = Buffer.from(mfxAddrStr, "utf-8");
 
     tokenRepo.findOne.mockResolvedValueOnce({ address: mfxAddrBytes });
     migrationRepo.manager.query.mockResolvedValueOnce([
@@ -66,7 +68,10 @@ describe("MigrationsService.getBurnedMfxSeries", () => {
   });
 
   it("emits SQL that COALESCEs symbol/amount across direct and multisig argument shapes", async () => {
-    const mfxAddrBytes = Buffer.from([0x00, 0x01, 0x02, 0x03]);
+    const mfxAddrBytes = Buffer.from(
+      "mqbh742x4s356ddaryrxaowt4wxtlocekzpufodvowrirfrqaaaaa3l",
+      "utf-8",
+    );
 
     tokenRepo.findOne.mockResolvedValueOnce({ address: mfxAddrBytes });
     migrationRepo.manager.query.mockResolvedValueOnce([]);

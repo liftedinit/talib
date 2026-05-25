@@ -35,11 +35,11 @@ describe("BurnedMfxCumulativeChart", () => {
     expect(await screen.findByText(/no migrations yet/i)).toBeInTheDocument();
   });
 
-  it("plots uMFX divided by 1e6 with a cumulative-MFX label", async () => {
+  it("plots uMFX divided by 1e9 (MFX has 9 decimal places) with a cumulative-MFX label", async () => {
     vi.mocked(getBurnedMfxSeries).mockReturnValueOnce(
       async () => ({
         timestamps: [new Date("2026-01-01"), new Date("2026-01-02")],
-        data: ["1000000", "3000000"],
+        data: ["1000000000", "3000000000"],
       }),
     );
 

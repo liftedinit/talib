@@ -1,7 +1,7 @@
 import React from "react";
 import Chart from "react-apexcharts";
 import { useQuery } from "@tanstack/react-query";
-import { Box, Center, Spinner, Text } from "@liftedinit/ui";
+import { Box, Center, Heading, Spinner, Text } from "@liftedinit/ui";
 import { getBurnedMfxSeries } from "api";
 import { useBgColor, LONG_STALE_INTERVAL, LONG_REFRESH_INTERVAL } from "utils";
 
@@ -14,7 +14,11 @@ interface SeriesPayload {
   data: string[];
 }
 
-const UMFX_PER_MFX = 1_000_000;
+// MFX has 9 decimal places — series values from the API are in uMFX.
+const UMFX_PER_MFX = 1_000_000_000;
+
+const yAxisFormatter = (v: number) =>
+  v.toLocaleString(undefined, { maximumFractionDigits: 0 });
 
 export function BurnedMfxCumulativeChart({ nid }: Props) {
   const bg = useBgColor();
@@ -60,7 +64,17 @@ export function BurnedMfxCumulativeChart({ nid }: Props) {
   );
 
   return (
-    <Box p={4} bg={bg} h={["200px", "300px", "400px"]}>
+    <Box
+      p={4}
+      bg={bg}
+      h={["200px", "300px", "400px"]}
+      display="flex"
+      flexDirection="column"
+    >
+      <Heading as="h5" size="sm" mb={2}>
+        Cumulative Burned MFX
+      </Heading>
+      <Box flex="1" minH={0}>
       <Chart
         height="100%"
         type="area"
@@ -79,10 +93,12 @@ export function BurnedMfxCumulativeChart({ nid }: Props) {
           },
           yaxis: {
             title: { text: "MFX", style: { fontSize: "1.25em", fontFamily: "Rubik, sans-serif" } },
+            labels: { formatter: yAxisFormatter },
           },
         }}
         className="talib-chart"
       />
+      </Box>
     </Box>
   );
 }

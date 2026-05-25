@@ -10,7 +10,6 @@ import {
   Pagination,
 } from "nestjs-typeorm-paginate";
 import { Repository, DataSource, In } from "typeorm";
-import { Address } from "@liftedinit/many-js";
 import { Block } from "../../database/entities/block.entity";
 import { Migration } from "../../database/entities/migration.entity";
 import { Migration as MigrationEntity } from "../../database/entities/migration.entity";
@@ -72,9 +71,11 @@ export class MigrationsService {
       return { timestamps: [], data: [] };
     }
 
-    const mfxAddressStr = new Address(
-      Buffer.from(tokenRow.address as ArrayBuffer),
-    ).toString();
+    // Token.address is a bytea storing the UTF-8 of the canonical textual
+    // address (no transformer on the column; tokens.service writes the string
+    // form via tokenInfo.address). Decode it directly — the on-chain `symbol`
+    // field on migration transactions is the same canonical string.
+    const mfxAddressStr = Buffer.from(tokenRow.address).toString("utf-8");
 
     const rows = await this.migrationRepository.manager.query(
       `

@@ -28,7 +28,8 @@ const fourDays = {
     new Date("2026-01-03"),
     new Date("2026-01-04"),
   ],
-  data: ["1000000", "3000000", "6000000", "10000000"],
+  // uMFX magnitudes (1e9 per MFX). Day-over-day diffs in MFX: 2, 3, 4.
+  data: ["1000000000", "3000000000", "6000000000", "10000000000"],
 };
 
 describe("BurnedMfxRateChart", () => {

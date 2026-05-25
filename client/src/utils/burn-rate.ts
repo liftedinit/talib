@@ -21,8 +21,11 @@ export const RATE_UNIT_LABELS: Record<RateUnit, string> = {
   per_month: "Per Month",
 };
 
+// The burned-MFX series is day-bucketed on the server (see
+// MigrationsService.getBurnedMfxSeries), so finer-than-daily rate units would
+// degenerate to the same value as `per_day`. Match the manifest-dashboard
+// pattern of only offering rate units compatible with the data resolution.
 export const RATE_UNIT_OPTIONS: RateUnit[] = [
-  "per_hour",
   "per_day",
   "per_week",
   "per_month",

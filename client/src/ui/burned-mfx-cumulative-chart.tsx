@@ -15,7 +15,9 @@ interface SeriesPayload {
 }
 
 // MFX has 9 decimal places — series values from the API are in uMFX.
-const UMFX_PER_MFX = 1_000_000_000;
+// Use BigInt for the divide so cumulative uMFX values past
+// Number.MAX_SAFE_INTEGER (~9e15, ≈ 9M MFX) don't silently lose precision.
+const UMFX_PER_MFX = 1_000_000_000n;
 
 const yAxisFormatter = (v: number) =>
   v.toLocaleString(undefined, { maximumFractionDigits: 0 });
@@ -58,7 +60,7 @@ export function BurnedMfxCumulativeChart({ nid }: Props) {
     );
   }
 
-  const seriesMfx = data.data.map((v) => Number(v) / UMFX_PER_MFX);
+  const seriesMfx = data.data.map((v) => Number(BigInt(v) / UMFX_PER_MFX));
   const categories = data.timestamps.map((t) =>
     t instanceof Date ? t.toISOString() : t,
   );

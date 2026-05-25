@@ -22,7 +22,9 @@ interface SeriesPayload {
 }
 
 // MFX has 9 decimal places — series values from the API are in uMFX.
-const UMFX_PER_MFX = 1_000_000_000;
+// Use BigInt for the divide so per-window uMFX deltas past
+// Number.MAX_SAFE_INTEGER (~9e15, ≈ 9M MFX) don't silently lose precision.
+const UMFX_PER_MFX = 1_000_000_000n;
 
 const yAxisFormatter = (v: number) =>
   v.toLocaleString(undefined, { maximumFractionDigits: 0 });
@@ -79,7 +81,7 @@ export function BurnedMfxRateChart({ nid }: Props) {
     );
   }
 
-  const seriesMfx = rates.map((p) => Number(p.value) / UMFX_PER_MFX);
+  const seriesMfx = rates.map((p) => Number(BigInt(p.value) / UMFX_PER_MFX));
   const categories = rates.map((p) => p.date.toISOString());
 
   return (

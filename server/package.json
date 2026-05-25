@@ -19,7 +19,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@liftedinit/many-js": "github:liftedinit/many-js",
+    "@liftedinit/many-js": "github:liftedinit/many-js#b860b802f42f516c6c7fb26cd0fb4dadcac94ca3",
     "@nestjs/axios": "4.0.1",
     "@nestjs/common": "11.1.24",
     "@nestjs/config": "4.0.2",

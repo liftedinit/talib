@@ -68,3 +68,8 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Environment variables
+
+- `VITE_API_PATH` — base path for talib's REST API (e.g. `/api/v1`).
+- `VITE_MFX_NEIGHBORHOOD_ID` — numeric id of the neighborhood whose MFX migrations feed the "Burned MFX" charts on the metrics page.

@@ -1,7 +1,17 @@
 import React from "react";
-import { Box, Heading, SimpleGrid } from "@liftedinit/ui";
-import { MemoizedMetricChart as MetricChart, MemoizedMetricStat as MetricStat } from "ui";
+import { Box, Center, Heading, SimpleGrid, Text } from "@liftedinit/ui";
+import {
+  MemoizedMetricChart as MetricChart,
+  MemoizedMetricStat as MetricStat,
+  MemoizedBurnedMfxCumulativeChart as BurnedMfxCumulativeChart,
+  MemoizedBurnedMfxRateChart as BurnedMfxRateChart,
+} from "ui";
 import { convertBytesToMb, convertBytesToGb, convertKbToGb, convertKbToTb, convertGbToTb, convertGbToPb, convertNumToBil } from "utils";
+
+const RAW_MFX_NID = import.meta.env.VITE_MFX_NEIGHBORHOOD_ID;
+const MFX_NEIGHBORHOOD_ID =
+  RAW_MFX_NID !== undefined && RAW_MFX_NID !== "" ? Number(RAW_MFX_NID) : NaN;
+const MFX_CONFIG_OK = Number.isFinite(MFX_NEIGHBORHOOD_ID) && MFX_NEIGHBORHOOD_ID > 0;
 
 export function NetworkMetrics() {
   return (
@@ -16,7 +26,29 @@ export function NetworkMetrics() {
           <MetricStat label="Total Tokens" metric="totaltokens" />
           <MetricChart label="Total Tokens" type="area" metric="totaltokens" from={"now-90d"} to={"now"} fixedDecimals={0} ytitle="Tokens" smoothed={false} height={["200px", "300px", "400px"]} />
         </Box>
-      </SimpleGrid> 
+        <Box backgroundColor="transparent">
+          {MFX_CONFIG_OK ? (
+            <BurnedMfxCumulativeChart nid={MFX_NEIGHBORHOOD_ID} />
+          ) : (
+            <Box p={4} h={["200px", "300px", "400px"]}>
+              <Center h="100%">
+                <Text color="brand.teal">Burned MFX chart not configured</Text>
+              </Center>
+            </Box>
+          )}
+        </Box>
+        <Box backgroundColor="transparent">
+          {MFX_CONFIG_OK ? (
+            <BurnedMfxRateChart nid={MFX_NEIGHBORHOOD_ID} />
+          ) : (
+            <Box p={4} h={["200px", "300px", "400px"]}>
+              <Center h="100%">
+                <Text color="brand.teal">Burned MFX chart not configured</Text>
+              </Center>
+            </Box>
+          )}
+        </Box>
+      </SimpleGrid>
       <Heading as='h4' size='md' py="5" pl="5" >Blockchain Network Totals</Heading>
       <SimpleGrid id="blockchain" columns={{ base: 1, sm: 1, md: 3, lg: 3 }} gap="6" mt={2}>
         <Box backgroundColor="transparent">

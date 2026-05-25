@@ -8,7 +8,7 @@
 Add two charts to the Tokenomics section of the Metrics tab in talib:
 
 1. **Cumulative Burned MFX** — running total of MFX burned via migrations to the `maiyg` address, over the entire migration history.
-2. **MFX Burn Rate** — burn rate per configurable time unit (per hour / per day / per week / per month), derived from the cumulative series.
+2. **MFX Burn Rate** — burn rate per configurable time unit (per day / per week / per month), derived from the cumulative series. Finer-than-daily units are excluded because the server returns a day-bucketed series.
 
 "Burned MFX" is defined as: completed migration transactions (ledger send to `maiyg` with a UUID memo) of the MFX token, counted by `manifestDatetime` (the timestamp at which the migration successfully executed on the Manifest chain).
 
@@ -40,7 +40,7 @@ Migration detection logic already exists (`MigrationAnalyzerService`); this work
 │  MigrationsController                                         │
 │    └─ MigrationsService.getBurnedMfxSeries(nid)               │
 │        ├─ 1× lookup: MFX address from Token (neighborhood,    │
-│        │   symbol='MFX'); unique index hit, no JOIN per row   │
+│        │   symbol='MFX'); table is tiny, no JOIN per row      │
 │        └─ 1× series query: window-function cumulative SUM,    │
 │            grouped by DATE_TRUNC('day', manifest_datetime),   │
 │            filtered by manifestDatetime IS NOT NULL + symbol  │
@@ -73,7 +73,7 @@ Day-bucketed (`DATE_TRUNC('day', ...)`) and ordered ASC. `data[i]` is the cumula
 
 `MigrationsService.getBurnedMfxSeries(neighborhoodId: number): Promise<SeriesEntity>`
 
-Two SQL statements per request — both bounded, neither N+1. First, resolve the MFX token's string-form address (one row, unique-index hit on `Token(neighborhood_id, symbol)`). Then run the series query, passing that address as a parameter:
+Two SQL statements per request — both bounded, neither N+1. First, resolve the MFX token's string-form address (one row, filtered by `(neighborhood_id, symbol='MFX')` — not the `Token` unique index, but the table is tiny so cost is negligible; see the `$2` note below). Then run the series query, passing that address as a parameter:
 
 ```sql
 WITH daily AS (
@@ -141,7 +141,7 @@ Gated on profiling — not shipped by default.
 
 ### New files
 
-- `client/src/ui/burned-mfx-cumulative-chart.tsx` — Apex area chart (~80 LOC). Converts uMFX → MFX (`/ 1e6`) for display, formats large numbers (K / M / B). Hardcoded label `"Burned MFX"`, y-axis title `"MFX"`.
+- `client/src/ui/burned-mfx-cumulative-chart.tsx` — Apex area chart (~80 LOC). Converts uMFX → MFX (`/ 1e9` — MFX has 9 decimal places) for display, formats large numbers (K / M / B). Hardcoded label `"Burned MFX"`, y-axis title `"MFX"`.
 - `client/src/ui/burned-mfx-rate-chart.tsx` — Apex area chart + `<Select>` for rate unit. Uses the same React Query result as the cumulative chart (same query key) → no double-fetch.
 - `client/src/utils/burn-rate.ts` — pure function `calculateRates(series, rateUnit)`, ported from `manifest-dashboard/src/lib/utils/rateCalculation.ts` (two-pointer O(n) over the sorted cumulative series; uses native `BigInt`).
 
@@ -174,7 +174,7 @@ In `client/src/pages/metrics/networkMetrics.tsx`, inside the existing `Tokenomic
 
 ### Rate-chart dropdown
 
-Options: `Per Hour`, `Per Day` (default), `Per Week`, `Per Month`. Selected unit kept in component-local `useState` — no URL sync (talib doesn't otherwise route metric state through URLs).
+Options: `Per Day` (default), `Per Week`, `Per Month`. `Per Hour` is intentionally omitted because the server returns a day-bucketed series, so an hourly window would degenerate to the same value as `Per Day`. Selected unit kept in component-local `useState` — no URL sync (talib doesn't otherwise route metric state through URLs).
 
 ### Configuration
 
@@ -221,7 +221,7 @@ Start dev stack (`docker-compose up`), hit the metrics page, confirm both charts
 
 None. All decisions are captured in the sections above:
 
-- Two charts: cumulative + rate (configurable per_hour / per_day / per_week / per_month).
+- Two charts: cumulative + rate (configurable per_day / per_week / per_month; per_hour omitted because the series is day-bucketed).
 - Hard-coded neighborhood (mainnet) via Vite env var.
 - MFX-only via a `Token` table lookup on `(neighborhood_id, symbol='MFX')`; address passed as a parameter to the series query.
 - Completed migrations only, timestamped by `manifestDatetime`.

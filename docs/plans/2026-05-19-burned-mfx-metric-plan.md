@@ -479,7 +479,7 @@ git commit -m "chore(client): add VITE_MFX_NEIGHBORHOOD_ID config"
 
 ## Task 5: Client — `calculateRates` utility (TDD)
 
-Port `calculateRates` from `manifest-dashboard/src/lib/utils/rateCalculation.ts`, scoped to the rate units the spec calls out (per_hour / per_day / per_week / per_month).
+Port `calculateRates` from `manifest-dashboard/src/lib/utils/rateCalculation.ts`, scoped to the rate units the spec calls out (per_day / per_week / per_month; per_hour is intentionally omitted because the server returns a day-bucketed series).
 
 **Files:**
 - Create: `client/src/utils/burn-rate.ts`
@@ -583,8 +583,9 @@ export const RATE_UNIT_LABELS: Record<RateUnit, string> = {
   per_month: "Per Month",
 };
 
+// The series is day-bucketed server-side, so finer-than-daily rate units
+// degenerate to the same value as `per_day`. Omit `per_hour` from the UI.
 export const RATE_UNIT_OPTIONS: RateUnit[] = [
-  "per_hour",
   "per_day",
   "per_week",
   "per_month",
@@ -1211,7 +1212,7 @@ Expected: JSON shaped `{ "timestamps": [...], "data": [...] }`, both arrays the 
 Browse to the metrics page in your browser. Confirm:
 - Both burned-MFX charts render inside the Tokenomics section.
 - Cumulative chart climbs over time.
-- Rate-unit dropdown switches between Per Hour / Per Day / Per Week / Per Month, and the rate chart re-renders.
+- Rate-unit dropdown switches between Per Day / Per Week / Per Month, and the rate chart re-renders. (Per Hour is intentionally not offered because the series is day-bucketed.)
 - DevTools → Network tab: exactly **one** request to `/migrations/burned-mfx/series` per page load (proves the shared React Query key works).
 
 - [ ] **Step 5: Verify the env-guard**
@@ -1261,4 +1262,4 @@ Only commit at this step if the manual verification surfaced and you fixed an is
 
 ## Done
 
-All spec requirements are covered: cumulative chart, rate chart with per_hour/per_day/per_week/per_month dropdown, MFX-only filter via Token table lookup, completed migrations only (`manifestDatetime IS NOT NULL`), hard-coded neighborhood via `VITE_MFX_NEIGHBORHOOD_ID`, single HTTP call shared between both charts, no-N+1 verification on the server, env-guard error rendering on the client.
+All spec requirements are covered: cumulative chart, rate chart with per_day/per_week/per_month dropdown (per_hour omitted because the series is day-bucketed), MFX-only filter via Token table lookup, completed migrations only (`manifestDatetime IS NOT NULL`), hard-coded neighborhood via `VITE_MFX_NEIGHBORHOOD_ID`, single HTTP call shared between both charts, no-N+1 verification on the server, env-guard error rendering on the client.

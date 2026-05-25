@@ -34,7 +34,8 @@ export const RATE_UNIT_OPTIONS: RateUnit[] = [
 /**
  * Differencing over a sorted (ASC) cumulative series.
  * For each point i, find the latest point j < i with date <= date[i] - windowMs
- * and emit (value[i] - value[j]). Two-pointer, O(n).
+ * and emit (value[i] - value[j]). If no such j exists (the window extends
+ * before the first data point), that i is skipped. Two-pointer, O(n).
  * Negative diffs clamped to 0. Uses native BigInt — values are integer
  * uMFX strings so subtraction is exact and zero-dep.
  */

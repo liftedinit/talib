@@ -1,7 +1,12 @@
 # Design: zero-fill the burned-MFX series
 
 **Date:** 2026-05-26
-**Status:** Approved (brainstormed with maintainer)
+**Status:** Implemented (`5b2cfff`) & verified — QA PASS 2026-05-26. See
+[verification report](./2026-05-26-burned-mfx-zero-fill-verification.md). Live-DB
+(neighborhood 1): 351 dense points, cumulative monotonic & flat across gaps, final total
+unchanged at 3,469,397.23014 MFX, per-day rate 111,916 → 9,912.56 MFX/day; `EXPLAIN`
+shows a single bounded scan + window aggregate (7 ms, no N+1); all in-scope suites + tsc
+green.
 **Scope:** Server only — `MigrationsService.getBurnedMfxSeries`. The endpoint response
 shape, the controller, and both client charts are unchanged.
 

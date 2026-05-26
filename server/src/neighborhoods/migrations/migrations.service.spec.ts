@@ -62,9 +62,31 @@ describe("MigrationsService.getBurnedMfxSeries", () => {
     // No-N+1: at most 1 SQL after the Token lookup.
     expect(migrationRepo.manager.query).toHaveBeenCalledTimes(1);
     const [sql, params] = migrationRepo.manager.query.mock.calls[0];
-    expect(sql).toMatch(/date_trunc\('day'/i);
-    expect(sql).toMatch(/SUM\(amount\) OVER \(ORDER BY day\)/i);
+    expect(sql).toMatch(/date_trunc\('day'/i); // daily bucket (kept)
+    expect(sql).toMatch(/generate_series/i); // dense daily spine exists
+    expect(sql).toMatch(/now\(\) AT TIME ZONE 'UTC'/i); // UTC today bound
+    expect(sql).toMatch(/LEFT JOIN\s+daily/i); // zero-fill join
+    expect(sql).toMatch(
+      /SUM\(\s*COALESCE\(daily\.amount,\s*0\)\s*\) OVER \(ORDER BY spine\.day\)/i,
+    ); // carry-forward cumulative
     expect(params).toEqual([42, mfxAddrStr]);
+  });
+
+  it("returns an empty series when the dense-spine query yields no rows", async () => {
+    // No migrations -> `daily` is empty -> min(day) is NULL ->
+    // generate_series(NULL, today, '1 day') yields 0 rows -> query resolves [].
+    const mfxAddrBytes = Buffer.from(
+      "mqbh742x4s356ddaryrxaowt4wxtlocekzpufodvowrirfrqaaaaa3l",
+      "utf-8",
+    );
+
+    tokenRepo.findOne.mockResolvedValueOnce({ address: mfxAddrBytes });
+    migrationRepo.manager.query.mockResolvedValueOnce([]);
+
+    const result = await service.getBurnedMfxSeries(42);
+
+    expect(result).toEqual({ timestamps: [], data: [] });
+    expect(migrationRepo.manager.query).toHaveBeenCalledTimes(1);
   });
 
   it("emits SQL that COALESCEs symbol/amount across direct and multisig argument shapes", async () => {

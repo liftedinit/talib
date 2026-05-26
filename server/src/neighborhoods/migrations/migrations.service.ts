@@ -97,12 +97,20 @@ export class MigrationsService {
               td.argument -> 'transaction' -> 'argument' ->> 'symbol'
             ) = $2
           GROUP BY date_trunc('day', m."manifestDatetime")
+        ),
+        spine AS (
+          SELECT generate_series(
+                   (SELECT min(day) FROM daily),
+                   date_trunc('day', (now() AT TIME ZONE 'UTC')),
+                   interval '1 day'
+                 ) AS day
         )
         SELECT
-          day AS timestamp,
-          SUM(amount) OVER (ORDER BY day) AS cumulative
-        FROM daily
-        ORDER BY day ASC
+          spine.day AS timestamp,
+          SUM(COALESCE(daily.amount, 0)) OVER (ORDER BY spine.day) AS cumulative
+        FROM spine
+        LEFT JOIN daily ON daily.day = spine.day
+        ORDER BY spine.day ASC
       `,
       [neighborhoodId, mfxAddressStr],
     );

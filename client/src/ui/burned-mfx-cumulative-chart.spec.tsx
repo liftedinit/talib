@@ -49,4 +49,17 @@ describe("BurnedMfxCumulativeChart", () => {
     const series = JSON.parse(apex.getAttribute("data-series")!);
     expect(series).toEqual([{ name: "Burned MFX", data: [1, 3] }]);
   });
+
+  it("shows the cumulative total (the final series value) under the title", async () => {
+    vi.mocked(getBurnedMfxSeries).mockReturnValueOnce(
+      async () => ({
+        timestamps: [new Date("2026-01-01"), new Date("2026-01-02")],
+        data: ["1000000000", "5000000000"],
+      }),
+    );
+
+    render(wrap(<BurnedMfxCumulativeChart nid={1} />));
+
+    expect(await screen.findByText(/^5\s*MFX$/)).toBeInTheDocument();
+  });
 });

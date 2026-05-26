@@ -1,7 +1,7 @@
 import React from "react";
 import Chart from "react-apexcharts";
 import { useQuery } from "@tanstack/react-query";
-import { Box, Center, Heading, Spinner, Text } from "@liftedinit/ui";
+import { Box, Center, Heading, Spinner, Stat, StatNumber, Text } from "@liftedinit/ui";
 import { getBurnedMfxSeries } from "api";
 import { useBgColor, LONG_STALE_INTERVAL, LONG_REFRESH_INTERVAL } from "utils";
 
@@ -65,6 +65,11 @@ export function BurnedMfxCumulativeChart({ nid }: Props) {
     t instanceof Date ? t.toISOString() : t,
   );
 
+  // The series is cumulative, so the final point is the total burned to date.
+  const totalMfx = seriesMfx[seriesMfx.length - 1].toLocaleString(undefined, {
+    maximumFractionDigits: 0,
+  });
+
   return (
     <Box
       p={4}
@@ -73,9 +78,12 @@ export function BurnedMfxCumulativeChart({ nid }: Props) {
       display="flex"
       flexDirection="column"
     >
-      <Heading as="h5" size="sm" mb={2}>
+      <Heading as="h5" size="sm" mb={1}>
         Cumulative Burned MFX
       </Heading>
+      <Stat flex="0 0 auto" mb={2}>
+        <StatNumber>{totalMfx} MFX</StatNumber>
+      </Stat>
       <Box flex="1" minH={0}>
       <Chart
         height="100%"

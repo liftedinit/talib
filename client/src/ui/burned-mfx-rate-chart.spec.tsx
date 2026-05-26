@@ -47,6 +47,15 @@ describe("BurnedMfxRateChart", () => {
     expect(series[0].data).toEqual([2, 3, 4]);
   });
 
+  it("shows the average rate (per selected unit) under the title", async () => {
+    vi.mocked(getBurnedMfxSeries).mockReturnValueOnce(async () => fourDays);
+
+    render(wrap(<BurnedMfxRateChart nid={1} />));
+
+    // Day-over-day MFX diffs are 2, 3, 4 → average 3 MFX per day.
+    expect(await screen.findByText(/3\s*MFX\s*\/\s*day/i)).toBeInTheDocument();
+  });
+
   it("re-renders rates when the dropdown changes unit", async () => {
     vi.mocked(getBurnedMfxSeries).mockReturnValueOnce(async () => fourDays);
 

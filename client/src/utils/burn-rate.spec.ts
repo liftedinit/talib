@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { calculateRates, type CumulativePoint, type RateUnit } from "./burn-rate";
+import {
+  calculateRates,
+  calculateAverageRate,
+  type CumulativePoint,
+  type RateUnit,
+} from "./burn-rate";
 
 const point = (date: string, value: string): CumulativePoint => ({
   date: new Date(date),
@@ -54,5 +59,21 @@ describe("calculateRates", () => {
     );
 
     expect(result).toEqual([]);
+  });
+});
+
+describe("calculateAverageRate", () => {
+  it("returns 0n for an empty series", () => {
+    expect(calculateAverageRate([])).toBe(0n);
+  });
+
+  it("averages the rate values (floored to whole uMFX)", () => {
+    const avg = calculateAverageRate([
+      point("2026-01-02", "150"),
+      point("2026-01-03", "150"),
+      point("2026-01-04", "300"),
+    ]);
+
+    expect(avg).toBe(200n); // (150 + 150 + 300) / 3
   });
 });

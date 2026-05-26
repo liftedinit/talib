@@ -71,3 +71,16 @@ export function calculateRates(
 
   return out;
 }
+
+/**
+ * Mean of a rate series' values, in uMFX. Returns 0n for an empty series.
+ * BigInt sum keeps it exact; the final divide floors a sub-uMFX remainder
+ * that is irrelevant for display. Mirrors manifest-dashboard's
+ * calculateAverage, which drives its burn-rate card's headline figure.
+ */
+export function calculateAverageRate(rates: CumulativePoint[]): bigint {
+  if (!rates || rates.length === 0) return 0n;
+
+  const sum = rates.reduce((acc, p) => acc + BigInt(p.value), 0n);
+  return sum / BigInt(rates.length);
+}

@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from "react";
 import Chart from "react-apexcharts";
 import { useQuery } from "@tanstack/react-query";
-import { Box, Center, Flex, Heading, Select, Spinner, Text } from "@liftedinit/ui";
+import { Box, Center, Flex, Heading, Select, Spinner, Stat, StatNumber, Text } from "@liftedinit/ui";
 import { getBurnedMfxSeries } from "api";
 import { useBgColor, LONG_STALE_INTERVAL, LONG_REFRESH_INTERVAL } from "utils";
 import {
   calculateRates,
+  calculateAverageRate,
   RATE_UNIT_LABELS,
   RATE_UNIT_OPTIONS,
   type CumulativePoint,
@@ -84,6 +85,17 @@ export function BurnedMfxRateChart({ nid }: Props) {
   const seriesMfx = rates.map((p) => Number(BigInt(p.value) / UMFX_PER_MFX));
   const categories = rates.map((p) => p.date.toISOString());
 
+  // Headline figure: the average burn rate over the windows, matching the
+  // manifest-dashboard burn-rate card. "Per Day" -> "day" for the unit suffix.
+  const unitLabel = RATE_UNIT_LABELS[rateUnit].replace("Per ", "").toLowerCase();
+  const avgRate =
+    rates.length > 0
+      ? `${(Number(calculateAverageRate(rates)) / Number(UMFX_PER_MFX)).toLocaleString(
+          undefined,
+          { maximumFractionDigits: 2 },
+        )} MFX / ${unitLabel}`
+      : "N/A";
+
   return (
     <Box
       p={4}
@@ -105,6 +117,9 @@ export function BurnedMfxRateChart({ nid }: Props) {
           ))}
         </Select>
       </Flex>
+      <Stat flex="0 0 auto" mb={2}>
+        <StatNumber>{avgRate}</StatNumber>
+      </Stat>
       <Box flex="1" minH={0}>
       <Chart
         height="100%"

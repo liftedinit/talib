@@ -20,6 +20,13 @@ RUN npm install
 
 WORKDIR /app
 
+# Vite bakes VITE_* vars into the client bundle at build time. The default
+# matches client/.env so local `docker build` keeps working; CI overrides it
+# with the production neighborhood id via --build-arg. A real env var takes
+# precedence over the committed .env (see vite loadEnv).
+ARG VITE_MFX_NEIGHBORHOOD_ID=1
+ENV VITE_MFX_NEIGHBORHOOD_ID=${VITE_MFX_NEIGHBORHOOD_ID}
+
 RUN npm run build --workspaces
 
 # # Build the client application

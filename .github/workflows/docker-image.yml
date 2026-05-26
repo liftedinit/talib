@@ -20,7 +20,14 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
  
       - name: Build image
-        run: docker build -t lifted/talib:${GITHUB_SHA} .
+        env:
+          MFX_NID: ${{ vars.VITE_MFX_NEIGHBORHOOD_ID }}
+        run: |
+          build_args=()
+          if [ -n "$MFX_NID" ]; then
+            build_args+=(--build-arg "VITE_MFX_NEIGHBORHOOD_ID=$MFX_NID")
+          fi
+          docker build "${build_args[@]}" -t "lifted/talib:${GITHUB_SHA}" .
 
       - name: Tag for latest
         run: docker tag lifted/talib:${GITHUB_SHA}   lifted/talib:latest

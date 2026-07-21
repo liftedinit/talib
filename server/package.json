@@ -31,7 +31,7 @@
     "@nestjs/serve-static": "5.0.5",
     "@nestjs/swagger": "11.4.4",
     "@nestjs/typeorm": "11.0.0",
-    "axios": "1.16.1",
+    "axios": "1.18.0",
     "big.js": "6.2.2",
     "cbor": "8.1.0",
     "change-case": "4.1.2",
